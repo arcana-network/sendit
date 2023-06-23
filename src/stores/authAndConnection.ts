@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { shallowRef } from "vue";
 import { Buffer } from 'buffer'
 
+// @ts-ignore
 import { AuthProvider } from '@arcana/auth';
 import { BrowserProvider, getBytes } from 'ethers'
 import type { JsonRpcSigner } from 'ethers'
@@ -86,7 +87,7 @@ class Connection {
     }
 }
 
-export const useAuthAndConnStore = defineStore('authAndConn', {
+export const useAuthAndConnectionStore = defineStore('authAndConnection', {
     state: () => ({
         init1: false,
         init2: false,
