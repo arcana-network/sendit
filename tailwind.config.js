@@ -2,7 +2,9 @@
 export default {
   content: ["./src/**/*.{vue,js,ts,jsx,tsx,css}"],
   theme: {
-    extend: {},
+    fontFamily: {
+      onest: ["Onest", "sans-serif"],
+    },
   },
   plugins: [require("daisyui")],
 };
