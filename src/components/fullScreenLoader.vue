@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Overlay from "../components/overlay.vue";
-import { userLoaderStore } from "../store/loader";
+import { userLoaderStore } from "../stores/loader";
 import { HollowDotsSpinner } from "epic-spinners";
 
 const loaderStore = userLoaderStore();

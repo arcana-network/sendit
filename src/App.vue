@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import useArcanaAuth from "./use/arcanaAuth";
-import { userLoaderStore } from "./store/loader";
+import { userLoaderStore } from "./stores/loader";
 import FullScreenLoader from "./components/fullScreenLoader.vue";
 import { useRouter } from "vue-router";
 
