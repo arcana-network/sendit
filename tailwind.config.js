@@ -12,6 +12,7 @@ export default {
         "dark-liver": "#4D4D4D",
         "dark-charcoal": "#313131",
         "vivid-vermilion": "#E76124",
+        jet: "#363636",
       },
       padding: {
         7.5: "30px",
@@ -19,6 +20,9 @@ export default {
       },
       fontSize: {
         "3.5xl": "32px",
+      },
+      borderWidth: {
+        1: "1px",
       },
     },
   },
