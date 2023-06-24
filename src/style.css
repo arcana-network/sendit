@@ -101,3 +101,15 @@
 body {
   font-family: Onest, sans-serif;
 }
+
+.btn {
+  @apply p-1 rounded-md h-0;
+}
+
+.btn-login {
+  @apply bg-eerie-black h-9;
+}
+
+.input {
+  @apply outline-none border-none;
+}
