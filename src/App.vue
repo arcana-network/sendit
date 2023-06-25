@@ -1,19 +1,28 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import useArcanaAuth from "./use/arcanaAuth";
+import useSocketConnection from "./use/socketConnection";
 import { userLoaderStore } from "./stores/loader";
 import FullScreenLoader from "./components/fullScreenLoader.vue";
 import { useRouter } from "vue-router";
 
 const loaderStore = userLoaderStore();
 const router = useRouter();
+const auth = useArcanaAuth();
+const socketConnection = useSocketConnection();
+
+async function initConnection() {
+  socketConnection.init(auth.getProvider());
+}
 
 async function initAuth() {
   loaderStore.showLoader("initializing...");
   try {
-    const auth = useArcanaAuth();
     await auth.init();
-    router.push({ name: "Login" });
+    if (await auth.isLoggedIn()) {
+      await initConnection();
+      router.push({ name: "Send" });
+    } else router.push({ name: "Login" });
   } catch (error) {
     console.error({ error });
   } finally {
