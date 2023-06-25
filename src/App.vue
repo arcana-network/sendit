@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, watch } from "vue";
 import useArcanaAuth from "./use/arcanaAuth";
 import useSocketConnection from "./use/socketConnection";
 import useLoaderStore from "./stores/loader";
@@ -30,6 +30,16 @@ async function initAuth() {
     loaderStore.hideLoader();
   }
 }
+
+watch(
+  () => authStore.isLoggedIn,
+  async (newValue) => {
+    if (newValue) {
+      await initConnection();
+      router.push({ name: "Send" });
+    } else router.push({ name: "Login" });
+  }
+);
 
 onMounted(initAuth);
 </script>
