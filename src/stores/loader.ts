@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-const userLoaderStore = defineStore("loafer", {
+const userLoaderStore = defineStore("loader", {
   state: () => ({
     show: false,
     message: "",
