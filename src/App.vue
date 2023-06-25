@@ -2,11 +2,11 @@
 import { onMounted } from "vue";
 import useArcanaAuth from "./use/arcanaAuth";
 import useSocketConnection from "./use/socketConnection";
-import { userLoaderStore } from "./stores/loader";
+import useLoaderStore from "./stores/loader";
 import FullScreenLoader from "./components/fullScreenLoader.vue";
 import { useRouter } from "vue-router";
 
-const loaderStore = userLoaderStore();
+const loaderStore = useLoaderStore();
 const router = useRouter();
 const auth = useArcanaAuth();
 const socketConnection = useSocketConnection();

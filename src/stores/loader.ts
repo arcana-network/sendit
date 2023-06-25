@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-const userLoaderStore = defineStore("loader", {
+const useLoaderStore = defineStore("loader", {
   state: () => ({
     show: false,
     message: "",
@@ -17,4 +17,4 @@ const userLoaderStore = defineStore("loader", {
   },
 });
 
-export { userLoaderStore };
+export default useLoaderStore;
