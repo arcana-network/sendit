@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import sendItLogo from "../assets/images/send-it-logo.png";
+import useAuthStore from "../stores/auth";
 import useArcanaAuth from "../use/arcanaAuth";
-import { useRouter } from "vue-router";
 
-const route = useRouter();
-const { connect } = useArcanaAuth();
+const { connect, isLoggedIn } = useArcanaAuth();
+const authStore = useAuthStore();
 
 async function connectToArcana() {
   await connect();
-  route.push({ name: "Send" });
+  authStore.setLoginStatus(await isLoggedIn());
 }
 </script>
 
