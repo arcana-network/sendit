@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import sendItLogo from "../../assets/images/send-it-logo.png";
+import notificationIcon from "../../assets/images/icons/notification.svg";
+import profileIcon from "../../assets/images/icons/profile.svg";
 
 const navMenu = [
   {
@@ -57,10 +59,14 @@ const stats = [
           <span class="text-xl">{{ stat.value }}</span>
         </div>
       </div>
-      <div class="space-x-3">
+      <div class="space-x-3 flex items-center">
         <button>Help</button>
-        <buttom>Noti</buttom>
-        <buttom>Prof</buttom>
+        <buttom>
+          <img :src="notificationIcon" alt="notification" />
+        </buttom>
+        <buttom>
+          <img :src="profileIcon" alt="profile" />
+        </buttom>
       </div>
     </div>
   </header>
