@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, watch } from "vue";
+import { computed, onMounted } from "vue";
 import useArcanaAuth from "./use/arcanaAuth";
 import useSocketConnection from "./use/socketConnection";
 import useLoaderStore from "./stores/loader";
@@ -13,17 +13,14 @@ const router = useRouter();
 const auth = useArcanaAuth();
 const socketConnection = useSocketConnection();
 
-async function initConnection() {
-  socketConnection.init(auth.getProvider());
-}
-
 async function initAuth() {
   loaderStore.showLoader("initializing...");
   try {
     await auth.init();
     const isLoggedIn = await auth.isLoggedIn();
-    authStore.setLoginStatus(isLoggedIn);
-    if (!isLoggedIn) router.push({ name: "Login" });
+    auth.getProvider().on("connect", onWalletConnect);
+    if (isLoggedIn) router.push({ name: "Send" });
+    else router.push({ name: "Login" });
   } catch (error) {
     console.error({ error });
   } finally {
@@ -31,22 +28,26 @@ async function initAuth() {
   }
 }
 
-watch(
-  () => authStore.isLoggedIn,
-  async (newValue) => {
-    if (newValue) {
-      await initConnection();
-      router.push({ name: "Send" });
-    } else router.push({ name: "Login" });
-  }
-);
+async function initSocketConnect() {
+  await socketConnection.init(auth.getProvider(), () => {
+    authStore.setSocketLoginStatus(true);
+  });
+}
+
+function onWalletConnect() {
+  initSocketConnect();
+}
 
 onMounted(initAuth);
+
+const showFullScreenLoader = computed(() => {
+  return loaderStore.show || !authStore.isSocketLoggedIn;
+});
 </script>
 
 <template>
   <main class="bg-black h-[100vh]">
-    <FullScreenLoader v-if="loaderStore.show" />
+    <FullScreenLoader v-if="showFullScreenLoader" />
     <router-view> </router-view>
   </main>
 </template>

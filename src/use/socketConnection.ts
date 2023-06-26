@@ -18,12 +18,18 @@ let callbacks = null;
 let state = ConnectionState.NOT_CONNECTED;
 
 function useSocketConnection() {
-  async function init(authProvider: AuthProvider) {
-    ethersProvider = new BrowserProvider(authProvider);
-    ethersSigner = await ethersProvider.getSigner();
-    socket = new WebSocket(VITE_API_URL);
-    socket.addEventListener("open", onSocketOpen);
-    socket.addEventListener("message", onMessage);
+  async function init(authProvider: AuthProvider, onSocketLogin?: Function) {
+    try {
+      ethersProvider = new BrowserProvider(authProvider);
+      ethersSigner = await ethersProvider.getSigner();
+      socket = new WebSocket(VITE_API_URL);
+      socket.addEventListener("open", onSocketOpen);
+      socket.addEventListener("message", (ev: MessageEvent) =>
+        onMessage(ev, onSocketLogin)
+      );
+    } catch (e) {
+      console.log({ e });
+    }
   }
 
   async function onSocketOpen() {
@@ -44,7 +50,10 @@ function useSocketConnection() {
     });
   }
 
-  async function onMessage(ev: MessageEvent) {
+  async function onMessage(
+    ev: MessageEvent,
+    onSocketLogin: Function | undefined
+  ) {
     const data = msgunpack(Buffer.from(await ev.data.arrayBuffer()));
 
     if (data.error) {
@@ -70,6 +79,7 @@ function useSocketConnection() {
       case ConnectionState.CONNECTED_UNAUTHORIZED:
         if (data.ok) {
           state = ConnectionState.AUTHORIZED;
+          onSocketLogin();
         }
         break;
       case ConnectionState.AUTHORIZED:
