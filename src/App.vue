@@ -41,7 +41,9 @@ function onWalletConnect() {
 onMounted(initAuth);
 
 const showFullScreenLoader = computed(() => {
-  return loaderStore.show || !authStore.isSocketLoggedIn;
+  return (
+    loaderStore.show || (!authStore.isSocketLoggedIn && authStore.isLoggedIn)
+  );
 });
 </script>
 
