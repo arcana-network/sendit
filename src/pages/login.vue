@@ -29,8 +29,12 @@ async function connectToArcana() {
         </header>
         <section class="space-y-0.5 w-full">
           <div class="flex flex-col space-y-2">
-            <button class="btn btn-login" @click="connectToArcana">
-              Connect with Arcana
+            <button
+              class="btn btn-login flex justify-center items-center space-x-2"
+              @click="connectToArcana"
+            >
+              <span>Connect with</span>
+              <img :src="arcanaLogo" alt="Arcana" class="w-20" />
             </button>
           </div>
         </section>
