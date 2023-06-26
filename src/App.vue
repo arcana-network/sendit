@@ -20,7 +20,7 @@ async function initAuth() {
     const isLoggedIn = await auth.isLoggedIn();
     auth.getProvider().on("connect", onWalletConnect);
     auth.getProvider().on("disconnect", onWalletDisconnect);
-    if (isLoggedIn) router.push({ name: "Send" });
+    if (isLoggedIn) authStore.setLoginStatus(await auth.isLoggedIn());
     else router.push({ name: "Login" });
   } catch (error) {
     console.error({ error });
