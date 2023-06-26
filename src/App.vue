@@ -40,6 +40,14 @@ function onWalletConnect() {
 
 onMounted(initAuth);
 
+watch(
+  () => authStore.isLoggedIn,
+  (newValue) => {
+    if (newValue) router.push({ name: "Send" });
+    else router.push({ name: "Login" });
+  }
+);
+
 const showFullScreenLoader = computed(() => {
   return (
     loaderStore.show || (!authStore.isSocketLoggedIn && authStore.isLoggedIn)
