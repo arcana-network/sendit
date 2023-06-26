@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed, onMounted, watch } from "vue";
 import useArcanaAuth from "./use/arcanaAuth";
 import useSocketConnection from "./use/socketConnection";
 import useLoaderStore from "./stores/loader";
@@ -19,6 +19,7 @@ async function initAuth() {
     await auth.init();
     const isLoggedIn = await auth.isLoggedIn();
     auth.getProvider().on("connect", onWalletConnect);
+    auth.getProvider().on("disconnect", onWalletDisconnect);
     if (isLoggedIn) router.push({ name: "Send" });
     else router.push({ name: "Login" });
   } catch (error) {
@@ -36,6 +37,10 @@ async function initSocketConnect() {
 
 function onWalletConnect() {
   initSocketConnect();
+}
+
+async function onWalletDisconnect() {
+  authStore.setLoginStatus(await auth.isLoggedIn());
 }
 
 onMounted(initAuth);
