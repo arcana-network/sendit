@@ -1,14 +1,26 @@
 <script setup lang="ts">
-import Header from "../../components/layout/Header.vue";
-import Footer from "../../components/layout/Footer.vue";
+import AppHeader from "../../components/layout/AppHeader.vue";
+import AppFooter from "../../components/layout/AppFooter.vue";
 </script>
 
 <template>
   <div class="h-full flex flex-col">
-    <Header />
-    <div class="flex-1">
-      <router-view></router-view>
+    <AppHeader />
+    <div class="flex flex-col flex-1 private-page">
+      <div class="flex flex-col flex-1">
+        <router-view></router-view>
+      </div>
+      <AppFooter />
     </div>
-    <Footer />
   </div>
 </template>
+
+<style scoped>
+.private-page {
+  background: linear-gradient(
+    68.66deg,
+    rgba(38, 38, 38, 0.8) 0%,
+    rgba(14, 14, 14, 0) 100%
+  );
+}
+</style>

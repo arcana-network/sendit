@@ -1,6 +1,4 @@
-<script setup lang="ts">
-import arcanaLogo from "../../assets/images/arcana.png";
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <footer class="space-x-5 px-7.5 py-4 flex items-center">
@@ -9,7 +7,8 @@ import arcanaLogo from "../../assets/images/arcana.png";
       href="https://arcana.network"
       target="_blank"
     >
-      <span>By</span> <img :src="arcanaLogo" alt="Arcana" class="w-24" />
+      <span>By</span>
+      <img src="../../assets/images/arcana.svg" alt="Arcana" class="w-24" />
     </a>
     <a
       class="text-xs"
