@@ -61,7 +61,7 @@ const showFullScreenLoader = computed(() => {
 </script>
 
 <template>
-  <main class="bg-black">
+  <main class="bg-black text-white">
     <FullScreenLoader v-if="showFullScreenLoader" />
     <router-view> </router-view>
   </main>
