@@ -77,9 +77,9 @@ function useSocketConnection() {
         break;
       }
       case ConnectionState.CONNECTED_UNAUTHORIZED:
-        if (data.ok) {
+        if (data.login) {
           state = ConnectionState.AUTHORIZED;
-          onSocketLogin();
+          if (onSocketLogin) onSocketLogin();
         }
         break;
       case ConnectionState.AUTHORIZED:
