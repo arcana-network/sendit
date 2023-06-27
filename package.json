@@ -13,12 +13,12 @@
     "ethers": "^6.6.1",
     "msgpackr": "^1.9.5",
     "pinia": "^2.1.4",
-    "vue": "^3.2.47"
+    "vue": "^3.2.47",
+    "vue-router": "^4.2.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.1.0",
     "autoprefixer": "^10.4.14",
-    "daisyui": "^3.1.5",
     "postcss": "^8.4.24",
     "tailwindcss": "^3.3.2",
     "typescript": "^5.0.2",

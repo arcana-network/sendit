@@ -1,9 +1,16 @@
 import { createApp } from "vue";
+import { createPinia } from "pinia";
 import { Buffer } from "buffer";
-import {createPinia} from "pinia";
 
 import "./style.css";
 import App from "./App.vue";
+import { router } from "./router";
 
-window.Buffer = Buffer
-createApp(App).use(createPinia()).mount("#app");
+window.Buffer = Buffer;
+
+const pinia = createPinia();
+const app = createApp(App);
+
+app.use(pinia);
+app.use(router);
+app.mount("#app");
