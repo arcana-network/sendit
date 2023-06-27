@@ -103,7 +103,7 @@ body {
 }
 
 .btn {
-  @apply p-2.5 rounded-md;
+  @apply p-2.5 rounded-md text-base font-bold;
 }
 
 .btn-login {
@@ -111,7 +111,11 @@ body {
 }
 
 .btn-submit {
-  @apply bg-white text-black text-base font-bold uppercase;
+  @apply bg-white text-black uppercase;
+}
+
+.btn-submit-secondary {
+  @apply bg-transparent text-white uppercase border-2;
 }
 
 .input {
