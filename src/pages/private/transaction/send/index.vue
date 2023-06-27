@@ -1,7 +1,11 @@
 <script setup lang="ts">
-console.log("send");
+import SendForm from "../../../../components/send/sendForm.vue";
 </script>
 
 <template>
-  <p>send</p>
+  <div
+    class="flex flex-col justify-center items-center p-12 space-y-10 h-[100vh]"
+  >
+    <SendForm />
+  </div>
 </template>
