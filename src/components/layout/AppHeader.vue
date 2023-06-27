@@ -61,12 +61,12 @@ const stats = [
       </div>
       <div class="space-x-3 flex items-center">
         <button>Help</button>
-        <buttom>
-          <img :src="notificationIcon" alt="notification" />
-        </buttom>
-        <buttom>
-          <img :src="profileIcon" alt="profile" />
-        </buttom>
+        <button>
+          <img :src="notificationIcon" alt="notification" class="min-w-fit" />
+        </button>
+        <button>
+          <img :src="profileIcon" alt="profile" class="min-w-fit" />
+        </button>
       </div>
     </div>
   </header>

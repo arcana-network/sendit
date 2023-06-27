@@ -13,7 +13,7 @@ async function connectToArcana() {
 </script>
 
 <template>
-  <div class="flex h-full">
+  <div class="flex h-[100vh]">
     <section class="w-1/2 flex flex-col justify-center items-center relative">
       <img
         :src="sendItLogo"
@@ -21,16 +21,20 @@ async function connectToArcana() {
         class="w-12 h-12 absolute top-4 left-4"
       />
       <section class="min-w-96 space-y-4 flex flex-col items-center">
-        <Header class="space-y-0.5 text-center">
+        <header class="space-y-0.5 text-center">
           <h1 class="text-3.5xl text-white font-bold">Welcome to SendIt</h1>
           <p class="text-sm">
             Sign-in using any of these methods to get started
           </p>
-        </Header>
+        </header>
         <section class="space-y-0.5 w-full">
           <div class="flex flex-col space-y-2">
-            <button class="btn btn-login" @click="connectToArcana">
-              Connect with Arcana
+            <button
+              class="btn btn-login flex justify-center items-center space-x-2"
+              @click="connectToArcana"
+            >
+              <span>Connect with</span>
+              <img :src="arcanaLogo" alt="Arcana" class="w-20" />
             </button>
           </div>
         </section>

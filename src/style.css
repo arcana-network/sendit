@@ -56,13 +56,17 @@ body {
 }
 
 .btn {
-  @apply p-1 rounded-md h-0;
+  @apply p-2.5 rounded-md;
 }
 
 .btn-login {
-  @apply bg-eerie-black h-9;
+  @apply bg-eerie-black text-sm;
+}
+
+.btn-submit {
+  @apply bg-white text-black text-base font-bold uppercase;
 }
 
 .input {
-  @apply outline-none border-none;
+  @apply outline-none border-none rounded-md p-2.5 bg-dark-charcoal;
 }

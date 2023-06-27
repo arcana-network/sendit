@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, watch } from "vue";
+import { computed, onMounted, watch } from "vue";
 import useArcanaAuth from "./use/arcanaAuth";
 import useSocketConnection from "./use/socketConnection";
 import useLoaderStore from "./stores/loader";
@@ -13,17 +13,15 @@ const router = useRouter();
 const auth = useArcanaAuth();
 const socketConnection = useSocketConnection();
 
-async function initConnection() {
-  socketConnection.init(auth.getProvider());
-}
-
 async function initAuth() {
   loaderStore.showLoader("initializing...");
   try {
     await auth.init();
     const isLoggedIn = await auth.isLoggedIn();
-    authStore.setLoginStatus(isLoggedIn);
-    if (!isLoggedIn) router.push({ name: "Login" });
+    auth.getProvider().on("connect", onWalletConnect);
+    auth.getProvider().on("disconnect", onWalletDisconnect);
+    if (isLoggedIn) authStore.setLoginStatus(await auth.isLoggedIn());
+    else router.push({ name: "Login" });
   } catch (error) {
     console.error({ error });
   } finally {
@@ -31,22 +29,40 @@ async function initAuth() {
   }
 }
 
+async function initSocketConnect() {
+  await socketConnection.init(auth.getProvider(), () => {
+    authStore.setSocketLoginStatus(true);
+  });
+}
+
+function onWalletConnect() {
+  initSocketConnect();
+}
+
+async function onWalletDisconnect() {
+  authStore.setLoginStatus(await auth.isLoggedIn());
+}
+
+onMounted(initAuth);
+
 watch(
   () => authStore.isLoggedIn,
-  async (newValue) => {
-    if (newValue) {
-      await initConnection();
-      router.push({ name: "Send" });
-    } else router.push({ name: "Login" });
+  (newValue) => {
+    if (newValue) router.push({ name: "Send" });
+    else router.push({ name: "Login" });
   }
 );
 
-onMounted(initAuth);
+const showFullScreenLoader = computed(() => {
+  return (
+    loaderStore.show || (!authStore.isSocketLoggedIn && authStore.isLoggedIn)
+  );
+});
 </script>
 
 <template>
-  <main class="bg-black h-[100vh]">
-    <FullScreenLoader v-if="loaderStore.show" />
+  <main class="bg-black text-white">
+    <FullScreenLoader v-if="showFullScreenLoader" />
     <router-view> </router-view>
   </main>
 </template>
