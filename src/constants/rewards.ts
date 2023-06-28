@@ -11,6 +11,7 @@ const EARN_XP = [
     description:
       "Invite a friend and earn XP as soon as they log in to their wallet.",
     task: "Invite",
+    xp: 40,
   },
   {
     image: UserVoiceIcon,
@@ -19,60 +20,70 @@ const EARN_XP = [
       "Give a shoutout to sender when you receive assets to earn XP.",
     task: "Tweet",
     tweet: "Welcome to Sendit! I just received assets from @sender. #Sendit",
+    xp: 50,
   },
   {
     image: NavigationIcon,
     name: "Earn 30 XP",
     description: "Send crypto & earn by making a new transaction.",
     task: "Transact",
+    xp: 30,
   },
   {
     image: NavigationIcon,
     name: "Earn 30 XP",
     description: "Earn with every 10 successful transactions (per user).",
     task: "Transact",
+    xp: 30,
   },
   {
     image: NavigationIcon,
     name: "Earn 10 XP",
     description: "Earn with every 5 transactions.",
     task: "Transact",
+    xp: 10,
   },
   {
     image: NavigationIcon,
     name: "Earn 50 XP",
     description: "Send to 5 people to earn points.",
     task: "Transact",
+    xp: 50,
   },
   {
     image: UserAddIcon,
     name: "Earn 30 XP",
     description: "Earn with every 10 successful invites.",
     task: "Invite",
+    xp: 30,
   },
   {
     image: NavigationIcon,
     name: "Earn 30 XP",
     description: "Send 100$ totally (per user).",
     task: "Transact",
+    xp: 30,
   },
   {
     image: PiggyBankIcon,
     name: "Earn 50 XP",
     description: "1,000,000 USD crossed in volume.",
     task: "Transact",
+    xp: 50,
   },
   {
     image: NavigationIcon,
     name: "Earn 50 XP",
     description: "10,000th txn (overall).",
     task: "Transact",
+    xp: 50,
   },
   {
     image: WalletIcon,
     name: "Earn 50 XP",
     description: "100,000th wallet (overall).",
     task: "Transact",
+    xp: 50,
   },
 ];
 

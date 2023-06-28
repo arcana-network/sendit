@@ -61,7 +61,7 @@ const restRankers = computed(() => rankers.value.slice(3));
         <div class="leaderboard-table-header-item">Join Date</div>
       </div>
       <hr class="border-jet border-0 border-b-1" />
-      <div class="leaderboard-table-body px-2 py-4">
+      <div v-if="rankers.length" class="leaderboard-table-body px-2 py-4">
         <div
           class="top-3-rankers bg-black border-jet border-1 rounded-[10px] px-1 py-3"
         >
@@ -121,6 +121,12 @@ const restRankers = computed(() => rankers.value.slice(3));
             <div class="leaderboard-table-row-item">{{ ranker.joinDate }}</div>
           </div>
         </div>
+      </div>
+      <div
+        v-else
+        class="leaderboard-table-body px-2 py-4 flex items-center justify-center text-sm"
+      >
+        No rankings yet.
       </div>
     </div>
   </div>
