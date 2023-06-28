@@ -25,7 +25,7 @@ function handleViewRewards() {
 <template>
   <Overlay>
     <div
-      class="w-[540px] bg-eerie-black rounded-[10px] border-1 border-jet flex flex-col relative p-4 gap-5"
+      class="max-w-[540px] w-screen bg-eerie-black rounded-[10px] border-1 border-jet flex flex-col relative p-4 gap-5"
     >
       <button class="absolute right-4 top-4" @click.stop="emit('close')">
         <img src="@/assets/images/icons/close.svg" alt="close" />

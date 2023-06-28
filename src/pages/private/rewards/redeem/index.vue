@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { REDEEM_XP } from "@/constants/rewards";
+import ClaimNFT from "@/components/ClaimNFT.vue";
+import { ref } from "vue";
 
 const totalXP = 550;
 const router = useRouter();
+const showClaimNFTPopup = ref(false);
+const redeemDetails = ref({});
 
 type Reward = {
   image: string;
@@ -13,7 +17,8 @@ type Reward = {
 
 function handleRedeem(reward: Reward) {
   if (reward.requiredXP <= totalXP) {
-    alert("Redeem NFT");
+    showClaimNFTPopup.value = true;
+    redeemDetails.value = reward;
   } else {
     router.push({ name: "Earn XP" });
   }
@@ -57,5 +62,10 @@ function handleRedeem(reward: Reward) {
         </button>
       </div>
     </div>
+    <ClaimNFT
+      v-if="showClaimNFTPopup"
+      :details="redeemDetails"
+      @close="showClaimNFTPopup = false"
+    />
   </div>
 </template>
