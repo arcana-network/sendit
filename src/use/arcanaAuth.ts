@@ -30,11 +30,16 @@ function useArcanaAuth() {
     return await authInstance.isLoggedIn();
   }
 
+  async function getUser() {
+    return await authInstance.getUser();
+  }
+
   return {
     connect,
     init,
     getProvider,
     isLoggedIn,
+    getUser,
   };
 }
 

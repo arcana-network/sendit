@@ -6,12 +6,14 @@ import useLoaderStore from "./stores/loader";
 import FullScreenLoader from "./components/fullScreenLoader.vue";
 import { useRouter } from "vue-router";
 import useAuthStore from "./stores/auth";
+import useRewardsStore from "./stores/rewards";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
 const router = useRouter();
 const auth = useArcanaAuth();
 const socketConnection = useSocketConnection();
+const rewardsStore = useRewardsStore();
 
 async function initAuth() {
   loaderStore.showLoader("initializing...");
@@ -47,9 +49,13 @@ onMounted(initAuth);
 
 watch(
   () => authStore.isLoggedIn,
-  (newValue) => {
-    if (newValue) router.push({ name: "Send" });
-    else router.push({ name: "Login" });
+  async (newValue) => {
+    if (newValue) {
+      const user = await auth.getUser();
+      authStore.user = user;
+      rewardsStore.fetchRewards(user.address);
+      router.push({ name: "Send" });
+    } else router.push({ name: "Login" });
   }
 );
 
@@ -61,7 +67,7 @@ const showFullScreenLoader = computed(() => {
 </script>
 
 <template>
-  <main class="bg-black text-white">
+  <main class="bg-black text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
     <router-view> </router-view>
   </main>

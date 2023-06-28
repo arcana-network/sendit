@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
+import { REDEEM_XP } from "@/constants/rewards";
 
 const totalXP = 550;
 const router = useRouter();
@@ -9,44 +10,6 @@ type Reward = {
   name: string;
   requiredXP: number;
 };
-
-const rewards: Reward[] = [
-  {
-    image: "https://via.placeholder.com/93X96",
-    name: "25 XAR NFT",
-    requiredXP: 500,
-  },
-  {
-    image: "https://via.placeholder.com/93X96",
-    name: "50 XAR NFT",
-    requiredXP: 500,
-  },
-  {
-    image: "https://via.placeholder.com/93X96",
-    name: "75 XAR NFT",
-    requiredXP: 1000,
-  },
-  {
-    image: "https://via.placeholder.com/93X96",
-    name: "100 XAR NFT",
-    requiredXP: 1000,
-  },
-  {
-    image: "https://via.placeholder.com/93X96",
-    name: "125 XAR NFT",
-    requiredXP: 1000,
-  },
-  {
-    image: "https://via.placeholder.com/93X96",
-    name: "150 XAR NFT",
-    requiredXP: 1000,
-  },
-  {
-    image: "https://via.placeholder.com/93X96",
-    name: "175 XAR NFT",
-    requiredXP: 1000,
-  },
-];
 
 function handleRedeem(reward: Reward) {
   if (reward.requiredXP <= totalXP) {
@@ -64,7 +27,7 @@ function handleRedeem(reward: Reward) {
     <div class="flex gap-5 p-4 flex-wrap">
       <div
         class="flex flex-col bg-[#171717] rounded-[10px] overflow-hidden w-[280px]"
-        v-for="reward in rewards"
+        v-for="reward in REDEEM_XP"
         :key="JSON.stringify(reward)"
       >
         <div
