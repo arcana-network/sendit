@@ -61,7 +61,10 @@ const stats = [
       </div>
       <div class="space-x-3 flex items-center">
         <button>Help</button>
-        <button>
+        <button class="relative">
+          <span
+            class="h-2.5 w-2.5 rounded-full bg-vivid-vermilion absolute"
+          ></span>
           <img :src="notificationIcon" alt="notification" class="min-w-fit" />
         </button>
         <button>
