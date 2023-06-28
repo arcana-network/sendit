@@ -4,6 +4,7 @@ import Login from "../pages/login.vue";
 import Private from "../pages/private/index.vue";
 import Send from "../pages/private/transaction/send/index.vue";
 import Rewards from "../pages/private/rewards/index.vue";
+import Leaderboard from "../pages/private/leaderboard/index.vue";
 
 const routes = [
   { path: "/login", component: Login, name: "Login" },
@@ -24,8 +25,8 @@ const routes = [
       },
       {
         name: "Leaderboard",
-        path: "transactions",
-        component: Send,
+        path: "leaderboard",
+        component: Leaderboard,
       },
       {
         name: "Rewards",

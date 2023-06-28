@@ -2,12 +2,15 @@
 import { useRouter } from "vue-router";
 import { composeAndSendTweet } from "@/utils/tweet";
 import { EARN_XP } from "@/constants/rewards";
+import AppInvite from "../../../../components/AppInvite.vue";
+import { ref } from "vue";
 
 const router = useRouter();
+const showInvitePopup = ref(false);
 
 function handleAction(reward) {
   if (reward.task === "Invite") {
-    alert("Invite");
+    showInvitePopup.value = true;
   } else if (reward.task === "Tweet") {
     composeAndSendTweet(reward.tweet);
   } else if (reward.task === "Transact") {
@@ -52,5 +55,6 @@ function handleAction(reward) {
         </div>
       </div>
     </div>
+    <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
   </div>
 </template>
