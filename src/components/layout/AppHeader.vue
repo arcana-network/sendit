@@ -5,11 +5,11 @@ import profileIcon from "../../assets/images/icons/profile.svg";
 
 const navMenu = [
   {
-    routeName: "Transaction Send",
+    routeName: "Send",
     label: "Send",
   },
   {
-    routeName: "Transaction History",
+    routeName: "History",
     label: "History",
   },
   {

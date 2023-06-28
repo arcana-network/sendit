@@ -18,6 +18,16 @@ const routes = [
         component: Send,
       },
       {
+        name: "History",
+        path: "transactions",
+        component: Send,
+      },
+      {
+        name: "Leaderboard",
+        path: "transactions",
+        component: Send,
+      },
+      {
         name: "Rewards",
         path: "rewards",
         component: Rewards,

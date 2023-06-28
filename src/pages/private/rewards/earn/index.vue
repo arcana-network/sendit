@@ -4,6 +4,9 @@ import PiggyBankIcon from "@/assets/images/icons/piggy-bank.svg";
 import UserAddIcon from "@/assets/images/icons/user-add.svg";
 import UserVoiceIcon from "@/assets/images/icons/user-voice.svg";
 import WalletIcon from "@/assets/images/icons/wallet.svg";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const rewards = [
   {
@@ -75,6 +78,19 @@ const rewards = [
     task: "Transact",
   },
 ];
+
+function handleAction(reward) {
+  if (reward.task === "Invite") {
+    alert("Invite");
+  } else if (reward.task === "Tweet") {
+    window.open(
+      "https://twitter.com/intent/tweet?text=Hello%10world",
+      "_blank"
+    );
+  } else if (reward.task === "Transact") {
+    router.push({ name: "Send" });
+  }
+}
 </script>
 
 <template>
@@ -102,7 +118,10 @@ const rewards = [
             }}</span>
           </div>
           <div class="flex items-center justify-center">
-            <button class="flex gap-1 items-center justify-center text-xs">
+            <button
+              class="flex gap-1 items-center justify-center text-xs"
+              @click.stop="handleAction(reward)"
+            >
               {{ reward.task }}
               <img src="@/assets/images/icons/arrow-right.svg" alt="arrow" />
             </button>
