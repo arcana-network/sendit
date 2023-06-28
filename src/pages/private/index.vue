@@ -6,7 +6,7 @@ import AppFooter from "../../components/layout/AppFooter.vue";
 <template>
   <div class="h-full flex flex-col">
     <AppHeader />
-    <div class="flex flex-col flex-1 private-page">
+    <div class="flex flex-col flex-1 h-full private-page">
       <div class="flex flex-col flex-1">
         <router-view></router-view>
       </div>
