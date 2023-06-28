@@ -53,6 +53,11 @@
 body {
   font-family: Onest, sans-serif;
   color: #ffffff;
+  height: 100vh;
+}
+
+#app {
+  height: 100%;
 }
 
 .btn {
