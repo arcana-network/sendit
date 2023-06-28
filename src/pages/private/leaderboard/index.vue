@@ -2,84 +2,19 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import StarIcon from "../../../components/StarIcon.vue";
+import { leaders, weeklyLeaders } from "@/constants/leaderboard.mock";
 
 const route = useRoute();
 
-const rankers = [
-  {
-    rank: 1,
-    walletAddress: "0x00000 ... 0000",
-    transactions: 1000,
-    xp: 10000,
-    joinDate: "15 May 23",
-  },
-  {
-    rank: 2,
-    walletAddress: "0x00000 ... 0000",
-    transactions: 900,
-    xp: 9000,
-    joinDate: "15 May 23",
-  },
-  {
-    rank: 3,
-    walletAddress: "0x00000 ... 0000",
-    transactions: 800,
-    xp: 8000,
-    joinDate: "15 May 23",
-  },
-  {
-    rank: 4,
-    walletAddress: "0x00000 ... 0000",
-    transactions: 700,
-    xp: 7000,
-    joinDate: "15 Mar 23",
-  },
-  {
-    rank: 5,
-    walletAddress: "0x00000 ... 0000",
-    transactions: 500,
-    xp: 5000,
-    joinDate: "15 Mar 23",
-  },
-  {
-    rank: 6,
-    walletAddress: "0x00000 ... 0000",
-    transactions: 400,
-    xp: 4000,
-    joinDate: "15 Mar 23",
-  },
-  {
-    rank: 7,
-    walletAddress: "0x00000 ... 0000",
-    transactions: 300,
-    xp: 3000,
-    joinDate: "15 Mar 23",
-  },
-  {
-    rank: 8,
-    walletAddress: "0x00000 ... 0000",
-    transactions: 200,
-    xp: 2000,
-    joinDate: "15 Mar 23",
-  },
-  {
-    rank: 9,
-    walletAddress: "0x00000 ... 0000",
-    transactions: 100,
-    xp: 1000,
-    joinDate: "15 Mar 23",
-  },
-  {
-    rank: 10,
-    walletAddress: "0x00000 ... 0000",
-    transactions: 50,
-    xp: 500,
-    joinDate: "15 Mar 23",
-  },
-];
+const rankers = computed(() => {
+  if (route.query.duration === "weekly") {
+    return weeklyLeaders;
+  }
+  return leaders;
+});
 
-const top3Rankers = computed(() => rankers.slice(0, 3));
-const restRankers = computed(() => rankers.slice(3));
+const top3Rankers = computed(() => rankers.value.slice(0, 3));
+const restRankers = computed(() => rankers.value.slice(3));
 </script>
 
 <template>
