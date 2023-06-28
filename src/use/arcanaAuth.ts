@@ -7,7 +7,9 @@ let authInstance: AuthProvider;
 function useArcanaAuth() {
   async function init() {
     if (!authInstance) {
-      authInstance = new AuthProvider(ARCANA_APP_ADDRESS);
+      authInstance = new AuthProvider(ARCANA_APP_ADDRESS, {
+        theme: "light",
+      });
       await authInstance.init();
     }
   }
