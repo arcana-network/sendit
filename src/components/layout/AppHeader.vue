@@ -5,7 +5,7 @@ import profileIcon from "../../assets/images/icons/profile.svg";
 
 const navMenu = [
   {
-    routeName: "Send",
+    routeName: "Transaction Send",
     label: "Send",
   },
   {
@@ -43,9 +43,13 @@ const stats = [
     <div class="flex space-x-5">
       <img :src="sendItLogo" alt="send it logo" class="w-12 h-12" />
       <nav class="flex space-x-5">
-        <button v-for="menu in navMenu" :key="menu.label">
+        <router-link
+          v-for="menu in navMenu"
+          :key="menu.label"
+          :to="{ name: menu.routeName }"
+        >
           {{ menu.label }}
-        </button>
+        </router-link>
       </nav>
     </div>
     <div class="flex items-center space-x-5">
