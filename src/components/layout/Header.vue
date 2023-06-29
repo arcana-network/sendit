@@ -2,25 +2,12 @@
 import sendItLogo from "../../assets/images/send-it-logo.png";
 import notificationIcon from "../../assets/images/icons/notification.svg";
 import profileIcon from "../../assets/images/icons/profile.svg";
+import MenuIcon from "../../assets/images/icons/menu.svg";
+import navMenu from "../../constants/navMenu.ts";
+import MobileMenu from "../../components/mobileMenu.vue";
+import { ref } from "vue";
 
-const navMenu = [
-  {
-    routeName: "Send",
-    label: "Send",
-  },
-  {
-    routeName: "Transaction History",
-    label: "History",
-  },
-  {
-    routeName: "Leaderboard",
-    label: "Leaderboard",
-  },
-  {
-    routeName: "Rewards",
-    label: "Rewards",
-  },
-];
+const showMobileMenu = ref(false);
 
 const stats = [
   {
@@ -42,10 +29,18 @@ const stats = [
   <header class="flex justify-between border-b-1 border-jet px-7.5 py-4">
     <div class="flex space-x-5">
       <img :src="sendItLogo" alt="send it logo" class="w-12 h-12" />
-      <nav class="flex space-x-5">
+      <nav class="flex space-x-5 max-lg:hidden">
         <button v-for="menu in navMenu" :key="menu.label">
           {{ menu.label }}
         </button>
+      </nav>
+      <nav class="flex justify-center relative lg:hidden">
+        <button @click="showMobileMenu = !showMobileMenu">
+          <img :src="MenuIcon" alt="menu" class="w-7 h-7" />
+        </button>
+        <div class="absolute top-10 left-0" v-if="showMobileMenu">
+          <MobileMenu />
+        </div>
       </nav>
     </div>
     <div class="flex items-center space-x-5">
@@ -62,9 +57,8 @@ const stats = [
       <div class="space-x-3 flex items-center">
         <button>Help</button>
         <button class="relative">
-          <span
-            class="h-2.5 w-2.5 rounded-full bg-vivid-vermilion absolute"
-          ></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-vivid-vermilion absolute">
+          </span>
           <img :src="notificationIcon" alt="notification" class="min-w-fit" />
         </button>
         <button>
