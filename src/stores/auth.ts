@@ -4,6 +4,7 @@ const useAuthStore = defineStore("auth", {
   state: () => ({
     isLoggedIn: false,
     isSocketLoggedIn: false,
+    userInfo: {},
   }),
   actions: {
     setLoginStatus(status: boolean): void {
@@ -11,6 +12,9 @@ const useAuthStore = defineStore("auth", {
     },
     setSocketLoginStatus(status: boolean): void {
       this.isSocketLoggedIn = status;
+    },
+    setUserInfo(info: object): void {
+      this.userInfo = info;
     },
   },
 });
