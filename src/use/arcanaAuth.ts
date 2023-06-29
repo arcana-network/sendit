@@ -24,6 +24,10 @@ function useArcanaAuth() {
     return authInstance.provider;
   }
 
+  function getAuthInstance() {
+    return authInstance;
+  }
+
   async function isLoggedIn() {
     return await authInstance.isLoggedIn();
   }
@@ -33,6 +37,7 @@ function useArcanaAuth() {
     init,
     getProvider,
     isLoggedIn,
+    getAuthInstance,
   };
 }
 
