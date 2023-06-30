@@ -2,13 +2,16 @@
 import sendItLogo from "../assets/images/send-it-logo.png";
 import useAuthStore from "../stores/auth";
 import useArcanaAuth from "../use/arcanaAuth";
+import useUserStore from "../stores/user";
 
 const { connect, isLoggedIn } = useArcanaAuth();
 const authStore = useAuthStore();
+const userStore = useUserStore();
 
 async function connectToArcana() {
   await connect();
   authStore.setLoginStatus(await isLoggedIn());
+  await userStore.fetchUserPointsAndRank();
 }
 </script>
 

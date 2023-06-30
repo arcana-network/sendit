@@ -3,11 +3,12 @@ import { useRouter } from "vue-router";
 import { REDEEM_XP } from "@/constants/rewards";
 import ClaimNFT from "@/components/ClaimNFT.vue";
 import { ref } from "vue";
+import useUserStore from "@/stores/user";
 
-const totalXP = 550;
 const router = useRouter();
 const showClaimNFTPopup = ref(false);
 const redeemDetails = ref({});
+const userStore = useUserStore();
 
 type Reward = {
   image: string;
@@ -16,7 +17,7 @@ type Reward = {
 };
 
 function handleRedeem(reward: Reward) {
-  if (reward.requiredXP <= totalXP) {
+  if (reward.requiredXP <= userStore.points) {
     showClaimNFTPopup.value = true;
     redeemDetails.value = reward;
   } else {
@@ -37,12 +38,12 @@ function handleRedeem(reward: Reward) {
       >
         <div
           class="flex justify-between select-none"
-          :class="{ 'opacity-50': reward.requiredXP > totalXP }"
+          :class="{ 'opacity-50': reward.requiredXP > userStore.points }"
         >
           <div class="flex flex-col p-4 gap-1">
             <span class="text-base">{{ reward.name }}</span>
             <span
-              v-if="reward.requiredXP <= totalXP"
+              v-if="reward.requiredXP <= userStore.points"
               class="text-xs text-philippine-gray"
               >Use {{ reward.requiredXP }} XP to redeem this NFT.</span
             >
@@ -56,7 +57,7 @@ function handleRedeem(reward: Reward) {
           class="bg-[#0f0f0f] text-[10px] p-3 flex gap-1 items-center justify-center"
           @click.stop="handleRedeem(reward)"
         >
-          <span v-if="reward.requiredXP <= totalXP">Claim Now</span>
+          <span v-if="reward.requiredXP <= userStore.points">Claim Now</span>
           <span v-else>Earn XP</span>
           <img src="@/assets/images/icons/arrow-right.svg" alt="arrow-right" />
         </button>

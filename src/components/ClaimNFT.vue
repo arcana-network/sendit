@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import Overlay from "./overlay.vue";
+import useSocketConnection from "@/use/socketConnection";
+import { SOCKET_IDS } from "@/constants/socket-ids";
 
 type ClaimNFTProps = {
   details: any;
@@ -8,9 +10,14 @@ type ClaimNFTProps = {
 const props = defineProps<ClaimNFTProps>();
 
 const emit = defineEmits(["close"]);
+const socket = useSocketConnection();
 
-function handleEmailInvite() {
-  alert("Invite");
+async function redeemXP() {
+  const message = {
+    nft_points: props.details.xar,
+  };
+  await socket.sendMessage(SOCKET_IDS.REDEEM_REWARDS, message);
+  emit("close");
 }
 </script>
 
@@ -57,6 +64,7 @@ function handleEmailInvite() {
           <div class="flex flex-col mt-8 gap-4">
             <button
               class="uppercase bg-white text-black rounded-[5px] text-xs font-bold px-8 py-3"
+              @click.stop="redeemXP"
             >
               Redeem Now
             </button>

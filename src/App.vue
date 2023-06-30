@@ -7,6 +7,7 @@ import FullScreenLoader from "./components/fullScreenLoader.vue";
 import { useRouter } from "vue-router";
 import useAuthStore from "./stores/auth";
 import useRewardsStore from "./stores/rewards";
+import useUserStore from "./stores/user";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -14,6 +15,7 @@ const router = useRouter();
 const auth = useArcanaAuth();
 const socketConnection = useSocketConnection();
 const rewardsStore = useRewardsStore();
+const userStore = useUserStore();
 
 async function initAuth() {
   loaderStore.showLoader("initializing...");
@@ -34,6 +36,8 @@ async function initAuth() {
 async function initSocketConnect() {
   await socketConnection.init(auth.getProvider(), () => {
     authStore.setSocketLoginStatus(true);
+    rewardsStore.fetchRewards(authStore.user.address);
+    userStore.fetchUserPointsAndRank();
   });
 }
 
@@ -53,7 +57,6 @@ watch(
     if (newValue) {
       const user = await auth.getUser();
       authStore.user = user;
-      rewardsStore.fetchRewards(user.address);
       router.push({ name: "Send" });
     } else router.push({ name: "Login" });
   }

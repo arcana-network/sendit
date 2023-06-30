@@ -91,37 +91,44 @@ const REDEEM_XP = [
   {
     image: "https://via.placeholder.com/93X96",
     name: "25 XAR NFT",
-    requiredXP: 500,
+    requiredXP: 250,
+    xar: 25,
   },
   {
     image: "https://via.placeholder.com/93X96",
     name: "50 XAR NFT",
     requiredXP: 500,
+    xar: 50,
   },
   {
     image: "https://via.placeholder.com/93X96",
     name: "75 XAR NFT",
-    requiredXP: 1000,
+    requiredXP: 750,
+    xar: 75,
   },
   {
     image: "https://via.placeholder.com/93X96",
     name: "100 XAR NFT",
     requiredXP: 1000,
+    xar: 100,
   },
   {
     image: "https://via.placeholder.com/93X96",
     name: "125 XAR NFT",
-    requiredXP: 1000,
+    requiredXP: 1250,
+    xar: 125,
   },
   {
     image: "https://via.placeholder.com/93X96",
     name: "150 XAR NFT",
-    requiredXP: 1000,
+    requiredXP: 1500,
+    xar: 150,
   },
   {
     image: "https://via.placeholder.com/93X96",
     name: "175 XAR NFT",
-    requiredXP: 1000,
+    requiredXP: 1750,
+    xar: 175,
   },
 ];
 

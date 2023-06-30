@@ -2,6 +2,9 @@
 import sendItLogo from "../../assets/images/send-it-logo.png";
 import notificationIcon from "../../assets/images/icons/notification.svg";
 import profileIcon from "../../assets/images/icons/profile.svg";
+import useUserStore from "@/stores/user";
+
+const userStore = useUserStore();
 
 const navMenu = [
   {
@@ -25,15 +28,15 @@ const navMenu = [
 const stats = [
   {
     label: "My Ranking",
-    value: "52nd",
+    value: userStore.rank,
   },
   {
     label: "My XP",
-    value: "158,221",
+    value: userStore.points,
   },
   {
     label: "My Rewards",
-    value: "10",
+    value: userStore.rewards,
   },
 ];
 </script>
