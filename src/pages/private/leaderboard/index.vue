@@ -1,17 +1,50 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onBeforeMount, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import StarIcon from "../../../components/StarIcon.vue";
-import { leaders, weeklyLeaders } from "@/constants/leaderboard.mock";
+import useSocketConnection from "../../../use/socketConnection";
+import { SOCKET_IDS, LEADERBOARD_TYPES } from "@/constants/socket-ids";
+import { truncateAddress } from "@/utils/truncateAddress";
 
 const route = useRoute();
+const socket = useSocketConnection();
 
-const rankers = computed(() => {
-  if (route.query.duration === "weekly") {
-    return weeklyLeaders;
-  }
-  return leaders;
+const rankers = ref([]);
+
+onBeforeMount(() => {
+  if (route.query.duration === "weekly") fetchLeaderboard("weekly");
+  else fetchLeaderboard();
 });
+
+async function fetchLeaderboard(duration: "global" | "weekly" = "global") {
+  const message = {
+    ltype:
+      duration === "weekly"
+        ? LEADERBOARD_TYPES.WEEKLY
+        : LEADERBOARD_TYPES.GLOBAL,
+  };
+  const leaderboard = await socket.sendMessage(
+    SOCKET_IDS.GET_LEADERBOARD,
+    message
+  );
+  rankers.value = leaderboard.rankings.map((ranking) => {
+    return {
+      rank: ranking.rank,
+      walletAddress: ranking.address,
+      xp: ranking.points,
+      transactions: 1,
+      joinDate: "01 June 2023",
+    };
+  });
+}
+
+watch(
+  () => route.query.duration,
+  async () => {
+    if (route.query.duration === "weekly") fetchLeaderboard("weekly");
+    else fetchLeaderboard();
+  }
+);
 
 const top3Rankers = computed(() => rankers.value.slice(0, 3));
 const restRankers = computed(() => rankers.value.slice(3));
@@ -76,8 +109,11 @@ const restRankers = computed(() => rankers.value.slice(3));
             }"
           >
             <div class="leaderboard-table-row-item">{{ ranker.rank }}</div>
-            <div class="leaderboard-table-row-item">
-              {{ ranker.walletAddress }}
+            <div
+              class="leaderboard-table-row-item"
+              :title="ranker.walletAddress"
+            >
+              {{ truncateAddress(ranker.walletAddress) }}
             </div>
             <div class="leaderboard-table-row-item">
               {{ ranker.transactions }}

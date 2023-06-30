@@ -55,7 +55,6 @@ function useSocketConnection() {
     onSocketLogin: Function | undefined
   ) {
     const data = msgunpack(Buffer.from(await ev.data.arrayBuffer()));
-
     if (data.error) {
       if (callbacks) {
         const [, reject] = callbacks;
@@ -77,7 +76,7 @@ function useSocketConnection() {
         break;
       }
       case ConnectionState.CONNECTED_UNAUTHORIZED:
-        if (data.ok) {
+        if (data.login) {
           state = ConnectionState.AUTHORIZED;
           onSocketLogin();
         }
