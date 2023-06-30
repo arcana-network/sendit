@@ -25,7 +25,7 @@ const useUserStore = defineStore("user", {
       const leaderboardResponse = await socket.sendMessage(
         SOCKET_IDS.GET_LEADERBOARD,
         {
-          ltype: LEADERBOARD_TYPES.GLOBAL,
+          ltype: LEADERBOARD_TYPES.WEEKLY,
         }
       );
       this.rank = leaderboardResponse.user_rank;
