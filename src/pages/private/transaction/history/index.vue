@@ -55,12 +55,11 @@ const restRankers = computed(() => rankers.value.slice(3));
 <template>
   <div class="flex flex-col">
     <div class="flex flex-col p-8">
-      <span class="text-3.5xl">Leaderboard</span>
+      <span class="text-3.5xl">Transaction History</span>
       <span class="text-sm text-philippine-gray max-w-[720px]"
-        >Using this app earns you points that you can redeem for rewards.
-        Compete against other users to earn more rewards and improve your
-        ranking. The top ranked users will earn additional points and be
-        eligible for special airdrops from Arcana.</span
+        >All your previously completed transactions are listed below. You can
+        use this page to give us a shout-out and earn points for past
+        transactions if you hadn’t done so already!</span
       >
     </div>
     <div
