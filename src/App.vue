@@ -35,8 +35,14 @@ async function initSocketConnect() {
   });
 }
 
+async function getUserInfo() {
+  const info = await auth.getAuthInstance().getUser();
+  authStore.setUserInfo(info);
+}
+
 function onWalletConnect() {
   initSocketConnect();
+  getUserInfo();
 }
 
 async function onWalletDisconnect() {
