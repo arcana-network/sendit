@@ -6,6 +6,11 @@ const useAuthStore = defineStore("auth", {
     isSocketLoggedIn: false,
     userInfo: {},
   }),
+  getters: {
+    walletAddress(state) {
+      return state.userInfo.address;
+    },
+  },
   actions: {
     setLoginStatus(status: boolean): void {
       this.isLoggedIn = status;
