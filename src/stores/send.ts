@@ -9,7 +9,13 @@ const useSendStore = defineStore("send", {
       token: "",
       amount: "",
     },
+    supportedChains: [],
   }),
+  actions: {
+    setSupportedChains(chains) {
+      this.supportedChains = chains;
+    },
+  },
 });
 
 export default useSendStore;
