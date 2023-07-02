@@ -32,12 +32,24 @@ function useArcanaAuth() {
     return await authInstance.isLoggedIn();
   }
 
+  async function switchChain(chainId: string) {
+    await getProvider().request({
+      method: "wallet_switchEthereumChain",
+      params: [
+        {
+          chainId,
+        },
+      ],
+    });
+  }
+
   return {
     connect,
     init,
     getProvider,
     isLoggedIn,
     getAuthInstance,
+    switchChain,
   };
 }
 
