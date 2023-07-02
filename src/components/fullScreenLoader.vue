@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Overlay from "../components/overlay.vue";
-import useLoaderStore from "../stores/loader";
+import Overlay from "@/components/overlay.vue";
+import useLoaderStore from "@/stores/loader";
 
 const loaderStore = useLoaderStore();
 </script>

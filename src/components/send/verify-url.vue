@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SuccessTick from "../../assets/images/icons/success-tick.svg";
+import SuccessTick from "@/assets/images/icons/success-tick.svg";
 </script>
 
 <template>

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import sendItLogo from "../../assets/images/send-it-logo.png";
-import notificationIcon from "../../assets/images/icons/notification.svg";
-import profileIcon from "../../assets/images/icons/profile.svg";
-import MenuIcon from "../../assets/images/icons/menu.svg";
-import navMenu from "../../constants/navMenu.ts";
-import MobileMenu from "../../components/mobileMenu.vue";
+import sendItLogo from "@/assets/images/send-it-logo.png";
+import notificationIcon from "@/assets/images/icons/notification.svg";
+import profileIcon from "@/assets/images/icons/profile.svg";
+import MenuIcon from "@/assets/images/icons/menu.svg";
+import navMenu from "@/constants/navMenu.ts";
+import MobileMenu from "@/components/mobileMenu.vue";
 import { ref } from "vue";
 
 const showMobileMenu = ref(false);

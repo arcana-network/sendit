@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import navMenu from "../constants/navMenu.ts";
+import navMenu from "@/constants/navMenu";
 </script>
 
 <template>
