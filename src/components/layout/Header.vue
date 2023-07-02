@@ -1,13 +1,18 @@
 <script setup lang="ts">
+import { ref } from "vue";
+
 import sendItLogo from "@/assets/images/send-it-logo.png";
 import notificationIcon from "@/assets/images/icons/notification.svg";
 import profileIcon from "@/assets/images/icons/profile.svg";
 import MenuIcon from "@/assets/images/icons/menu.svg";
 import navMenu from "@/constants/navMenu.ts";
 import MobileMenu from "@/components/mobileMenu.vue";
-import { ref } from "vue";
+import Notifications from "@/components/notifcations.vue";
+import Profile from "@/components/profile.vue";
 
 const showMobileMenu = ref(false);
+const showNotifications = ref(false);
+const showProfile = ref(false);
 
 const stats = [
   {
@@ -56,13 +61,22 @@ const stats = [
       </div>
       <div class="space-x-3 flex items-center">
         <button>Help</button>
-        <button class="relative">
+        <button
+          class="relative"
+          @click="showNotifications = !showNotifications"
+        >
           <span class="h-2.5 w-2.5 rounded-full bg-vivid-vermilion absolute">
           </span>
           <img :src="notificationIcon" alt="notification" class="min-w-fit" />
+          <div class="absolute top-10 -right-10" v-if="showNotifications">
+            <Notifications />
+          </div>
         </button>
-        <button>
+        <button class="relative" @click="showProfile = !showProfile">
           <img :src="profileIcon" alt="profile" class="min-w-fit" />
+          <div class="absolute top-10 right-0" v-if="showProfile">
+            <Profile />
+          </div>
         </button>
       </div>
     </div>
