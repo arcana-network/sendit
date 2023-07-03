@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@arcana/auth": "file:../auth",
+    "@arcana/auth": "^1.0.5-beta.6",
     "axios": "^1.4.0",
     "ethers": "^6.6.1",
     "msgpackr": "^1.9.5",
