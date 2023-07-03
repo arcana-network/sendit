@@ -4,7 +4,7 @@ const navMenu = [
     label: "Send",
   },
   {
-    routeName: "Transaction History",
+    routeName: "History",
     label: "History",
   },
   {

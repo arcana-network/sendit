@@ -1,0 +1,14 @@
+const SOCKET_IDS = {
+  GET_CHAINS: 7,
+  REDEEM_REWARDS: 5,
+  GET_PROFILE: 3,
+  GET_LEADERBOARD: 2,
+  EMAIL_INVITE: 6,
+};
+
+const LEADERBOARD_TYPES = {
+  GLOBAL: "g".charCodeAt(0),
+  WEEKLY: "w".charCodeAt(0),
+};
+
+export { SOCKET_IDS, LEADERBOARD_TYPES };

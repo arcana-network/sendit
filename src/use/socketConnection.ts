@@ -43,7 +43,7 @@ function useSocketConnection() {
 
   function sendMessage(id: number, data?: any) {
     if (callbacks) {
-      throw new Error("Another request is already in progress");
+      // throw new Error("Another request is already in progress");
     }
     return new Promise((resolve, reject) => {
       // @ts-ignore
@@ -57,7 +57,6 @@ function useSocketConnection() {
     onSocketLogin: Function | undefined
   ) {
     const data = msgunpack(Buffer.from(await ev.data.arrayBuffer()));
-
     if (data.error) {
       if (callbacks) {
         // @ts-ignore
