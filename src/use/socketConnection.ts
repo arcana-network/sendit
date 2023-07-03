@@ -40,7 +40,7 @@ function useSocketConnection() {
     );
   }
 
-  function sendMessage(id: number, data: any) {
+  function sendMessage(id: number, data?: any) {
     if (callbacks) {
       throw new Error("Another request is already in progress");
     }
@@ -77,9 +77,9 @@ function useSocketConnection() {
         break;
       }
       case ConnectionState.CONNECTED_UNAUTHORIZED:
-        if (data.ok) {
+        if (data.login) {
           state = ConnectionState.AUTHORIZED;
-          onSocketLogin();
+          if (onSocketLogin) onSocketLogin();
         }
         break;
       case ConnectionState.AUTHORIZED:

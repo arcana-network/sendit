@@ -13,6 +13,9 @@ export default {
         "dark-charcoal": "#313131",
         "vivid-vermilion": "#E76124",
         jet: "#363636",
+        "chinese-black": "#171717",
+        "cornflower-blue": "#659CFF",
+        "feep-koamaru": "#293C5F",
       },
       padding: {
         7.5: "30px",

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import arcanaLogo from "../../assets/images/arcana.svg";
+import arcanaLogo from "@/assets/images/arcana.svg";
 </script>
 
 <template>

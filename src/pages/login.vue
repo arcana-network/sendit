@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import sendItLogo from "../assets/images/send-it-logo.png";
-import useAuthStore from "../stores/auth";
-import useArcanaAuth from "../use/arcanaAuth";
+import sendItLogo from "@/assets/images/send-it-logo.png";
+import useAuthStore from "@/stores/auth";
+import useArcanaAuth from "@/use/arcanaAuth";
+import arcanaLogo from "@/assets/images/arcana.svg";
 
 const { connect, isLoggedIn } = useArcanaAuth();
 const authStore = useAuthStore();
