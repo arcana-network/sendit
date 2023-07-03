@@ -9,10 +9,45 @@ import navMenu from "@/constants/navMenu.ts";
 import MobileMenu from "@/components/mobileMenu.vue";
 import Notifications from "@/components/notifcations.vue";
 import Profile from "@/components/profile.vue";
+import { useClickOutside } from "@/use/clickOutside";
 
 const showMobileMenu = ref(false);
 const showNotifications = ref(false);
 const showProfile = ref(false);
+
+const notificationMenu = ref(null);
+const profileMenu = ref(null);
+const mobileMenu = ref(null);
+
+useClickOutside(profileMenu, () => {
+  showProfile.value = false;
+});
+
+useClickOutside(mobileMenu, () => {
+  showMobileMenu.value = false;
+});
+
+useClickOutside(notificationMenu, () => {
+  showNotifications.value = false;
+});
+
+function toggleMobileMenu() {
+  showMobileMenu.value = !showMobileMenu.value;
+  showProfile.value = false;
+  showNotifications.value = false;
+}
+
+function toggleProfileMenu() {
+  showProfile.value = !showProfile.value;
+  showMobileMenu.value = false;
+  showNotifications.value = false;
+}
+
+function toggleNotifications() {
+  showNotifications.value = !showNotifications.value;
+  showMobileMenu.value = false;
+  showProfile.value = false;
+}
 
 const stats = [
   {
@@ -40,10 +75,14 @@ const stats = [
         </button>
       </nav>
       <nav class="flex justify-center relative lg:hidden">
-        <button @click="showMobileMenu = !showMobileMenu">
+        <button @click.stop="toggleMobileMenu">
           <img :src="MenuIcon" alt="menu" class="w-7 h-7" />
         </button>
-        <div class="absolute top-10 left-0" v-if="showMobileMenu">
+        <div
+          class="absolute top-10 left-0"
+          v-if="showMobileMenu"
+          ref="mobileMenu"
+        >
           <MobileMenu />
         </div>
       </nav>
@@ -61,20 +100,25 @@ const stats = [
       </div>
       <div class="space-x-3 flex items-center">
         <button>Help</button>
-        <button
-          class="relative"
-          @click="showNotifications = !showNotifications"
-        >
+        <button class="relative" @click.stop="toggleNotifications">
           <span class="h-2.5 w-2.5 rounded-full bg-vivid-vermilion absolute">
           </span>
           <img :src="notificationIcon" alt="notification" class="min-w-fit" />
-          <div class="absolute top-10 -right-10" v-if="showNotifications">
+          <div
+            class="absolute top-10 -right-10"
+            v-if="showNotifications"
+            ref="notificationMenu"
+          >
             <Notifications />
           </div>
         </button>
-        <button class="relative" @click="showProfile = !showProfile">
+        <button class="relative" @click.stop="toggleProfileMenu">
           <img :src="profileIcon" alt="profile" class="min-w-fit" />
-          <div class="absolute top-10 right-0" v-if="showProfile">
+          <div
+            class="absolute top-10 right-0"
+            v-if="showProfile"
+            ref="profileMenu"
+          >
             <Profile />
           </div>
         </button>
