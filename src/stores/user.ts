@@ -1,12 +1,10 @@
 import { defineStore } from "pinia";
 import useSocketConnection from "@/use/socketConnection";
 import { SOCKET_IDS, LEADERBOARD_TYPES } from "@/constants/socket-ids";
-import useRewardsStore from "@/stores/rewards";
 
 type User = {
   points: number;
   rank: number;
-  rewards: number;
   address: string;
 };
 
@@ -21,7 +19,6 @@ const useUserStore = defineStore("user", {
   actions: {
     async fetchUserPointsAndRank() {
       const socket = useSocketConnection();
-      const rewardsStore = useRewardsStore();
       const response = await socket.sendMessage(SOCKET_IDS.GET_PROFILE, null);
       this.points = response.points;
       const leaderboardResponse = await socket.sendMessage(
@@ -31,8 +28,6 @@ const useUserStore = defineStore("user", {
         }
       );
       this.rank = leaderboardResponse.user_rank;
-      await rewardsStore.fetchRewards();
-      this.rewards = rewardsStore.rewards.length;
     },
   },
 });

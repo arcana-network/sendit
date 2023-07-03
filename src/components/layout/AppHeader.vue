@@ -3,9 +3,11 @@ import sendItLogo from "../../assets/images/send-it-logo.png";
 import notificationIcon from "../../assets/images/icons/notification.svg";
 import profileIcon from "../../assets/images/icons/profile.svg";
 import useUserStore from "@/stores/user";
+import useRewardsStore from "@/stores/rewards";
 import { computed } from "vue";
 
 const userStore = useUserStore();
+const rewardsStore = useRewardsStore();
 
 const navMenu = [
   {
@@ -38,7 +40,7 @@ const stats = computed(() => {
     },
     {
       label: "My Rewards",
-      value: userStore.rewards,
+      value: rewardsStore.rewards.length,
     },
   ];
 });

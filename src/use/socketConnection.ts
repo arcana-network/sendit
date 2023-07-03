@@ -42,7 +42,7 @@ function useSocketConnection() {
 
   function sendMessage(id: number, data: any) {
     if (callbacks) {
-      throw new Error("Another request is already in progress");
+      // throw new Error("Another request is already in progress");
     }
     return new Promise((resolve, reject) => {
       callbacks = [resolve, reject];

@@ -1,0 +1,67 @@
+export default [
+  {
+    date: "2021-08-01",
+    amount: {
+      value: 1,
+      currency: "ETH",
+    },
+    socialId: "someone@recipient.com",
+    walletAddress: "0x000000000000",
+    txStatus: "sent",
+    points: 50,
+    isSharedOnTwitter: true,
+    txHash: "0x000000000",
+  },
+  {
+    date: "2021-08-01",
+    amount: {
+      value: 1,
+      currency: "ETH",
+    },
+    socialId: "someone@recipient.com",
+    walletAddress: "0x000000000000",
+    txStatus: "sent",
+    points: 50,
+    isSharedOnTwitter: true,
+    txHash: "0x000000001",
+  },
+  {
+    date: "2021-08-01",
+    amount: {
+      value: 1,
+      currency: "ETH",
+    },
+    socialId: "someone@recipient.com",
+    walletAddress: "0x000000000000",
+    txStatus: "sent",
+    points: 50,
+    isSharedOnTwitter: false,
+    txHash: "0x000000002",
+  },
+  {
+    date: "2021-08-01",
+    amount: {
+      value: 1,
+      currency: "ETH",
+    },
+    socialId: "someone@recipient.com",
+    walletAddress: "0x000000000000",
+    txStatus: "recieved",
+    points: 50,
+    isSharedOnTwitter: true,
+    txHash: "0x000000003",
+  },
+  {
+    date: "2021-08-01",
+    amount: {
+      value: 1,
+      currency: "ETH",
+    },
+    socialId: "someone@recipient.com",
+    walletAddress: "0x000000000000",
+    txStatus: "recieved",
+    points: null,
+    isSharednTwitter: false,
+    txHash: "0x000000004",
+  },
+];

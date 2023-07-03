@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref, watch } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { useRoute } from "vue-router";
 import StarIcon from "@/components/StarIcon.vue";
 import useSocketConnection from "@/use/socketConnection";
@@ -7,49 +7,28 @@ import { SOCKET_IDS, LEADERBOARD_TYPES } from "@/constants/socket-ids";
 import { truncateAddress } from "@/utils/truncateAddress";
 import dayjs from "dayjs";
 import { ethers } from "ethers";
+import historyMock from "@/constants/tx-history.mock";
 
 const route = useRoute();
 const socket = useSocketConnection();
 
-const rankers = ref([]);
+const history = ref([]);
 
 onBeforeMount(() => {
-  if (route.query.duration === "weekly") fetchLeaderboard("weekly");
-  else fetchLeaderboard();
+  fetchTxHistory();
 });
 
-async function fetchLeaderboard(duration: "global" | "weekly" = "global") {
-  const message = {
-    ltype:
-      duration === "weekly"
-        ? LEADERBOARD_TYPES.WEEKLY
-        : LEADERBOARD_TYPES.GLOBAL,
-  };
-  const leaderboard = await socket.sendMessage(
-    SOCKET_IDS.GET_LEADERBOARD,
-    message
-  );
-  rankers.value = leaderboard.rankings.map((ranking) => {
+function getLink(record) {
+  return `https://sendit.arcana.network/${record.socialId}`;
+}
+
+async function fetchTxHistory() {
+  history.value = historyMock.map((record) => {
     return {
-      rank: ranking.rank,
-      walletAddress: ethers.hexlify(ranking.address),
-      xp: ranking.points,
-      transactions: ranking.no_of_transactions,
-      joinDate: dayjs(ranking.join_date).format("DD MMM YYYY"),
+      ...record,
     };
   });
 }
-
-watch(
-  () => route.query.duration,
-  async () => {
-    if (route.query.duration === "weekly") fetchLeaderboard("weekly");
-    else fetchLeaderboard();
-  }
-);
-
-const top3Rankers = computed(() => rankers.value.slice(0, 3));
-const restRankers = computed(() => rankers.value.slice(3));
 </script>
 
 <template>
@@ -88,89 +67,59 @@ const restRankers = computed(() => rankers.value.slice(3));
       <div
         class="hidden md:grid leaderboard-table-header text-xs text-philippine-gray py-4 px-6"
       >
-        <div class="leaderboard-table-header-item">Rank</div>
+        <div class="leaderboard-table-header-item">Date</div>
+        <div class="leaderboard-table-header-item">Amount</div>
+        <div class="leaderboard-table-header-item">Social ID</div>
         <div class="leaderboard-table-header-item">Wallet Address</div>
-        <div class="leaderboard-table-header-item">Transactions</div>
-        <div class="leaderboard-table-header-item">XP</div>
-        <div class="leaderboard-table-header-item">Join Date</div>
+        <div class="leaderboard-table-header-item">Sendit Link</div>
+        <div class="leaderboard-table-header-item">Transaction Status</div>
+        <div class="leaderboard-table-header-item">Points</div>
+        <div class="leaderboard-table-header-item">Share</div>
+        <div class="leaderboard-table-header-item"></div>
       </div>
       <div class="grid md:hidden py-4 px-6 uppercase font-bold text-xs">
         Rankings
       </div>
       <hr class="border-jet border-0 border-b-1" />
-      <div v-if="rankers.length">
+      <div v-if="history.length">
         <div class="hidden md:block px-2 py-4">
-          <div
-            class="top-3-rankers bg-black border-jet border-1 rounded-[10px] px-1 py-3"
-          >
-            <div
-              class="grid leaderboard-table-row px-3 py-2 text-[15px] rounded-[5px] border-1 border-transparent hover:border-white hover:bg-[#464646]"
-              v-for="ranker in top3Rankers"
-              :key="ranker.rank"
-              :class="{
-                'text-[#b8a26a]': ranker.rank === 1,
-                'text-[#7fc987]': ranker.rank === 2,
-                'text-[#7896cc]': ranker.rank === 3,
-              }"
-            >
-              <div class="leaderboard-table-row-item">{{ ranker.rank }}</div>
-              <div
-                class="leaderboard-table-row-item"
-                :title="ranker.walletAddress"
-              >
-                {{ truncateAddress(ranker.walletAddress) }}
-              </div>
-              <div class="leaderboard-table-row-item">
-                {{ ranker.transactions }}
-              </div>
-              <div
-                class="leaderboard-table-row-item flex justify-between items-center w-[6rem]"
-              >
-                {{ ranker.xp }}
-                <div
-                  class="relative star-icon before:opacity-20"
-                  :class="{
-                    'before:bg-[#b8a26a]': ranker.rank === 1,
-                    'before:bg-[#7fc987]': ranker.rank === 2,
-                    'before:bg-[#7896cc]': ranker.rank === 3,
-                  }"
-                >
-                  <StarIcon class="relative" />
-                </div>
-              </div>
-              <div class="leaderboard-table-row-item">
-                {{ ranker.joinDate }}
-              </div>
-            </div>
-          </div>
           <div class="rest-rankers px-1 py-3">
             <div
               class="grid leaderboard-table-row px-3 py-2 text-sm rounded-[5px] border-1 border-transparent hover:border-white hover:bg-[#464646]"
-              v-for="ranker in restRankers"
-              :key="ranker.rank"
+              v-for="record in history"
+              :key="record.txHash"
             >
-              <div class="leaderboard-table-row-item">{{ ranker.rank }}</div>
-              <div
-                class="leaderboard-table-row-item"
-                :title="ranker.walletAddress"
-              >
-                {{ truncateAddress(ranker.walletAddress) }}
+              <div class="leaderboard-table-row-item">{{ record.date }}</div>
+              <div class="leaderboard-table-row-item">
+                {{ record.amount.value }} {{ record.amount.currency }}
               </div>
               <div class="leaderboard-table-row-item">
-                {{ ranker.transactions }}
+                {{ record.socialId }}
+              </div>
+              <div
+                class="leaderboard-table-row-item"
+                :title="record.walletAddress"
+              >
+                {{ truncateAddress(record.walletAddress) }}
+              </div>
+              <div class="leaderboard-table-row-item">
+                {{ getLink(record) }}
               </div>
               <div
                 class="leaderboard-table-row-item flex justify-between w-[6rem]"
               >
-                {{ ranker.xp }}
+                {{ record.txStatus }}
               </div>
-              <div class="leaderboard-table-row-item">
-                {{ ranker.joinDate }}
+              <div v-if="record.points" class="leaderboard-table-row-item">
+                {{ record.points }}
               </div>
+              <div v-else class="leaderboard-table-row-item">-</div>
+              <div class="leaderboard-table-row-item">Share on Twitter</div>
+              <div class="leaderboard-table-row-item">Earn 40 XP</div>
             </div>
           </div>
         </div>
-        <div class="block md:hidden">
+        <!-- <div class="block md:hidden">
           <div
             v-for="ranker in rankers"
             :key="ranker.rank"
@@ -221,7 +170,7 @@ const restRankers = computed(() => rankers.value.slice(3));
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
       <div
         v-else
@@ -236,7 +185,7 @@ const restRankers = computed(() => rankers.value.slice(3));
 <style scoped>
 .leaderboard-table-header,
 .leaderboard-table-row {
-  grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 2fr 1fr 2fr 1fr 1fr 1fr 1fr;
   grid-gap: 1rem;
 }
 

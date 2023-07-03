@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import useArcanaAuth from "@/use/arcanaAuth";
 import useRewardsStore from "@/stores/rewards";
 import useUserStore from "@/stores/user";
 
