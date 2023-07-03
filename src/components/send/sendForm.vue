@@ -83,8 +83,7 @@ async function proceed() {
           );
     const toEmail = userInput.value.recipientId;
     const fromEmail = authStore.userInfo.email;
-    const response = await messageArcana(hash, to, fromEmail, toEmail, chainId);
-    console.log({ response });
+    await messageArcana(hash, to, fromEmail, toEmail, chainId);
   } catch (error) {
     console.log(error);
   } finally {
