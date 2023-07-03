@@ -26,7 +26,6 @@ async function erc20TokenTransfer(
   amount: string,
   tokenAddress: string
 ) {
-  console.log("erc20TokenTransfer");
   const web3Provider = new BrowserProvider(provider);
   const wallet = await web3Provider.getSigner();
   const receiverWalletAddress = computeAddress(`0x${publickey}`);
