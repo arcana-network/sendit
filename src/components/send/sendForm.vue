@@ -59,23 +59,28 @@ function messageArcana(
 }
 
 async function proceed() {
-  const senderPublicKey = await arcanaAuth
-    .getAuthInstance()
-    .getPublicKey(userInput.value.recipientId);
-  const arcanaProvider = arcanaAuth.getProvider();
-  const amount = userInput.value.amount;
-  const chainId = userInput.value.chain;
-  const { hash, to } = await nativeTokenTransfer(
-    senderPublicKey,
-    arcanaProvider,
-    amount
-  );
-  console.log({ hash, to });
-  const toEmail = userInput.value.recipientId;
-  const fromEmail = authStore.userInfo.email;
-  const response = await messageArcana(hash, to, fromEmail, toEmail, chainId);
-
-  console.log({ response });
+  loadStore.showLoader("sending...");
+  try {
+    const senderPublicKey = await arcanaAuth
+      .getAuthInstance()
+      .getPublicKey(userInput.value.recipientId);
+    const arcanaProvider = arcanaAuth.getProvider();
+    const amount = userInput.value.amount;
+    const chainId = userInput.value.chain;
+    const { hash, to } = await nativeTokenTransfer(
+      senderPublicKey,
+      arcanaProvider,
+      amount
+    );
+    const toEmail = userInput.value.recipientId;
+    const fromEmail = authStore.userInfo.email;
+    const response = await messageArcana(hash, to, fromEmail, toEmail, chainId);
+    console.log({ response });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loadStore.hideLoader();
+  }
 }
 
 watch(
