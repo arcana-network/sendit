@@ -5,14 +5,13 @@ import StarIcon from "../../../components/StarIcon.vue";
 import useSocketConnection from "../../../use/socketConnection";
 import { SOCKET_IDS, LEADERBOARD_TYPES } from "@/constants/socket-ids";
 import { truncateAddress } from "@/utils/truncateAddress";
-import { leaders, weeklyLeaders } from "../../../constants/leaderboard.mock";
 import dayjs from "dayjs";
 import { ethers } from "ethers";
 
 const route = useRoute();
 const socket = useSocketConnection();
 
-const rankers = ref([]);
+const rankers = ref([] as any[]);
 
 onBeforeMount(() => {
   if (route.query.duration === "weekly") fetchLeaderboard("weekly");
@@ -26,10 +25,10 @@ async function fetchLeaderboard(duration: "global" | "weekly" = "global") {
         ? LEADERBOARD_TYPES.WEEKLY
         : LEADERBOARD_TYPES.GLOBAL,
   };
-  const leaderboard = await socket.sendMessage(
+  const leaderboard = (await socket.sendMessage(
     SOCKET_IDS.GET_LEADERBOARD,
     message
-  );
+  )) as { rankings: any[] };
   rankers.value = leaderboard.rankings.map((ranking) => {
     return {
       rank: ranking.rank,
