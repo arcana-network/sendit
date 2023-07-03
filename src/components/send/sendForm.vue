@@ -6,7 +6,10 @@ import useAuthStore from "@/stores/auth";
 import useLoaderStore from "@/stores/loader";
 import { getAccountBalance } from "@/service/ankr.service.ts";
 import useArcanaAuth from "@/use/arcanaAuth";
-import { nativeTokenTransfer } from "@/service/send.service.ts";
+import {
+  nativeTokenTransfer,
+  erc20TokenTransfer,
+} from "@/service/send.service.ts";
 import { getBytes } from "ethers";
 import useSocketConnection from "@/use/socketConnection";
 
@@ -67,11 +70,17 @@ async function proceed() {
     const arcanaProvider = arcanaAuth.getProvider();
     const amount = userInput.value.amount;
     const chainId = userInput.value.chain;
-    const { hash, to } = await nativeTokenTransfer(
-      senderPublicKey,
-      arcanaProvider,
-      amount
-    );
+    const [tokenSymbol, tokenType] = userInput.value.token.split("-");
+    const asset = getSelectedAssets(tokenSymbol, tokenType);
+    const { hash, to } =
+      tokenType === "native"
+        ? await nativeTokenTransfer(senderPublicKey, arcanaProvider, amount)
+        : await erc20TokenTransfer(
+            senderPublicKey,
+            arcanaProvider,
+            amount,
+            asset.contractAddress
+          );
     const toEmail = userInput.value.recipientId;
     const fromEmail = authStore.userInfo.email;
     const response = await messageArcana(hash, to, fromEmail, toEmail, chainId);
