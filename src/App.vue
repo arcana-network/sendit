@@ -17,10 +17,14 @@ async function initAuth() {
   loaderStore.showLoader("initializing...");
   try {
     await auth.init();
-    const isLoggedIn = await auth.isLoggedIn();
+    const isLoggedIn = await new Promise((res) => {
+      setTimeout(async () => {
+        res(await auth.isLoggedIn());
+      }, 1000);
+    });
     auth.getProvider().on("connect", onWalletConnect);
     auth.getProvider().on("disconnect", onWalletDisconnect);
-    if (isLoggedIn) authStore.setLoginStatus(await auth.isLoggedIn());
+    if (isLoggedIn) authStore.setLoginStatus(isLoggedIn);
     else router.push({ name: "Login" });
   } catch (error) {
     console.error({ error });
