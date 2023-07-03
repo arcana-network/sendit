@@ -42,26 +42,6 @@ async function fetchTxHistory() {
       >
     </div>
     <div
-      class="flex mx-8 my-0 bg-eerie-black max-w-max flex-wrap py-1 px-2 border border-jet rounded-[10px] text-philippine-gray text-sm"
-    >
-      <router-link
-        class="px-2 py-1 cursor-pointer rounded-[5px]"
-        :class="{
-          'bg-[#141414] text-white': route.query.duration !== 'weekly',
-        }"
-        :to="{ name: 'Leaderboard', query: {} }"
-        >Overall</router-link
-      >
-      <router-link
-        class="px-2 py-1 cursor-pointer rounded-[5px]"
-        :class="{
-          'bg-[#141414] text-white': route.query.duration === 'weekly',
-        }"
-        :to="{ name: 'Leaderboard', query: { duration: 'weekly' } }"
-        >Weekly</router-link
-      >
-    </div>
-    <div
       class="flex-col bg-eerie-black rounded-[10px] border border-jet mx-8 my-5 overflow-hidden"
     >
       <div
