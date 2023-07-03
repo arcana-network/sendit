@@ -24,6 +24,7 @@ async function initAuth() {
     });
     auth.getProvider().on("connect", onWalletConnect);
     auth.getProvider().on("disconnect", onWalletDisconnect);
+    // @ts-ignore
     if (isLoggedIn) authStore.setLoginStatus(isLoggedIn);
     else router.push({ name: "Login" });
   } catch (error) {
@@ -34,6 +35,7 @@ async function initAuth() {
 }
 
 async function initSocketConnect() {
+  // @ts-ignore
   await socketConnection.init(auth.getProvider(), () => {
     authStore.setSocketLoginStatus(true);
   });

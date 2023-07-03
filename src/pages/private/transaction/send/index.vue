@@ -16,6 +16,7 @@ const { isSocketLoggedIn } = toRefs(authStore);
 async function fetchSupportedChains() {
   loaderStore.showLoader("fetching chains...");
   try {
+    // @ts-ignore
     const { chains } = await socketConnection.sendMessage(7);
     sendStore.setSupportedChains(
       chains.map((chain) => {

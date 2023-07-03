@@ -8,6 +8,7 @@ const useAuthStore = defineStore("auth", {
   }),
   getters: {
     walletAddress(state) {
+      // @ts-ignore
       return state.userInfo.address;
     },
   },

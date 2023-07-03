@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRefs, watch, ref, computed } from "vue";
+import { toRefs, watch, ref, computed, type Ref } from "vue";
 import sendVia from "@/constants/sendVia";
 import useSendStore from "@/stores/send";
 import useAuthStore from "@/stores/auth";
@@ -16,20 +16,25 @@ import useSocketConnection from "@/use/socketConnection";
 const sendStore = useSendStore();
 const authStore = useAuthStore();
 const loadStore = useLoaderStore();
-const chainAssets = ref([]);
+const chainAssets: Ref<any[]> = ref([]);
 const tokenBalance = ref(0);
 const arcanaAuth = useArcanaAuth();
 const socketConnection = useSocketConnection();
 
-const { userInput, supportedChains } = toRefs(sendStore);
+const {
+  userInput,
+  supportedChains,
+}: { userInput: Ref<any>; supportedChains: Ref<any[]> } = toRefs(sendStore);
 
 function getSelectedChainInfo(chainId) {
+  //@ts-ignore
   return supportedChains.value.find((chain) => chain.chain_id === chainId);
 }
 
 function getSelectedAssets(tokenSymbol, tokenType) {
   return chainAssets.value.find(
     (asset) =>
+      //@ts-ignore
       asset.tokenSymbol === tokenSymbol && asset.tokenType === tokenType
   );
 }
@@ -38,6 +43,7 @@ async function fetchAssets(chainId) {
   loadStore.showLoader("fetching assets...");
   const walletAddress = authStore.walletAddress;
   const chain = getSelectedChainInfo(chainId);
+  //@ts-ignore
   const { result } = await getAccountBalance(walletAddress, chain.blockchain);
   chainAssets.value = result.assets;
   loadStore.hideLoader();
@@ -79,10 +85,13 @@ async function proceed() {
             senderPublicKey,
             arcanaProvider,
             amount,
+            //@ts-ignore
             asset.contractAddress
           );
     const toEmail = userInput.value.recipientId;
+    //@ts-ignore
     const fromEmail = authStore.userInfo.email;
+    //@ts-ignore
     await messageArcana(hash, to, fromEmail, toEmail, chainId);
   } catch (error) {
     console.log(error);
@@ -105,6 +114,7 @@ watch(
   (selectedToken) => {
     if (selectedToken) {
       const [tokenSymbol, tokenType] = selectedToken.split("-");
+      //@ts-ignore
       tokenBalance.value = getSelectedAssets(tokenSymbol, tokenType).balance;
     } else tokenBalance.value = 0;
   }

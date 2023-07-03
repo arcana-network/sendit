@@ -6,7 +6,7 @@ import { useToast } from "vue-toastification";
 import useArcanaAuth from "@/use/arcanaAuth";
 
 const authStore = useAuthStore();
-const { userInfo } = toRefs(authStore);
+const { userInfo }: { userInfo: any } = toRefs(authStore);
 const arcanaAuth = useArcanaAuth();
 
 const toast = useToast();
