@@ -26,6 +26,10 @@ function useArcanaAuth() {
     return authInstance.provider;
   }
 
+  function getAuthInstance() {
+    return authInstance;
+  }
+
   async function isLoggedIn() {
     return await authInstance.isLoggedIn();
   }
@@ -34,12 +38,25 @@ function useArcanaAuth() {
     return await authInstance.getUser();
   }
 
+  async function switchChain(chainId: string) {
+    await getProvider().request({
+      method: "wallet_switchEthereumChain",
+      params: [
+        {
+          chainId,
+        },
+      ],
+    });
+  }
+
   return {
     connect,
     init,
     getProvider,
     isLoggedIn,
     getUser,
+    getAuthInstance,
+    switchChain,
   };
 }
 

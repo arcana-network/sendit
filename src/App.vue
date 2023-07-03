@@ -21,7 +21,11 @@ async function initAuth() {
   loaderStore.showLoader("initializing...");
   try {
     await auth.init();
-    const isLoggedIn = await auth.isLoggedIn();
+    const isLoggedIn = await new Promise((res) => {
+      setTimeout(async () => {
+        res(await auth.isLoggedIn());
+      }, 1000);
+    });
     auth.getProvider().on("connect", onWalletConnect);
     auth.getProvider().on("disconnect", onWalletDisconnect);
     if (isLoggedIn) {
@@ -43,8 +47,14 @@ async function initSocketConnect() {
   });
 }
 
+async function getUserInfo() {
+  const info = await auth.getUser();
+  authStore.setUserInfo(info);
+}
+
 function onWalletConnect() {
   initSocketConnect();
+  getUserInfo();
 }
 
 async function onWalletDisconnect() {

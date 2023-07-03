@@ -1,11 +1,11 @@
 import { createWebHistory, createRouter } from "vue-router";
 
-import Login from "../pages/login.vue";
-import Private from "../pages/private/index.vue";
-import Send from "../pages/private/transaction/send/index.vue";
-import Rewards from "../pages/private/rewards/index.vue";
-import Leaderboard from "../pages/private/leaderboard/index.vue";
-import History from "../pages/private/transaction/history/index.vue";
+import Login from "@/pages/login.vue";
+import Private from "@/pages/private/index.vue";
+import Send from "@/pages/private/transaction/send/index.vue";
+import Rewards from "@/pages/private/rewards/index.vue";
+import Leaderboard from "@/pages/private/leaderboard/index.vue";
+import History from "@/pages/private/transaction/history/index.vue";
 
 const routes = [
   { path: "/login", component: Login, name: "Login" },
