@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import useArcanaAuth from "@/use/arcanaAuth";
 import useRewardsStore from "@/stores/rewards";
+import useUserStore from "@/stores/user";
 
 const rewardsStore = useRewardsStore();
+const userStore = useUserStore();
+
+rewardsStore.fetchRewards(userStore.address);
 </script>
 
 <template>
@@ -16,7 +20,7 @@ const rewardsStore = useRewardsStore();
         :key="JSON.stringify(reward)"
       >
         <img
-          :src="reward.image"
+          :src="reward.imageUrl"
           :alt="reward.name"
           class="w-[212px] h-[218px] object-cover object-center"
         />

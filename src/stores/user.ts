@@ -7,6 +7,7 @@ type User = {
   points: number;
   rank: number;
   rewards: number;
+  address: string;
 };
 
 const useUserStore = defineStore("user", {
@@ -15,6 +16,7 @@ const useUserStore = defineStore("user", {
       points: 0,
       rank: 0,
       rewards: 0,
+      address: "",
     } as User),
   actions: {
     async fetchUserPointsAndRank() {
