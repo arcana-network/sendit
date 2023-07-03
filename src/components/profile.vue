@@ -3,9 +3,11 @@ import { toRefs } from "vue";
 import useAuthStore from "@/stores/auth";
 import CopyIcon from "@/assets/images/icons/copy.svg";
 import { useToast } from "vue-toastification";
+import useArcanaAuth from "@/use/arcanaAuth";
 
 const authStore = useAuthStore();
 const { userInfo } = toRefs(authStore);
+const arcanaAuth = useArcanaAuth();
 
 const toast = useToast();
 
@@ -21,6 +23,10 @@ function copyToClipboard() {
   document.execCommand("copy");
   document.body.removeChild(el);
   toast.success("Wallet address copied to clipboard");
+}
+
+function logout() {
+  arcanaAuth.getAuthInstance().logout();
 }
 </script>
 
@@ -53,7 +59,7 @@ function copyToClipboard() {
           </button>
         </div>
       </div>
-      <div class="w-full">
+      <div class="w-full" @click="logout">
         <button class="btn btn-submit-secondary text-sm w-full">Logout</button>
       </div>
     </div>
