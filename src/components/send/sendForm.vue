@@ -73,7 +73,7 @@ async function proceed() {
     const [tokenSymbol, tokenType] = userInput.value.token.split("-");
     const asset = getSelectedAssets(tokenSymbol, tokenType);
     const { hash, to } =
-      tokenType === "native"
+      tokenType === "NATIVE"
         ? await nativeTokenTransfer(senderPublicKey, arcanaProvider, amount)
         : await erc20TokenTransfer(
             senderPublicKey,
