@@ -15,16 +15,21 @@ const { isSocketLoggedIn } = toRefs(authStore);
 
 async function fetchSupportedChains() {
   loaderStore.showLoader("fetching chains...");
-  const { chains } = await socketConnection.sendMessage(7);
-  sendStore.setSupportedChains(
-    chains.map((chain) => {
-      return {
-        ...chain,
-        blockchain: chainList[chain.chain_id].block_chain,
-      };
-    })
-  );
-  loaderStore.hideLoader();
+  try {
+    const { chains } = await socketConnection.sendMessage(7);
+    sendStore.setSupportedChains(
+      chains.map((chain) => {
+        return {
+          ...chain,
+          blockchain: chainList[chain.chain_id].block_chain,
+        };
+      })
+    );
+  } catch (e) {
+    console.log(e);
+  } finally {
+    loaderStore.hideLoader();
+  }
 }
 
 watch(isSocketLoggedIn, (newValue) => {
