@@ -24,8 +24,9 @@ async function initAuth() {
     const isLoggedIn = await auth.isLoggedIn();
     auth.getProvider().on("connect", onWalletConnect);
     auth.getProvider().on("disconnect", onWalletDisconnect);
+    // @ts-ignore
     if (isLoggedIn) {
-      authStore.setLoginStatus(await auth.isLoggedIn());
+      authStore.setLoginStatus(isLoggedIn);
       userStore.address = (await auth.getUser()).address;
     } else router.push({ name: "Login" });
   } catch (error) {
@@ -36,6 +37,7 @@ async function initAuth() {
 }
 
 async function initSocketConnect() {
+  // @ts-ignore
   await socketConnection.init(auth.getProvider(), () => {
     authStore.setSocketLoginStatus(true);
     rewardsStore.fetchRewards(userStore.address);
@@ -64,6 +66,7 @@ watch(
   async (newValue) => {
     if (newValue) {
       const user = await auth.getUser();
+      // @ts-ignore
       authStore.user = user;
       router.push({ name: "Send" });
     } else router.push({ name: "Login" });

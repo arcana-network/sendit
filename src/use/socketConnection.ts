@@ -20,6 +20,7 @@ let state = ConnectionState.NOT_CONNECTED;
 function useSocketConnection() {
   async function init(authProvider: AuthProvider, onSocketLogin?: Function) {
     try {
+      // @ts-ignore
       ethersProvider = new BrowserProvider(authProvider);
       ethersSigner = await ethersProvider.getSigner();
       socket = new WebSocket(VITE_API_URL);
@@ -45,6 +46,7 @@ function useSocketConnection() {
       // throw new Error("Another request is already in progress");
     }
     return new Promise((resolve, reject) => {
+      // @ts-ignore
       callbacks = [resolve, reject];
       socket.send(Buffer.concat([Uint8Array.from([id]), msgpack(data)]));
     });
@@ -57,8 +59,10 @@ function useSocketConnection() {
     const data = msgunpack(Buffer.from(await ev.data.arrayBuffer()));
     if (data.error) {
       if (callbacks) {
+        // @ts-ignore
         const [, reject] = callbacks;
         callbacks = null;
+        // @ts-ignore
         reject(data.msg);
       }
       return;
@@ -83,8 +87,10 @@ function useSocketConnection() {
         break;
       case ConnectionState.AUTHORIZED:
         if (callbacks) {
+          // @ts-ignore
           const [resolve] = callbacks;
           callbacks = null;
+          // @ts-ignore
           resolve(data);
         }
         break;
