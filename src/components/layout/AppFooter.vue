@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <footer class="space-x-5 px-7.5 py-4 flex items-center">
+  <footer class="space-x-5 px-7.5 py-4 flex items-center container">
     <a
       class="text-xs flex items-center space-x-2"
       href="https://arcana.network"

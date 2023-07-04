@@ -174,9 +174,9 @@ const tweetMessage = "Welcome to sendit";
 
 <style scoped>
 .waitlist-page {
-  background: linear-gradient(
-    68.66deg,
-    rgba(38, 38, 38, 0.8) 0%,
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    #262626 0%,
     rgba(14, 14, 14, 0) 100%
   );
 }
