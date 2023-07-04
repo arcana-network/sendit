@@ -4,10 +4,14 @@ import { ref, computed } from "vue";
 import { isValidEmail } from "@/utils/validation";
 import useSocketConnection from "@/use/socketConnection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
+import useLoaderStore from "@/stores/loader";
+import { useToast } from "vue-toastification";
 
 const emit = defineEmits(["close"]);
 
 const email = ref("");
+const loader = useLoaderStore();
+const toast = useToast();
 
 const areEmailsValid = computed(() => {
   if (!email.value.trim()) return false;
@@ -24,7 +28,10 @@ async function handleEmailInvite() {
     const message = {
       emails: email.value.split(",").map((e) => e.trim()),
     };
+    loader.showLoader("Sending invites...");
     await socket.sendMessage(SOCKET_IDS.EMAIL_INVITE, message);
+    loader.hideLoader();
+    toast.success("Invites sent");
     emit("close");
   } else {
     alert("One or more emails are not valid");

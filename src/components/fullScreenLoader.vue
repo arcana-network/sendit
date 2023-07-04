@@ -6,7 +6,7 @@ const loaderStore = useLoaderStore();
 </script>
 
 <template>
-  <Overlay>
+  <Overlay class="z-[99999999]">
     <div class="h-full flex flex-col justify-center items-center space-y-10">
       <p class="text-xl">{{ loaderStore.message || "Please Wait..." }}</p>
     </div>
