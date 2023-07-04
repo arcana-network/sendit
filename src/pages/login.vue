@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useUserStore from "../stores/user";
+import useUserStore from "@/stores/user";
 import sendItLogo from "@/assets/images/send-it-logo.png";
 import useAuthStore from "@/stores/auth";
 import useArcanaAuth from "@/use/arcanaAuth";

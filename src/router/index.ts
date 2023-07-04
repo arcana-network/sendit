@@ -6,6 +6,9 @@ import Send from "@/pages/private/transaction/send/index.vue";
 import Rewards from "@/pages/private/rewards/index.vue";
 import Leaderboard from "@/pages/private/leaderboard/index.vue";
 import History from "@/pages/private/transaction/history/index.vue";
+import MyRewards from "@/pages/private/rewards/my-rewards/index.vue";
+import RedeemXP from "@/pages/private/rewards/redeem/index.vue";
+import EarnXP from "@/pages/private/rewards/earn/index.vue";
 
 const routes = [
   { path: "/login", component: Login, name: "Login" },
@@ -38,19 +41,17 @@ const routes = [
           {
             name: "My Rewards",
             path: "",
-            component: () =>
-              import("../pages/private/rewards/my-rewards/index.vue"),
+            component: MyRewards,
           },
           {
             name: "Redeem XP",
             path: "redeem",
-            component: () =>
-              import("../pages/private/rewards/redeem/index.vue"),
+            component: RedeemXP,
           },
           {
             name: "Earn XP",
             path: "earn",
-            component: () => import("../pages/private/rewards/earn/index.vue"),
+            component: EarnXP,
           },
         ],
       },

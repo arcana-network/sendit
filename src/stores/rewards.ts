@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { fetchRewards as fetchRewardsFromAnkr } from "../services/ankr.service";
+import { fetchRewards as fetchRewardsFromAnkr } from "@/services/ankr.service";
 
 type RewardState = {
   name: string;

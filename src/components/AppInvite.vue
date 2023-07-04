@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Overlay from "./overlay.vue";
+import Overlay from "@/components/overlay.vue";
 import { ref, computed } from "vue";
 import { toASCII } from "punycode";
 import useSocketConnection from "@/use/socketConnection";

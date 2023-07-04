@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, ref, watch } from "vue";
 import { useRoute } from "vue-router";
-import StarIcon from "../../../components/StarIcon.vue";
-import useSocketConnection from "../../../use/socketConnection";
+import StarIcon from "@/components/StarIcon.vue";
+import useSocketConnection from "@/use/socketConnection";
 import { SOCKET_IDS, LEADERBOARD_TYPES } from "@/constants/socket-ids";
 import { truncateAddress } from "@/utils/truncateAddress";
 import dayjs from "dayjs";

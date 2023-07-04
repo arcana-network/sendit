@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Overlay from "./overlay.vue";
+import Overlay from "@/components/overlay.vue";
 import useSocketConnection from "@/use/socketConnection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 

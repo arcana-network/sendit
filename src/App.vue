@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from "vue";
-import useArcanaAuth from "./use/arcanaAuth";
-import useSocketConnection from "./use/socketConnection";
-import useLoaderStore from "./stores/loader";
-import FullScreenLoader from "./components/fullScreenLoader.vue";
+import useArcanaAuth from "@/use/arcanaAuth";
+import useSocketConnection from "@/use/socketConnection";
+import useLoaderStore from "@/stores/loader";
+import FullScreenLoader from "@/components/fullScreenLoader.vue";
 import { useRouter } from "vue-router";
-import useAuthStore from "./stores/auth";
-import useRewardsStore from "./stores/rewards";
-import useUserStore from "./stores/user";
+import useAuthStore from "@/stores/auth";
+import useRewardsStore from "@/stores/rewards";
+import useUserStore from "@/stores/user";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
