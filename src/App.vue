@@ -21,14 +21,14 @@ async function initAuth() {
   loaderStore.showLoader("initializing...");
   try {
     await auth.init();
-    const isLoggedIn = await auth.isLoggedIn();
+    const isLoggedIn = await new Promise((resolve) => {
+      setTimeout(async () => {
+        resolve(await auth.isLoggedIn());
+      }, 1000);
+    });
+    if (!isLoggedIn) router.push({ name: "Login" });
     auth.getProvider().on("connect", onWalletConnect);
     auth.getProvider().on("disconnect", onWalletDisconnect);
-    // @ts-ignore
-    if (isLoggedIn) {
-      authStore.setLoginStatus(isLoggedIn);
-      userStore.address = (await auth.getUser()).address;
-    } else router.push({ name: "Login" });
   } catch (error) {
     console.error({ error });
   } finally {
@@ -46,11 +46,11 @@ async function initSocketConnect() {
 }
 
 async function getUserInfo() {
-  const info = await auth.getUser();
-  authStore.setUserInfo(info);
+  authStore.setUserInfo(await auth.getUser());
 }
 
-function onWalletConnect() {
+async function onWalletConnect() {
+  authStore.setLoginStatus(true);
   initSocketConnect();
   getUserInfo();
 }
@@ -64,12 +64,8 @@ onMounted(initAuth);
 watch(
   () => authStore.isLoggedIn,
   async (newValue) => {
-    if (newValue) {
-      const user = await auth.getUser();
-      // @ts-ignore
-      authStore.user = user;
-      router.push({ name: "Send" });
-    } else router.push({ name: "Login" });
+    if (newValue) router.push({ name: "Send" });
+    else router.push({ name: "Login" });
   }
 );
 
