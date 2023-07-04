@@ -77,8 +77,17 @@ const showFullScreenLoader = computed(() => {
 </script>
 
 <template>
-  <main class="bg-black text-white h-full min-h-screen">
+  <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
     <router-view> </router-view>
   </main>
 </template>
+
+<style scoped>
+main {
+  background: url("@/assets/images/bg.png");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>

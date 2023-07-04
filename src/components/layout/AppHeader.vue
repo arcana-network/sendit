@@ -73,7 +73,9 @@ const stats = computed(() => {
 </script>
 
 <template>
-  <header class="flex justify-between border-b-1 border-jet px-7.5 py-4">
+  <header
+    class="flex justify-between border-b-1 border-jet bg-black px-7.5 py-4"
+  >
     <div class="flex space-x-5 items-center">
       <img :src="sendItLogo" alt="send it logo" class="w-12 h-12" />
       <nav class="flex space-x-5 max-lg:hidden items-center">
