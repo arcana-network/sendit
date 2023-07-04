@@ -84,3 +84,7 @@ body {
 .form-card {
   @apply flex flex-col items-center border-1 border-jet rounded-md bg-eerie-black;
 }
+
+.container {
+  @apply max-w-[1440px] mx-auto
+}
