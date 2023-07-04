@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: "Onest";
-  src: url("./src/assets/fonts/onest/WOFF/OnestRegular1602-hint.woff")
+  src: url("~/src/assets/fonts/onest/WOFF/OnestRegular1602-hint.woff")
     format("woff");
   font-weight: 400;
   font-style: normal;
@@ -12,7 +12,7 @@
 
 @font-face {
   font-family: "Onest";
-  src: url("./src/assets/fonts/onest/WOFF/OnestExtraBold1602-hint.woff")
+  src: url("~/src/assets/fonts/onest/WOFF/OnestExtraBold1602-hint.woff")
     format("woff");
   font-weight: 800;
   font-style: normal;
@@ -20,7 +20,7 @@
 
 @font-face {
   font-family: "Onest";
-  src: url("./src/assets/fonts/onest/WOFF/OnestBold1602-hint.woff")
+  src: url("~/src/assets/fonts/onest/WOFF/OnestBold1602-hint.woff")
     format("woff");
   font-weight: 700;
   font-style: normal;
@@ -28,7 +28,7 @@
 
 @font-face {
   font-family: "Onest";
-  src: url("./src/assets/fonts/onest/WOFF/OnestMedium1602-hint.woff")
+  src: url("~/src/assets/fonts/onest/WOFF/OnestMedium1602-hint.woff")
     format("woff");
   font-weight: 500;
   font-style: normal;
@@ -36,7 +36,7 @@
 
 @font-face {
   font-family: "Onest";
-  src: url("./src/assets/fonts/onest/WOFF/OnestLight1602-hint.woff")
+  src: url("~/src/assets/fonts/onest/WOFF/OnestLight1602-hint.woff")
     format("woff");
   font-weight: 300;
   font-style: normal;
@@ -44,7 +44,7 @@
 
 @font-face {
   font-family: "Onest";
-  src: url("./src/assets/fonts/onest/WOFF/OnestThin1602-hint.woff")
+  src: url("~/src/assets/fonts/onest/WOFF/OnestThin1602-hint.woff")
     format("woff");
   font-weight: 100;
   font-style: normal;
