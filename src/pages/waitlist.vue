@@ -3,9 +3,17 @@ import AppHeader from "@/components/layout/AppHeader.vue";
 import { computed, ref } from "vue";
 import { isValidEmail } from "@/utils/validation";
 import { composeAndSendTweet } from "@/utils/tweet";
+import { addUserToLaunchList } from "@/services/launchlist.service";
+import useLoaderStore from "@/stores/loader";
+import { useToast } from "vue-toastification";
 
 const hasStartedTyping = ref(false);
 const email = ref("");
+const submissionSuccess = ref(false);
+const serverError = ref(false);
+const loaderStore = useLoaderStore();
+const toast = useToast();
+
 const error = computed(() => {
   if (hasStartedTyping.value) {
     if (!email.value.trim()) {
@@ -20,11 +28,40 @@ const error = computed(() => {
       };
     }
   }
+  if (serverError.value) {
+    return {
+      value: true,
+      message: "Something went wrong. Please try again",
+    };
+  }
   return {
     value: false,
     message: "",
   };
 });
+
+async function handleUserSubmission() {
+  try {
+    loaderStore.showLoader("Adding to waitlist...");
+    await addUserToLaunchList({ email: email.value });
+    submissionSuccess.value = true;
+  } catch (e) {
+    serverError.value = true;
+    toast.error("Cannot add to waitlist. Please try again.");
+    console.log(error.value);
+  } finally {
+    loaderStore.hideLoader();
+  }
+}
+
+function handleInput() {
+  if (!hasStartedTyping.value) {
+    hasStartedTyping.value = true;
+  }
+  if (serverError.value) {
+    serverError.value = false;
+  }
+}
 
 const tweetMessage = "Welcome to sendit";
 </script>
@@ -35,7 +72,7 @@ const tweetMessage = "Welcome to sendit";
     <div class="waitlist-page flex-grow flex flex-col">
       <main class="flex-grow flex justify-center items-center p-4">
         <div
-          v-if="false"
+          v-if="!submissionSuccess"
           class="card bg-eerie-black border-1 border-jet rounded-[10px] max-w-[400px] flex flex-col py-8 px-4 items-center"
         >
           <div class="flex flex-col gap-1 items-center">
@@ -48,7 +85,10 @@ const tweetMessage = "Welcome to sendit";
             transactions using email, Twitter, and Github. Sign up now to be
             among the first to use it!</span
           >
-          <form class="w-full flex flex-col pb-8">
+          <form
+            class="w-full flex flex-col pb-8"
+            @submit.prevent="handleUserSubmission"
+          >
             <div
               class="flex items-center flex-grow p-[1px] border-1 rounded-[5px]"
               :class="{
@@ -60,7 +100,7 @@ const tweetMessage = "Welcome to sendit";
                 v-model.trim="email"
                 class="bg-transparent text-[12px] placeholder:text-[#787878] flex-grow px-3 py-2 outline-none"
                 placeholder="Email address"
-                @input="hasStartedTyping = true"
+                @input="handleInput"
               />
               <button
                 class="bg-[#f7f7f7] text-[#101010] uppercase font-bold text-[0.75rem] px-5 py-2 rounded-[5px] disabled:opacity-60"
