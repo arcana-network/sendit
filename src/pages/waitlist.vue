@@ -63,7 +63,7 @@ function handleInput() {
   }
 }
 
-const tweetMessage = "Welcome to sendit";
+const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to discover what this product has to offer. Make sure to claim yours too at https://sendit.arcana.network!`;
 </script>
 
 <template>
