@@ -9,7 +9,7 @@ import useArcanaAuth from "@/use/arcanaAuth";
 import {
   nativeTokenTransfer,
   erc20TokenTransfer,
-} from "@/service/send.service.ts";
+} from "@/services/send.service.ts";
 import { getBytes } from "ethers";
 import useSocketConnection from "@/use/socketConnection";
 
@@ -223,3 +223,4 @@ const disableSubmit = computed(() => {
     </form>
   </div>
 </template>
+@/services/send.service
