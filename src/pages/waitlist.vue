@@ -139,28 +139,28 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
         </div>
       </main>
       <footer class="flex gap-8 py-6 px-4 justify-center">
-        <a href="https://twitter.com/arcana_network" target="_blank">
+        <a href="https://twitter.com/arcananetwork" target="_blank">
           <img
             src="@/assets/images/footer-icons/twitter.svg"
             alt="Twitter"
             title="Follow Arcana on Twitter"
           />
         </a>
-        <a href="https://twitter.com/arcana_network" target="_blank">
+        <a href="https://t.me/ArcanaNetwork" target="_blank">
           <img
             src="@/assets/images/footer-icons/telegram.svg"
             alt="Twitter"
             title="Join Arcana on Telegram"
           />
         </a>
-        <a href="https://twitter.com/arcana_network" target="_blank">
+        <a href="https://discord.gg/6g7fQvEpdy" target="_blank">
           <img
             src="@/assets/images/footer-icons/discord.svg"
             alt="Twitter"
             title="Join Arcana on Discord"
           />
         </a>
-        <a href="https://twitter.com/arcana_network" target="_blank">
+        <a href="https://www.youtube.com/@ArcanaNetwork" target="_blank">
           <img
             src="@/assets/images/footer-icons/youtube.svg"
             alt="Youtube"
