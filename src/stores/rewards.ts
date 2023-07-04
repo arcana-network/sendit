@@ -3,7 +3,7 @@ import { fetchRewards as fetchRewardsFromAnkr } from "../services/ankr.service";
 
 type RewardState = {
   name: string;
-  image: string;
+  imageUrl: string;
   tokenId: string;
   contractAddress: string;
 };
