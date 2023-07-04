@@ -13,6 +13,8 @@ import {
 import { getBytes } from "ethers";
 import useSocketConnection from "@/use/socketConnection";
 
+const emits = defineEmits(["transaction-successful"]);
+
 const sendStore = useSendStore();
 const authStore = useAuthStore();
 const loadStore = useLoaderStore();
@@ -98,6 +100,7 @@ async function proceed() {
     const fromEmail = authStore.userInfo.email;
     //@ts-ignore
     await messageArcana(hash, to, fromEmail, toEmail, chainId);
+    emits("transaction-successful");
   } catch (error) {
     console.log(error);
   } finally {
