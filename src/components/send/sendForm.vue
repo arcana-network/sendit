@@ -41,12 +41,17 @@ function getSelectedAssets(tokenSymbol, tokenType) {
 
 async function fetchAssets(chainId) {
   loadStore.showLoader("fetching assets...");
-  const walletAddress = authStore.walletAddress;
-  const chain = getSelectedChainInfo(chainId);
-  //@ts-ignore
-  const { result } = await getAccountBalance(walletAddress, chain.blockchain);
-  chainAssets.value = result.assets;
-  loadStore.hideLoader();
+  try {
+    const walletAddress = authStore.walletAddress;
+    const chain = getSelectedChainInfo(chainId);
+    //@ts-ignore
+    const { result } = await getAccountBalance(walletAddress, chain.blockchain);
+    chainAssets.value = result.assets;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loadStore.hideLoader();
+  }
 }
 
 function messageArcana(

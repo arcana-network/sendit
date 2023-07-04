@@ -2,6 +2,8 @@ import { BrowserProvider, getBytes } from "ethers";
 import type { JsonRpcSigner } from "ethers";
 import { AuthProvider } from "@arcana/auth";
 import { pack as msgpack, unpack as msgunpack } from "msgpackr";
+import { Mutex } from "async-mutex";
+import type { MutexInterface } from "async-mutex";
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
@@ -16,9 +18,12 @@ let ethersProvider: BrowserProvider;
 let ethersSigner: JsonRpcSigner;
 let callbacks = null;
 let state = ConnectionState.NOT_CONNECTED;
+let initialRelease: MutexInterface.Releaser | null = null;
+let lock = new Mutex();
 
 function useSocketConnection() {
   async function init(authProvider: AuthProvider, onSocketLogin?: Function) {
+    initialRelease = await lock.acquire();
     try {
       // @ts-ignore
       ethersProvider = new BrowserProvider(authProvider);
@@ -41,13 +46,11 @@ function useSocketConnection() {
     );
   }
 
-  function sendMessage(id: number, data?: any) {
-    if (callbacks) {
-      // throw new Error("Another request is already in progress");
-    }
+  async function sendMessage(id: number, data?: any) {
+    const release = await lock.acquire();
     return new Promise((resolve, reject) => {
       // @ts-ignore
-      callbacks = [resolve, reject];
+      callbacks = [resolve, release, reject];
       socket.send(Buffer.concat([Uint8Array.from([id]), msgpack(data)]));
     });
   }
@@ -60,8 +63,10 @@ function useSocketConnection() {
     if (data.error) {
       if (callbacks) {
         // @ts-ignore
-        const [, reject] = callbacks;
+        const [, release, reject] = callbacks;
         callbacks = null;
+        // @ts-ignore
+        release();
         // @ts-ignore
         reject(data.msg);
       }
@@ -83,13 +88,16 @@ function useSocketConnection() {
         if (data.login) {
           state = ConnectionState.AUTHORIZED;
           if (onSocketLogin) onSocketLogin();
+          if (initialRelease) initialRelease();
         }
         break;
       case ConnectionState.AUTHORIZED:
         if (callbacks) {
           // @ts-ignore
-          const [resolve] = callbacks;
+          const [resolve, releaseLock] = callbacks;
           callbacks = null;
+          // @ts-ignore
+          releaseLock();
           // @ts-ignore
           resolve(data);
         }

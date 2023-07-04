@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL = import.meta.env.VITE_ANKR_PREMIUM_API_URL;
+const URL = import.meta.env.VITE_ANKR_PREMIUM_URL;
 
 const ANKR_SERVICE = axios.create({
   baseURL: URL,
