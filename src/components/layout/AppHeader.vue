@@ -85,7 +85,7 @@ const stats = computed(() => {
   <header class="border-b-1 border-jet px-7.5 py-4">
     <div class="container flex justify-between">
       <div class="flex space-x-5 items-center">
-        <img src="@/assets/images/sendit-title.svg" class="h-10" />
+        <img src="@/assets/images/sendit-title.png" class="h-10" />
         <!-- <img
           src="@/assets/images/send-it-logo.png"
           alt="send it logo"

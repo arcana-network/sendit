@@ -88,3 +88,7 @@ body {
 .container {
   @apply max-w-[1440px] mx-auto
 }
+
+.ellipsis {
+  @apply text-ellipsis whitespace-nowrap overflow-hidden;
+}

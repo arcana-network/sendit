@@ -8,11 +8,14 @@ import { truncateAddress } from "@/utils/truncateAddress";
 // import dayjs from "dayjs";
 // import { ethers } from "ethers";
 import historyMock from "@/constants/tx-history.mock";
+import { composeAndSendTweet } from "@/utils/tweet";
+import TweetVerify from "@/components/TweetVerify.vue";
 
 // const route = useRoute();
 // const socket = useSocketConnection();
 
 const history = ref([] as any[]);
+const showTweetVerificationModal = ref(false);
 
 onBeforeMount(() => {
   fetchTxHistory();
@@ -28,6 +31,15 @@ async function fetchTxHistory() {
       ...record,
     };
   });
+}
+
+function shareTweet(record) {
+  const tweet =
+    record.txStatus === "sent"
+      ? `Just did a crypto transfer on #SendIt! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `
+      : `Just received a crypto transfer on #SendIt! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `;
+  composeAndSendTweet(tweet);
+  showTweetVerificationModal.value = true;
 }
 </script>
 
@@ -45,14 +57,14 @@ async function fetchTxHistory() {
       class="flex-col bg-eerie-black rounded-[10px] border border-jet mx-8 my-5 overflow-hidden"
     >
       <div
-        class="hidden md:grid leaderboard-table-header text-xs text-philippine-gray py-4 px-6"
+        class="hidden md:grid leaderboard-table-header text-[12px] text-philippine-gray py-4 px-6"
       >
         <div class="leaderboard-table-header-item">Date</div>
         <div class="leaderboard-table-header-item">Amount</div>
         <div class="leaderboard-table-header-item">Social ID</div>
         <div class="leaderboard-table-header-item">Wallet Address</div>
         <div class="leaderboard-table-header-item">Sendit Link</div>
-        <div class="leaderboard-table-header-item">Transaction Status</div>
+        <div class="leaderboard-table-header-item">Tx Status</div>
         <div class="leaderboard-table-header-item">Points</div>
         <div class="leaderboard-table-header-item">Share</div>
         <div class="leaderboard-table-header-item"></div>
@@ -63,9 +75,9 @@ async function fetchTxHistory() {
       <hr class="border-jet border-0 border-b-1" />
       <div v-if="history.length">
         <div class="hidden md:block px-2 py-4">
-          <div class="rest-rankers px-1 py-3">
+          <div class="px-1 py-3">
             <div
-              class="grid leaderboard-table-row px-3 py-2 text-sm rounded-[5px] border-1 border-transparent hover:border-white hover:bg-[#464646]"
+              class="grid leaderboard-table-row px-3 py-2 text-sm rounded-[5px] hover:bg-[#464646]"
               v-for="record in history"
               :key="record.txHash"
             >
@@ -73,20 +85,26 @@ async function fetchTxHistory() {
               <div class="leaderboard-table-row-item">
                 {{ record.amount.value }} {{ record.amount.currency }}
               </div>
-              <div class="leaderboard-table-row-item">
+              <div
+                class="leaderboard-table-row-item ellipsis"
+                :title="record.socialId"
+              >
                 {{ record.socialId }}
               </div>
               <div
-                class="leaderboard-table-row-item"
+                class="leaderboard-table-row-item ellipsis"
                 :title="record.walletAddress"
               >
                 {{ truncateAddress(record.walletAddress) }}
               </div>
-              <div class="leaderboard-table-row-item">
+              <div
+                class="leaderboard-table-row-item ellipsis"
+                :title="getLink(record)"
+              >
                 {{ getLink(record) }}
               </div>
               <div
-                class="leaderboard-table-row-item flex justify-between w-[6rem]"
+                class="leaderboard-table-row-item flex justify-between w-[6rem] capitalize"
               >
                 {{ record.txStatus }}
               </div>
@@ -94,17 +112,34 @@ async function fetchTxHistory() {
                 {{ record.points }}
               </div>
               <div v-else class="leaderboard-table-row-item">-</div>
-              <div class="leaderboard-table-row-item">Share on Twitter</div>
-              <div class="leaderboard-table-row-item">Earn 40 XP</div>
+              <div class="leaderboard-table-row-item">
+                <button
+                  class="underline"
+                  v-if="!record.isSharedOnTwitter"
+                  @click.stop="shareTweet(record)"
+                >
+                  Share on Twitter
+                </button>
+                <span v-else class="text-philippine-gray"
+                  >Shared on Twitter</span
+                >
+              </div>
+              <div
+                v-if="!record.isSharedOnTwitter"
+                class="leaderboard-table-row-item text-[#659CFF] text-[10px] bg-[#293C5F] px-1 rounded-[5px]"
+              >
+                Earn 40 XP
+              </div>
+              <div v-else></div>
             </div>
           </div>
         </div>
-        <!-- <div class="block md:hidden">
+        <div class="block md:hidden">
           <div
-            v-for="ranker in rankers"
-            :key="ranker.rank"
+            v-for="(record, index) in history"
+            :key="record.txHash"
             class="flex"
-            :class="{ 'border-jet border-0 border-t-1': ranker.rank !== 1 }"
+            :class="{ 'border-jet border-0 border-t-1': index !== 0 }"
           >
             <div
               class="relative border-0 border-r-1 border-jet bg-[#151515] w-[60px] flex justify-center items-center"
@@ -150,7 +185,7 @@ async function fetchTxHistory() {
               </div>
             </div>
           </div>
-        </div> -->
+        </div>
       </div>
       <div
         v-else
@@ -159,13 +194,18 @@ async function fetchTxHistory() {
         No rankings yet.
       </div>
     </div>
+    <TweetVerify
+      v-if="showTweetVerificationModal"
+      @close="showTweetVerificationModal = false"
+      :xp="40"
+    />
   </div>
 </template>
 
 <style scoped>
 .leaderboard-table-header,
 .leaderboard-table-row {
-  grid-template-columns: 1fr 1fr 2fr 1fr 2fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 10% 8% 12% 13% 20% 7% 5% 10% 5%;
   grid-gap: 1rem;
 }
 
