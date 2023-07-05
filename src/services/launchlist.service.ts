@@ -2,6 +2,7 @@ import axios from "axios";
 
 type LaunchListUser = {
   email: string;
+  ref?: string;
 };
 
 export async function addUserToLaunchList(user: LaunchListUser) {
@@ -18,3 +19,5 @@ export async function addUserToLaunchList(user: LaunchListUser) {
     throw e;
   }
 }
+
+export type { LaunchListUser };

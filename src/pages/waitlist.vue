@@ -3,9 +3,14 @@ import AppHeader from "@/components/layout/AppHeader.vue";
 import { computed, ref } from "vue";
 import { isValidEmail } from "@/utils/validation";
 import { composeAndSendTweet } from "@/utils/tweet";
-import { addUserToLaunchList } from "@/services/launchlist.service";
+import {
+  addUserToLaunchList,
+  type LaunchListUser,
+} from "@/services/launchlist.service";
 import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
+import { useRoute } from "vue-router";
+import { router } from "@/router";
 
 const hasStartedTyping = ref(false);
 const email = ref("");
@@ -13,6 +18,7 @@ const submissionSuccess = ref(false);
 const serverError = ref(false);
 const loaderStore = useLoaderStore();
 const toast = useToast();
+const route = useRoute();
 
 const error = computed(() => {
   if (hasStartedTyping.value) {
@@ -43,7 +49,13 @@ const error = computed(() => {
 async function handleUserSubmission() {
   try {
     loaderStore.showLoader("Adding to waitlist...");
-    await addUserToLaunchList({ email: email.value });
+    const user: LaunchListUser = {
+      email: email.value,
+    };
+    if (route.query.ref) {
+      user.ref = route.query.ref as string;
+    }
+    await addUserToLaunchList(user);
     submissionSuccess.value = true;
   } catch (e) {
     serverError.value = true;
