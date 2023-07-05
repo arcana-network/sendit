@@ -82,7 +82,7 @@ const stats = computed(() => {
 </script>
 
 <template>
-  <header class="border-b-1 border-jet px-7.5 py-4">
+  <header class="border-b-1 border-jet bg-black px-7.5 py-4">
     <div class="container flex justify-between">
       <div class="flex space-x-5 items-center">
         <img src="@/assets/images/sendit-title.svg" class="h-10" />
