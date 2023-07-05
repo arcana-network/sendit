@@ -1,36 +1,17 @@
 <script lang="ts" setup>
 import Overlay from "@/components/overlay.vue";
 import { ref, computed } from "vue";
-import { toASCII } from "punycode";
+import { isValidEmail } from "@/utils/validation";
 import useSocketConnection from "@/use/socketConnection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
+import useLoaderStore from "@/stores/loader";
+import { useToast } from "vue-toastification";
 
 const emit = defineEmits(["close"]);
 
 const email = ref("");
-
-function isValidEmail(email: string) {
-  if (email.includes("@")) {
-    const splitEmails = email.split("@");
-    let decodedEmail = "";
-    if (
-      splitEmails[0].startsWith(".") ||
-      splitEmails[0].endsWith(".") ||
-      splitEmails[0].length === 0
-    ) {
-      return false;
-    }
-    if (splitEmails[1].length > 0) {
-      decodedEmail = `@${toASCII(splitEmails[1])}`;
-    } else {
-      return false;
-    }
-    return /^(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([\w]{2,24}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i.test(
-      decodedEmail
-    );
-  }
-  return false;
-}
+const loader = useLoaderStore();
+const toast = useToast();
 
 const areEmailsValid = computed(() => {
   if (!email.value.trim()) return false;
@@ -47,7 +28,10 @@ async function handleEmailInvite() {
     const message = {
       emails: email.value.split(",").map((e) => e.trim()),
     };
+    loader.showLoader("Sending invites...");
     await socket.sendMessage(SOCKET_IDS.EMAIL_INVITE, message);
+    loader.hideLoader();
+    toast.success("Invites sent");
     emit("close");
   } else {
     alert("One or more emails are not valid");

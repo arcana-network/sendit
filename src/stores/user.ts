@@ -19,14 +19,17 @@ const useUserStore = defineStore("user", {
   actions: {
     async fetchUserPointsAndRank() {
       const socket = useSocketConnection();
-      const response = await socket.sendMessage(SOCKET_IDS.GET_PROFILE, null);
+      const response = (await socket.sendMessage(
+        SOCKET_IDS.GET_PROFILE,
+        null
+      )) as any;
       this.points = response.points;
-      const leaderboardResponse = await socket.sendMessage(
+      const leaderboardResponse = (await socket.sendMessage(
         SOCKET_IDS.GET_LEADERBOARD,
         {
           ltype: LEADERBOARD_TYPES.WEEKLY,
         }
-      );
+      )) as any;
       this.rank = leaderboardResponse.user_rank;
     },
   },

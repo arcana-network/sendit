@@ -18,7 +18,7 @@ async function connectToArcana() {
 </script>
 
 <template>
-  <div class="flex h-[100vh]">
+  <div class="flex h-[100vh] container">
     <section class="w-1/2 flex flex-col justify-center items-center relative">
       <img
         :src="sendItLogo"

@@ -1,61 +1,78 @@
-import { createWebHistory, createRouter } from "vue-router";
+import { createWebHistory, createRouter, RouteRecordRaw } from "vue-router";
+import Waitlist from "@/pages/waitlist.vue";
+import App from "@/pages/app.vue";
 
-import Login from "@/pages/login.vue";
-import Private from "@/pages/private/index.vue";
-import Send from "@/pages/private/transaction/send/index.vue";
-import Rewards from "@/pages/private/rewards/index.vue";
-import Leaderboard from "@/pages/private/leaderboard/index.vue";
-import History from "@/pages/private/transaction/history/index.vue";
-import MyRewards from "@/pages/private/rewards/my-rewards/index.vue";
-import RedeemXP from "@/pages/private/rewards/redeem/index.vue";
-import EarnXP from "@/pages/private/rewards/earn/index.vue";
-
-const routes = [
-  { path: "/login", component: Login, name: "Login" },
+const routes: RouteRecordRaw[] = [
   {
+    name: "Waitlist",
     path: "/",
-    component: Private,
-    name: "Private",
+    component: Waitlist,
+  },
+  {
+    name: "App",
+    path: "/app",
+    component: App,
     children: [
       {
-        name: "Send",
-        path: "transaction/send",
-        component: Send,
+        path: "login",
+        component: () => import("@/pages/login.vue"),
+        name: "Login",
       },
       {
-        name: "History",
-        path: "transactions",
-        component: History,
-      },
-      {
-        name: "Leaderboard",
-        path: "leaderboard",
-        component: Leaderboard,
-      },
-      {
-        name: "Rewards",
-        path: "rewards",
-        component: Rewards,
-        redirect: { name: "My Rewards" },
+        path: "",
+        component: () => import("@/pages/private/index.vue"),
+        name: "Private",
         children: [
           {
-            name: "My Rewards",
-            path: "",
-            component: MyRewards,
+            name: "Send",
+            path: "transaction/send",
+            component: () =>
+              import("@/pages/private/transaction/send/index.vue"),
           },
           {
-            name: "Redeem XP",
-            path: "redeem",
-            component: RedeemXP,
+            name: "History",
+            path: "transaction/history",
+            component: () =>
+              import("@/pages/private/transaction/history/index.vue"),
           },
           {
-            name: "Earn XP",
-            path: "earn",
-            component: EarnXP,
+            name: "Leaderboard",
+            path: "transaction/history",
+            component: () => import("@/pages/private/leaderboard/index.vue"),
+          },
+          {
+            name: "Rewards",
+            path: "rewards",
+            component: () => import("@/pages/private/rewards/index.vue"),
+            redirect: { name: "My Rewards" },
+            children: [
+              {
+                name: "My Rewards",
+                path: "my-rewards",
+                component: () =>
+                  import("@/pages/private/rewards/my-rewards/index.vue"),
+              },
+              {
+                name: "Redeem XP",
+                path: "redeem",
+                component: () =>
+                  import("@/pages/private/rewards/redeem/index.vue"),
+              },
+              {
+                name: "Earn XP",
+                path: "earn",
+                component: () =>
+                  import("@/pages/private/rewards/earn/index.vue"),
+              },
+            ],
           },
         ],
       },
     ],
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: { name: "Waitlist" },
   },
 ];
 

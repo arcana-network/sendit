@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from "vue";
-import { useRoute } from "vue-router";
-import StarIcon from "@/components/StarIcon.vue";
-import useSocketConnection from "@/use/socketConnection";
-import { SOCKET_IDS, LEADERBOARD_TYPES } from "@/constants/socket-ids";
+// import { useRoute } from "vue-router";
+// import StarIcon from "@/components/StarIcon.vue";
+// import useSocketConnection from "@/use/socketConnection";
+// import { SOCKET_IDS, LEADERBOARD_TYPES } from "@/constants/socket-ids";
 import { truncateAddress } from "@/utils/truncateAddress";
-import dayjs from "dayjs";
-import { ethers } from "ethers";
+// import dayjs from "dayjs";
+// import { ethers } from "ethers";
 import historyMock from "@/constants/tx-history.mock";
 
-const route = useRoute();
-const socket = useSocketConnection();
+// const route = useRoute();
+// const socket = useSocketConnection();
 
-const history = ref([]);
+const history = ref([] as any[]);
 
 onBeforeMount(() => {
   fetchTxHistory();
