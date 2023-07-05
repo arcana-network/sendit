@@ -37,7 +37,7 @@ const routes: RouteRecordRaw[] = [
           },
           {
             name: "Leaderboard",
-            path: "transaction/history",
+            path: "transaction/leaderboard",
             component: () => import("@/pages/private/leaderboard/index.vue"),
           },
           {
