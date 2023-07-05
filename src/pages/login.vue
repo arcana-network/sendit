@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useUserStore from "@/stores/user";
-import sendItLogo from "@/assets/images/send-it-logo.png";
+import AppHeader from "@/components/layout/AppHeader.vue";
 import useAuthStore from "@/stores/auth";
 import useArcanaAuth from "@/use/arcanaAuth";
 import arcanaLogo from "@/assets/images/arcana.svg";
@@ -20,11 +20,7 @@ async function connectToArcana() {
 <template>
   <div class="flex h-[100vh] container">
     <section class="w-1/2 flex flex-col justify-center items-center relative">
-      <img
-        :src="sendItLogo"
-        alt="send it logo"
-        class="w-12 h-12 absolute top-4 left-4"
-      />
+      <AppHeader hide-nav />
       <section class="min-w-96 space-y-4 flex flex-col items-center">
         <header class="space-y-0.5 text-center">
           <h1 class="text-3.5xl text-white font-bold">Welcome to SendIt</h1>

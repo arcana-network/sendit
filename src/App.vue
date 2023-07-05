@@ -18,7 +18,8 @@ const loaderStore = useLoaderStore();
 
 <style scoped>
 main {
-  background: url("@/assets/images/bg.png");
+  background-color: #e0e0e0;
+  background-image: url("@/assets/images/bg.png");
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
