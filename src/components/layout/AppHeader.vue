@@ -145,7 +145,7 @@ const stats = computed(() => {
               class="min-w-fit"
             />
             <div
-              class="absolute top-10 -right-10"
+              class="absolute top-10 -right-10 z-[999]"
               v-if="showNotifications"
               ref="notificationMenu"
             >
