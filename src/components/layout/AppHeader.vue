@@ -82,15 +82,10 @@ const stats = computed(() => {
 </script>
 
 <template>
-  <header class="border-b-1 border-jet px-7.5 py-4">
+  <header class="border-b-1 border-jet bg-black px-7.5 py-4">
     <div class="container flex justify-between">
       <div class="flex space-x-5 items-center">
         <img src="@/assets/images/sendit-title.png" class="h-10" />
-        <!-- <img
-          src="@/assets/images/send-it-logo.png"
-          alt="send it logo"
-          class="w-12 h-12"
-        /> -->
         <nav
           v-if="!props.hideNav"
           class="flex space-x-5 max-lg:hidden items-center"

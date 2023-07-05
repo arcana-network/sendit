@@ -4,14 +4,16 @@ import sendVia from "@/constants/sendVia";
 import useSendStore from "@/stores/send";
 import useAuthStore from "@/stores/auth";
 import useLoaderStore from "@/stores/loader";
-import { getAccountBalance } from "@/service/ankr.service.ts";
+import { getAccountBalance } from "@/services/ankr.service.ts";
 import useArcanaAuth from "@/use/arcanaAuth";
 import {
   nativeTokenTransfer,
   erc20TokenTransfer,
-} from "@/service/send.service.ts";
+} from "@/services/send.service.ts";
 import { getBytes } from "ethers";
 import useSocketConnection from "@/use/socketConnection";
+
+const emits = defineEmits(["transaction-successful"]);
 
 const sendStore = useSendStore();
 const authStore = useAuthStore();
@@ -98,6 +100,7 @@ async function proceed() {
     const fromEmail = authStore.userInfo.email;
     //@ts-ignore
     await messageArcana(hash, to, fromEmail, toEmail, chainId);
+    emits("transaction-successful");
   } catch (error) {
     console.log(error);
   } finally {
@@ -223,3 +226,4 @@ const disableSubmit = computed(() => {
     </form>
   </div>
 </template>
+@/services/send.service
