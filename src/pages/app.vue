@@ -8,6 +8,7 @@ import { useRouter } from "vue-router";
 import useAuthStore from "@/stores/auth";
 import useRewardsStore from "@/stores/rewards";
 import useUserStore from "@/stores/user";
+import useNotificationStore from "@/stores/notification";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -16,6 +17,7 @@ const auth = useArcanaAuth();
 const socketConnection = useSocketConnection();
 const rewardsStore = useRewardsStore();
 const userStore = useUserStore();
+const notificationStore = useNotificationStore();
 
 async function initAuth() {
   loaderStore.showLoader("initializing...");
@@ -51,6 +53,7 @@ async function onWalletConnect() {
   await getUserInfo();
   rewardsStore.fetchRewards(userStore.address);
   userStore.fetchUserPointsAndRank();
+  notificationStore.getNotifications();
 }
 
 async function onWalletDisconnect() {
