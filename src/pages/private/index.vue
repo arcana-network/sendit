@@ -14,13 +14,3 @@ import AppFooter from "@/components/layout/AppFooter.vue";
     </div>
   </div>
 </template>
-
-<style scoped>
-.private-page {
-  background: linear-gradient(
-    68.66deg,
-    rgba(38, 38, 38, 0.8) 0%,
-    rgba(14, 14, 14, 0) 100%
-  );
-}
-</style>
