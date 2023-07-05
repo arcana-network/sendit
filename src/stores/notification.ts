@@ -24,6 +24,9 @@ const useNotificationStore = defineStore("notification", {
     notificationList(state) {
       return state.notifications.filter((n) => !n.read);
     },
+    notificationCount(state) {
+      return state.notifications.length;
+    },
   },
   actions: {
     async getNotifications() {
@@ -37,7 +40,19 @@ const useNotificationStore = defineStore("notification", {
       }));
     },
     async markAllAsRead() {
-      console.log("markAllAsRead");
+      const payload = {
+        ids: [0],
+      };
+      const response = await socket.sendMessage(
+        SOCKET_IDS.NOTIFICATION_MARK_AS_READ,
+        payload
+      );
+      if (response.ok) {
+        this.notifications = this.notifications.map((n) => ({
+          ...n,
+          read: true,
+        }));
+      }
     },
     async markAsRead(notificationId: string) {
       const payload = {
