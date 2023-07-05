@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from "vue";
-// import { useRoute } from "vue-router";
-// import StarIcon from "@/components/StarIcon.vue";
-// import useSocketConnection from "@/use/socketConnection";
-// import { SOCKET_IDS, LEADERBOARD_TYPES } from "@/constants/socket-ids";
+import useSocketConnection from "@/use/socketConnection";
+import { SOCKET_IDS } from "@/constants/socket-ids";
 import { truncateAddress } from "@/utils/truncateAddress";
 // import dayjs from "dayjs";
 // import { ethers } from "ethers";
@@ -11,8 +9,7 @@ import historyMock from "@/constants/tx-history.mock";
 import { composeAndSendTweet } from "@/utils/tweet";
 import TweetVerify from "@/components/TweetVerify.vue";
 
-// const route = useRoute();
-// const socket = useSocketConnection();
+const socket = useSocketConnection();
 
 const history = ref([] as any[]);
 const showTweetVerificationModal = ref(false);
@@ -26,6 +23,15 @@ function getLink(record) {
 }
 
 async function fetchTxHistory() {
+  const message = {
+    offset: 0,
+    count: 500,
+  };
+  const txHistory = await socket.sendMessage(
+    SOCKET_IDS.GET_TX_HISTORY,
+    message
+  );
+  console.log({ txHistory });
   history.value = historyMock.map((record) => {
     return {
       ...record,
@@ -70,7 +76,7 @@ function shareTweet(record) {
         <div class="leaderboard-table-header-item"></div>
       </div>
       <div class="grid md:hidden py-4 px-6 uppercase font-bold text-xs">
-        Rankings
+        Transactions
       </div>
       <hr class="border-jet border-0 border-b-1" />
       <div v-if="history.length">
@@ -144,44 +150,25 @@ function shareTweet(record) {
             <div
               class="relative border-0 border-r-1 border-jet bg-[#151515] w-[60px] flex justify-center items-center"
             >
-              <span
-                class="text-[24px] font-bold"
-                :class="{
-                  'text-[#b8a26a]': ranker.rank === 1,
-                  'text-[#7fc987]': ranker.rank === 2,
-                  'text-[#7896cc]': ranker.rank === 3,
-                }"
-              >
-                {{ ranker.rank }}
+              <span class="text-[24px] font-bold">
+                {{ record.rank }}
               </span>
               <div
                 class="absolute star-icon top-3 -right-2"
-                v-if="[1, 2, 3].includes(ranker.rank)"
-                :class="{
-                  'before:bg-[#3c331d] text-[#eeb113]': ranker.rank === 1,
-                  'before:bg-[#1e3020] text-[#51c7f5]': ranker.rank === 2,
-                  'before:bg-[#1d2734] text-[#568df0]': ranker.rank === 3,
-                }"
+                v-if="[1, 2, 3].includes(record.rank)"
               >
                 <StarIcon class="relative h-4 w-4" />
               </div>
             </div>
-            <div
-              class="px-4 py-3 flex flex-col gap-2"
-              :class="{
-                'text-[#b8a26a]': ranker.rank === 1,
-                'text-[#7fc987]': ranker.rank === 2,
-                'text-[#7896cc]': ranker.rank === 3,
-              }"
-            >
-              <div class="text-sm" :title="ranker.walletAddress">
-                {{ truncateAddress(ranker.walletAddress) }}
+            <div class="px-4 py-3 flex flex-col gap-2">
+              <div class="text-sm" :title="record.walletAddress">
+                {{ truncateAddress(record.walletAddress) }}
               </div>
               <div class="text-xs">
-                {{ ranker.xp }} XP & {{ ranker.transactions }} Txn
+                {{ record.xp }} XP & {{ record.transactions }} Txn
               </div>
               <div class="text-[10px] text-philippine-gray">
-                {{ ranker.joinDate }}
+                {{ record.joinDate }}
               </div>
             </div>
           </div>

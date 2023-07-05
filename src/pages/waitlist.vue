@@ -10,7 +10,6 @@ import {
 import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
 import { useRoute } from "vue-router";
-import { router } from "@/router";
 
 const hasStartedTyping = ref(false);
 const email = ref("");
@@ -137,10 +136,11 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
             src="@/assets/images/icons/waitlist-check.svg"
             class="h-12 w-12"
           />
-          <span class="font-bold text-[1.5rem]">You're On!</span>
+          <span class="font-bold text-[1.5rem]">Added to waitlist!</span>
           <span
             class="text-philippine-gray text-[0.875rem] text-center mt-4 mb-8"
-            >Give us a shoutout on Twitter and help spread the love!</span
+            >You will be informed over email once you are whitelisted for
+            access!</span
           >
           <button
             class="uppercase font-bold text-[12px] p-3 border-1 border-white rounded-[5px] w-full"
