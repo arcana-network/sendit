@@ -10,17 +10,16 @@ const loaderStore = useLoaderStore();
 </script>
 
 <template>
-  <main class="text-white h-full min-h-screen relative">
+  <main class="bg-[#0e0e0e] text-white h-full min-h-screen relative">
+    <img
+      src="@/assets/images/bg-top-right.png"
+      class="absolute top-[72px] right-0 z-0 filter grayscale w-[33vw]"
+    />
+    <img
+      src="@/assets/images/bg-bottom-left.png"
+      class="absolute bottom-0 left-0 z-0 filter grayscale w-[33vw]"
+    />
     <FullScreenLoader v-if="loaderStore.show" />
     <RouterView class="relative z-10"> </RouterView>
   </main>
 </template>
-
-<style scoped>
-main {
-  background: url("@/assets/images/bg.png");
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: cover;
-}
-</style>

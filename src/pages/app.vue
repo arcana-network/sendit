@@ -32,8 +32,7 @@ async function initAuth() {
     });
     auth.getProvider().on("connect", onWalletConnect);
     auth.getProvider().on("disconnect", onWalletDisconnect);
-    // @ts-ignore
-    if (isLoggedIn) authStore.setLoginStatus(isLoggedIn);
+    if (isLoggedIn) authStore.setLoginStatus(true);
     else router.push({ name: "Login" });
   } catch (error) {
     console.error({ error });
@@ -43,23 +42,33 @@ async function initAuth() {
 }
 
 async function initSocketConnect() {
+  const account = {
+    verifier: authStore.userInfo.loginType,
+    verifier_id: authStore.userInfo.id,
+  };
   // @ts-ignore
-  await socketConnection.init(auth.getProvider(), () => {
+  await socketConnection.init(auth.getProvider(), account, () => {
     authStore.setSocketLoginStatus(true);
   });
 }
 
 async function getUserInfo() {
-  authStore.setUserInfo(await auth.getUser());
+  const userInfo = await auth.getUser();
+  authStore.setUserInfo(userInfo);
+  userStore.address = userInfo.address;
 }
 
 async function onWalletConnect() {
-  authStore.setLoginStatus(await auth.isLoggedIn());
-  await initSocketConnect();
-  await getUserInfo();
-  rewardsStore.fetchRewards(userStore.address);
-  userStore.fetchUserPointsAndRank();
-  notificationStore.getNotifications();
+  const isLoggedIn = await auth.isLoggedIn();
+  if (isLoggedIn) {
+    authStore.setLoginStatus(isLoggedIn);
+    await getUserInfo();
+    await initSocketConnect();
+    rewardsStore.fetchRewards(userStore.address);
+    userStore.fetchUserPointsAndRank();
+    notificationStore.getNotifications();
+  }
+  loaderStore.hideLoader();
 }
 
 async function onWalletDisconnect() {
@@ -86,7 +95,7 @@ const showFullScreenLoader = computed(() => {
 </script>
 
 <template>
-  <main class="bg-black text-white h-full min-h-screen">
+  <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
     <RouterView v-if="isAuthInitialized"> </RouterView>
   </main>
