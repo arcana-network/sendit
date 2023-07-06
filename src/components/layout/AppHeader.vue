@@ -101,25 +101,6 @@ const stats = computed(() => {
               {{ menu.label }}
             </router-link>
           </nav>
-          <nav
-            v-if="!props.hideNav"
-            class="flex justify-center relative lg:hidden"
-          >
-            <button @click.stop="toggleMobileMenu">
-              <img
-                src="@/assets/images/icons/menu.svg"
-                alt="menu"
-                class="w-7 h-7"
-              />
-            </button>
-            <div
-              class="absolute top-10 left-0"
-              v-if="showMobileMenu"
-              ref="mobileMenu"
-            >
-              <MobileMenu />
-            </div>
-          </nav>
         </div>
         <div v-if="!props.hideNav" class="flex items-center space-x-5">
           <div class="flex space-x-3 max-md:hidden">
@@ -168,6 +149,25 @@ const stats = computed(() => {
               </div>
             </button>
           </div>
+          <nav
+            v-if="!props.hideNav"
+            class="flex justify-center relative lg:hidden"
+          >
+            <button @click.stop="toggleMobileMenu">
+              <img
+                src="@/assets/images/icons/menu.svg"
+                alt="menu"
+                class="w-7 h-7"
+              />
+            </button>
+            <div
+              class="absolute top-10 right-0"
+              v-if="showMobileMenu"
+              ref="mobileMenu"
+            >
+              <MobileMenu />
+            </div>
+          </nav>
         </div>
       </div>
     </header>

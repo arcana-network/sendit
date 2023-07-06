@@ -136,7 +136,7 @@ function shareTweet(record) {
                 >
                   Share on Twitter
                 </button>
-                <span v-else class="text-philippine-gray"
+                <span v-else class="text-philippine-gray text-center"
                   >Shared on Twitter</span
                 >
               </div>
@@ -154,33 +154,53 @@ function shareTweet(record) {
           <div
             v-for="(record, index) in history"
             :key="record.txHash"
-            class="flex"
+            class="flex p-4 w-full"
             :class="{ 'border-jet border-0 border-t-1': index !== 0 }"
           >
-            <div
-              class="relative border-0 border-r-1 border-jet bg-[#151515] w-[60px] flex justify-center items-center"
-            >
-              <span class="text-[24px] font-bold">
-                {{ record.rank }}
-              </span>
+            <div class="px-2 flex flex-col gap-1">
               <div
-                class="absolute star-icon top-3 -right-2"
-                v-if="[1, 2, 3].includes(record.rank)"
+                class="text-sm font-bold text-[14px]"
+                :title="record.walletAddress"
               >
-                <StarIcon class="relative h-4 w-4" />
+                <span class="capitalize">{{ record.txStatus }}</span
+                >&nbsp;
+                <span
+                  >{{ record.amount.value }} {{ record.amount.currency }}</span
+                >
               </div>
-            </div>
-            <div class="px-4 py-3 flex flex-col gap-2">
-              <div class="text-sm" :title="record.walletAddress">
-                {{ truncateAddress(record.walletAddress) }}
+              <div class="text-xs ellipsis">
+                <span class="text-philippine-gray"
+                  >{{ record.txStatus === "sent" ? "To" : "From" }}:</span
+                >&nbsp;
+                <span>{{ record.socialId }}</span>
               </div>
-              <div class="text-xs">
-                {{ record.xp }} XP & {{ record.transactions }} Txn
+              <div class="text-xs ellipsis">
+                <span class="text-philippine-gray">Wallet Address:</span>&nbsp;
+                <span>{{ record.walletAddress }}</span>
+              </div>
+              <div class="text-xs ellipsis">
+                <span class="text-philippine-gray">SendIt Link:</span>&nbsp;
+                <span>{{ record.link }}</span>
+              </div>
+              <div class="text-xs ellipsis">
+                <span class="text-philippine-gray">{{ record.date }}</span>
               </div>
               <div class="text-[10px] text-philippine-gray">
                 {{ record.joinDate }}
               </div>
             </div>
+            <button
+              v-if="!record.isSharedOnTwitter"
+              class="flex flex-col p-3 rounded-[5px] bg-[#1a1a1a] justify-center items-center ml-auto"
+              @click.stop="shareTweet(record)"
+            >
+              <img src="@/assets/images/icons/twitter-blue.svg" class="my-3" />
+              <div
+                class="leaderboard-table-row-item text-[#659CFF] text-[10px] bg-[#293C5F] px-2 py-1 rounded-[5px]"
+              >
+                Earn 40 XP
+              </div>
+            </button>
           </div>
         </div>
       </div>
