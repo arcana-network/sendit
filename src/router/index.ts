@@ -1,5 +1,6 @@
 import { createWebHistory, createRouter, RouteRecordRaw } from "vue-router";
 import Waitlist from "@/pages/waitlist.vue";
+import Invite from "@/pages/invite.vue";
 import App from "@/pages/app.vue";
 
 const routes: RouteRecordRaw[] = [
@@ -7,6 +8,11 @@ const routes: RouteRecordRaw[] = [
     name: "Waitlist",
     path: "/",
     component: Waitlist,
+  },
+  {
+    name: "Invite",
+    path: "/invite",
+    component: Invite,
   },
   {
     name: "App",

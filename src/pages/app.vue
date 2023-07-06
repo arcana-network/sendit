@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted, watch, ref } from "vue";
 import useArcanaAuth from "@/use/arcanaAuth";
 import useSocketConnection from "@/use/socketConnection";
 import useLoaderStore from "@/stores/loader";
@@ -18,11 +18,13 @@ const socketConnection = useSocketConnection();
 const rewardsStore = useRewardsStore();
 const userStore = useUserStore();
 const notificationStore = useNotificationStore();
+const isAuthInitialized = ref(false);
 
 async function initAuth() {
   loaderStore.showLoader("initializing...");
   try {
     await auth.init();
+    isAuthInitialized.value = true;
     const isLoggedIn = await new Promise((resolve) => {
       setTimeout(async () => {
         resolve(await auth.isLoggedIn());
@@ -69,7 +71,10 @@ onMounted(initAuth);
 watch(
   () => authStore.isLoggedIn,
   async (newValue) => {
-    if (!newValue) router.push({ name: "Login" });
+    if (newValue) {
+      if (router.currentRoute.value.name === "Login")
+        router.push({ name: "Send" });
+    } else router.push({ name: "Login" });
   }
 );
 
@@ -83,6 +88,6 @@ const showFullScreenLoader = computed(() => {
 <template>
   <main class="bg-black text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
-    <RouterView> </RouterView>
+    <RouterView v-if="isAuthInitialized"> </RouterView>
   </main>
 </template>
