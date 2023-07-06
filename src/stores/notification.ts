@@ -8,7 +8,7 @@ const COUNT = 10;
 
 const useNotificationStore = defineStore("notification", {
   state: () => ({
-    notifications: [],
+    notifications: [] as any[],
     offset: 0,
   }),
   getters: {
@@ -43,10 +43,10 @@ const useNotificationStore = defineStore("notification", {
       const payload = {
         ids: [0],
       };
-      const response = await socket.sendMessage(
+      const response = (await socket.sendMessage(
         SOCKET_IDS.NOTIFICATION_MARK_AS_READ,
         payload
-      );
+      )) as any;
       if (response.ok) {
         this.notifications = this.notifications.map((n) => ({
           ...n,
@@ -58,10 +58,10 @@ const useNotificationStore = defineStore("notification", {
       const payload = {
         ids: [notificationId],
       };
-      const response = await socket.sendMessage(
+      const response = (await socket.sendMessage(
         SOCKET_IDS.NOTIFICATION_MARK_AS_READ,
         payload
-      );
+      )) as any;
       if (response.ok) {
         const index = this.notifications.findIndex(
           (n) => n.id === notificationId

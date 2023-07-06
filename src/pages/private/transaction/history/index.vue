@@ -2,7 +2,6 @@
 import { onBeforeMount, ref } from "vue";
 import useSocketConnection from "@/use/socketConnection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
-import { truncateAddress } from "@/utils/truncateAddress";
 // import dayjs from "dayjs";
 // import { ethers } from "ethers";
 import { composeAndSendTweet } from "@/utils/tweet";
