@@ -7,11 +7,9 @@ import { SOCKET_IDS, LEADERBOARD_TYPES } from "@/constants/socket-ids";
 import { truncateAddress } from "@/utils/truncateAddress";
 import dayjs from "dayjs";
 import { ethers } from "ethers";
-import useLoaderStore from "@/stores/loader";
 
 const route = useRoute();
 const socket = useSocketConnection();
-const loader = useLoaderStore();
 
 const rankers = ref([] as any[]);
 

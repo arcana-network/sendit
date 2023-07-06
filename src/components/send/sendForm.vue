@@ -108,7 +108,7 @@ async function proceed() {
     emits("transaction-successful");
   } catch (error) {
     console.log(error);
-    toast.error(error);
+    toast.error(error as string);
   } finally {
     loadStore.hideLoader();
   }

@@ -21,13 +21,28 @@ let state = ConnectionState.NOT_CONNECTED;
 let initialRelease: MutexInterface.Releaser | null = null;
 let lock = new Mutex();
 
+type Account = {
+  verifier: string;
+  verifier_id: string;
+};
+
 function useSocketConnection() {
-  async function init(authProvider: AuthProvider, onSocketLogin?: Function) {
+  let currentAccount: Account = {
+    verifier: "",
+    verifier_id: "",
+  };
+
+  async function init(
+    authProvider: AuthProvider,
+    account: Account,
+    onSocketLogin?: Function
+  ) {
     initialRelease = await lock.acquire();
     try {
       // @ts-ignore
       ethersProvider = new BrowserProvider(authProvider);
       ethersSigner = await ethersProvider.getSigner();
+      currentAccount = account;
       socket = new WebSocket(VITE_API_URL);
       socket.addEventListener("open", onSocketOpen);
       socket.addEventListener("message", (ev: MessageEvent) =>
@@ -42,6 +57,8 @@ function useSocketConnection() {
     socket.send(
       msgpack({
         addr: getBytes(await ethersSigner.getAddress()),
+        verifier: currentAccount.verifier,
+        verifier_id: currentAccount.verifier_id,
       })
     );
   }

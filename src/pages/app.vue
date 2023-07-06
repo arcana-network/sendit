@@ -37,8 +37,12 @@ async function initAuth() {
 }
 
 async function initSocketConnect() {
+  const account = {
+    verifier: authStore.userInfo.loginType,
+    verifier_id: authStore.userInfo.id,
+  };
   // @ts-ignore
-  await socketConnection.init(auth.getProvider(), () => {
+  await socketConnection.init(auth.getProvider(), account, () => {
     authStore.setSocketLoginStatus(true);
   });
 }
@@ -53,8 +57,8 @@ async function onWalletConnect() {
   const isLoggedIn = await auth.isLoggedIn();
   if (isLoggedIn) {
     authStore.setLoginStatus(isLoggedIn);
-    await initSocketConnect();
     await getUserInfo();
+    await initSocketConnect();
     rewardsStore.fetchRewards(userStore.address);
     userStore.fetchUserPointsAndRank();
     notificationStore.getNotifications();
@@ -85,7 +89,7 @@ const showFullScreenLoader = computed(() => {
 </script>
 
 <template>
-  <main class="bg-black text-white h-full min-h-screen">
+  <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
     <RouterView> </RouterView>
   </main>
