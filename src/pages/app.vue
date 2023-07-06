@@ -69,9 +69,7 @@ onMounted(initAuth);
 watch(
   () => authStore.isLoggedIn,
   async (newValue) => {
-    if (newValue) {
-      router.push({ name: "Send" });
-    } else router.push({ name: "Login" });
+    if (!newValue) router.push({ name: "Login" });
   }
 );
 
