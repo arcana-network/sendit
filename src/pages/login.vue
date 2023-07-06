@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import useArcanaAuth from "@/use/arcanaAuth";
 import arcanaLogo from "@/assets/images/arcana.svg";
+import AppHeader from "@/components/layout/AppHeader.vue";
 
 const { connect } = useArcanaAuth();
 
@@ -11,7 +12,7 @@ async function connectToArcana() {
 
 <template>
   <div class="flex flex-col min-h-[100vh]">
-    <AppHeader hide-nav />
+    <AppHeader hide-nav hide-user-data />
     <div class="flex container flex-grow">
       <section class="w-1/2 flex flex-col justify-center items-center relative">
         <section class="min-w-96 space-y-4 flex flex-col items-center">
