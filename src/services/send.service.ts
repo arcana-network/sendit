@@ -13,9 +13,7 @@ async function nativeTokenTransfer(
     to: receiverWalletAddress,
     value: parseUnits(amount, 18),
   });
-  return tx;
-  // Why is the below statement needed?
-  // return await tx.wait()
+  return await tx.wait();
 }
 
 const erc20Abi = [

@@ -12,6 +12,7 @@ import {
 } from "@/services/send.service.ts";
 import { getBytes } from "ethers";
 import useSocketConnection from "@/use/socketConnection";
+import { useToast } from "vue-toastification";
 
 const emits = defineEmits(["transaction-successful"]);
 
@@ -22,6 +23,7 @@ const chainAssets: Ref<any[]> = ref([]);
 const tokenBalance = ref(0);
 const arcanaAuth = useArcanaAuth();
 const socketConnection = useSocketConnection();
+const toast = useToast();
 
 const {
   userInput,
@@ -65,12 +67,14 @@ function messageArcana(
 ) {
   const message = {
     hash: Buffer.from(getBytes(hash)),
-    chainId,
+    chain_id: chainId,
     to: Buffer.from(getBytes(to)),
-    fromEmail,
-    toEmail,
+    from_id: fromEmail,
+    from_verifier: "passwordless",
+    to_id: toEmail,
+    to_verifier: "passwordless",
   };
-
+  console.log({ message });
   return socketConnection.sendMessage(1, message);
 }
 
@@ -85,7 +89,7 @@ async function proceed() {
     const chainId = userInput.value.chain;
     const [tokenSymbol, tokenType] = userInput.value.token.split("-");
     const asset = getSelectedAssets(tokenSymbol, tokenType);
-    const { hash, to } =
+    const tx =
       tokenType === "NATIVE"
         ? await nativeTokenTransfer(senderPublicKey, arcanaProvider, amount)
         : await erc20TokenTransfer(
@@ -95,14 +99,17 @@ async function proceed() {
             //@ts-ignore
             asset.contractAddress
           );
+    const { hash, to } = tx;
     const toEmail = userInput.value.recipientId;
     //@ts-ignore
     const fromEmail = authStore.userInfo.email;
     //@ts-ignore
-    await messageArcana(hash, to, fromEmail, toEmail, chainId);
+    const sendRes = await messageArcana(hash, to, fromEmail, toEmail, chainId);
+    toast.success("Transaction Successful");
     emits("transaction-successful");
   } catch (error) {
     console.log(error);
+    toast.error(error);
   } finally {
     loadStore.hideLoader();
   }
