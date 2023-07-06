@@ -21,7 +21,6 @@ onBeforeMount(() => {
 });
 
 async function fetchLeaderboard(duration: "global" | "weekly" = "global") {
-  loader.showLoader("Fetching leaderboard");
   const message = {
     ltype:
       duration === "weekly"
@@ -41,7 +40,6 @@ async function fetchLeaderboard(duration: "global" | "weekly" = "global") {
       joinDate: dayjs(ranking.join_date).format("DD MMM YYYY"),
     };
   });
-  loader.hideLoader();
 }
 
 watch(

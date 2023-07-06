@@ -84,90 +84,104 @@ const stats = computed(() => {
 </script>
 
 <template>
-  <header class="border-b-1 border-jet bg-black px-7.5 py-4">
-    <div class="container flex justify-between">
-      <div class="flex space-x-5 items-center">
-        <img src="@/assets/images/sendit-title.svg" class="h-10" />
-        <nav
-          v-if="!props.hideNav"
-          class="flex space-x-5 max-lg:hidden items-center"
-        >
-          <router-link
-            v-for="menu in navMenu"
-            :key="menu.label"
-            :to="{ name: menu.routeName }"
+  <div class="flex flex-col">
+    <header class="border-b-1 border-jet bg-black px-7.5 py-4">
+      <div class="container flex justify-between">
+        <div class="flex space-x-5 items-center">
+          <img src="@/assets/images/sendit-title.png" class="h-10" />
+          <nav
+            v-if="!props.hideNav"
+            class="flex space-x-5 max-lg:hidden items-center"
           >
-            {{ menu.label }}
-          </router-link>
-        </nav>
-        <nav
-          v-if="!props.hideNav"
-          class="flex justify-center relative lg:hidden"
-        >
-          <button @click.stop="toggleMobileMenu">
-            <img
-              src="@/assets/images/icons/menu.svg"
-              alt="menu"
-              class="w-7 h-7"
-            />
-          </button>
-          <div
-            class="absolute top-10 left-0"
-            v-if="showMobileMenu"
-            ref="mobileMenu"
-          >
-            <MobileMenu />
-          </div>
-        </nav>
-      </div>
-      <div v-if="!props.hideNav" class="flex items-center space-x-5">
-        <div class="flex space-x-3">
-          <div
-            class="flex items-center space-x-2 p-2.5 border-1 border-jet rounded-xl"
-            v-for="stat in stats"
-            :key="stat.label"
-          >
-            <span class="text-xs">{{ stat.label }}</span>
-            <span class="text-xl">{{ stat.value }}</span>
-          </div>
+            <router-link
+              v-for="menu in navMenu"
+              :key="menu.label"
+              :to="{ name: menu.routeName }"
+            >
+              {{ menu.label }}
+            </router-link>
+          </nav>
         </div>
-        <div class="space-x-3 flex items-center">
-          <button>Help</button>
-          <button class="relative" @click.stop="toggleNotifications">
-            <span
-              v-if="notificationStore.areUnreadNotifications"
-              class="h-2.5 w-2.5 rounded-full bg-vivid-vermilion absolute animate-bounce"
-            >
-            </span>
-            <img
-              src="@/assets/images/icons/notification.svg"
-              alt="notification"
-              class="min-w-fit"
-            />
+        <div v-if="!props.hideNav" class="flex items-center space-x-5">
+          <div class="flex space-x-3 max-md:hidden">
             <div
-              class="absolute top-10 -right-10 z-[999]"
-              v-if="showNotifications"
-              ref="notificationMenu"
+              class="flex items-center space-x-2 p-2.5 border-1 border-jet rounded-xl"
+              v-for="stat in stats"
+              :key="stat.label"
             >
-              <Notifications />
+              <span class="text-xs">{{ stat.label }}</span>
+              <span class="text-xl">{{ stat.value }}</span>
             </div>
-          </button>
-          <button class="relative" @click.stop="toggleProfileMenu">
-            <img
-              src="@/assets/images/icons/profile.svg"
-              alt="profile"
-              class="min-w-fit"
-            />
+          </div>
+          <div class="space-x-3 flex items-center">
+            <button>Help</button>
+            <button class="relative" @click.stop="toggleNotifications">
+              <span
+                v-if="notificationStore.areUnreadNotifications"
+                class="h-2.5 w-2.5 rounded-full bg-vivid-vermilion absolute animate-bounce"
+              >
+              </span>
+              <img
+                src="@/assets/images/icons/notification.svg"
+                alt="notification"
+                class="min-w-fit"
+              />
+              <div
+                class="absolute top-10 -right-10 z-[999]"
+                v-if="showNotifications"
+                ref="notificationMenu"
+              >
+                <Notifications />
+              </div>
+            </button>
+            <button class="relative" @click.stop="toggleProfileMenu">
+              <img
+                src="@/assets/images/icons/profile.svg"
+                alt="profile"
+                class="min-w-fit"
+              />
+              <div
+                class="absolute top-10 right-0"
+                v-if="showProfile"
+                ref="profileMenu"
+              >
+                <Profile />
+              </div>
+            </button>
+          </div>
+          <nav
+            v-if="!props.hideNav"
+            class="flex justify-center relative lg:hidden"
+          >
+            <button @click.stop="toggleMobileMenu">
+              <img
+                src="@/assets/images/icons/menu.svg"
+                alt="menu"
+                class="w-7 h-7"
+              />
+            </button>
             <div
               class="absolute top-10 right-0"
-              v-if="showProfile"
-              ref="profileMenu"
+              v-if="showMobileMenu"
+              ref="mobileMenu"
             >
-              <Profile />
+              <MobileMenu />
             </div>
-          </button>
+          </nav>
+        </div>
+      </div>
+    </header>
+    <div class="border-b-1 border-jet min-md:hidden py-2 flex justify-center">
+      <div class="flex space-x-3">
+        <div
+          class="flex items-center space-x-2 p-2.5 border-1 border-jet rounded-xl"
+          v-for="stat in stats"
+          :key="stat.label"
+        >
+          <span class="text-xs">{{ stat.label }}</span>
+          <span class="text-xl">{{ stat.value }}</span>
         </div>
       </div>
     </div>
-  </header>
+  </div>
 </template>

@@ -3,9 +3,13 @@ import AppHeader from "@/components/layout/AppHeader.vue";
 import { computed, ref } from "vue";
 import { isValidEmail } from "@/utils/validation";
 import { composeAndSendTweet } from "@/utils/tweet";
-import { addUserToLaunchList } from "@/services/launchlist.service";
+import {
+  addUserToLaunchList,
+  type LaunchListUser,
+} from "@/services/launchlist.service";
 import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
+import { useRoute } from "vue-router";
 
 const hasStartedTyping = ref(false);
 const email = ref("");
@@ -13,6 +17,7 @@ const submissionSuccess = ref(false);
 const serverError = ref(false);
 const loaderStore = useLoaderStore();
 const toast = useToast();
+const route = useRoute();
 
 const error = computed(() => {
   if (hasStartedTyping.value) {
@@ -43,7 +48,13 @@ const error = computed(() => {
 async function handleUserSubmission() {
   try {
     loaderStore.showLoader("Adding to waitlist...");
-    await addUserToLaunchList({ email: email.value });
+    const user: LaunchListUser = {
+      email: email.value,
+    };
+    if (route.query.ref) {
+      user.ref = route.query.ref as string;
+    }
+    await addUserToLaunchList(user);
     submissionSuccess.value = true;
   } catch (e) {
     serverError.value = true;
@@ -125,10 +136,11 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
             src="@/assets/images/icons/waitlist-check.svg"
             class="h-12 w-12"
           />
-          <span class="font-bold text-[1.5rem]">You're On!</span>
+          <span class="font-bold text-[1.5rem]">Added to waitlist!</span>
           <span
             class="text-philippine-gray text-[0.875rem] text-center mt-4 mb-8"
-            >Give us a shoutout on Twitter and help spread the love!</span
+            >You will be informed over email once you are whitelisted for
+            access!</span
           >
           <button
             class="uppercase font-bold text-[12px] p-3 border-1 border-white rounded-[5px] w-full"
