@@ -44,7 +44,9 @@ async function initSocketConnect() {
 }
 
 async function getUserInfo() {
-  authStore.setUserInfo(await auth.getUser());
+  const userInfo = await auth.getUser();
+  authStore.setUserInfo(userInfo);
+  userStore.address = userInfo.address;
 }
 
 async function onWalletConnect() {
