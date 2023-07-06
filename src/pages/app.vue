@@ -8,6 +8,7 @@ import { useRouter } from "vue-router";
 import useAuthStore from "@/stores/auth";
 import useRewardsStore from "@/stores/rewards";
 import useUserStore from "@/stores/user";
+import useNotificationStore from "@/stores/notification";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -16,6 +17,7 @@ const auth = useArcanaAuth();
 const socketConnection = useSocketConnection();
 const rewardsStore = useRewardsStore();
 const userStore = useUserStore();
+const notificationStore = useNotificationStore();
 
 async function initAuth() {
   loaderStore.showLoader("initializing...");
@@ -25,10 +27,8 @@ async function initAuth() {
     auth.getProvider().on("connect", onWalletConnect);
     auth.getProvider().on("disconnect", onWalletDisconnect);
     // @ts-ignore
-    if (isLoggedIn) {
-      authStore.setLoginStatus(isLoggedIn);
-      userStore.address = (await auth.getUser()).address;
-    } else router.push({ name: "Login" });
+    if (isLoggedIn) authStore.setLoginStatus(isLoggedIn);
+    else router.push({ name: "Login" });
   } catch (error) {
     console.error({ error });
   } finally {
@@ -40,19 +40,20 @@ async function initSocketConnect() {
   // @ts-ignore
   await socketConnection.init(auth.getProvider(), () => {
     authStore.setSocketLoginStatus(true);
-    rewardsStore.fetchRewards(userStore.address);
-    userStore.fetchUserPointsAndRank();
   });
 }
 
 async function getUserInfo() {
-  const info = await auth.getUser();
-  authStore.setUserInfo(info);
+  authStore.setUserInfo(await auth.getUser());
 }
 
-function onWalletConnect() {
-  initSocketConnect();
-  getUserInfo();
+async function onWalletConnect() {
+  authStore.setLoginStatus(await auth.isLoggedIn());
+  await initSocketConnect();
+  await getUserInfo();
+  rewardsStore.fetchRewards(userStore.address);
+  userStore.fetchUserPointsAndRank();
+  notificationStore.getNotifications();
 }
 
 async function onWalletDisconnect() {
@@ -65,9 +66,6 @@ watch(
   () => authStore.isLoggedIn,
   async (newValue) => {
     if (newValue) {
-      const user = await auth.getUser();
-      // @ts-ignore
-      authStore.user = user;
       router.push({ name: "Send" });
     } else router.push({ name: "Login" });
   }
