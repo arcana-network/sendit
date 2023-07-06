@@ -17,6 +17,7 @@ const Profile = defineAsyncComponent(() => import("@/components/profile.vue"));
 
 type HeaderProps = {
   hideNav?: boolean;
+  hideUserData?: boolean;
 };
 
 const props = defineProps<HeaderProps>();
@@ -171,7 +172,10 @@ const stats = computed(() => {
         </div>
       </div>
     </header>
-    <div class="border-b-1 border-jet min-md:hidden py-2 flex justify-center">
+    <div
+      v-if="!props.hideUserData"
+      class="border-b-1 border-jet min-md:hidden py-2 flex justify-center"
+    >
       <div class="flex space-x-3">
         <div
           class="flex items-center space-x-2 p-2.5 border-1 border-jet rounded-xl"

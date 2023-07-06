@@ -79,7 +79,7 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
 
 <template>
   <div class="min-h-screen flex flex-col">
-    <AppHeader hide-nav />
+    <AppHeader hide-nav hide-user-data />
     <div class="waitlist-page flex-grow flex flex-col">
       <main class="flex-grow flex justify-center items-center p-4">
         <div
