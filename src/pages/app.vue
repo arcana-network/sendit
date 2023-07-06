@@ -27,8 +27,9 @@ async function initAuth() {
     auth.getProvider().on("connect", onWalletConnect);
     auth.getProvider().on("disconnect", onWalletDisconnect);
     // @ts-ignore
-    if (isLoggedIn) authStore.setLoginStatus(isLoggedIn);
-    else router.push({ name: "Login" });
+    if (isLoggedIn) {
+      onWalletConnect();
+    } else router.push({ name: "Login" });
   } catch (error) {
     console.error({ error });
   } finally {
