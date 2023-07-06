@@ -23,7 +23,11 @@ async function initAuth() {
   loaderStore.showLoader("initializing...");
   try {
     await auth.init();
-    const isLoggedIn = await auth.isLoggedIn();
+    const isLoggedIn = await new Promise((resolve) => {
+      setTimeout(async () => {
+        resolve(await auth.isLoggedIn());
+      }, 1000);
+    });
     auth.getProvider().on("connect", onWalletConnect);
     auth.getProvider().on("disconnect", onWalletDisconnect);
     // @ts-ignore
