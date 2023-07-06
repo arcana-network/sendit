@@ -74,7 +74,6 @@ function messageArcana(
     to_id: toEmail,
     to_verifier: "passwordless",
   };
-  console.log({ message });
   return socketConnection.sendMessage(1, message);
 }
 

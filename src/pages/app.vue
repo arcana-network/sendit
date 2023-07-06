@@ -23,16 +23,15 @@ async function initAuth() {
   loaderStore.showLoader("initializing...");
   try {
     await auth.init();
-    const isLoggedIn = await auth.isLoggedIn();
     auth.getProvider().on("connect", onWalletConnect);
     auth.getProvider().on("disconnect", onWalletDisconnect);
-    // @ts-ignore
-    if (isLoggedIn) {
-      await onWalletConnect();
-    } else router.push({ name: "Login" });
+    const isLoggedIn = await auth.isLoggedIn();
+    if (!isLoggedIn) {
+      await router.push({ name: "Login" });
+      loaderStore.hideLoader();
+    }
   } catch (error) {
     console.error({ error });
-  } finally {
     loaderStore.hideLoader();
   }
 }
@@ -51,12 +50,16 @@ async function getUserInfo() {
 }
 
 async function onWalletConnect() {
-  authStore.setLoginStatus(await auth.isLoggedIn());
-  await initSocketConnect();
-  await getUserInfo();
-  rewardsStore.fetchRewards(userStore.address);
-  userStore.fetchUserPointsAndRank();
-  notificationStore.getNotifications();
+  const isLoggedIn = await auth.isLoggedIn();
+  if (isLoggedIn) {
+    authStore.setLoginStatus(isLoggedIn);
+    await initSocketConnect();
+    await getUserInfo();
+    rewardsStore.fetchRewards(userStore.address);
+    userStore.fetchUserPointsAndRank();
+    notificationStore.getNotifications();
+  }
+  loaderStore.hideLoader();
 }
 
 async function onWalletDisconnect() {
