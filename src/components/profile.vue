@@ -4,6 +4,9 @@ import useAuthStore from "@/stores/auth";
 import CopyIcon from "@/assets/images/icons/copy.svg";
 import { useToast } from "vue-toastification";
 import useArcanaAuth from "@/use/arcanaAuth";
+import { truncateAddress } from "@/utils/truncateAddress";
+
+import copyToClipboard from "@/utils/copyToClipboard";
 
 const authStore = useAuthStore();
 const { userInfo }: { userInfo: any } = toRefs(authStore);
@@ -11,17 +14,7 @@ const arcanaAuth = useArcanaAuth();
 
 const toast = useToast();
 
-function splitWalletAddress(address: string) {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-}
-
-function copyToClipboard() {
-  const el = document.createElement("textarea");
-  el.value = userInfo.value.address;
-  document.body.appendChild(el);
-  el.select();
-  document.execCommand("copy");
-  document.body.removeChild(el);
+function onWalletAddressCopy() {
   toast.success("Wallet address copied to clipboard");
 }
 
@@ -52,9 +45,13 @@ function logout() {
         >
         <div class="flex space-x-1">
           <span class="text-sm text-left overflow-hidden">{{
-            splitWalletAddress(userInfo.address)
+            truncateAddress(userInfo.address)
           }}</span>
-          <button @click.prevent="copyToClipboard">
+          <button
+            @click.prevent="
+              copyToClipboard(userInfo.address, onWalletAddressCopy)
+            "
+          >
             <img :src="CopyIcon" alt="copy" />
           </button>
         </div>

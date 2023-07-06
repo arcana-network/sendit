@@ -5,6 +5,7 @@ import navMenu from "@/constants/navMenu.ts";
 import { useClickOutside } from "@/use/clickOutside";
 import useUserStore from "@/stores/user";
 import useRewardsStore from "@/stores/rewards";
+import useNotificationStore from "@/stores/notification";
 
 const MobileMenu = defineAsyncComponent(
   () => import("@/components/mobileMenu.vue")
@@ -22,6 +23,7 @@ const props = defineProps<HeaderProps>();
 
 const userStore = useUserStore();
 const rewardsStore = useRewardsStore();
+const notificationStore = useNotificationStore();
 
 const showMobileMenu = ref(false);
 const showNotifications = ref(false);
@@ -132,7 +134,10 @@ const stats = computed(() => {
         <div class="space-x-3 flex items-center">
           <button>Help</button>
           <button class="relative" @click.stop="toggleNotifications">
-            <span class="h-2.5 w-2.5 rounded-full bg-vivid-vermilion absolute">
+            <span
+              v-if="notificationStore.areUnreadNotifications"
+              class="h-2.5 w-2.5 rounded-full bg-vivid-vermilion absolute animate-bounce"
+            >
             </span>
             <img
               src="@/assets/images/icons/notification.svg"
@@ -140,7 +145,7 @@ const stats = computed(() => {
               class="min-w-fit"
             />
             <div
-              class="absolute top-10 -right-10"
+              class="absolute top-10 -right-10 z-[999]"
               v-if="showNotifications"
               ref="notificationMenu"
             >

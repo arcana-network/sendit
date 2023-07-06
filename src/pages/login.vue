@@ -1,19 +1,11 @@
 <script setup lang="ts">
-import useUserStore from "@/stores/user";
-import AppHeader from "@/components/layout/AppHeader.vue";
-import useAuthStore from "@/stores/auth";
 import useArcanaAuth from "@/use/arcanaAuth";
 import arcanaLogo from "@/assets/images/arcana.svg";
 
-const { connect, isLoggedIn, getUser } = useArcanaAuth();
-const authStore = useAuthStore();
-const userStore = useUserStore();
+const { connect } = useArcanaAuth();
 
 async function connectToArcana() {
   await connect();
-  authStore.setLoginStatus(await isLoggedIn());
-  userStore.address = (await getUser()).address;
-  await userStore.fetchUserPointsAndRank();
 }
 </script>
 
