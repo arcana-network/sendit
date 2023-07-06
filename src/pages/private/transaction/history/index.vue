@@ -5,9 +5,11 @@ import { SOCKET_IDS } from "@/constants/socket-ids";
 import { truncateAddress } from "@/utils/truncateAddress";
 // import dayjs from "dayjs";
 // import { ethers } from "ethers";
-import historyMock from "@/constants/tx-history.mock";
 import { composeAndSendTweet } from "@/utils/tweet";
 import TweetVerify from "@/components/TweetVerify.vue";
+import { hexlify, formatEther } from "ethers";
+import { nativeUnitMapping } from "@/constants/unitMapping.ts";
+import dayjs from "dayjs";
 
 const socket = useSocketConnection();
 
@@ -18,23 +20,31 @@ onBeforeMount(() => {
   fetchTxHistory();
 });
 
-function getLink(record) {
-  return `https://sendit.arcana.network/${record.socialId}`;
-}
-
 async function fetchTxHistory() {
   const message = {
     offset: 0,
     count: 500,
   };
-  const txHistory = await socket.sendMessage(
+  const txHistory = (await socket.sendMessage(
     SOCKET_IDS.GET_TX_HISTORY,
     message
-  );
-  console.log({ txHistory });
-  history.value = historyMock.map((record) => {
+  )) as { txns: any[] };
+  console.log(txHistory);
+  history.value = txHistory.txns.map((record) => {
     return {
-      ...record,
+      amount: {
+        value: formatEther(hexlify(record.amount)),
+        currency: nativeUnitMapping[Number(record.chainId)],
+      },
+      txHash: hexlify(record.hash),
+      txStatus: record.sent ? "sent" : "received",
+      socialId:
+        record.verifier_human || record.verifier_id || record.user || "N/A",
+      walletAddress: record.address || "N/A",
+      link: record.link,
+      points: record.points || "",
+      isSharedOnTwitter: record.shared || false,
+      date: dayjs(record.tx_date).format("DD MMM YYYY"),
     };
   });
 }
@@ -101,13 +111,13 @@ function shareTweet(record) {
                 class="leaderboard-table-row-item ellipsis"
                 :title="record.walletAddress"
               >
-                {{ truncateAddress(record.walletAddress) }}
+                {{ record.walletAddress }}
               </div>
               <div
                 class="leaderboard-table-row-item ellipsis"
-                :title="getLink(record)"
+                :title="record.link"
               >
-                {{ getLink(record) }}
+                {{ record.link }}
               </div>
               <div
                 class="leaderboard-table-row-item flex justify-between w-[6rem] capitalize"
@@ -178,7 +188,7 @@ function shareTweet(record) {
         v-else
         class="leaderboard-table-body px-2 py-4 flex items-center justify-center text-sm"
       >
-        No rankings yet.
+        No transactions found.
       </div>
     </div>
     <TweetVerify
