@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import useNotificationStore from "@/stores/notification";
+import { composeAndSendTweet } from "@/utils/tweet";
 import { toRefs } from "vue";
 
 const notificationStore = useNotificationStore();
@@ -11,6 +12,10 @@ function markAllAsRead() {
 
 function onClickNotification(notification) {
   notificationStore.markAsRead(notification.id);
+}
+
+function getTweetMessage({ from }) {
+  return `Just received a crypto transfer on #SendIt from ${from}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `;
 }
 </script>
 
@@ -39,8 +44,11 @@ function onClickNotification(notification) {
               {{ notification.content.body }}
             </span>
           </div>
-          <div
+          <button
             v-if="notification.shoutout"
+            @click.prevent="
+              composeAndSendTweet(getTweetMessage(notification.info))
+            "
             class="h-20 w-20 p-0.5 border-1 border-philippine-gray rounded-md flex flex-col items-center"
           >
             <img
@@ -52,7 +60,7 @@ function onClickNotification(notification) {
               class="text-cornflower-blue w-full text-xs font-light bg-feep-koamaru p-1 rounded-md"
               >Earn 40 XP</span
             >
-          </div>
+          </button>
         </div>
       </div>
     </div>
