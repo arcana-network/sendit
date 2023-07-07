@@ -73,7 +73,6 @@ async function onWalletDisconnect() {
   socketConnection.disconnect();
   authStore.setSocketLoginStatus(false);
   authStore.setLoginStatus(false);
-  await initAuth();
 }
 
 onMounted(initAuth);

@@ -38,6 +38,7 @@ function useSocketConnection() {
     account: Account,
     onSocketLogin?: Function
   ) {
+    state = ConnectionState.NOT_CONNECTED;
     initialRelease = await lock.acquire();
     try {
       // @ts-ignore
@@ -50,7 +51,8 @@ function useSocketConnection() {
         onMessage(ev, onSocketLogin)
       );
       socket.addEventListener("close", (e) => {
-        if (socket.CLOSED && e.code !== SOCKET_CLOSED_ON_LOGOUT) {
+        if (e.code !== SOCKET_CLOSED_ON_LOGOUT) {
+          state = ConnectionState.NOT_CONNECTED;
           init(authProvider, account, onSocketLogin);
         }
       });
