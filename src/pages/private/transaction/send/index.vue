@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRefs, watch, ref } from "vue";
+import { toRefs, watch, ref, onMounted } from "vue";
 import SendForm from "@/components/send/sendForm.vue";
 import useSocketConnection from "@/use/socketConnection";
 import useAuthStore from "@/stores/auth";
@@ -41,7 +41,10 @@ async function fetchSupportedChains() {
   }
 }
 
+onMounted(fetchSupportedChains);
+
 watch(isSocketLoggedIn, (newValue) => {
+  console.log({ newValue }, "isSocketLoggedIn");
   if (newValue) fetchSupportedChains();
 });
 
