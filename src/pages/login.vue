@@ -1,13 +1,48 @@
 <script setup lang="ts">
 import useArcanaAuth from "@/use/arcanaAuth";
 import arcanaLogo from "@/assets/images/arcana.svg";
+import { onMounted } from "vue";
+import { useRoute } from "vue-router";
+import useLoaderStore from "@/stores/loader";
 import AppHeader from "@/components/layout/AppHeader.vue";
 
-const { connect } = useArcanaAuth();
+const arcanaAuth = useArcanaAuth();
+const route = useRoute();
+const loaderStore = useLoaderStore();
+
+const query = route.query;
+const verifier = query.verifier;
+const verifierId = query.verifierId;
 
 async function connectToArcana() {
-  await connect();
+  await arcanaAuth.connect();
 }
+
+async function loginAutomatically(verifier: string, verifierId: string) {
+  loaderStore.showLoader("Logging in...");
+  try {
+    const authInstance = arcanaAuth.getAuthInstance();
+    if (verifier === "passwordless") {
+      await authInstance.loginWithLink(verifierId);
+    } else {
+      await authInstance.loginWithSocial(verifier);
+    }
+    await authInstance.isLoggedIn();
+  } catch (error) {
+    console.error({ error });
+  } finally {
+    loaderStore.hideLoader();
+  }
+}
+
+onMounted(async () => {
+  if (verifier) {
+    await loginAutomatically(
+      verifier as unknown as string,
+      verifierId as string
+    );
+  }
+});
 </script>
 
 <template>

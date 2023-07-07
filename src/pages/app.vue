@@ -4,7 +4,7 @@ import useArcanaAuth from "@/use/arcanaAuth";
 import useSocketConnection from "@/use/socketConnection";
 import useLoaderStore from "@/stores/loader";
 import FullScreenLoader from "@/components/fullScreenLoader.vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import useAuthStore from "@/stores/auth";
 import useRewardsStore from "@/stores/rewards";
 import useUserStore from "@/stores/user";
@@ -13,6 +13,7 @@ import useNotificationStore from "@/stores/notification";
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
 const router = useRouter();
+const route = useRoute();
 const auth = useArcanaAuth();
 const socketConnection = useSocketConnection();
 const rewardsStore = useRewardsStore();
@@ -26,12 +27,12 @@ async function initAuth() {
     auth.getProvider().on("connect", onWalletConnect);
     auth.getProvider().on("disconnect", onWalletDisconnect);
     const isLoggedIn = await auth.isLoggedIn();
-    if (!isLoggedIn) {
-      await router.push({ name: "Login" });
-      loaderStore.hideLoader();
-    }
+    if (isLoggedIn) authStore.setLoginStatus(true);
+    else router.push({ name: "Login" });
+    authStore.isAuthSDKInitialized = true;
   } catch (error) {
     console.error({ error });
+  } finally {
     loaderStore.hideLoader();
   }
 }
@@ -76,7 +77,7 @@ watch(
   () => authStore.isLoggedIn,
   async (newValue) => {
     if (newValue) {
-      router.push({ name: "Send" });
+      if (route.name === "Login") router.push({ name: "Send" });
     } else router.push({ name: "Login" });
   }
 );
@@ -91,6 +92,6 @@ const showFullScreenLoader = computed(() => {
 <template>
   <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
-    <RouterView> </RouterView>
+    <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
   </main>
 </template>
