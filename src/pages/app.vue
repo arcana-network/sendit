@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted, watch, ref } from "vue";
+import { computed, onMounted, watch } from "vue";
 import useArcanaAuth from "@/use/arcanaAuth";
 import useSocketConnection from "@/use/socketConnection";
 import useLoaderStore from "@/stores/loader";
 import FullScreenLoader from "@/components/fullScreenLoader.vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import useAuthStore from "@/stores/auth";
 import useRewardsStore from "@/stores/rewards";
 import useUserStore from "@/stores/user";
@@ -13,6 +13,7 @@ import useNotificationStore from "@/stores/notification";
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
 const router = useRouter();
+const route = useRoute();
 const auth = useArcanaAuth();
 const socketConnection = useSocketConnection();
 const rewardsStore = useRewardsStore();
@@ -76,8 +77,7 @@ watch(
   () => authStore.isLoggedIn,
   async (newValue) => {
     if (newValue) {
-      if (router.currentRoute.value.name === "Login")
-        router.push({ name: "Send" });
+      if (route.name === "Login") router.push({ name: "Send" });
     } else router.push({ name: "Login" });
   }
 );
