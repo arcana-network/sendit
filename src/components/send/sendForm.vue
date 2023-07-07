@@ -180,34 +180,38 @@ const disableSubmit = computed(() => {
       </div>
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Chain</label>
-        <select class="input" name="chains" v-model="userInput.chain">
-          <option
-            id="chains"
-            v-for="chain in supportedChains"
-            :key="chain.chain_id"
-            :value="chain.chain_id"
-          >
-            {{ chain.name }}
-          </option>
-        </select>
+        <div class="pr-3 w-full bg-dark-charcoal rounded-md">
+          <select class="input w-full" name="chains" v-model="userInput.chain">
+            <option
+              id="chains"
+              v-for="chain in supportedChains"
+              :key="chain.chain_id"
+              :value="chain.chain_id"
+            >
+              {{ chain.name }}
+            </option>
+          </select>
+        </div>
       </div>
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Token</label>
-        <select
-          class="input"
-          name="assets"
-          v-model="userInput.token"
-          :disabled="disableTokenInput"
-        >
-          <option
-            id="assets"
-            v-for="asset in chainAssets"
-            :key="`${asset.tokenSymbol}-${asset.tokenType}`"
-            :value="`${asset.tokenSymbol}-${asset.tokenType}`"
+        <div class="pr-3 w-full bg-dark-charcoal rounded-md">
+          <select
+            class="input w-full"
+            name="assets"
+            v-model="userInput.token"
+            :disabled="disableTokenInput"
           >
-            {{ `${asset.tokenSymbol} - ${asset.tokenType}` }}
-          </option>
-        </select>
+            <option
+              id="assets"
+              v-for="asset in chainAssets"
+              :key="`${asset.tokenSymbol}-${asset.tokenType}`"
+              :value="`${asset.tokenSymbol}-${asset.tokenType}`"
+            >
+              {{ `${asset.tokenSymbol} - ${asset.tokenType}` }}
+            </option>
+          </select>
+        </div>
       </div>
       <div class="flex flex-col space-y-1">
         <div class="flex justify-between">
