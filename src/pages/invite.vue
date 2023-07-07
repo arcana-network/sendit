@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { decode } from "msgpackr";
 import { onMounted } from "vue";
 const router = useRouter();
+const route = useRoute();
 
 onMounted(() => {
-  const { u } = router.currentRoute.value.query;
+  const { u } = route.query;
   const [verifier, verifierId] = decode(Buffer.from(u, "base64"));
   router.push({
     name: "Login",

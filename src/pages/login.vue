@@ -2,15 +2,15 @@
 import useArcanaAuth from "@/use/arcanaAuth";
 import arcanaLogo from "@/assets/images/arcana.svg";
 import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import useLoaderStore from "@/stores/loader";
 import AppHeader from "@/components/layout/AppHeader.vue";
 
 const arcanaAuth = useArcanaAuth();
-const router = useRouter();
+const route = useRoute();
 const loaderStore = useLoaderStore();
 
-const query = router.currentRoute.value.query;
+const query = route.query;
 const verifier = ref(query.verifier);
 const verifierId = ref(query.verifierId);
 
