@@ -15,6 +15,15 @@ const useSendStore = defineStore("send", {
     setSupportedChains(chains) {
       this.supportedChains = chains;
     },
+    resetUserInput() {
+      this.userInput = {
+        medium: "",
+        recipientId: "",
+        chain: "",
+        token: "",
+        amount: "",
+      };
+    },
   },
 });
 

@@ -6,7 +6,8 @@ import useAuthStore from "@/stores/auth";
 import useSendStore from "@/stores/send";
 import useLoaderStore from "@/stores/loader";
 import chainList from "@/constants/chainList.ts";
-import Success from "@/components/send/success.vue";
+import SendSuccess from "@/components/send/success.vue";
+import TweetVerify from "@/components/TweetVerify.vue";
 
 const socketConnection = useSocketConnection();
 const authStore = useAuthStore();
@@ -14,6 +15,11 @@ const sendStore = useSendStore();
 const loaderStore = useLoaderStore();
 const { isSocketLoggedIn } = toRefs(authStore);
 const showSuccessMessage = ref(false);
+const showTweetVerificationModal = ref(false);
+const shareDetails = ref({
+  isShareRequired: false,
+  shareLink: "",
+});
 
 async function fetchSupportedChains() {
   loaderStore.showLoader("fetching chains...");
@@ -38,11 +44,45 @@ async function fetchSupportedChains() {
 watch(isSocketLoggedIn, (newValue) => {
   if (newValue) fetchSupportedChains();
 });
+
+function handleTxSucces(e) {
+  showSuccessMessage.value = true;
+  shareDetails.value = {
+    shareLink: e.share_url,
+    isShareRequired: e.share_reqd,
+  };
+}
+
+function resetUserInput() {
+  sendStore.resetUserInput();
+}
+
+function handleShoutout() {
+  showSuccessMessage.value = false;
+  showTweetVerificationModal.value = true;
+  resetUserInput();
+}
+
+function handleSuccessModalClose() {
+  showSuccessMessage.value = false;
+  resetUserInput();
+}
 </script>
 
 <template>
-  <Success v-if="showSuccessMessage" :medium="sendStore.userInput.medium" />
+  <SendSuccess
+    v-if="showSuccessMessage"
+    :medium="sendStore.userInput.medium"
+    :share-details="shareDetails"
+    @shoutout="handleShoutout"
+    @close="handleSuccessModalClose"
+  />
+  <TweetVerify
+    v-if="showTweetVerificationModal"
+    :xp="40"
+    @close="showTweetVerificationModal = false"
+  />
   <div class="flex flex-col justify-center items-center p-12 space-y-10">
-    <SendForm @transaction-successful="showSuccessMessage = true" />
+    <SendForm @transaction-successful="handleTxSucces" />
   </div>
 </template>
