@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useArcanaAuth from "@/use/arcanaAuth";
 import arcanaLogo from "@/assets/images/arcana.svg";
-import { onMounted, ref } from "vue";
+import { onMounted } from "vue";
 import { useRoute } from "vue-router";
 import useLoaderStore from "@/stores/loader";
 import AppHeader from "@/components/layout/AppHeader.vue";
@@ -11,8 +11,8 @@ const route = useRoute();
 const loaderStore = useLoaderStore();
 
 const query = route.query;
-const verifier = ref(query.verifier);
-const verifierId = ref(query.verifierId);
+const verifier = query.verifier;
+const verifierId = query.verifierId;
 
 async function connectToArcana() {
   await arcanaAuth.connect();
@@ -36,10 +36,10 @@ async function loginAutomatically(verifier: string, verifierId: string) {
 }
 
 onMounted(async () => {
-  if (verifier.value) {
+  if (verifier) {
     await loginAutomatically(
-      verifier.value as unknown as string,
-      verifierId.value as string
+      verifier as unknown as string,
+      verifierId as string
     );
   }
 });
