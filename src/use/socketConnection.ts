@@ -6,7 +6,7 @@ import { Mutex } from "async-mutex";
 import type { MutexInterface } from "async-mutex";
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
-const SOCKET_CLOSED_ON_LOGOUT = 1006;
+const SOCKET_CLOSED_ON_LOGOUT = 3000;
 
 enum ConnectionState {
   NOT_CONNECTED,
