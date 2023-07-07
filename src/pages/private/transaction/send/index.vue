@@ -47,7 +47,6 @@ async function fetchSupportedChains() {
 onMounted(fetchSupportedChains);
 
 watch(isSocketLoggedIn, (newValue) => {
-  console.log({ newValue }, "isSocketLoggedIn");
   if (newValue) fetchSupportedChains();
 });
 
