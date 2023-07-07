@@ -9,6 +9,7 @@ import chainList from "@/constants/chainList.ts";
 import SendSuccess from "@/components/send/success.vue";
 import TweetVerify from "@/components/TweetVerify.vue";
 import { SOCKET_IDS } from "@/constants/socket-ids";
+import { composeAndSendTweet } from "@/utils/tweet";
 
 const socketConnection = useSocketConnection();
 const authStore = useAuthStore();
@@ -64,6 +65,9 @@ function resetUserInput() {
 
 function handleShoutout() {
   showSuccessMessage.value = false;
+  composeAndSendTweet(
+    `Just did a crypto transfer on #SendIt! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `
+  );
   showTweetVerificationModal.value = true;
   resetUserInput();
 }
