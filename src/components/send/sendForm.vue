@@ -82,7 +82,7 @@ function messageArcana(
 }
 
 async function proceed() {
-  loadStore.showLoader("Sending assets...");
+  loadStore.showLoader("Sending tokens...");
   try {
     const senderPublicKey = await arcanaAuth
       .getAuthInstance()
