@@ -36,9 +36,8 @@ async function fetchTxHistory() {
       },
       txHash: hexlify(record.hash),
       txStatus: record.sent ? "sent" : "received",
-      socialId:
-        record.verifier_human || record.verifier_id || record.user || "N/A",
-      walletAddress: record.address || "N/A",
+      socialId: record.user.verifier_human || hexlify(record.user_address),
+      walletAddress: hexlify(record.user_address),
       link: record.link,
       points: record.points || "",
       isSharedOnTwitter: record.shared || false,
@@ -155,7 +154,7 @@ function shareTweet(record) {
             class="flex p-4 w-full"
             :class="{ 'border-jet border-0 border-t-1': index !== 0 }"
           >
-            <div class="px-2 flex flex-col gap-1">
+            <div class="px-2 flex flex-col gap-1 w-[60%]">
               <div
                 class="text-sm font-bold text-[14px]"
                 :title="record.walletAddress"

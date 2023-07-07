@@ -23,7 +23,7 @@ const notificationStore = useNotificationStore();
 const toast = useToast();
 
 async function initAuth() {
-  loaderStore.showLoader("initializing...");
+  loaderStore.showLoader("Initializing...");
   try {
     await auth.init();
     auth.getProvider().on("connect", onWalletConnect);
@@ -73,7 +73,6 @@ async function onWalletDisconnect() {
   socketConnection.disconnect();
   authStore.setSocketLoginStatus(false);
   authStore.setLoginStatus(false);
-  await initAuth();
 }
 
 onMounted(initAuth);

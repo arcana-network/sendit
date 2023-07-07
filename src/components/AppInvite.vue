@@ -25,12 +25,15 @@ const areEmailsValid = computed(() => {
 async function handleEmailInvite() {
   if (areEmailsValid.value) {
     const socket = useSocketConnection();
-    const message = email.value.split(",").map((e) => {
+    const invites = email.value.split(",").map((e) => {
       return {
         verifier: "passwordless",
         verifier_id: e.trim(),
       };
     });
+    const message = {
+      invites,
+    };
     loader.showLoader("Sending invites...");
     await socket.sendMessage(SOCKET_IDS.EMAIL_INVITE, message);
     loader.hideLoader();
@@ -68,7 +71,6 @@ async function handleEmailInvite() {
           <button
             class="uppercase bg-white rounded-[5px] text-black text-sm font-[500] px-8 py-2"
             :disabled="!areEmailsValid"
-            @click.stop="handleEmailInvite"
           >
             Send
           </button>

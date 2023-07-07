@@ -45,13 +45,16 @@ function getSelectedAssets(tokenSymbol, tokenType) {
 }
 
 async function fetchAssets(chainId) {
-  loadStore.showLoader("fetching assets...");
+  loadStore.showLoader("Fetching tokens...");
   try {
     const walletAddress = authStore.walletAddress;
     const chain = getSelectedChainInfo(chainId);
     //@ts-ignore
     const { result } = await getAccountBalance(walletAddress, chain.blockchain);
     chainAssets.value = result.assets;
+    if (chainAssets.value.length === 0) {
+      toast.error("You don't own any tokens on this chain");
+    }
   } catch (error) {
     console.log(error);
   } finally {
@@ -79,7 +82,7 @@ function messageArcana(
 }
 
 async function proceed() {
-  loadStore.showLoader("sending...");
+  loadStore.showLoader("Sending assets...");
   try {
     const senderPublicKey = await arcanaAuth
       .getAuthInstance()
@@ -117,10 +120,24 @@ async function proceed() {
 
 watch(
   () => userInput.value.chain,
-  async (selectedChainId) => {
-    userInput.value.token = "";
-    await arcanaAuth.switchChain(selectedChainId);
-    fetchAssets(selectedChainId);
+  async (selectedChainId, oldChain) => {
+    if (userInput.value.chain !== "") {
+      userInput.value.token = "";
+      const chainId = await arcanaAuth
+        .getProvider()
+        .request({ method: "eth_chainId" });
+      if (Number(chainId) !== selectedChainId) {
+        try {
+          await arcanaAuth.switchChain(selectedChainId);
+          fetchAssets(selectedChainId);
+        } catch (e) {
+          userInput.value.chain = oldChain;
+          toast.error("Switching chain rejected by user");
+        }
+      } else {
+        fetchAssets(selectedChainId);
+      }
+    }
   }
 );
 
@@ -180,34 +197,38 @@ const disableSubmit = computed(() => {
       </div>
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Chain</label>
-        <select class="input" name="chains" v-model="userInput.chain">
-          <option
-            id="chains"
-            v-for="chain in supportedChains"
-            :key="chain.chain_id"
-            :value="chain.chain_id"
-          >
-            {{ chain.name }}
-          </option>
-        </select>
+        <div class="pr-3 w-full bg-dark-charcoal rounded-md">
+          <select class="input w-full" name="chains" v-model="userInput.chain">
+            <option
+              id="chains"
+              v-for="chain in supportedChains"
+              :key="chain.chain_id"
+              :value="chain.chain_id"
+            >
+              {{ chain.name }}
+            </option>
+          </select>
+        </div>
       </div>
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Token</label>
-        <select
-          class="input"
-          name="assets"
-          v-model="userInput.token"
-          :disabled="disableTokenInput"
-        >
-          <option
-            id="assets"
-            v-for="asset in chainAssets"
-            :key="`${asset.tokenSymbol}-${asset.tokenType}`"
-            :value="`${asset.tokenSymbol}-${asset.tokenType}`"
+        <div class="pr-3 w-full bg-dark-charcoal rounded-md">
+          <select
+            class="input w-full"
+            name="assets"
+            v-model="userInput.token"
+            :disabled="disableTokenInput"
           >
-            {{ `${asset.tokenSymbol} - ${asset.tokenType}` }}
-          </option>
-        </select>
+            <option
+              id="assets"
+              v-for="asset in chainAssets"
+              :key="`${asset.tokenSymbol}-${asset.tokenType}`"
+              :value="`${asset.tokenSymbol}-${asset.tokenType}`"
+            >
+              {{ `${asset.tokenSymbol} - ${asset.tokenType}` }}
+            </option>
+          </select>
+        </div>
       </div>
       <div class="flex flex-col space-y-1">
         <div class="flex justify-between">

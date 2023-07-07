@@ -24,7 +24,7 @@ const shareDetails = ref({
 });
 
 async function fetchSupportedChains() {
-  loaderStore.showLoader("fetching chains...");
+  loaderStore.showLoader("Fetching list of chains...");
   try {
     // @ts-ignore
     const { chains } = await socketConnection.sendMessage(
