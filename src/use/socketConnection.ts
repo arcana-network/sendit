@@ -52,7 +52,6 @@ function useSocketConnection() {
       );
       socket.addEventListener("close", (e) => {
         if (e.code !== SOCKET_CLOSED_ON_LOGOUT) {
-          state = ConnectionState.NOT_CONNECTED;
           init(authProvider, account, onSocketLogin);
         }
       });
