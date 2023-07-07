@@ -25,7 +25,7 @@ const useNotificationStore = defineStore("notification", {
       return state.notifications.filter((n) => !n.read);
     },
     notificationCount(state) {
-      return state.notificationList.length;
+      return state.notifications.filter((n) => !n.read).length;
     },
   },
   actions: {
