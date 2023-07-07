@@ -174,7 +174,7 @@ const stats = computed(() => {
     </header>
     <div
       v-if="!props.hideUserData"
-      class="border-b-1 border-jet min-md:hidden py-2 flex justify-center"
+      class="border-b-1 border-jet md:hidden py-2 flex justify-center"
     >
       <div class="flex space-x-3">
         <div
