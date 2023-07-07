@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRefs, watch, ref } from "vue";
+import { toRefs, watch, ref, onMounted } from "vue";
 import SendForm from "@/components/send/sendForm.vue";
 import useSocketConnection from "@/use/socketConnection";
 import useAuthStore from "@/stores/auth";
@@ -8,6 +8,7 @@ import useLoaderStore from "@/stores/loader";
 import chainList from "@/constants/chainList.ts";
 import SendSuccess from "@/components/send/success.vue";
 import TweetVerify from "@/components/TweetVerify.vue";
+import { SOCKET_IDS } from "@/constants/socket-ids";
 
 const socketConnection = useSocketConnection();
 const authStore = useAuthStore();
@@ -25,7 +26,9 @@ async function fetchSupportedChains() {
   loaderStore.showLoader("fetching chains...");
   try {
     // @ts-ignore
-    const { chains } = await socketConnection.sendMessage(7);
+    const { chains } = await socketConnection.sendMessage(
+      SOCKET_IDS.GET_CHAINS
+    );
     sendStore.setSupportedChains(
       chains.map((chain) => {
         return {
@@ -40,6 +43,8 @@ async function fetchSupportedChains() {
     loaderStore.hideLoader();
   }
 }
+
+onMounted(fetchSupportedChains);
 
 watch(isSocketLoggedIn, (newValue) => {
   if (newValue) fetchSupportedChains();

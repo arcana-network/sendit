@@ -13,6 +13,7 @@ import {
 import { getBytes } from "ethers";
 import useSocketConnection from "@/use/socketConnection";
 import { useToast } from "vue-toastification";
+import { SOCKET_IDS } from "@/constants/socket-ids";
 
 const emits = defineEmits(["transaction-successful"]);
 
@@ -74,7 +75,7 @@ function messageArcana(
     to_id: toEmail,
     to_verifier: "passwordless",
   };
-  return socketConnection.sendMessage(1, message);
+  return socketConnection.sendMessage(SOCKET_IDS.SEND_TX, message);
 }
 
 async function proceed() {
