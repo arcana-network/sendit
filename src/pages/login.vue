@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useArcanaAuth from "@/use/arcanaAuth";
 import arcanaLogo from "@/assets/images/arcana.svg";
-import { onMounted, onUnmounted, watch } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import useLoaderStore from "@/stores/loader";
 import AppHeader from "@/components/layout/AppHeader.vue";
@@ -9,6 +9,10 @@ import AppHeader from "@/components/layout/AppHeader.vue";
 const arcanaAuth = useArcanaAuth();
 const router = useRouter();
 const loaderStore = useLoaderStore();
+
+const query = router.currentRoute.value.query;
+const verifier = ref(query.verifier);
+const verifierId = ref(query.verifierId);
 
 async function connectToArcana() {
   await arcanaAuth.connect();
@@ -26,28 +30,19 @@ async function loginAutomatically(verifier: string, verifierId: string) {
     await authInstance.isLoggedIn();
   } catch (error) {
     console.error({ error });
+  } finally {
     loaderStore.hideLoader();
   }
 }
 
 onMounted(async () => {
-  const query = router.currentRoute.value.query;
-  const { verifier, verifierId } = query;
-  if (verifier) {
-    await loginAutomatically(verifier as string, verifierId as string);
+  if (verifier.value) {
+    await loginAutomatically(
+      verifier.value as unknown as string,
+      verifierId.value as string
+    );
   }
 });
-
-onUnmounted(() => {
-  loaderStore.hideLoader();
-});
-
-watch(
-  () => loaderStore.show,
-  (newValue) => {
-    if (!newValue) loaderStore.showLoader("Logging in...");
-  }
-);
 </script>
 
 <template>
