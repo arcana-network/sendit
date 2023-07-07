@@ -4,9 +4,11 @@ import { AuthProvider } from "@arcana/auth";
 import { pack as msgpack, unpack as msgunpack } from "msgpackr";
 import { Mutex } from "async-mutex";
 import type { MutexInterface } from "async-mutex";
+import { useToast } from "vue-toastification";
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 const SOCKET_CLOSED_ON_LOGOUT = 3000;
+const ACTION_REJECTED = "ACTION_REJECTED";
 
 enum ConnectionState {
   NOT_CONNECTED,
@@ -32,6 +34,7 @@ function useSocketConnection() {
     verifier: "",
     verifier_id: "",
   };
+  const toast = useToast();
 
   async function init(
     authProvider: AuthProvider,
@@ -99,13 +102,23 @@ function useSocketConnection() {
 
     switch (state) {
       case ConnectionState.NOT_CONNECTED: {
-        const sig = await ethersSigner.signMessage(data.message);
-        socket.send(
-          msgpack({
-            sig: getBytes(sig),
-          })
-        );
-        state = ConnectionState.CONNECTED_UNAUTHORIZED;
+        try {
+          const sig = await ethersSigner.signMessage(data.message);
+          socket.send(
+            msgpack({
+              sig: getBytes(sig),
+            })
+          );
+          state = ConnectionState.CONNECTED_UNAUTHORIZED;
+        } catch (e) {
+          if (e.code === ACTION_REJECTED) {
+            toast.error(
+              "Signature request rejected. Please refresh the page again to login"
+            );
+          } else {
+            toast.error(e);
+          }
+        }
         break;
       }
       case ConnectionState.CONNECTED_UNAUTHORIZED:
