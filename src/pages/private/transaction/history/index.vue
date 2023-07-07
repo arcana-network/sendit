@@ -36,9 +36,8 @@ async function fetchTxHistory() {
       },
       txHash: hexlify(record.hash),
       txStatus: record.sent ? "sent" : "received",
-      socialId:
-        record.verifier_human || record.verifier_id || record.user || "N/A",
-      walletAddress: record.address || "N/A",
+      socialId: record.user.verifier_human || hexlify(record.user_address),
+      walletAddress: hexlify(record.user_address),
       link: record.link,
       points: record.points || "",
       isSharedOnTwitter: record.shared || false,
