@@ -8,6 +8,7 @@ import { useRouter, useRoute } from "vue-router";
 import useAuthStore from "@/stores/auth";
 import useRewardsStore from "@/stores/rewards";
 import useUserStore from "@/stores/user";
+import { useToast } from "vue-toastification";
 import useNotificationStore from "@/stores/notification";
 
 const loaderStore = useLoaderStore();
@@ -19,6 +20,7 @@ const socketConnection = useSocketConnection();
 const rewardsStore = useRewardsStore();
 const userStore = useUserStore();
 const notificationStore = useNotificationStore();
+const toast = useToast();
 
 async function initAuth() {
   loaderStore.showLoader("initializing...");
@@ -27,12 +29,12 @@ async function initAuth() {
     auth.getProvider().on("connect", onWalletConnect);
     auth.getProvider().on("disconnect", onWalletDisconnect);
     const isLoggedIn = await auth.isLoggedIn();
-    if (isLoggedIn) authStore.setLoginStatus(true);
-    else router.push({ name: "Login" });
-    authStore.isAuthSDKInitialized = true;
+    if (!isLoggedIn) {
+      router.push({ name: "Login" });
+      loaderStore.hideLoader();
+    }
   } catch (error) {
-    console.error({ error });
-  } finally {
+    toast.error(error as string);
     loaderStore.hideLoader();
   }
 }
@@ -68,6 +70,7 @@ async function onWalletConnect() {
 }
 
 async function onWalletDisconnect() {
+  socketConnection.disconnect();
   authStore.setLoginStatus(await auth.isLoggedIn());
 }
 
@@ -75,10 +78,12 @@ onMounted(initAuth);
 
 watch(
   () => authStore.isLoggedIn,
-  async (newValue) => {
-    if (newValue) {
-      if (route.name === "Login") router.push({ name: "Send" });
-    } else router.push({ name: "Login" });
+  (newValue) => {
+    if (!newValue) {
+      router.push({ name: "Login" });
+    } else if (route.name === "Login") {
+      router.push({ name: "Send" });
+    }
   }
 );
 
@@ -92,6 +97,6 @@ const showFullScreenLoader = computed(() => {
 <template>
   <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
-    <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
+    <RouterView> </RouterView>
   </main>
 </template>

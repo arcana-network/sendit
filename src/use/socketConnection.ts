@@ -6,6 +6,7 @@ import { Mutex } from "async-mutex";
 import type { MutexInterface } from "async-mutex";
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
+const SOCKET_CLOSED_ON_LOGOUT = 1006;
 
 enum ConnectionState {
   NOT_CONNECTED,
@@ -48,6 +49,11 @@ function useSocketConnection() {
       socket.addEventListener("message", (ev: MessageEvent) =>
         onMessage(ev, onSocketLogin)
       );
+      socket.addEventListener("close", (e) => {
+        if (socket.CLOSED && e.code !== SOCKET_CLOSED_ON_LOGOUT) {
+          init(authProvider, account, onSocketLogin);
+        }
+      });
     } catch (e) {
       console.log({ e });
     }
@@ -122,11 +128,16 @@ function useSocketConnection() {
     }
   }
 
+  function disconnect() {
+    socket.close(SOCKET_CLOSED_ON_LOGOUT);
+  }
+
   return {
     init,
     onSocketOpen,
     sendMessage,
     onMessage,
+    disconnect,
   };
 }
 

@@ -18,6 +18,7 @@ const routes: RouteRecordRaw[] = [
     name: "App",
     path: "/app",
     component: App,
+    redirect: { name: "Send" },
     children: [
       {
         path: "login",
@@ -28,6 +29,7 @@ const routes: RouteRecordRaw[] = [
         path: "",
         component: () => import("@/pages/private/index.vue"),
         name: "Private",
+        redirect: { name: "Send" },
         children: [
           {
             name: "Send",

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import AppHeader from "@/components/layout/AppHeader.vue";
 import AppFooter from "@/components/layout/AppFooter.vue";
+import useAuthStore from "@/stores/auth";
+
+const authStore = useAuthStore();
 </script>
 
 <template>
@@ -8,7 +11,7 @@ import AppFooter from "@/components/layout/AppFooter.vue";
     <AppHeader />
     <div class="flex flex-col flex-1 h-full private-page">
       <div class="flex flex-col flex-1 container">
-        <RouterView></RouterView>
+        <RouterView v-if="authStore.isSocketLoggedIn"></RouterView>
       </div>
       <AppFooter />
     </div>
