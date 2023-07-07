@@ -45,13 +45,16 @@ function getSelectedAssets(tokenSymbol, tokenType) {
 }
 
 async function fetchAssets(chainId) {
-  loadStore.showLoader("fetching assets...");
+  loadStore.showLoader("Fetching tokens...");
   try {
     const walletAddress = authStore.walletAddress;
     const chain = getSelectedChainInfo(chainId);
     //@ts-ignore
     const { result } = await getAccountBalance(walletAddress, chain.blockchain);
     chainAssets.value = result.assets;
+    if (chainAssets.value.length === 0) {
+      toast.error("You don't own any tokens on this chain");
+    }
   } catch (error) {
     console.log(error);
   } finally {
@@ -79,7 +82,7 @@ function messageArcana(
 }
 
 async function proceed() {
-  loadStore.showLoader("sending...");
+  loadStore.showLoader("Sending assets...");
   try {
     const senderPublicKey = await arcanaAuth
       .getAuthInstance()
@@ -117,10 +120,24 @@ async function proceed() {
 
 watch(
   () => userInput.value.chain,
-  async (selectedChainId) => {
-    userInput.value.token = "";
-    await arcanaAuth.switchChain(selectedChainId);
-    fetchAssets(selectedChainId);
+  async (selectedChainId, oldChain) => {
+    if (userInput.value.chain !== "") {
+      userInput.value.token = "";
+      const chainId = await arcanaAuth
+        .getProvider()
+        .request({ method: "eth_chainId" });
+      if (Number(chainId) !== selectedChainId) {
+        try {
+          await arcanaAuth.switchChain(selectedChainId);
+          fetchAssets(selectedChainId);
+        } catch (e) {
+          userInput.value.chain = oldChain;
+          toast.error("Switching chain rejected by user");
+        }
+      } else {
+        fetchAssets(selectedChainId);
+      }
+    }
   }
 );
 
