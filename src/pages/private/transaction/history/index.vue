@@ -28,7 +28,6 @@ async function fetchTxHistory() {
     SOCKET_IDS.GET_TX_HISTORY,
     message
   )) as { txns: any[] };
-  console.log(txHistory);
   history.value = txHistory.txns.map((record) => {
     return {
       amount: {
@@ -43,7 +42,7 @@ async function fetchTxHistory() {
       link: record.link,
       points: record.points || "",
       isSharedOnTwitter: record.shared || false,
-      date: dayjs(record.tx_date).format("DD MMM YYYY"),
+      date: dayjs.unix(record.tx_date).format("DD MMM YYYY"),
     };
   });
 }
