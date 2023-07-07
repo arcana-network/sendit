@@ -5,6 +5,7 @@ const useAuthStore = defineStore("auth", {
     isLoggedIn: false,
     isSocketLoggedIn: false,
     userInfo: {} as any,
+    isAuthSDKInitialized: false,
   }),
   getters: {
     walletAddress(state) {

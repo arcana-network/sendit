@@ -18,13 +18,11 @@ const socketConnection = useSocketConnection();
 const rewardsStore = useRewardsStore();
 const userStore = useUserStore();
 const notificationStore = useNotificationStore();
-const isAuthInitialized = ref(false);
 
 async function initAuth() {
   loaderStore.showLoader("initializing...");
   try {
     await auth.init();
-    isAuthInitialized.value = true;
     const isLoggedIn = await new Promise((resolve) => {
       setTimeout(async () => {
         resolve(await auth.isLoggedIn());
@@ -34,6 +32,7 @@ async function initAuth() {
     auth.getProvider().on("disconnect", onWalletDisconnect);
     if (isLoggedIn) authStore.setLoginStatus(true);
     else router.push({ name: "Login" });
+    authStore.isAuthSDKInitialized = true;
   } catch (error) {
     console.error({ error });
   } finally {
@@ -97,6 +96,6 @@ const showFullScreenLoader = computed(() => {
 <template>
   <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
-    <RouterView v-if="isAuthInitialized"> </RouterView>
+    <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
   </main>
 </template>
