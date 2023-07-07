@@ -154,7 +154,7 @@ function shareTweet(record) {
             class="flex p-4 w-full"
             :class="{ 'border-jet border-0 border-t-1': index !== 0 }"
           >
-            <div class="px-2 flex flex-col gap-1">
+            <div class="px-2 flex flex-col gap-1 w-[60%]">
               <div
                 class="text-sm font-bold text-[14px]"
                 :title="record.walletAddress"
