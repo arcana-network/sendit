@@ -28,13 +28,13 @@ async function initAuth() {
     await auth.init();
     auth.getProvider().on("connect", onWalletConnect);
     auth.getProvider().on("disconnect", onWalletDisconnect);
+    authStore.setAuthInitialized(true);
     const isLoggedIn = await auth.isLoggedIn();
-    if (!isLoggedIn) {
-      router.push({ name: "Login" });
-      loaderStore.hideLoader();
-    }
+    if (isLoggedIn) authStore.setLoginStatus(true);
+    else router.push({ name: "Login" });
   } catch (error) {
     toast.error(error as string);
+  } finally {
     loaderStore.hideLoader();
   }
 }
@@ -97,6 +97,6 @@ const showFullScreenLoader = computed(() => {
 <template>
   <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
-    <RouterView> </RouterView>
+    <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
   </main>
 </template>

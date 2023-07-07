@@ -23,6 +23,9 @@ const useAuthStore = defineStore("auth", {
     setUserInfo(info: object): void {
       this.userInfo = info;
     },
+    setAuthInitialized(status: boolean): void {
+      this.isAuthSDKInitialized = status;
+    },
   },
 });
 
