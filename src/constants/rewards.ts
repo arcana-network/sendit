@@ -20,7 +20,7 @@ const EARN_XP = [
       "Give a shoutout to sender when you receive assets to earn XP.",
     task: "Tweet",
     tweet:
-      "Just received a crypto transfer on #SendIt! No wallet, no problem. Join the revolution at https://sendit.arcana.network! ",
+      "Just received a crypto transfer on #SendIt! No wallet, no problem. Join the revolution at https://sendit.arcana.network!",
     xp: 50,
   },
   {

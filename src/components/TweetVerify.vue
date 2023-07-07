@@ -11,9 +11,12 @@ const props = defineProps<TweetVerifyProps>();
 const emit = defineEmits(["close"]);
 const isTweetVerified = ref(false);
 const router = useRouter();
+const inviteLink = ref("");
 
 function handleTweetVerify() {
-  isTweetVerified.value = true;
+  if (inviteLink) {
+    isTweetVerified.value = true;
+  }
 }
 
 function handleViewRewards() {
@@ -77,6 +80,7 @@ function handleViewRewards() {
             <input
               type="text"
               id="email-invite"
+              v-model.trim="inviteLink"
               placeholder="Paste URL here..."
               class="text-sm placeholder:text-philippine-gray bg-[#313131] rounded-[5px] p-2"
             />

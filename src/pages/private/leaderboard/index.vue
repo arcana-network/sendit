@@ -7,11 +7,9 @@ import { SOCKET_IDS, LEADERBOARD_TYPES } from "@/constants/socket-ids";
 import { truncateAddress } from "@/utils/truncateAddress";
 import dayjs from "dayjs";
 import { ethers } from "ethers";
-import useLoaderStore from "@/stores/loader";
 
 const route = useRoute();
 const socket = useSocketConnection();
-const loader = useLoaderStore();
 
 const rankers = ref([] as any[]);
 
@@ -21,7 +19,6 @@ onBeforeMount(() => {
 });
 
 async function fetchLeaderboard(duration: "global" | "weekly" = "global") {
-  loader.showLoader("Fetching leaderboard");
   const message = {
     ltype:
       duration === "weekly"
@@ -41,7 +38,6 @@ async function fetchLeaderboard(duration: "global" | "weekly" = "global") {
       joinDate: dayjs(ranking.join_date).format("DD MMM YYYY"),
     };
   });
-  loader.hideLoader();
 }
 
 watch(

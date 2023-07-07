@@ -25,9 +25,12 @@ const areEmailsValid = computed(() => {
 async function handleEmailInvite() {
   if (areEmailsValid.value) {
     const socket = useSocketConnection();
-    const message = {
-      emails: email.value.split(",").map((e) => e.trim()),
-    };
+    const message = email.value.split(",").map((e) => {
+      return {
+        verifier: "passwordless",
+        verifier_id: e.trim(),
+      };
+    });
     loader.showLoader("Sending invites...");
     await socket.sendMessage(SOCKET_IDS.EMAIL_INVITE, message);
     loader.hideLoader();
