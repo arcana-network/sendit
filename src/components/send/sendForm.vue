@@ -105,7 +105,7 @@ async function proceed() {
     //@ts-ignore
     const sendRes = await messageArcana(hash, to, fromEmail, toEmail, chainId);
     toast.success("Transaction Successful");
-    emits("transaction-successful");
+    emits("transaction-successful", sendRes);
   } catch (error) {
     console.log(error);
     toast.error(error as string);
@@ -221,15 +221,15 @@ const disableSubmit = computed(() => {
           :disabled="disableAmountInput"
         />
       </div>
-      <input
+      <button
         @click.prevent="proceed"
         type="submit"
-        value="Proceed"
-        class="w-full btn btn-submit"
+        class="w-full text-sm btn btn-submit"
         :disabled="disableSubmit"
         :class="{ 'opacity-50': disableSubmit }"
-      />
+      >
+        Proceed
+      </button>
     </form>
   </div>
 </template>
-@/services/send.service

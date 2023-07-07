@@ -43,7 +43,7 @@ const routes: RouteRecordRaw[] = [
           },
           {
             name: "Leaderboard",
-            path: "transaction/leaderboard",
+            path: "leaderboard",
             component: () => import("@/pages/private/leaderboard/index.vue"),
           },
           {
@@ -54,7 +54,7 @@ const routes: RouteRecordRaw[] = [
             children: [
               {
                 name: "My Rewards",
-                path: "my-rewards",
+                path: "",
                 component: () =>
                   import("@/pages/private/rewards/my-rewards/index.vue"),
               },
