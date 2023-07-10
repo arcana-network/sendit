@@ -80,7 +80,7 @@ function messageArcana(
 }
 
 async function proceed() {
-  loadStore.showLoader("Sending assets...");
+  loadStore.showLoader("Sending tokens...");
   let hasUserRejectedChainSwitching = false;
   if (userInput.value.chain !== "") {
     const chainId = await arcanaAuth

@@ -111,12 +111,13 @@ function useSocketConnection() {
           );
           state = ConnectionState.CONNECTED_UNAUTHORIZED;
         } catch (e) {
+          // @ts-ignore
           if (e.code === ACTION_REJECTED) {
             toast.error(
               "Signature request rejected. Please refresh the page again to login"
             );
           } else {
-            toast.error(e);
+            toast.error(e as string);
           }
         }
         break;
