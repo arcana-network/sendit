@@ -10,10 +10,12 @@ import SendSuccess from "@/components/send/success.vue";
 import TweetVerify from "@/components/TweetVerify.vue";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import { composeAndSendTweet } from "@/utils/tweet";
+import useUserStore from "@/stores/user";
 
 const socketConnection = useSocketConnection();
 const authStore = useAuthStore();
 const sendStore = useSendStore();
+const userStore = useUserStore();
 const loaderStore = useLoaderStore();
 const { isSocketLoggedIn } = toRefs(authStore);
 const showSuccessMessage = ref(false);
@@ -76,6 +78,7 @@ function handleShoutout() {
 
 function handleSuccessModalClose() {
   showSuccessMessage.value = false;
+  userStore.fetchUserPointsAndRank();
   resetUserInput();
 }
 </script>

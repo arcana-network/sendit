@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import Overlay from "@/components/overlay.vue";
+import useUserStore from "@/stores/user";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -12,10 +13,12 @@ const emit = defineEmits(["close"]);
 const isTweetVerified = ref(false);
 const router = useRouter();
 const inviteLink = ref("");
+const userStore = useUserStore();
 
 function handleTweetVerify() {
   if (inviteLink) {
     isTweetVerified.value = true;
+    userStore.fetchUserPointsAndRank();
   }
 }
 
