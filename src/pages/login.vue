@@ -5,6 +5,7 @@ import { onMounted } from "vue";
 import { useRoute } from "vue-router";
 import useLoaderStore from "@/stores/loader";
 import AppHeader from "@/components/layout/AppHeader.vue";
+import LandingDescription from "@/components/LandingDescription.vue";
 
 const arcanaAuth = useArcanaAuth();
 const route = useRoute();
@@ -48,40 +49,43 @@ onMounted(async () => {
 <template>
   <div class="flex flex-col min-h-[100vh]">
     <AppHeader hide-nav hide-user-data />
-    <div class="flex container flex-grow">
-      <section class="w-1/2 flex flex-col justify-center items-center relative">
-        <section class="min-w-96 space-y-4 flex flex-col items-center">
-          <header class="space-y-0.5 text-center">
-            <h1 class="text-3.5xl text-white font-bold">Welcome to SendIt</h1>
-            <p class="text-sm text-philippine-gray">
-              Sign-in using any of these methods to get started
-            </p>
-          </header>
-          <section class="space-y-0.5 w-full">
-            <div class="flex flex-col space-y-2">
-              <button
-                class="btn btn-login flex justify-center items-center space-x-2"
-                @click="connectToArcana"
+    <div
+      class="flex h-full container flex-grow max-lg:flex-col max-lg:gap-12 p-4 max-lg:py-12"
+    >
+      <div class="flex flex-col items-center justify-center w-full lg:w-1/2">
+        <section
+          class="w-full flex flex-col md:justify-center md:items-center md:text-center relative"
+        >
+          <section class="w-full max-w-[360px] mx-auto space-y-4 flex flex-col">
+            <header class="flex flex-col gap-1 text-center max-md:text-left">
+              <h1 class="text-[1.5rem] lg:text-[2rem] text-white font-bold">
+                Welcome to SendIt
+              </h1>
+              <p
+                class="text-sm lg:text-base text-philippine-gray max-w-[280px] md:text-center md:mx-auto"
               >
-                <span>Connect with</span>
-                <img :src="arcanaLogo" alt="Arcana" class="w-20" />
-              </button>
-            </div>
+                Sign-in using any of these methods to get started
+              </p>
+            </header>
+            <section class="space-y-0.5 w-full">
+              <div class="flex flex-col space-y-2 w-full">
+                <button
+                  class="btn btn-login flex w-full justify-center items-center space-x-2"
+                  @click="connectToArcana"
+                >
+                  <span>Connect with</span>
+                  <img :src="arcanaLogo" alt="Arcana" class="w-20" />
+                </button>
+              </div>
+            </section>
           </section>
         </section>
-      </section>
-      <section class="space-y-3 w-1/2 p-7.5">
-        <div class="bg-eerie-black p-10 h-full space-y-3 rounded-2xl">
-          <p class="text-3xl">
-            Send Digital Assets to anyone even if they don’t have a wallet!
-          </p>
-          <p class="text-sm text-philippine-gray">
-            Send digital assets over email, GitHub, Twitter or many other
-            channels in a cryptographically secure way and earn rewards while
-            doing it
-          </p>
+        <div class="mt-20 text-sm">
+          Need access?
+          <RouterLink :to="{ name: 'Waitlist' }">Join the Waitlist</RouterLink>
         </div>
-      </section>
+      </div>
+      <LandingDescription class="flex-grow" />
     </div>
   </div>
 </template>
