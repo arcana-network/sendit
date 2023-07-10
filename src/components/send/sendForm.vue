@@ -118,6 +118,7 @@ async function proceed() {
               //@ts-ignore
               asset.contractAddress
             );
+      chainAssets.value = [];
       const { hash, to } = tx;
       const toEmail = recipientId;
       //@ts-ignore
