@@ -24,6 +24,9 @@ async function loginAutomatically(verifier: string, verifierId: string) {
   try {
     const authInstance = arcanaAuth.getAuthInstance();
     if (verifier === "passwordless") {
+      loaderStore.showLoader(
+        `Click on the verification mail sent to ${verifierId}...`
+      );
       await authInstance.loginWithLink(verifierId);
     } else {
       await authInstance.loginWithSocial(verifier);
