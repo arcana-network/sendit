@@ -81,51 +81,69 @@ function messageArcana(
 
 async function proceed() {
   loadStore.showLoader("Sending assets...");
-  try {
-    const recipientId = twitterId.value || userInput.value.recipientId;
-    const senderPublicKey = await arcanaAuth
-      .getAuthInstance()
-      .getPublicKey(recipientId);
-    const arcanaProvider = arcanaAuth.getProvider();
-    const amount = String(userInput.value.amount);
-    const chainId = userInput.value.chain;
-    const [tokenSymbol, tokenType] = userInput.value.token.split("-");
-    const asset = getSelectedAssets(tokenSymbol, tokenType);
-    const tx =
-      tokenType === "NATIVE"
-        ? await nativeTokenTransfer(senderPublicKey, arcanaProvider, amount)
-        : await erc20TokenTransfer(
-            senderPublicKey,
-            arcanaProvider,
-            amount,
-            //@ts-ignore
-            asset.contractAddress
-          );
-    const { hash, to } = tx;
-    const toEmail = recipientId;
-    //@ts-ignore
-    const fromEmail = authStore.userInfo.email || authStore.userInfo.id;
-    const fromVerifier =
-      authStore.userInfo.loginType === "twitter" ? "twitter" : "passwordless";
-    const toVerifier =
-      userInput.value.medium === "twitter" ? "twitter" : "passwordless";
-    //@ts-ignore
-    const sendRes = await messageArcana(
-      hash,
-      to,
-      fromEmail,
-      toEmail,
-      Number(chainId),
-      fromVerifier,
-      toVerifier
-    );
-    toast.success("Transaction Successful");
-    emits("transaction-successful", sendRes);
-  } catch (error) {
-    console.log(error);
-    toast.error(error as string);
-  } finally {
-    loadStore.hideLoader();
+  let hasUserRejectedChainSwitching = false;
+  if (userInput.value.chain !== "") {
+    const chainId = await arcanaAuth
+      .getProvider()
+      .request({ method: "eth_chainId" });
+    if (Number(chainId) !== Number(userInput.value.chain)) {
+      try {
+        await arcanaAuth.switchChain(userInput.value.chain);
+      } catch (e) {
+        hasUserRejectedChainSwitching = true;
+        toast.error(
+          "Switching chain rejected by user. Cannot proceed with this transaction."
+        );
+      }
+    }
+  }
+  if (!hasUserRejectedChainSwitching) {
+    try {
+      const recipientId = twitterId.value || userInput.value.recipientId;
+      const senderPublicKey = await arcanaAuth
+        .getAuthInstance()
+        .getPublicKey(recipientId);
+      const arcanaProvider = arcanaAuth.getProvider();
+      const amount = String(userInput.value.amount);
+      const chainId = userInput.value.chain;
+      const [tokenSymbol, tokenType] = userInput.value.token.split("-");
+      const asset = getSelectedAssets(tokenSymbol, tokenType);
+      const tx =
+        tokenType === "NATIVE"
+          ? await nativeTokenTransfer(senderPublicKey, arcanaProvider, amount)
+          : await erc20TokenTransfer(
+              senderPublicKey,
+              arcanaProvider,
+              amount,
+              //@ts-ignore
+              asset.contractAddress
+            );
+      const { hash, to } = tx;
+      const toEmail = recipientId;
+      //@ts-ignore
+      const fromEmail = authStore.userInfo.email || authStore.userInfo.id;
+      const fromVerifier =
+        authStore.userInfo.loginType === "twitter" ? "twitter" : "passwordless";
+      const toVerifier =
+        userInput.value.medium === "twitter" ? "twitter" : "passwordless";
+      //@ts-ignore
+      const sendRes = await messageArcana(
+        hash,
+        to,
+        fromEmail,
+        toEmail,
+        Number(chainId),
+        fromVerifier,
+        toVerifier
+      );
+      toast.success("Transaction Successful");
+      emits("transaction-successful", sendRes);
+    } catch (error) {
+      console.log(error);
+      toast.error(error as string);
+    } finally {
+      loadStore.hideLoader();
+    }
   }
 }
 
@@ -213,8 +231,11 @@ function handleMediumChange(medium) {
           v-for="medium in sendVia"
           :key="medium.value"
           @click="handleMediumChange(medium.value)"
-          class="border-1 border-jet p-1.5 rounded-full"
-          :class="{ 'border-white': userInput.medium === medium.value }"
+          class="border-1 border-jet p-1.5 bg-[#666] rounded-full hover:border-white hover:bg-[#999] cursor-pointer"
+          :class="{
+            'border-white outline-1 outline outline-white':
+              userInput.medium === medium.value,
+          }"
         >
           <img :src="medium.icon" :alt="medium.value" />
         </div>
