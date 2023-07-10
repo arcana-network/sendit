@@ -53,11 +53,6 @@ function useSocketConnection() {
       socket.addEventListener("message", (ev: MessageEvent) =>
         onMessage(ev, onSocketLogin)
       );
-      socket.addEventListener("close", (e) => {
-        if (e.code !== SOCKET_CLOSED_ON_LOGOUT) {
-          init(authProvider, account, onSocketLogin);
-        }
-      });
     } catch (e) {
       console.log({ e });
     }
@@ -71,6 +66,10 @@ function useSocketConnection() {
         verifier_id: currentAccount.verifier_id,
       })
     );
+
+    setInterval(function () {
+      socket.send(msgpack({ ping: true }));
+    }, 59000);
   }
 
   async function sendMessage(id: number, data?: any) {
