@@ -128,7 +128,7 @@ async function proceed() {
       const toVerifier =
         userInput.value.medium === "twitter" ? "twitter" : "passwordless";
       //@ts-ignore
-      const sendRes = await messageArcana(
+      const sendRes = (await messageArcana(
         hash,
         to,
         fromEmail,
@@ -136,8 +136,9 @@ async function proceed() {
         Number(chainId),
         fromVerifier,
         toVerifier
-      );
+      )) as any;
       toast.success("Transaction Successful");
+      sendRes.verifier_id = recipientId;
       emits("transaction-successful", sendRes);
     } catch (error) {
       console.log(error);

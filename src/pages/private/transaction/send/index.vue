@@ -22,6 +22,7 @@ const shareDetails = ref({
   isShareRequired: false,
   shareLink: "",
 });
+const verifierId = ref("");
 
 async function fetchSupportedChains() {
   loaderStore.showLoader("Fetching list of chains...");
@@ -57,6 +58,7 @@ function handleTxSucces(e) {
     shareLink: e.share_url,
     isShareRequired: e.share_reqd,
   };
+  verifierId.value = e.verifier_id;
 }
 
 function resetUserInput() {
@@ -83,6 +85,7 @@ function handleSuccessModalClose() {
     v-if="showSuccessMessage"
     :medium="sendStore.userInput.medium"
     :share-details="shareDetails"
+    :verifier-id="verifierId"
     @shoutout="handleShoutout"
     @close="handleSuccessModalClose"
   />
