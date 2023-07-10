@@ -2,7 +2,9 @@
 import useNotificationStore from "@/stores/notification";
 import { composeAndSendTweet } from "@/utils/tweet";
 import { toRefs } from "vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const notificationStore = useNotificationStore();
 const { notificationList, notificationCount } = toRefs(notificationStore);
 
@@ -11,6 +13,8 @@ function markAllAsRead() {
 }
 
 function onClickNotification(notification) {
+  if (notification.content.path)
+    router.push({ name: notification.content.path });
   notificationStore.markAsRead(notification.id);
 }
 
