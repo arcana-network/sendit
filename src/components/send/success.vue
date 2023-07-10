@@ -45,7 +45,7 @@ async function handleLinkCopy() {
       </div>
       <div class="flex flex-col space-y-3 w-full">
         <button
-          class="btn btn-submit text-xs w-full font-bold"
+          class="btn btn-submit text-sm w-full font-bold"
           v-if="
             props.shareDetails.isShareRequired && props.medium === 'twitter'
           "
@@ -53,7 +53,7 @@ async function handleLinkCopy() {
           Send on twitter DM
         </button>
         <button
-          class="btn btn-submit text-xs w-full font-bold"
+          class="btn btn-submit text-sm w-full font-bold"
           v-if="props.shareDetails.isShareRequired && props.medium === 'mail'"
         >
           Send Email
