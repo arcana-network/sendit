@@ -53,6 +53,11 @@ function useSocketConnection() {
       socket.addEventListener("message", (ev: MessageEvent) =>
         onMessage(ev, onSocketLogin)
       );
+      socket.addEventListener("close", (e) => {
+        if (e.code !== SOCKET_CLOSED_ON_LOGOUT) {
+          init(authProvider, account, onSocketLogin);
+        }
+      });
     } catch (e) {
       console.log({ e });
     }
