@@ -181,8 +181,9 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
               </div>
             </form>
             <div class="mt-5 text-sm">
-              Have access?
-              <RouterLink :to="{ name: 'Login' }">Sign In</RouterLink>
+              <RouterLink :to="{ name: 'Login' }"
+                >Have access? Sign In</RouterLink
+              >
             </div>
           </div>
           <div
