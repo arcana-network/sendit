@@ -64,7 +64,7 @@ const error = computed(() => {
 async function handleUserSubmission() {
   try {
     loaderStore.showLoader("Adding to waitlist...");
-    await addUserToWaitlist(email.value, "");
+    await addUserToWaitlist(email.value, address.value);
     submissionSuccess.value = true;
   } catch (e) {
     serverError.value = true;
