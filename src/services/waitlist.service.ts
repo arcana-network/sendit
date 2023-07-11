@@ -6,8 +6,11 @@ async function addUserToWaitlist(email: string, address: string) {
       address,
     }),
   });
-  const data = await response.json();
-  return data;
+  if (response.ok) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 export { addUserToWaitlist };
