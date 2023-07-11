@@ -108,8 +108,8 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
             <span
               class="text-philippine-gray text-sm mb-6 mt-3 md:text-center md:mx-auto"
               >Experience SendIt, the revolutionary app that simplifies crypto
-              transactions using email, Twitter, and Github. Sign up now to be
-              among the first to use it!</span
+              transactions using email and twitter. Sign up now to be among the
+              first to use it!</span
             >
             <form
               class="w-full flex flex-col pb-8"
