@@ -7,6 +7,8 @@ import { addUserToWaitlist } from "@/services/waitlist.service";
 import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
 import LandingDescription from "@/components/LandingDescription.vue";
+import { useRoute } from "vue-router";
+import { toUnicode } from "punycode";
 
 const hasStartedTyping = ref(false);
 const email = ref("");
@@ -15,6 +17,7 @@ const submissionSuccess = ref(false);
 const serverError = ref(false);
 const loaderStore = useLoaderStore();
 const toast = useToast();
+const route = useRoute();
 
 const error = computed(() => {
   if (hasStartedTyping.value) {
@@ -64,7 +67,8 @@ const error = computed(() => {
 async function handleUserSubmission() {
   try {
     loaderStore.showLoader("Adding to waitlist...");
-    await addUserToWaitlist(email.value, address.value);
+    const community = route.query.community as string;
+    await addUserToWaitlist(toUnicode(email.value), address.value, community);
     submissionSuccess.value = true;
   } catch (e) {
     serverError.value = true;

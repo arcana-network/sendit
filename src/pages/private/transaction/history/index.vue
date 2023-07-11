@@ -31,7 +31,6 @@ async function fetchTxHistory() {
     SOCKET_IDS.GET_TX_HISTORY,
     message
   )) as { txns: any[] };
-  console.log(txHistory);
   history.value = txHistory.txns.map((record) => {
     return {
       amount: {
