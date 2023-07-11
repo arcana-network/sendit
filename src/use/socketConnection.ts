@@ -71,6 +71,10 @@ function useSocketConnection() {
         verifier_id: currentAccount.verifier_id,
       })
     );
+
+    setInterval(function () {
+      sendMessage(255, { ping: true });
+    }, 59000);
   }
 
   async function sendMessage(id: number, data?: any) {
