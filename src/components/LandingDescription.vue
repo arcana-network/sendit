@@ -10,8 +10,8 @@
       SendIt enables you to Send/Receive crypto assets instantly using an email
       address or Twitter handle. Now everyone can be a crypto owner!
     </p>
-    <div class="my-10 flex justify-center items-center">
-      <img src="@/assets/images/placeholder-landing-image.svg" />
+    <div class="my-5 flex justify-center items-center">
+      <img src="@/assets/gifs/send-flow.gif" class="w-full max-w-[480px]" />
     </div>
   </section>
 </template>

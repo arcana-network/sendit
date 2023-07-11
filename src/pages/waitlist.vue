@@ -10,6 +10,7 @@ import LandingDescription from "@/components/LandingDescription.vue";
 
 const hasStartedTyping = ref(false);
 const email = ref("");
+const address = ref("");
 const submissionSuccess = ref(false);
 const serverError = ref(false);
 const loaderStore = useLoaderStore();
@@ -20,24 +21,43 @@ const error = computed(() => {
     if (!email.value.trim()) {
       return {
         value: true,
+        field: "email",
         message: "Email address is required",
       };
     } else if (!isValidEmail(email.value)) {
       return {
         value: true,
+        field: "email",
         message: "Enter valid email address",
+      };
+    }
+    if (!address.value.trim()) {
+      return {
+        value: true,
+        field: "address",
+        message: "Wallet Address is required",
+      };
+    } else if (
+      !address.value.startsWith("0x") ||
+      address.value.length !== 42 ||
+      !address.value.substring(2).match(/^[0-9a-fA-F]+$/)
+    ) {
+      return {
+        value: true,
+        field: "address",
+        message: "Enter valid wallet address",
       };
     }
   }
   if (serverError.value) {
     return {
       value: true,
+      field: "server",
       message: "Something went wrong. Please try again",
     };
   }
   return {
     value: false,
-    message: "",
   };
 });
 
@@ -95,30 +115,68 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
               class="w-full flex flex-col pb-8"
               @submit.prevent="handleUserSubmission"
             >
-              <div
-                class="flex items-center flex-grow p-[1px] border-1 rounded-[5px]"
-                :class="{
-                  'border-white': !error.value,
-                  'border-[#ff4264]': error.value,
-                }"
-              >
-                <input
-                  v-model.trim="email"
-                  class="bg-transparent text-[12px] placeholder:text-[#787878] flex-grow px-3 py-2 outline-none"
-                  placeholder="Email address"
-                  @input="handleInput"
-                />
+              <div class="flex flex-col items-center gap-4 flex-grow p-[1px]">
+                <div class="flex flex-col gap-1 w-full">
+                  <label for="email" class="text-xs font-medium">Email</label>
+                  <input
+                    id="email"
+                    v-model.trim="email"
+                    class="bg-transparent w-full rounded-[5px] text-[12px] placeholder:text-[#787878] flex-grow px-3 py-2 border-1 outline-none"
+                    placeholder="Enter email address"
+                    :class="{
+                      'border-white': !error.value,
+                      'border-[#ff4264]':
+                        error.value && error.field === 'email',
+                    }"
+                    @input="handleInput"
+                  />
+                  <div
+                    class="px-3"
+                    v-if="error.value && error.field === 'email'"
+                  >
+                    <span class="text-[10px] text-[#ff4264]">{{
+                      error.message
+                    }}</span>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1 w-full">
+                  <label for="address" class="text-xs font-medium"
+                    >Wallet Address</label
+                  >
+                  <input
+                    id="address"
+                    v-model.trim="address"
+                    class="bg-transparent w-full rounded-[5px] text-[12px] placeholder:text-[#787878] flex-grow px-3 py-2 border-1 outline-none"
+                    placeholder="Enter wallet address"
+                    :class="{
+                      'border-white': !error.value,
+                      'border-[#ff4264]':
+                        error.value && error.field === 'address',
+                    }"
+                    @input="handleInput"
+                  />
+                  <div
+                    class="px-3"
+                    v-if="error.value && error.field === 'address'"
+                  >
+                    <span class="text-[10px] text-[#ff4264]">{{
+                      error.message
+                    }}</span>
+                  </div>
+                </div>
                 <button
-                  class="bg-[#f7f7f7] text-[#101010] uppercase font-bold text-[0.75rem] px-5 py-2 rounded-[5px] disabled:opacity-60"
+                  class="bg-[#f7f7f7] w-full text-[#101010] uppercase font-bold text-[0.75rem] px-5 py-2 rounded-[5px] disabled:opacity-60"
                   :disabled="error.value || !hasStartedTyping"
                 >
                   Sign me up!
                 </button>
               </div>
               <div class="px-3">
-                <span v-if="error.value" class="text-[10px] text-[#ff4264]">{{
-                  error.message
-                }}</span>
+                <span
+                  v-if="error.value && error.field === 'server'"
+                  class="text-[10px] text-[#ff4264]"
+                  >{{ error.message }}</span
+                >
                 <span v-else class="text-[10px]">No spam. We promise</span>
               </div>
             </form>
