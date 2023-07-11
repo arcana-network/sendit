@@ -69,7 +69,7 @@ async function handleUserSubmission() {
   } catch (e) {
     serverError.value = true;
     toast.error("Cannot add to waitlist. Please try again.");
-    console.log(error.value);
+    console.error(error.value);
   } finally {
     loaderStore.hideLoader();
   }

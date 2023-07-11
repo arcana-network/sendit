@@ -42,7 +42,7 @@ async function fetchSupportedChains() {
       })
     );
   } catch (e) {
-    console.log(e);
+    console.error(e);
   } finally {
     loaderStore.hideLoader();
   }

@@ -16,6 +16,7 @@ import { useToast } from "vue-toastification";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 
 const emits = defineEmits(["transaction-successful"]);
+const ACTION_REJECTED = "ACTION_REJECTED";
 
 const sendStore = useSendStore();
 const authStore = useAuthStore();
@@ -52,7 +53,7 @@ async function fetchAssets(chainId) {
     const { result } = await getAccountBalance(walletAddress, chain.blockchain);
     chainAssets.value = result.assets;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   } finally {
     loadStore.hideLoader();
   }
@@ -140,9 +141,15 @@ async function proceed() {
       toast.success("Transaction Successful");
       sendRes.verifier_id = recipientId;
       emits("transaction-successful", sendRes);
-    } catch (error) {
-      console.log(error);
-      toast.error(error as string);
+    } catch (error: any) {
+      console.error(error);
+      if (error.code === ACTION_REJECTED) {
+        toast.error(
+          "Signature request rejected. Please refresh the page again to login"
+        );
+      } else {
+        toast.error(error.message as string);
+      }
     } finally {
       loadStore.hideLoader();
     }
