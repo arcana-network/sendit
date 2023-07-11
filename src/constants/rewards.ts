@@ -11,7 +11,7 @@ const EARN_XP = [
     description:
       "Invite a friend and earn XP as soon as they log in to their wallet.",
     task: "Invite",
-    xp: 40,
+    xp: 50,
   },
   {
     image: UserVoiceIcon,
@@ -103,12 +103,6 @@ const REDEEM_XP = [
   },
   {
     image: "https://via.placeholder.com/93X96",
-    name: "75 XAR NFT",
-    requiredXP: 750,
-    xar: 75,
-  },
-  {
-    image: "https://via.placeholder.com/93X96",
     name: "100 XAR NFT",
     requiredXP: 1000,
     xar: 100,
@@ -116,20 +110,8 @@ const REDEEM_XP = [
   {
     image: "https://via.placeholder.com/93X96",
     name: "125 XAR NFT",
-    requiredXP: 1250,
-    xar: 125,
-  },
-  {
-    image: "https://via.placeholder.com/93X96",
-    name: "150 XAR NFT",
-    requiredXP: 1500,
-    xar: 150,
-  },
-  {
-    image: "https://via.placeholder.com/93X96",
-    name: "175 XAR NFT",
-    requiredXP: 1750,
-    xar: 175,
+    requiredXP: 500,
+    xar: 5000,
   },
 ];
 
