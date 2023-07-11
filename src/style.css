@@ -56,7 +56,7 @@ body {
 }
 
 .btn {
-  @apply p-2.5 rounded-md text-base font-bold;
+  @apply p-2.5 rounded-md font-bold;
 }
 
 .btn-login {
@@ -64,7 +64,7 @@ body {
 }
 
 .btn-submit {
-  @apply bg-white text-black uppercase;
+  @apply bg-white text-black uppercase border-2;
 }
 
 .btn-submit-secondary {

@@ -16,6 +16,8 @@ type Reward = {
   requiredXP: number;
 };
 
+userStore.fetchUserPointsAndRank();
+
 function handleRedeem(reward: Reward) {
   if (reward.requiredXP <= userStore.points) {
     showClaimNFTPopup.value = true;

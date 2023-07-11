@@ -25,11 +25,10 @@ const tokenBalance = ref(0);
 const arcanaAuth = useArcanaAuth();
 const socketConnection = useSocketConnection();
 const toast = useToast();
+const twitterId = ref("");
+const hasTwitterError = ref(false);
 
-const {
-  userInput,
-  supportedChains,
-}: { userInput: Ref<any>; supportedChains: Ref<any[]> } = toRefs(sendStore);
+const { userInput, supportedChains } = toRefs(sendStore);
 
 function getSelectedChainInfo(chainId) {
   //@ts-ignore
@@ -52,9 +51,6 @@ async function fetchAssets(chainId) {
     //@ts-ignore
     const { result } = await getAccountBalance(walletAddress, chain.blockchain);
     chainAssets.value = result.assets;
-    if (chainAssets.value.length === 0) {
-      toast.error("You don't own any tokens on this chain");
-    }
   } catch (error) {
     console.log(error);
   } finally {
@@ -67,54 +63,89 @@ function messageArcana(
   to: string,
   fromEmail: string,
   toEmail: string,
-  chainId: number
+  chainId: number,
+  from_verifier: "passwordless" | "twitter",
+  to_verifier: "passwordless" | "twitter"
 ) {
   const message = {
     hash: Buffer.from(getBytes(hash)),
     chain_id: chainId,
     to: Buffer.from(getBytes(to)),
     from_id: fromEmail,
-    from_verifier: "passwordless",
+    from_verifier,
     to_id: toEmail,
-    to_verifier: "passwordless",
+    to_verifier,
   };
   return socketConnection.sendMessage(SOCKET_IDS.SEND_TX, message);
 }
 
 async function proceed() {
   loadStore.showLoader("Sending tokens...");
-  try {
-    const senderPublicKey = await arcanaAuth
-      .getAuthInstance()
-      .getPublicKey(userInput.value.recipientId);
-    const arcanaProvider = arcanaAuth.getProvider();
-    const amount = userInput.value.amount;
-    const chainId = userInput.value.chain;
-    const [tokenSymbol, tokenType] = userInput.value.token.split("-");
-    const asset = getSelectedAssets(tokenSymbol, tokenType);
-    const tx =
-      tokenType === "NATIVE"
-        ? await nativeTokenTransfer(senderPublicKey, arcanaProvider, amount)
-        : await erc20TokenTransfer(
-            senderPublicKey,
-            arcanaProvider,
-            amount,
-            //@ts-ignore
-            asset.contractAddress
-          );
-    const { hash, to } = tx;
-    const toEmail = userInput.value.recipientId;
-    //@ts-ignore
-    const fromEmail = authStore.userInfo.email;
-    //@ts-ignore
-    const sendRes = await messageArcana(hash, to, fromEmail, toEmail, chainId);
-    toast.success("Transaction Successful");
-    emits("transaction-successful", sendRes);
-  } catch (error) {
-    console.log(error);
-    toast.error(error as string);
-  } finally {
-    loadStore.hideLoader();
+  let hasUserRejectedChainSwitching = false;
+  if (userInput.value.chain !== "") {
+    const chainId = await arcanaAuth
+      .getProvider()
+      .request({ method: "eth_chainId" });
+    if (Number(chainId) !== Number(userInput.value.chain)) {
+      try {
+        await arcanaAuth.switchChain(userInput.value.chain);
+      } catch (e) {
+        hasUserRejectedChainSwitching = true;
+        toast.error(
+          "Switching chain rejected by user. Cannot proceed with this transaction."
+        );
+      }
+    }
+  }
+  if (!hasUserRejectedChainSwitching) {
+    try {
+      const recipientId = twitterId.value || userInput.value.recipientId;
+      const senderPublicKey = await arcanaAuth
+        .getAuthInstance()
+        .getPublicKey(recipientId);
+      const arcanaProvider = arcanaAuth.getProvider();
+      const amount = String(userInput.value.amount);
+      const chainId = userInput.value.chain;
+      const [tokenSymbol, tokenType] = userInput.value.token.split("-");
+      const asset = getSelectedAssets(tokenSymbol, tokenType);
+      const tx =
+        tokenType === "NATIVE"
+          ? await nativeTokenTransfer(senderPublicKey, arcanaProvider, amount)
+          : await erc20TokenTransfer(
+              senderPublicKey,
+              arcanaProvider,
+              amount,
+              //@ts-ignore
+              asset.contractAddress
+            );
+      chainAssets.value = [];
+      const { hash, to } = tx;
+      const toEmail = recipientId;
+      //@ts-ignore
+      const fromEmail = authStore.userInfo.email || authStore.userInfo.id;
+      const fromVerifier =
+        authStore.userInfo.loginType === "twitter" ? "twitter" : "passwordless";
+      const toVerifier =
+        userInput.value.medium === "twitter" ? "twitter" : "passwordless";
+      //@ts-ignore
+      const sendRes = (await messageArcana(
+        hash,
+        to,
+        fromEmail,
+        toEmail,
+        Number(chainId),
+        fromVerifier,
+        toVerifier
+      )) as any;
+      toast.success("Transaction Successful");
+      sendRes.verifier_id = recipientId;
+      emits("transaction-successful", sendRes);
+    } catch (error) {
+      console.log(error);
+      toast.error(error as string);
+    } finally {
+      loadStore.hideLoader();
+    }
   }
 }
 
@@ -126,7 +157,7 @@ watch(
       const chainId = await arcanaAuth
         .getProvider()
         .request({ method: "eth_chainId" });
-      if (Number(chainId) !== selectedChainId) {
+      if (Number(chainId) !== Number(selectedChainId)) {
         try {
           await arcanaAuth.switchChain(selectedChainId);
           fetchAssets(selectedChainId);
@@ -156,10 +187,6 @@ const disableTokenInput = computed(() => {
   return !userInput.value.chain && !chainAssets.value.length;
 });
 
-const disableAmountInput = computed(() => {
-  return !userInput.value.token;
-});
-
 const disableSubmit = computed(() => {
   return (
     !userInput.value.amount ||
@@ -169,11 +196,34 @@ const disableSubmit = computed(() => {
     !userInput.value.token
   );
 });
+
+async function handleTwitterUsername() {
+  if (userInput.value.medium === "twitter" && userInput.value.recipientId) {
+    const message = {
+      username: userInput.value.recipientId,
+    };
+    try {
+      const res = (await socketConnection.sendMessage(
+        SOCKET_IDS.TWIITER_USERNAME_TO_ID,
+        message
+      )) as { id: string };
+      twitterId.value = res.id;
+    } catch (error) {
+      hasTwitterError.value = true;
+      toast.error("Invalid twitter username");
+    }
+  }
+}
+
+function handleMediumChange(medium) {
+  userInput.value.medium = medium;
+  handleTwitterUsername();
+}
 </script>
 
 <template>
   <div
-    class="w-[450px] space-y-4 border-1 border-jet p-4 rounded-md bg-eerie-black"
+    class="w-full max-w-[450px] space-y-4 border-1 border-jet p-4 rounded-md bg-eerie-black"
   >
     <h1 class="uppercase">Transaction Details</h1>
     <div class="space-y-1">
@@ -182,18 +232,41 @@ const disableSubmit = computed(() => {
         <div
           v-for="medium in sendVia"
           :key="medium.value"
-          @click="userInput.medium = medium.value"
-          class="border-1 border-jet p-1.5 rounded-full"
-          :class="{ 'border-white': userInput.medium === medium.value }"
+          @click="handleMediumChange(medium.value)"
+          class="border-1 border-jet p-1.5 bg-[#666] rounded-full hover:border-white hover:bg-[#999] cursor-pointer"
+          :class="{
+            'border-white outline-1 outline outline-white':
+              userInput.medium === medium.value,
+          }"
         >
           <img :src="medium.icon" :alt="medium.value" />
         </div>
       </div>
+      <div
+        class="text-[#ff4264] text-[10px]"
+        v-if="!userInput.medium && userInput.recipientId.trim()"
+      >
+        Please select a medium to send
+      </div>
     </div>
-    <form class="space-y-4">
+    <form class="space-y-3">
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Recipient's ID</label>
-        <input class="input" v-model="userInput.recipientId" />
+        <input
+          class="input"
+          v-model.trim="userInput.recipientId"
+          @input="hasTwitterError = false"
+          @blur="handleTwitterUsername"
+        />
+        <div
+          class="text-[#ff4264] text-[10px]"
+          v-if="!userInput.recipientId.trim() && userInput.chain"
+        >
+          Please enter the recipient's ID
+        </div>
+        <div class="text-[#ff4264] text-[10px]" v-if="hasTwitterError">
+          Invalid twitter username
+        </div>
       </div>
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Chain</label>
@@ -208,6 +281,12 @@ const disableSubmit = computed(() => {
               {{ chain.name }}
             </option>
           </select>
+        </div>
+        <div
+          class="text-[#ff4264] text-[10px]"
+          v-if="!userInput.chain && userInput.amount"
+        >
+          Please select a chain
         </div>
       </div>
       <div class="flex flex-col space-y-1">
@@ -229,6 +308,13 @@ const disableSubmit = computed(() => {
             </option>
           </select>
         </div>
+        <div
+          class="text-[#ff4264] text-[10px]"
+          v-if="!userInput.chain && chainAssets.length"
+        >
+          You don't own any tokens on this chain. Please switch the chain or
+          load some tokens to continue
+        </div>
       </div>
       <div class="flex flex-col space-y-1">
         <div class="flex justify-between">
@@ -237,11 +323,7 @@ const disableSubmit = computed(() => {
             >Balance: {{ tokenBalance }}</span
           >
         </div>
-        <input
-          class="input"
-          v-model="userInput.amount"
-          :disabled="disableAmountInput"
-        />
+        <input class="input" type="number" v-model="userInput.amount" />
       </div>
       <button
         @click.prevent="proceed"
@@ -250,7 +332,7 @@ const disableSubmit = computed(() => {
         :disabled="disableSubmit"
         :class="{ 'opacity-50': disableSubmit }"
       >
-        Proceed
+        Send it
       </button>
     </form>
   </div>

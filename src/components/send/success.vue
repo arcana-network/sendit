@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import Overlay from "@/components/overlay.vue";
 import copyToClipboard from "@/utils/copyToClipboard";
+import { composeAndSendDM } from "@/utils/tweet";
 import { useToast } from "vue-toastification";
 
 type SendSuccessProps = {
   medium: string;
+  verifierId: string;
   shareDetails: {
     isShareRequired: boolean;
     shareLink: string;
@@ -14,10 +16,21 @@ type SendSuccessProps = {
 const props = defineProps<SendSuccessProps>();
 const emit = defineEmits(["close", "shoutout"]);
 const toast = useToast();
+const message = `Just sent you a some tokens via #SendIt. Claim them here: ${props.shareDetails.shareLink}`;
 
 async function handleLinkCopy() {
   await copyToClipboard(props.shareDetails.shareLink);
   toast.success("Link copied");
+}
+
+function handleTwitterDM() {
+  composeAndSendDM(props.verifierId, message);
+}
+
+function handleMail() {
+  window.open(
+    `mailto:${props.verifierId}?subject=SendIt%20-%20Claim%20your%20tokens&body=${message}`
+  );
 }
 </script>
 
@@ -45,16 +58,18 @@ async function handleLinkCopy() {
       </div>
       <div class="flex flex-col space-y-3 w-full">
         <button
-          class="btn btn-submit text-xs w-full font-bold"
+          class="btn btn-submit text-sm w-full font-bold"
           v-if="
             props.shareDetails.isShareRequired && props.medium === 'twitter'
           "
+          @click.stop="handleTwitterDM"
         >
           Send on twitter DM
         </button>
         <button
-          class="btn btn-submit text-xs w-full font-bold"
+          class="btn btn-submit text-sm w-full font-bold"
           v-if="props.shareDetails.isShareRequired && props.medium === 'mail'"
+          @click.stop="handleMail"
         >
           Send Email
         </button>

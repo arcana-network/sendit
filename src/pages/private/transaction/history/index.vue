@@ -9,14 +9,17 @@ import TweetVerify from "@/components/TweetVerify.vue";
 import { hexlify, formatEther } from "ethers";
 import { nativeUnitMapping } from "@/constants/unitMapping.ts";
 import dayjs from "dayjs";
+import useUserStore from "@/stores/user";
 
 const socket = useSocketConnection();
 
 const history = ref([] as any[]);
 const showTweetVerificationModal = ref(false);
+const userStore = useUserStore();
 
 onBeforeMount(() => {
   fetchTxHistory();
+  userStore.fetchUserPointsAndRank();
 });
 
 async function fetchTxHistory() {

@@ -1,7 +1,12 @@
-import MailIcon from "@/assets/images/icons/mail.svg";
-import TwitterIcon from "@/assets/images/icons/twitter.svg";
+import MailIcon from "@/assets/images/icons/mail-white.svg";
+import TwitterIcon from "@/assets/images/icons/twitter-white.svg";
 
-const sendMedium = [
+type SendMedium = {
+  icon: string;
+  value: "mail" | "twitter";
+};
+
+const sendMedium: SendMedium[] = [
   {
     icon: MailIcon,
     value: "mail",

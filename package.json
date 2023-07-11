@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@arcana/auth": "^1.0.5-beta.6",
+    "@arcana/auth": "^1.0.5",
     "async-mutex": "^0.4.0",
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
