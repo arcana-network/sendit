@@ -73,7 +73,7 @@ function useSocketConnection() {
     );
 
     setInterval(function () {
-      socket.send(msgpack({ ping: true }));
+      sendMessage(255, { ping: true });
     }, 59000);
   }
 
