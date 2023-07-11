@@ -40,6 +40,7 @@ async function fetchTxHistory() {
       txHash: hexlify(record.hash),
       txStatus: record.sent ? "sent" : "received",
       socialId: record.user.verifier_human || hexlify(record.user_address),
+      verifier: record.user?.verifier,
       walletAddress: hexlify(record.user_address),
       link: record.link,
       points: record.points || "",
@@ -47,6 +48,13 @@ async function fetchTxHistory() {
       date: dayjs.unix(record.tx_date).format("DD MMM YYYY"),
     };
   });
+}
+
+function getSocialId(socialId: string, verifier: string) {
+  if (verifier === "twitter") {
+    return `@${socialId}`;
+  }
+  return socialId;
 }
 
 function shareTweet(record) {
@@ -105,7 +113,7 @@ function shareTweet(record) {
                 class="leaderboard-table-row-item ellipsis"
                 :title="record.socialId"
               >
-                {{ record.socialId }}
+                {{ getSocialId(record.socialId, record.verifier) }}
               </div>
               <div
                 class="leaderboard-table-row-item ellipsis"

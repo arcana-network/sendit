@@ -7,6 +7,8 @@ import { addUserToWaitlist } from "@/services/waitlist.service";
 import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
 import LandingDescription from "@/components/LandingDescription.vue";
+import { useRoute } from "vue-router";
+import { toUnicode } from "punycode";
 
 const hasStartedTyping = ref(false);
 const email = ref("");
@@ -15,6 +17,7 @@ const submissionSuccess = ref(false);
 const serverError = ref(false);
 const loaderStore = useLoaderStore();
 const toast = useToast();
+const route = useRoute();
 
 const error = computed(() => {
   if (hasStartedTyping.value) {
@@ -64,7 +67,8 @@ const error = computed(() => {
 async function handleUserSubmission() {
   try {
     loaderStore.showLoader("Adding to waitlist...");
-    await addUserToWaitlist(email.value, address.value);
+    const community = route.query.community as string;
+    await addUserToWaitlist(toUnicode(email.value), address.value, community);
     submissionSuccess.value = true;
   } catch (e) {
     serverError.value = true;
@@ -108,8 +112,8 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
             <span
               class="text-philippine-gray text-sm mb-6 mt-3 md:text-center md:mx-auto"
               >Experience SendIt, the revolutionary app that simplifies crypto
-              transactions using email, Twitter, and Github. Sign up now to be
-              among the first to use it!</span
+              transactions using email and twitter. Sign up now to be among the
+              first to use it!</span
             >
             <form
               class="w-full flex flex-col pb-8"
@@ -181,8 +185,9 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
               </div>
             </form>
             <div class="mt-5 text-sm">
-              Have access?
-              <RouterLink :to="{ name: 'Login' }">Sign In</RouterLink>
+              <RouterLink :to="{ name: 'Login' }"
+                >Have access? Sign In</RouterLink
+              >
             </div>
           </div>
           <div

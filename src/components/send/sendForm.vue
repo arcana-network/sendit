@@ -14,6 +14,8 @@ import { getBytes } from "ethers";
 import useSocketConnection from "@/use/socketConnection";
 import { useToast } from "vue-toastification";
 import { SOCKET_IDS } from "@/constants/socket-ids";
+import { isValidEmail } from "@/utils/validation";
+import { toUnicode } from "punycode";
 
 const emits = defineEmits(["transaction-successful"]);
 
@@ -29,6 +31,13 @@ const twitterId = ref("");
 const hasTwitterError = ref(false);
 
 const { userInput, supportedChains } = toRefs(sendStore);
+
+const isEmailValid = computed(() => {
+  if (userInput.value.medium === "mail") {
+    return isValidEmail(userInput.value.recipientId);
+  }
+  return true;
+});
 
 function getSelectedChainInfo(chainId) {
   //@ts-ignore
@@ -99,7 +108,12 @@ async function proceed() {
   }
   if (!hasUserRejectedChainSwitching) {
     try {
-      const recipientId = twitterId.value || userInput.value.recipientId;
+      const normalisedEmail =
+        userInput.value.medium === "mail"
+          ? toUnicode(userInput.value.recipientId)
+          : null;
+      const recipientId =
+        twitterId.value || normalisedEmail || userInput.value.recipientId;
       const senderPublicKey = await arcanaAuth
         .getAuthInstance()
         .getPublicKey(recipientId);
@@ -266,6 +280,9 @@ function handleMediumChange(medium) {
         </div>
         <div class="text-[#ff4264] text-[10px]" v-if="hasTwitterError">
           Invalid twitter username
+        </div>
+        <div class="text-[#ff4264] text-[10px]" v-if="!isEmailValid">
+          Invalid email
         </div>
       </div>
       <div class="flex flex-col space-y-1">

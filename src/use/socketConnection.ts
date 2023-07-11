@@ -16,6 +16,8 @@ enum ConnectionState {
   AUTHORIZED,
 }
 
+const NOT_ON_WAITLIST = 256;
+
 let socket: WebSocket;
 let ethersProvider: BrowserProvider;
 let ethersSigner: JsonRpcSigner;
@@ -35,12 +37,15 @@ function useSocketConnection() {
     verifier_id: "",
   };
   const toast = useToast();
+  let loginErrorFunc: () => void;
 
   async function init(
     authProvider: AuthProvider,
     account: Account,
-    onSocketLogin?: Function
+    onSocketLogin?: Function,
+    onLoginError?: () => void
   ) {
+    if (onLoginError) loginErrorFunc = onLoginError;
     state = ConnectionState.NOT_CONNECTED;
     initialRelease = await lock.acquire();
     try {
@@ -92,6 +97,9 @@ function useSocketConnection() {
   ) {
     const data = msgunpack(Buffer.from(await ev.data.arrayBuffer()));
     if (data.error) {
+      if (data.code === NOT_ON_WAITLIST && loginErrorFunc) {
+        return loginErrorFunc();
+      }
       if (callbacks) {
         // @ts-ignore
         const [, release, reject] = callbacks;
