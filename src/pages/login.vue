@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import useArcanaAuth from "@/use/arcanaAuth";
-import arcanaLogo from "@/assets/images/arcana.svg";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import useLoaderStore from "@/stores/loader";
 import AppHeader from "@/components/layout/AppHeader.vue";
 import LandingDescription from "@/components/LandingDescription.vue";
+import { socialLogins, walletLogins } from "@/constants/logins";
+import { useToast } from "vue-toastification";
 
 const arcanaAuth = useArcanaAuth();
 const route = useRoute();
 const loaderStore = useLoaderStore();
+const passwordlessEmailId = ref("");
+const toast = useToast();
 
 const query = route.query;
 const verifier = query.verifier;
@@ -17,6 +20,28 @@ const verifierId = query.verifierId;
 
 async function connectToArcana() {
   await arcanaAuth.connect();
+}
+
+async function socialLogin(type: string) {
+  try {
+    loaderStore.showLoader("Logging in...");
+    await arcanaAuth.getAuthInstance().loginWithSocial(type);
+  } catch (e) {
+    toast.error(e);
+  } finally {
+    loaderStore.hideLoader();
+  }
+}
+
+async function passwordlessLogin() {
+  try {
+    loaderStore.showLoader("Logging in...");
+    await arcanaAuth.getAuthInstance().loginWithLink(passwordlessEmailId.value);
+  } catch (e) {
+    toast.error(e);
+  } finally {
+    loaderStore.hideLoader();
+  }
 }
 
 async function loginAutomatically(verifier: string, verifierId: string) {
@@ -59,25 +84,71 @@ onMounted(async () => {
         <section
           class="w-full flex flex-col md:justify-center md:items-center md:text-center relative"
         >
-          <section class="w-full max-w-[360px] mx-auto space-y-4 flex flex-col">
+          <section class="w-full max-w-[360px] mx-auto space-y-6 flex flex-col">
             <header class="flex flex-col gap-1 text-center max-md:text-left">
               <h1 class="text-[1.5rem] lg:text-[2rem] text-white font-bold">
                 Welcome to SendIt
               </h1>
               <p
-                class="text-sm lg:text-base text-philippine-gray max-w-[280px] md:text-center md:mx-auto"
+                class="text-xs lg:text-base text-philippine-gray max-w-[280px] md:text-center md:mx-auto"
               >
                 Sign-in using any of these methods to get started
               </p>
             </header>
-            <section class="space-y-0.5 w-full">
-              <div class="flex flex-col space-y-2 w-full">
+            <section class="space-y-3 w-full flex flex-col items-start">
+              <span class="text-xs text-philippine-gray">Social Login</span>
+              <div
+                class="flex flex-col space-y-2 w-full"
+                v-for="login in socialLogins"
+                :key="login.value"
+              >
+                <button
+                  class="btn btn-login flex w-full justify-center items-center space-x-2"
+                  @click="socialLogin(login.value)"
+                >
+                  <img :src="login.icon" :alt="login.label" class="w-4" />
+                  <span class="text-sm font-semibold text-white">
+                    {{ login.label }}
+                  </span>
+                </button>
+              </div>
+            </section>
+            <section class="space-y-3 w-full flex flex-col items-start">
+              <span class="text-xs text-philippine-gray">Connect Wallet</span>
+              <div
+                class="flex flex-col space-y-2 w-full"
+                v-for="login in walletLogins"
+                :key="login.value"
+              >
                 <button
                   class="btn btn-login flex w-full justify-center items-center space-x-2"
                   @click="connectToArcana"
                 >
-                  <span>Connect with</span>
-                  <img :src="arcanaLogo" alt="Arcana" class="w-20" />
+                  <img :src="login.icon" :alt="login.label" class="w-4" />
+                  <span class="text-sm font-semibold text-white">
+                    {{ login.label }}
+                  </span>
+                </button>
+              </div>
+            </section>
+            <section class="space-y-3 w-full flex flex-col items-start">
+              <span class="text-xs text-philippine-gray">Email ID</span>
+              <div
+                class="flex justify-center items-center space-y-2 w-full bg-dark-charcoal px-2.5 rounded-md"
+              >
+                <input
+                  type="email"
+                  class="flex-1 bg-transparent input text-white"
+                  v-model="passwordlessEmailId"
+                />
+                <button
+                  @click="passwordlessLogin"
+                  :disabled="!passwordlessEmailId.length"
+                >
+                  <img
+                    src="@/assets/images/icons/arrow-right.svg"
+                    alt="email login"
+                  />
                 </button>
               </div>
             </section>
