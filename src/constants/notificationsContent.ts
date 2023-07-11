@@ -57,9 +57,9 @@ const notificationsContent = {
     path: "History",
     shoutout: false,
   }),
-  256: ({ from, value }) => ({
+  256: ({ from, value, points }) => ({
     title: `Received ${value} from ${from}`,
-    body: `You have received ${value} from ${from}. Give a shoutout on Twitter to earn XP.`,
+    body: `You have received ${value} from ${from}. Give a shoutout on Twitter to earn ${points} XP.`,
     path: "History",
     shoutout: true,
   }),
