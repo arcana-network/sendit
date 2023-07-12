@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useArcanaAuth from "@/use/arcanaAuth";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import useLoaderStore from "@/stores/loader";
 import AppHeader from "@/components/layout/AppHeader.vue";
@@ -8,8 +8,12 @@ import LandingDescription from "@/components/LandingDescription.vue";
 import { socialLogins } from "@/constants/logins";
 import { useToast } from "vue-toastification";
 import useMetaMask from "@/use/metamask";
+import { isValidEmail } from "@/utils/validation";
+import { toUnicode } from "punycode";
+import useAuthStore from "@/stores/auth";
 
 const arcanaAuth = useArcanaAuth();
+const authStore = useAuthStore();
 const route = useRoute();
 const loaderStore = useLoaderStore();
 const passwordlessEmailId = ref("");
@@ -19,6 +23,13 @@ const { isMetamaskInstalled, connectMetamask } = useMetaMask();
 const query = route.query;
 const verifier = query.verifier;
 const verifierId = query.verifierId;
+
+const isValidPasswordlessEmail = computed(() => {
+  return (
+    passwordlessEmailId.value.length > 0 &&
+    isValidEmail(passwordlessEmailId.value)
+  );
+});
 
 async function socialLogin(type: string) {
   try {
@@ -33,9 +44,13 @@ async function socialLogin(type: string) {
 
 async function passwordlessLogin() {
   try {
-    loaderStore.showLoader("Logging in...");
-    await arcanaAuth.getAuthInstance().loginWithLink(passwordlessEmailId.value);
-  } catch (e) {
+    loaderStore.showLoader(
+      `Click on the verification mail sent to ${passwordlessEmailId.value}...`
+    );
+    await arcanaAuth
+      .getAuthInstance()
+      .loginWithLink(toUnicode(passwordlessEmailId.value));
+  } catch (e: any) {
     toast.error(e);
   } finally {
     loaderStore.hideLoader();
@@ -65,8 +80,9 @@ async function loginAutomatically(verifier: string, verifierId: string) {
 async function onConnectToMetamask() {
   try {
     loaderStore.showLoader("Logging in...");
-    const { accounts, provider } = await connectMetamask();
-    console.log({ accounts, provider });
+    await connectMetamask();
+    authStore.isLoggedIn = true;
+    authStore.loggedInWith = "metamask";
   } catch (error: any) {
     toast.error(error.message);
   } finally {
@@ -127,9 +143,8 @@ onMounted(async () => {
               <span class="text-xs text-philippine-gray">Connect Wallet</span>
               <div class="flex flex-col space-y-2 w-full">
                 <button
+                  v-if="isMetamaskInstalled()"
                   class="btn btn-login flex w-full justify-center items-center space-x-2"
-                  :disabled="!isMetamaskInstalled()"
-                  :class="{ 'opacity-50': !isMetamaskInstalled() }"
                   @click="onConnectToMetamask"
                 >
                   <img
@@ -141,34 +156,29 @@ onMounted(async () => {
                     Metamask
                   </span>
                 </button>
-                <p
-                  v-if="!isMetamaskInstalled()"
-                  class="text-xs text-left text-vivid-vermilion"
-                >
-                  Please install Metamask ext and reload the app
-                </p>
               </div>
             </section>
             <section class="space-y-3 w-full flex flex-col items-start">
               <span class="text-xs text-philippine-gray">Email ID</span>
-              <div
-                class="flex justify-center items-center space-y-2 w-full bg-dark-charcoal px-2.5 rounded-md"
+              <form
+                class="flex justify-center items-center w-full bg-dark-charcoal px-2.5 rounded-md"
+                @submit.prevent="passwordlessLogin"
               >
                 <input
                   type="email"
                   class="flex-1 bg-transparent input text-white"
-                  v-model="passwordlessEmailId"
+                  v-model.trim="passwordlessEmailId"
                 />
                 <button
-                  @click="passwordlessLogin"
-                  :disabled="!passwordlessEmailId.length"
+                  class="flex items-center justify-center"
+                  :disabled="!isValidPasswordlessEmail"
                 >
                   <img
                     src="@/assets/images/icons/arrow-right.svg"
                     alt="email login"
                   />
                 </button>
-              </div>
+              </form>
             </section>
           </section>
         </section>
