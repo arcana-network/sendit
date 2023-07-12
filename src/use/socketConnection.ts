@@ -8,6 +8,7 @@ import { useToast } from "vue-toastification";
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 const SOCKET_CLOSED_ON_LOGOUT = 3000;
+const SOCKET_CLOSED_ON_NO_ACCESS = 3001;
 const ACTION_REJECTED = "ACTION_REJECTED";
 
 enum ConnectionState {
@@ -16,6 +17,9 @@ enum ConnectionState {
   AUTHORIZED,
 }
 
+const NOT_ON_WAITLIST = 256;
+const WS_TIMER = 59000;
+
 let socket: WebSocket;
 let ethersProvider: BrowserProvider;
 let ethersSigner: JsonRpcSigner;
@@ -23,6 +27,7 @@ let callbacks = null;
 let state = ConnectionState.NOT_CONNECTED;
 let initialRelease: MutexInterface.Releaser | null = null;
 let lock = new Mutex();
+let webSocketInterval: NodeJS.Timer;
 
 type Account = {
   verifier: string;
@@ -35,14 +40,19 @@ function useSocketConnection() {
     verifier_id: "",
   };
   const toast = useToast();
+  let loginErrorFunc: () => void;
 
   async function init(
     authProvider: AuthProvider,
     account: Account,
-    onSocketLogin?: Function
+    onSocketLogin?: () => void,
+    onLoginError?: () => void
   ) {
+    if (onLoginError) {
+      loginErrorFunc = onLoginError;
+    }
     state = ConnectionState.NOT_CONNECTED;
-    initialRelease = await lock.acquire();
+    if (!initialRelease) initialRelease = await lock.acquire();
     try {
       // @ts-ignore
       ethersProvider = new BrowserProvider(authProvider);
@@ -54,7 +64,12 @@ function useSocketConnection() {
         onMessage(ev, onSocketLogin)
       );
       socket.addEventListener("close", (e) => {
-        if (e.code !== SOCKET_CLOSED_ON_LOGOUT) {
+        clearInterval(webSocketInterval);
+        if (
+          e.code !== SOCKET_CLOSED_ON_LOGOUT &&
+          e.code !== SOCKET_CLOSED_ON_NO_ACCESS &&
+          state === ConnectionState.AUTHORIZED
+        ) {
           init(authProvider, account, onSocketLogin);
         }
       });
@@ -72,9 +87,9 @@ function useSocketConnection() {
       })
     );
 
-    setInterval(function () {
+    webSocketInterval = setInterval(function () {
       sendMessage(255, { ping: true });
-    }, 59000);
+    }, WS_TIMER);
   }
 
   async function sendMessage(id: number, data?: any) {
@@ -92,6 +107,9 @@ function useSocketConnection() {
   ) {
     const data = msgunpack(Buffer.from(await ev.data.arrayBuffer()));
     if (data.error) {
+      if (data.code === NOT_ON_WAITLIST && loginErrorFunc) {
+        return loginErrorFunc();
+      }
       if (callbacks) {
         // @ts-ignore
         const [, release, reject] = callbacks;
@@ -148,7 +166,8 @@ function useSocketConnection() {
   }
 
   function disconnect() {
-    socket.close(SOCKET_CLOSED_ON_LOGOUT);
+    if (socket.readyState === socket.OPEN)
+      socket.close(SOCKET_CLOSED_ON_LOGOUT);
   }
 
   return {

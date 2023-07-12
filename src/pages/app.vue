@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import useArcanaAuth from "@/use/arcanaAuth";
 import useSocketConnection from "@/use/socketConnection";
 import useLoaderStore from "@/stores/loader";
@@ -10,6 +10,7 @@ import useRewardsStore from "@/stores/rewards";
 import useUserStore from "@/stores/user";
 import { useToast } from "vue-toastification";
 import useNotificationStore from "@/stores/notification";
+import Overlay from "@/components/overlay.vue";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -21,6 +22,7 @@ const rewardsStore = useRewardsStore();
 const userStore = useUserStore();
 const notificationStore = useNotificationStore();
 const toast = useToast();
+const isNotWhitelisted = ref(false);
 
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
@@ -44,10 +46,18 @@ async function initSocketConnect() {
     verifier: authStore.userInfo.loginType,
     verifier_id: authStore.userInfo.id,
   };
-  // @ts-ignore
-  await socketConnection.init(auth.getProvider(), account, () => {
-    authStore.setSocketLoginStatus(true);
-  });
+  await socketConnection.init(
+    // @ts-ignore
+    auth.getProvider(),
+    account,
+    () => {
+      authStore.setSocketLoginStatus(true);
+    },
+    () => {
+      isNotWhitelisted.value = true;
+      loaderStore.hideLoader();
+    }
+  );
 }
 
 async function getUserInfo() {
@@ -93,11 +103,56 @@ const showFullScreenLoader = computed(() => {
     loaderStore.show || (!authStore.isSocketLoggedIn && authStore.isLoggedIn)
   );
 });
+
+async function handleNoAccessBack() {
+  await auth.getAuthInstance().logout();
+  isNotWhitelisted.value = false;
+}
 </script>
 
 <template>
   <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
     <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
+    <Overlay v-if="isNotWhitelisted">
+      <div
+        class="max-w-[360px] w-screen bg-eerie-black rounded-[10px] border-1 border-jet flex flex-col relative p-4 gap-5"
+      >
+        <div class="flex flex-col gap-5">
+          <div class="flex flex-col justify-center items-center gap-4">
+            <img
+              src="@/assets/images/icons/exclamation.svg"
+              alt="success"
+              class="w-[50px] aspect-square"
+            />
+            <span class="font-[500] text-[20px] uppercase font-bold"
+              >No Access</span
+            >
+            <span
+              class="text-xs text-philippine-gray max-w-[320px] text-center"
+            >
+              The email ID or Twitter handle you used to sign up has not been
+              whitelisted. Would you like to join the waitlist?
+            </span>
+          </div>
+          <div class="flex justify-center">
+            <button
+              class="uppercase bg-white rounded-[5px] text-black text-sm font-[500] px-8 py-2 w-full"
+              @click.stop="router.push({ name: 'Waitlist' })"
+            >
+              Join the Waitlist
+            </button>
+          </div>
+          <div class="flex justify-center pb-2 pt-1">
+            <button
+              class="bg-transparent text-sm font-[500]"
+              @click.stop="handleNoAccessBack"
+            >
+              Go Back
+            </button>
+          </div>
+        </div>
+      </div>
+    </Overlay>
   </main>
 </template>

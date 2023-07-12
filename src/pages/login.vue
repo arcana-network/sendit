@@ -173,8 +173,9 @@ onMounted(async () => {
           </section>
         </section>
         <div class="mt-20 text-sm">
-          Need access?
-          <RouterLink :to="{ name: 'Waitlist' }">Join the Waitlist</RouterLink>
+          <RouterLink :to="{ name: 'Waitlist' }"
+            >Need access? Join the Waitlist</RouterLink
+          >
         </div>
       </div>
       <LandingDescription class="flex-grow" />
