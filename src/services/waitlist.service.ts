@@ -1,13 +1,14 @@
 async function addUserToWaitlist(
   email: string,
   address: string,
-  community: string
+  community?: string
 ) {
   const data = {
     email,
-    address,
+    address: "",
   };
   if (community) {
+    data["address"] = address;
     data["community"] = Number(community);
   }
   const response = await fetch(import.meta.env.VITE_WAITLIST_URL, {
