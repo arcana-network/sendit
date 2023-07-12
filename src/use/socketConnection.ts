@@ -1,6 +1,5 @@
 import { BrowserProvider, getBytes } from "ethers";
 import type { JsonRpcSigner } from "ethers";
-import { AuthProvider } from "@arcana/auth";
 import { pack as msgpack, unpack as msgunpack } from "msgpackr";
 import { Mutex } from "async-mutex";
 import type { MutexInterface } from "async-mutex";
@@ -43,7 +42,7 @@ function useSocketConnection() {
   let loginErrorFunc: () => void;
 
   async function init(
-    authProvider: AuthProvider,
+    authProvider: any,
     account: Account,
     onSocketLogin?: () => void,
     onLoginError?: () => void
