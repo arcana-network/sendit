@@ -5,22 +5,20 @@ import { useRoute } from "vue-router";
 import useLoaderStore from "@/stores/loader";
 import AppHeader from "@/components/layout/AppHeader.vue";
 import LandingDescription from "@/components/LandingDescription.vue";
-import { socialLogins, walletLogins } from "@/constants/logins";
+import { socialLogins } from "@/constants/logins";
 import { useToast } from "vue-toastification";
+import useMetaMask from "@/use/metamask";
 
 const arcanaAuth = useArcanaAuth();
 const route = useRoute();
 const loaderStore = useLoaderStore();
 const passwordlessEmailId = ref("");
 const toast = useToast();
+const { isMetamaskInstalled, connectMetamask } = useMetaMask();
 
 const query = route.query;
 const verifier = query.verifier;
 const verifierId = query.verifierId;
-
-async function connectToArcana() {
-  await arcanaAuth.connect();
-}
 
 async function socialLogin(type: string) {
   try {
@@ -59,6 +57,18 @@ async function loginAutomatically(verifier: string, verifierId: string) {
     await authInstance.isLoggedIn();
   } catch (error) {
     console.error({ error });
+  } finally {
+    loaderStore.hideLoader();
+  }
+}
+
+async function onConnectToMetamask() {
+  try {
+    loaderStore.showLoader("Logging in...");
+    const { accounts, provider } = await connectMetamask();
+    console.log({ accounts, provider });
+  } catch (error) {
+    toast.error(error.message);
   } finally {
     loaderStore.hideLoader();
   }
@@ -115,20 +125,28 @@ onMounted(async () => {
             </section>
             <section class="space-y-3 w-full flex flex-col items-start">
               <span class="text-xs text-philippine-gray">Connect Wallet</span>
-              <div
-                class="flex flex-col space-y-2 w-full"
-                v-for="login in walletLogins"
-                :key="login.value"
-              >
+              <div class="flex flex-col space-y-2 w-full">
                 <button
                   class="btn btn-login flex w-full justify-center items-center space-x-2"
-                  @click="connectToArcana"
+                  :disabled="!isMetamaskInstalled()"
+                  :class="{ 'opacity-50': !isMetamaskInstalled() }"
+                  @click="onConnectToMetamask"
                 >
-                  <img :src="login.icon" :alt="login.label" class="w-4" />
+                  <img
+                    src="@/assets/images/icons/metamask-fox.svg"
+                    alt="metamask"
+                    class="w-4"
+                  />
                   <span class="text-sm font-semibold text-white">
-                    {{ login.label }}
+                    Metamask
                   </span>
                 </button>
+                <p
+                  v-if="!isMetamaskInstalled()"
+                  class="text-xs text-left text-vivid-vermilion"
+                >
+                  Please install Metamask ext and reload the app
+                </p>
               </div>
             </section>
             <section class="space-y-3 w-full flex flex-col items-start">
