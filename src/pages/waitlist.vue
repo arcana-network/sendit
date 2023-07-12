@@ -59,7 +59,10 @@ const error = computed(() => {
     return {
       value: true,
       field: "server",
-      message: "Something went wrong. Please try again",
+      message:
+        community === undefined
+          ? "Email already added in waitlist"
+          : "Email or address already added in waitlist",
     };
   }
   return {
@@ -80,8 +83,11 @@ async function handleUserSubmission() {
     submissionSuccess.value = true;
   } catch (e) {
     serverError.value = true;
-    toast.error("Cannot add to waitlist. Please try again.");
-    console.log(error.value);
+    if (community !== undefined) {
+      toast.error("Email or address already added in waitlist");
+    } else {
+      toast.error("Email already added in waitlist");
+    }
   } finally {
     loaderStore.hideLoader();
   }
