@@ -13,7 +13,7 @@ function useMetamask() {
       } else {
         throw new Error("Metamask is not installed");
       }
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(error.message);
     }
   }
