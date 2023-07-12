@@ -1,12 +1,24 @@
 import { defineStore } from "pinia";
 
+type AuthStore = {
+  isLoggedIn: boolean;
+  isSocketLoggedIn: boolean;
+  userInfo: Record<string, any>;
+  isAuthSDKInitialized: boolean;
+  loggedInWith: "" | "metamask" | "walletconnect";
+  provider: any | null;
+};
+
 const useAuthStore = defineStore("auth", {
-  state: () => ({
-    isLoggedIn: false,
-    isSocketLoggedIn: false,
-    userInfo: {} as any,
-    isAuthSDKInitialized: false,
-  }),
+  state: () =>
+    ({
+      isLoggedIn: false,
+      isSocketLoggedIn: false,
+      userInfo: {},
+      isAuthSDKInitialized: false,
+      loggedInWith: "",
+      provider: null,
+    } as AuthStore),
   getters: {
     walletAddress(state) {
       // @ts-ignore

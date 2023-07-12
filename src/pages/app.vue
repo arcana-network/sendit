@@ -11,6 +11,7 @@ import useUserStore from "@/stores/user";
 import { useToast } from "vue-toastification";
 import useNotificationStore from "@/stores/notification";
 import Overlay from "@/components/overlay.vue";
+import useMetamask from "@/use/metamask";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -23,13 +24,14 @@ const userStore = useUserStore();
 const notificationStore = useNotificationStore();
 const toast = useToast();
 const isNotWhitelisted = ref(false);
+const { connectMetamask } = useMetamask();
 
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
   try {
     await auth.init();
-    auth.getProvider().on("connect", onWalletConnect);
-    auth.getProvider().on("disconnect", onWalletDisconnect);
+    authStore.provider = auth.getProvider();
+    authStore.provider.on("connect", onWalletConnect);
     authStore.setAuthInitialized(true);
     const isLoggedIn = await auth.isLoggedIn();
     if (isLoggedIn) authStore.setLoginStatus(true);
@@ -48,7 +50,7 @@ async function initSocketConnect() {
   };
   await socketConnection.init(
     // @ts-ignore
-    auth.getProvider(),
+    authStore.provider,
     account,
     () => {
       authStore.setSocketLoginStatus(true);
@@ -61,20 +63,32 @@ async function initSocketConnect() {
 }
 
 async function getUserInfo() {
-  const userInfo = await auth.getUser();
-  authStore.setUserInfo(userInfo);
-  userStore.address = userInfo.address;
+  if (authStore.loggedInWith === "metamask") {
+    const data = await connectMetamask();
+    authStore.setUserInfo({
+      address: data.accounts[0],
+      loginType: "null",
+      id: "null",
+    });
+    authStore.provider = data.provider;
+    userStore.address = data.accounts[0];
+  } else {
+    const userInfo = await auth.getUser();
+    authStore.setUserInfo(userInfo);
+    userStore.address = userInfo.address;
+  }
 }
 
 async function onWalletConnect() {
-  const isLoggedIn = await auth.isLoggedIn();
-  if (isLoggedIn) {
-    authStore.setLoginStatus(isLoggedIn);
-    await getUserInfo();
-    await initSocketConnect();
-    rewardsStore.fetchRewards(userStore.address);
-    userStore.fetchUserPointsAndRank();
-    notificationStore.getNotifications();
+  loaderStore.showLoader("Connecting...");
+  authStore.setLoginStatus(true);
+  await getUserInfo();
+  await initSocketConnect();
+  rewardsStore.fetchRewards(userStore.address);
+  userStore.fetchUserPointsAndRank();
+  notificationStore.getNotifications();
+  if (authStore.loggedInWith !== "metamask") {
+    authStore.provider.on("disconnect", onWalletDisconnect);
   }
   loaderStore.hideLoader();
 }
@@ -89,10 +103,14 @@ onMounted(initAuth);
 
 watch(
   () => authStore.isLoggedIn,
-  (newValue) => {
+  async (newValue) => {
     if (!newValue) {
       router.push({ name: "Login" });
     } else if (route.name === "Login") {
+      if (authStore.loggedInWith === "metamask") {
+        await onWalletConnect();
+      }
+      loaderStore.hideLoader();
       router.push({ name: "Send" });
     }
   }
@@ -105,7 +123,11 @@ const showFullScreenLoader = computed(() => {
 });
 
 async function handleNoAccessBack() {
-  await auth.getAuthInstance().logout();
+  if (authStore.loggedInWith !== "metamask") {
+    await auth.getAuthInstance().logout();
+  } else {
+    onWalletDisconnect();
+  }
   isNotWhitelisted.value = false;
 }
 </script>

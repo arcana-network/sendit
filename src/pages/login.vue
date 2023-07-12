@@ -10,8 +10,10 @@ import { useToast } from "vue-toastification";
 import useMetaMask from "@/use/metamask";
 import { isValidEmail } from "@/utils/validation";
 import { toUnicode } from "punycode";
+import useAuthStore from "@/stores/auth";
 
 const arcanaAuth = useArcanaAuth();
+const authStore = useAuthStore();
 const route = useRoute();
 const loaderStore = useLoaderStore();
 const passwordlessEmailId = ref("");
@@ -42,7 +44,9 @@ async function socialLogin(type: string) {
 
 async function passwordlessLogin() {
   try {
-    loaderStore.showLoader("Logging in...");
+    loaderStore.showLoader(
+      `Click on the verification mail sent to ${passwordlessEmailId.value}...`
+    );
     await arcanaAuth
       .getAuthInstance()
       .loginWithLink(toUnicode(passwordlessEmailId.value));
@@ -76,8 +80,9 @@ async function loginAutomatically(verifier: string, verifierId: string) {
 async function onConnectToMetamask() {
   try {
     loaderStore.showLoader("Logging in...");
-    const { accounts, provider } = await connectMetamask();
-    console.log({ accounts, provider });
+    await connectMetamask();
+    authStore.isLoggedIn = true;
+    authStore.loggedInWith = "metamask";
   } catch (error: any) {
     toast.error(error.message);
   } finally {
@@ -138,9 +143,8 @@ onMounted(async () => {
               <span class="text-xs text-philippine-gray">Connect Wallet</span>
               <div class="flex flex-col space-y-2 w-full">
                 <button
+                  v-if="isMetamaskInstalled()"
                   class="btn btn-login flex w-full justify-center items-center space-x-2"
-                  :disabled="!isMetamaskInstalled()"
-                  :class="{ 'opacity-50': !isMetamaskInstalled() }"
                   @click="onConnectToMetamask"
                 >
                   <img
@@ -152,12 +156,6 @@ onMounted(async () => {
                     Metamask
                   </span>
                 </button>
-                <p
-                  v-if="!isMetamaskInstalled()"
-                  class="text-xs text-left text-vivid-vermilion"
-                >
-                  Please install Metamask ext and reload the app
-                </p>
               </div>
             </section>
             <section class="space-y-3 w-full flex flex-col items-start">
