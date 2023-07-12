@@ -1,7 +1,7 @@
 async function addUserToWaitlist(
   email: string,
   address: string,
-  community: string
+  community?: string
 ) {
   const data = {
     email,

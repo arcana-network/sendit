@@ -18,6 +18,7 @@ const serverError = ref(false);
 const loaderStore = useLoaderStore();
 const toast = useToast();
 const route = useRoute();
+const community = route.query.community as string | undefined;
 
 const error = computed(() => {
   if (hasStartedTyping.value) {
@@ -34,22 +35,24 @@ const error = computed(() => {
         message: "Enter valid email address",
       };
     }
-    if (!address.value.trim()) {
-      return {
-        value: true,
-        field: "address",
-        message: "Wallet Address is required",
-      };
-    } else if (
-      !address.value.startsWith("0x") ||
-      address.value.length !== 42 ||
-      !address.value.substring(2).match(/^[0-9a-fA-F]+$/)
-    ) {
-      return {
-        value: true,
-        field: "address",
-        message: "Enter valid wallet address",
-      };
+    if (community !== undefined) {
+      if (!address.value.trim()) {
+        return {
+          value: true,
+          field: "address",
+          message: "Wallet Address is required",
+        };
+      } else if (
+        !address.value.startsWith("0x") ||
+        address.value.length !== 42 ||
+        !address.value.substring(2).match(/^[0-9a-fA-F]+$/)
+      ) {
+        return {
+          value: true,
+          field: "address",
+          message: "Enter valid wallet address",
+        };
+      }
     }
   }
   if (serverError.value) {
@@ -67,8 +70,13 @@ const error = computed(() => {
 async function handleUserSubmission() {
   try {
     loaderStore.showLoader("Adding to waitlist...");
-    const community = route.query.community as string;
-    await addUserToWaitlist(toUnicode(email.value), address.value, community);
+    const isSubmitted = await addUserToWaitlist(
+      toUnicode(email.value),
+      address.value,
+      community
+    );
+    if (!isSubmitted)
+      throw new Error("Cannot add to waitlist. Please try again.");
     submissionSuccess.value = true;
   } catch (e) {
     serverError.value = true;
@@ -125,10 +133,10 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
                   <input
                     id="email"
                     v-model.trim="email"
-                    class="bg-transparent w-full rounded-[5px] text-[12px] placeholder:text-[#787878] flex-grow px-3 py-2 border-1 outline-none"
+                    class="bg-dark-charcoal w-full rounded-[5px] text-[12px] placeholder:text-[#787878] flex-grow px-3 py-2 border-1 outline-none"
                     placeholder="Enter email address"
                     :class="{
-                      'border-white': !error.value,
+                      'border-dark-charcoal': !error.value,
                       'border-[#ff4264]':
                         error.value && error.field === 'email',
                     }"
@@ -143,17 +151,20 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
                     }}</span>
                   </div>
                 </div>
-                <div class="flex flex-col gap-1 w-full">
+                <div
+                  v-if="community !== undefined"
+                  class="flex flex-col gap-1 w-full"
+                >
                   <label for="address" class="text-xs font-medium"
                     >Wallet Address</label
                   >
                   <input
                     id="address"
                     v-model.trim="address"
-                    class="bg-transparent w-full rounded-[5px] text-[12px] placeholder:text-[#787878] flex-grow px-3 py-2 border-1 outline-none"
+                    class="bg-dark-charcoal w-full rounded-[5px] text-[12px] placeholder:text-[#787878] flex-grow px-3 py-2 border-1 outline-none"
                     placeholder="Enter wallet address"
                     :class="{
-                      'border-white': !error.value,
+                      'border-dark-charcoal': !error.value,
                       'border-[#ff4264]':
                         error.value && error.field === 'address',
                     }"
@@ -181,10 +192,9 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
                   class="text-[10px] text-[#ff4264]"
                   >{{ error.message }}</span
                 >
-                <span v-else class="text-[10px]">No spam. We promise</span>
               </div>
             </form>
-            <div class="mt-5 text-sm">
+            <div v-if="false" class="mt-5 text-sm">
               <RouterLink :to="{ name: 'Login' }"
                 >Have access? Sign In</RouterLink
               >
