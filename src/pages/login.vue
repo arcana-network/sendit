@@ -24,7 +24,7 @@ async function socialLogin(type: string) {
   try {
     loaderStore.showLoader("Logging in...");
     await arcanaAuth.getAuthInstance().loginWithSocial(type);
-  } catch (e) {
+  } catch (e: any) {
     toast.error(e);
   } finally {
     loaderStore.hideLoader();
@@ -67,7 +67,7 @@ async function onConnectToMetamask() {
     loaderStore.showLoader("Logging in...");
     const { accounts, provider } = await connectMetamask();
     console.log({ accounts, provider });
-  } catch (error) {
+  } catch (error: any) {
     toast.error(error.message);
   } finally {
     loaderStore.hideLoader();
