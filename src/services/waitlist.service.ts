@@ -5,6 +5,7 @@ async function addUserToWaitlist(
 ) {
   const data = {
     email,
+    address: "",
   };
   if (community) {
     data["address"] = address;
