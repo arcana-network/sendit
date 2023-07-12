@@ -1,3 +1,88 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: "Onest";
+  src: url("@/assets/fonts/onest/WOFF/OnestRegular1602-hint.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Onest";
+  src: url("@/assets/fonts/onest/WOFF/OnestExtraBold1602-hint.woff") format("woff");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Onest";
+  src: url("@/assets/fonts/onest/WOFF/OnestBold1602-hint.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Onest";
+  src: url("@/assets/fonts/onest/WOFF/OnestMedium1602-hint.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Onest";
+  src: url("@/assets/fonts/onest/WOFF/OnestLight1602-hint.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Onest";
+  src: url("@/assets/fonts/onest/WOFF/OnestThin1602-hint.woff") format("woff");
+  font-weight: 100;
+  font-style: normal;
+}
+
+body {
+  font-family: Onest, sans-serif;
+  color: #ffffff;
+  min-height: 100vh;
+}
+
+#app {
+  height: 100%;
+  min-height: 100vh;
+}
+
+.btn {
+  @apply p-2.5 rounded-md font-bold;
+}
+
+.btn-login {
+  @apply bg-eerie-black text-sm;
+}
+
+.btn-submit {
+  @apply bg-white text-black uppercase border-2;
+}
+
+.btn-submit-secondary {
+  @apply bg-transparent text-white uppercase border-2;
+}
+
+.input {
+  @apply outline-none border-none rounded-md p-2 bg-dark-charcoal;
+}
+
+.form-card {
+  @apply flex flex-col items-center border-1 border-jet rounded-md bg-eerie-black;
+}
+
+.container {
+  @apply max-w-[1440px] mx-auto;
+}
+
+.ellipsis {
+  @apply text-ellipsis whitespace-nowrap overflow-hidden;
+}
