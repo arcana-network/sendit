@@ -65,14 +65,15 @@ async function initSocketConnect() {
 async function getUserInfo() {
   if (authStore.loggedInWith === "metamask") {
     const data = await connectMetamask();
+    authStore.provider = data.provider;
     authStore.setUserInfo({
       address: data.accounts[0],
       loginType: "null",
       id: "null",
     });
-    authStore.provider = data.provider;
     userStore.address = data.accounts[0];
   } else {
+    authStore.provider = auth.getProvider();
     const userInfo = await auth.getUser();
     authStore.setUserInfo(userInfo);
     userStore.address = userInfo.address;
