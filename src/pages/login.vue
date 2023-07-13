@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useArcanaAuth from "@/use/arcanaAuth";
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import useLoaderStore from "@/stores/loader";
 import AppHeader from "@/components/layout/AppHeader.vue";
