@@ -74,7 +74,7 @@ function resetUserInput() {
 function handleShoutout() {
   showSuccessMessage.value = false;
   composeAndSendTweet(
-    `Just sent a crypto transfer on #SendIt from ${verifierHuman.value}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `
+    `Just sent a crypto transfer on #SendIt to ${verifierHuman.value}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `
   );
   showTweetVerificationModal.value = true;
   resetUserInput();
