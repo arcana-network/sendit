@@ -12,6 +12,7 @@ import { useToast } from "vue-toastification";
 import useNotificationStore from "@/stores/notification";
 import useMetamask from "@/use/metamask";
 import NotWhiteListed from "@/components/not-whitelisted.vue";
+import useSendStore from "@/stores/send";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -24,6 +25,7 @@ const userStore = useUserStore();
 const notificationStore = useNotificationStore();
 const toast = useToast();
 const isNotWhitelisted = ref(false);
+const sendStore = useSendStore();
 const { connectMetamask } = useMetamask();
 
 async function initAuth() {
@@ -85,6 +87,7 @@ async function onWalletConnect() {
   authStore.setLoginStatus(true);
   await getUserInfo();
   await initSocketConnect();
+  await sendStore.fetchSupportedChains();
   rewardsStore.fetchRewards(userStore.address);
   userStore.fetchUserPointsAndRank();
   notificationStore.getNotifications();

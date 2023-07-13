@@ -40,6 +40,10 @@ const isEmailValid = computed(() => {
   return true;
 });
 
+if (userInput.value.chain) {
+  fetchAssets(userInput.value.chain);
+}
+
 function getSelectedChainInfo(chainId) {
   //@ts-ignore
   return supportedChains.value.find((chain) => chain.chain_id === chainId);
