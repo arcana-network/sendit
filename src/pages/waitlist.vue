@@ -74,7 +74,7 @@ async function handleUserSubmission() {
   try {
     loaderStore.showLoader("Adding to waitlist...");
     const isSubmitted = await addUserToWaitlist(
-      toUnicode(email.value),
+      toUnicode(email.value.toLowerCase()),
       address.value,
       community
     );

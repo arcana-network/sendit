@@ -18,7 +18,7 @@ enum ConnectionState {
 }
 
 const NOT_ON_WAITLIST = 256;
-const WS_TIMER = 1000;
+const WS_TIMER = 15000;
 
 let socket: WebSocket;
 let ethersProvider: BrowserProvider;
@@ -74,7 +74,7 @@ function useSocketConnection() {
         }
       });
     } catch (e) {
-      console.log({ e });
+      console.error({ e });
     }
   }
 
@@ -132,14 +132,14 @@ function useSocketConnection() {
             })
           );
           state = ConnectionState.CONNECTED_UNAUTHORIZED;
-        } catch (e) {
+        } catch (e: any) {
           // @ts-ignore
           if (e.code === ACTION_REJECTED) {
             toast.error(
               "Signature request rejected. Please refresh the page again to login"
             );
           } else {
-            toast.error(e as string);
+            toast.error(e.message as string);
           }
         }
         break;

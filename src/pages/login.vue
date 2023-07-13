@@ -73,7 +73,7 @@ async function passwordlessLogin() {
     );
     await arcanaAuth
       .getAuthInstance()
-      .loginWithLink(toUnicode(passwordlessEmailId.value));
+      .loginWithLink(toUnicode(passwordlessEmailId.value.toLowerCase()));
   } catch (e: any) {
     toast.error(e);
   } finally {

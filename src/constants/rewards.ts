@@ -1,7 +1,7 @@
 import NavigationIcon from "@/assets/images/icons/navigation.svg";
 import PiggyBankIcon from "@/assets/images/icons/piggy-bank.svg";
 import UserAddIcon from "@/assets/images/icons/user-add.svg";
-import UserVoiceIcon from "@/assets/images/icons/user-voice.svg";
+// import UserVoiceIcon from "@/assets/images/icons/user-voice.svg";
 import WalletIcon from "@/assets/images/icons/wallet.svg";
 
 const EARN_XP = [
@@ -13,16 +13,16 @@ const EARN_XP = [
     task: "Invite",
     xp: 50,
   },
-  {
-    image: UserVoiceIcon,
-    name: "Earn 50 XP",
-    description:
-      "Give a shoutout to sender when you receive assets to earn XP.",
-    task: "Tweet",
-    tweet:
-      "Just received a crypto transfer on #SendIt! No wallet, no problem. Join the revolution at https://sendit.arcana.network!",
-    xp: 50,
-  },
+  // {
+  //   image: UserVoiceIcon,
+  //   name: "Earn 50 XP",
+  //   description:
+  //     "Give a shoutout to sender when you receive assets to earn XP.",
+  //   task: "Tweet",
+  //   tweet:
+  //     "Just received a crypto transfer on #SendIt! No wallet, no problem. Join the revolution at https://sendit.arcana.network!",
+  //   xp: 50,
+  // },
   {
     image: NavigationIcon,
     name: "Earn 30 XP",

@@ -18,6 +18,7 @@ import { isValidEmail } from "@/utils/validation";
 import { toUnicode } from "punycode";
 
 const emits = defineEmits(["transaction-successful"]);
+const ACTION_REJECTED = "ACTION_REJECTED";
 
 const sendStore = useSendStore();
 const authStore = useAuthStore();
@@ -61,7 +62,7 @@ async function fetchAssets(chainId) {
     const { result } = await getAccountBalance(walletAddress, chain.blockchain);
     chainAssets.value = result.assets;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   } finally {
     loadStore.hideLoader();
   }
@@ -110,7 +111,7 @@ async function proceed() {
     try {
       const normalisedEmail =
         userInput.value.medium === "mail"
-          ? toUnicode(userInput.value.recipientId)
+          ? toUnicode(userInput.value.recipientId.toLowerCase())
           : null;
       const recipientId =
         twitterId.value || normalisedEmail || userInput.value.recipientId;
@@ -153,10 +154,18 @@ async function proceed() {
       )) as any;
       toast.success("Transaction Successful");
       sendRes.verifier_id = recipientId;
+      sendRes.hash = hash;
+      sendRes.verifier_human = normalisedEmail || userInput.value.recipientId;
       emits("transaction-successful", sendRes);
-    } catch (error) {
-      console.log(error);
-      toast.error(error as string);
+    } catch (error: any) {
+      console.error(error);
+      if (error.code === ACTION_REJECTED) {
+        toast.error(
+          "Signature request rejected. Please refresh the page again to login"
+        );
+      } else {
+        toast.error(error.message as string);
+      }
     } finally {
       loadStore.hideLoader();
     }
@@ -230,7 +239,7 @@ async function handleTwitterUsername() {
     };
     try {
       const res = (await socketConnection.sendMessage(
-        SOCKET_IDS.TWIITER_USERNAME_TO_ID,
+        SOCKET_IDS.TWITTER_USERNAME_TO_ID,
         message
       )) as { id: string };
       twitterId.value = res.id;
