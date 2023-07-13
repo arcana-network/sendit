@@ -51,6 +51,9 @@ function useSocketConnection() {
     if (onLoginError) {
       loginErrorFunc = onLoginError;
     }
+    if (webSocketInterval) {
+      clearInterval(webSocketInterval);
+    }
     state = ConnectionState.NOT_CONNECTED;
     if (!initialRelease) initialRelease = await lock.acquire();
     try {
@@ -86,10 +89,6 @@ function useSocketConnection() {
         verifier_id: currentAccount.verifier_id,
       })
     );
-
-    webSocketInterval = setInterval(function () {
-      sendMessage(SOCKET_IDS.PING, { ping: true });
-    }, WS_TIMER);
   }
 
   async function sendMessage(id: number, data?: any) {
@@ -149,6 +148,9 @@ function useSocketConnection() {
           state = ConnectionState.AUTHORIZED;
           if (onSocketLogin) onSocketLogin();
           if (initialRelease) initialRelease();
+          webSocketInterval = setInterval(function () {
+            sendMessage(SOCKET_IDS.PING, { ping: true });
+          }, WS_TIMER);
         }
         break;
       case ConnectionState.AUTHORIZED:
