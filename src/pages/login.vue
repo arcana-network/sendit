@@ -114,22 +114,27 @@ async function onConnectToMetamask() {
 }
 
 async function onConnectToWalletConnect() {
-  web3modal.openModal();
-  web3modal.subscribeModal(async () => {
-    const accountDetails = getAccount();
-    console.log(accountDetails.address);
-    if (accountDetails.isConnected) {
-      authStore.provider = await accountDetails.connector?.getProvider();
-      authStore.setUserInfo({
-        address: accountDetails.address,
-        loginType: "null",
-        id: "null",
-      });
-      authStore.isLoggedIn = true;
-      authStore.loggedInWith = "walletconnect";
-      userStore.address = accountDetails.address;
-    }
+  const accountDetails = getAccount();
+  const isConnected = accountDetails.isConnected;
+  if (!isConnected) {
+    web3modal.subscribeModal(async () => {
+      const accountDetails = getAccount();
+      if (accountDetails.isConnected) onLoginWalletConnected(accountDetails);
+    });
+    web3modal.openModal();
+  } else onLoginWalletConnected(accountDetails);
+}
+
+async function onLoginWalletConnected(accountDetails) {
+  authStore.provider = await accountDetails.connector?.getProvider();
+  authStore.setUserInfo({
+    address: accountDetails.address,
+    loginType: "null",
+    id: "null",
   });
+  authStore.isLoggedIn = true;
+  authStore.loggedInWith = "walletconnect";
+  userStore.address = accountDetails.address;
 }
 
 onMounted(async () => {
