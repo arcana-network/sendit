@@ -90,19 +90,19 @@ const EARN_XP = [
 
 const REDEEM_XP = [
   {
-    image: "https://via.placeholder.com/93X96",
+    image: "/xars/25XAR.png",
     name: "25 XAR NFT",
     requiredXP: 250,
     xar: 25,
   },
   {
-    image: "https://via.placeholder.com/93X96",
+    image: "/xars/50XAR.png",
     name: "50 XAR NFT",
     requiredXP: 500,
     xar: 50,
   },
   {
-    image: "https://via.placeholder.com/93X96",
+    image: "/xars/100XAR.png",
     name: "100 XAR NFT",
     requiredXP: 1000,
     xar: 100,

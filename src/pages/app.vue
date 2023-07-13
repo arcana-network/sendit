@@ -35,7 +35,7 @@ async function initAuth() {
     authStore.setAuthInitialized(true);
     const isLoggedIn = await auth.isLoggedIn();
     if (isLoggedIn) authStore.setLoginStatus(true);
-    else router.push({ name: "Login" });
+    else router.push({ name: "Login", query: { ...route.query } });
   } catch (error) {
     toast.error(error as string);
   } finally {
@@ -106,7 +106,7 @@ watch(
   () => authStore.isLoggedIn,
   async (newValue) => {
     if (!newValue) {
-      router.push({ name: "Login" });
+      router.push({ name: "Login", query: { ...route.query } });
     } else if (route.name === "Login") {
       if (
         authStore.loggedInWith === "metamask" ||
@@ -115,7 +115,7 @@ watch(
         await onWalletConnect();
       }
       loaderStore.hideLoader();
-      router.push({ name: "Send" });
+      router.push({ name: "Send", query: { ...route.query } });
     }
   }
 );
