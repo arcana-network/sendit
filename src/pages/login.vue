@@ -23,6 +23,9 @@ const { isMetamaskInstalled, connectMetamask } = useMetaMask();
 const query = route.query;
 const verifier = query.verifier;
 const verifierId = query.verifierId;
+const isWhitelistedLogin = computed(() => {
+  return route.query.user !== undefined;
+});
 
 const isValidPasswordlessEmail = computed(() => {
   return (
@@ -139,7 +142,10 @@ onMounted(async () => {
                 </button>
               </div>
             </section>
-            <section class="space-y-3 w-full flex flex-col items-start">
+            <section
+              class="space-y-3 w-full flex flex-col items-start"
+              v-if="isWhitelistedLogin"
+            >
               <span class="text-xs text-philippine-gray">Connect Wallet</span>
               <div class="flex flex-col space-y-2 w-full">
                 <button
