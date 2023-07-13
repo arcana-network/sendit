@@ -23,7 +23,7 @@ import { configureChains, createConfig, getAccount } from "@wagmi/core";
 import { arbitrum, mainnet, polygon } from "@wagmi/core/chains";
 
 const chains = [arbitrum, mainnet, polygon];
-const projectId = "69f1a95aa947a6f7024b6e85534c8429";
+const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 
 const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
 const wagmiConfig = createConfig({
