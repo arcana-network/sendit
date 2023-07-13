@@ -18,6 +18,7 @@ import { isValidEmail } from "@/utils/validation";
 import { toUnicode } from "punycode";
 
 const emits = defineEmits(["transaction-successful"]);
+const ACTION_REJECTED = "ACTION_REJECTED";
 
 const sendStore = useSendStore();
 const authStore = useAuthStore();
@@ -61,7 +62,7 @@ async function fetchAssets(chainId) {
     const { result } = await getAccountBalance(walletAddress, chain.blockchain);
     chainAssets.value = result.assets;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   } finally {
     loadStore.hideLoader();
   }
@@ -92,12 +93,12 @@ async function proceed() {
   loadStore.showLoader("Sending tokens...");
   let hasUserRejectedChainSwitching = false;
   if (userInput.value.chain !== "") {
-    const chainId = await arcanaAuth
-      .getProvider()
-      .request({ method: "eth_chainId" });
+    const chainId = await authStore.provider.request({
+      method: "eth_chainId",
+    });
     if (Number(chainId) !== Number(userInput.value.chain)) {
       try {
-        await arcanaAuth.switchChain(userInput.value.chain);
+        await authStore.provider.switchChain(userInput.value.chain);
       } catch (e) {
         hasUserRejectedChainSwitching = true;
         toast.error(
@@ -110,14 +111,14 @@ async function proceed() {
     try {
       const normalisedEmail =
         userInput.value.medium === "mail"
-          ? toUnicode(userInput.value.recipientId)
+          ? toUnicode(userInput.value.recipientId.toLowerCase())
           : null;
       const recipientId =
         twitterId.value || normalisedEmail || userInput.value.recipientId;
       const senderPublicKey = await arcanaAuth
         .getAuthInstance()
         .getPublicKey(recipientId);
-      const arcanaProvider = arcanaAuth.getProvider();
+      const arcanaProvider = authStore.provider;
       const amount = String(userInput.value.amount);
       const chainId = userInput.value.chain;
       const [tokenSymbol, tokenType] = userInput.value.token.split("-");
@@ -153,14 +154,33 @@ async function proceed() {
       )) as any;
       toast.success("Transaction Successful");
       sendRes.verifier_id = recipientId;
+      sendRes.hash = hash;
+      sendRes.verifier_human = normalisedEmail || userInput.value.recipientId;
       emits("transaction-successful", sendRes);
-    } catch (error) {
-      console.log(error);
-      toast.error(error as string);
+    } catch (error: any) {
+      console.error(error);
+      if (error.code === ACTION_REJECTED) {
+        toast.error(
+          "Signature request rejected. Please refresh the page again to login"
+        );
+      } else {
+        toast.error(error.message as string);
+      }
     } finally {
       loadStore.hideLoader();
     }
   }
+}
+
+async function switchChain(chainId: string) {
+  await authStore.provider.request({
+    method: "wallet_switchEthereumChain",
+    params: [
+      {
+        chainId: `0x${Number(chainId).toString(16)}`,
+      },
+    ],
+  });
 }
 
 watch(
@@ -168,14 +188,15 @@ watch(
   async (selectedChainId, oldChain) => {
     if (userInput.value.chain !== "") {
       userInput.value.token = "";
-      const chainId = await arcanaAuth
-        .getProvider()
-        .request({ method: "eth_chainId" });
+      const chainId = await authStore.provider.request({
+        method: "eth_chainId",
+      });
       if (Number(chainId) !== Number(selectedChainId)) {
         try {
-          await arcanaAuth.switchChain(selectedChainId);
+          await switchChain(selectedChainId);
           fetchAssets(selectedChainId);
         } catch (e) {
+          console.error({ e });
           userInput.value.chain = oldChain;
           toast.error("Switching chain rejected by user");
         }
@@ -218,7 +239,7 @@ async function handleTwitterUsername() {
     };
     try {
       const res = (await socketConnection.sendMessage(
-        SOCKET_IDS.TWIITER_USERNAME_TO_ID,
+        SOCKET_IDS.TWITTER_USERNAME_TO_ID,
         message
       )) as { id: string };
       twitterId.value = res.id;
@@ -278,10 +299,10 @@ function handleMediumChange(medium) {
         >
           Please enter the recipient's ID
         </div>
-        <div class="text-[#ff4264] text-[10px]" v-if="hasTwitterError">
+        <div class="text-[#ff4264] text-[10px]" v-else-if="hasTwitterError">
           Invalid twitter username
         </div>
-        <div class="text-[#ff4264] text-[10px]" v-if="!isEmailValid">
+        <div class="text-[#ff4264] text-[10px]" v-else-if="!isEmailValid">
           Invalid email
         </div>
       </div>

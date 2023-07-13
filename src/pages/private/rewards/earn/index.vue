@@ -3,7 +3,7 @@ import { useRouter } from "vue-router";
 import { composeAndSendTweet } from "@/utils/tweet";
 import { EARN_XP } from "@/constants/rewards";
 import AppInvite from "@/components/AppInvite.vue";
-import TweetVerify from "@/components/TweetVerify.vue";
+// import TweetVerify from "@/components/TweetVerify.vue";
 import { ref } from "vue";
 
 const router = useRouter();
@@ -61,10 +61,10 @@ function handleAction(reward) {
       </div>
     </div>
     <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
-    <TweetVerify
+    <!-- <TweetVerify
       v-if="showTweetVerifyPopup"
       :xp="tweetXp"
       @close="showTweetVerifyPopup = false"
-    />
+    /> -->
   </div>
 </template>

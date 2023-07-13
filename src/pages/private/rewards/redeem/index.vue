@@ -53,7 +53,11 @@ function handleRedeem(reward: Reward) {
               >Earn XP to redeem this NFT.</span
             >
           </div>
-          <img :src="reward.image" :alt="reward.name" />
+          <img
+            :src="reward.image"
+            :alt="reward.name"
+            class="w-[93px] h-[96px] object-contain"
+          />
         </div>
         <button
           class="bg-[#0f0f0f] text-[10px] p-3 flex gap-1 items-center justify-center"

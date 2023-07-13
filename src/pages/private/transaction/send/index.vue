@@ -25,6 +25,8 @@ const shareDetails = ref({
   shareLink: "",
 });
 const verifierId = ref("");
+const txHash = ref("");
+const verifierHuman = ref("");
 
 async function fetchSupportedChains() {
   loaderStore.showLoader("Fetching list of chains...");
@@ -42,7 +44,7 @@ async function fetchSupportedChains() {
       })
     );
   } catch (e) {
-    console.log(e);
+    console.error(e);
   } finally {
     loaderStore.hideLoader();
   }
@@ -54,13 +56,15 @@ watch(isSocketLoggedIn, (newValue) => {
   if (newValue) fetchSupportedChains();
 });
 
-function handleTxSucces(e) {
+function handleTxSucces(data) {
   showSuccessMessage.value = true;
   shareDetails.value = {
-    shareLink: e.share_url,
-    isShareRequired: e.share_reqd,
+    shareLink: data.share_url,
+    isShareRequired: data.share_reqd,
   };
-  verifierId.value = e.verifier_id;
+  verifierId.value = data.verifier_id;
+  txHash.value = data.hash;
+  verifierHuman.value = data.verifier_human;
 }
 
 function resetUserInput() {
@@ -70,7 +74,7 @@ function resetUserInput() {
 function handleShoutout() {
   showSuccessMessage.value = false;
   composeAndSendTweet(
-    `Just did a crypto transfer on #SendIt! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `
+    `Just sent a crypto transfer on #SendIt from ${verifierHuman.value}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `
   );
   showTweetVerificationModal.value = true;
   resetUserInput();
@@ -94,7 +98,8 @@ function handleSuccessModalClose() {
   />
   <TweetVerify
     v-if="showTweetVerificationModal"
-    :xp="40"
+    :xp="25"
+    :hash="txHash"
     @close="showTweetVerificationModal = false"
   />
   <div class="flex flex-col justify-center items-center p-12 space-y-10">

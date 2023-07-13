@@ -16,6 +16,7 @@ const socket = useSocketConnection();
 const history = ref([] as any[]);
 const showTweetVerificationModal = ref(false);
 const userStore = useUserStore();
+const tweetVerificationHash = ref("");
 
 onBeforeMount(() => {
   fetchTxHistory();
@@ -60,9 +61,10 @@ function getSocialId(socialId: string, verifier: string) {
 function shareTweet(record) {
   const tweet =
     record.txStatus === "sent"
-      ? `Just did a crypto transfer on #SendIt! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `
-      : `Just received a crypto transfer on #SendIt! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `;
+      ? `Just sent a crypto transfer on #SendIt from ${record.socialId}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `
+      : `Just received a crypto transfer on #SendIt from ${record.socialId}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `;
   composeAndSendTweet(tweet);
+  tweetVerificationHash.value = record.txHash;
   showTweetVerificationModal.value = true;
 }
 </script>
@@ -152,7 +154,7 @@ function shareTweet(record) {
                 v-if="!record.isSharedOnTwitter"
                 class="leaderboard-table-row-item text-[#659CFF] text-[10px] bg-[#293C5F] px-1 rounded-[5px]"
               >
-                Earn 40 XP
+                Earn 25 XP
               </div>
               <div v-else></div>
             </div>
@@ -206,7 +208,7 @@ function shareTweet(record) {
               <div
                 class="leaderboard-table-row-item text-[#659CFF] text-[10px] bg-[#293C5F] px-2 py-1 rounded-[5px]"
               >
-                Earn 40 XP
+                Earn 25 XP
               </div>
             </button>
           </div>
@@ -222,7 +224,8 @@ function shareTweet(record) {
     <TweetVerify
       v-if="showTweetVerificationModal"
       @close="showTweetVerificationModal = false"
-      :xp="40"
+      :xp="25"
+      :hash="tweetVerificationHash"
     />
   </div>
 </template>

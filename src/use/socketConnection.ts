@@ -1,10 +1,10 @@
 import { BrowserProvider, getBytes } from "ethers";
 import type { JsonRpcSigner } from "ethers";
-import { AuthProvider } from "@arcana/auth";
 import { pack as msgpack, unpack as msgunpack } from "msgpackr";
 import { Mutex } from "async-mutex";
 import type { MutexInterface } from "async-mutex";
 import { useToast } from "vue-toastification";
+import { SOCKET_IDS } from "@/constants/socket-ids";
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 const SOCKET_CLOSED_ON_LOGOUT = 3000;
@@ -18,7 +18,7 @@ enum ConnectionState {
 }
 
 const NOT_ON_WAITLIST = 256;
-const WS_TIMER = 59000;
+const WS_TIMER = 15000;
 
 let socket: WebSocket;
 let ethersProvider: BrowserProvider;
@@ -43,7 +43,7 @@ function useSocketConnection() {
   let loginErrorFunc: () => void;
 
   async function init(
-    authProvider: AuthProvider,
+    authProvider: any,
     account: Account,
     onSocketLogin?: () => void,
     onLoginError?: () => void
@@ -74,7 +74,7 @@ function useSocketConnection() {
         }
       });
     } catch (e) {
-      console.log({ e });
+      console.error({ e });
     }
   }
 
@@ -88,7 +88,7 @@ function useSocketConnection() {
     );
 
     webSocketInterval = setInterval(function () {
-      sendMessage(255, { ping: true });
+      sendMessage(SOCKET_IDS.PING, { ping: true });
     }, WS_TIMER);
   }
 
@@ -132,14 +132,14 @@ function useSocketConnection() {
             })
           );
           state = ConnectionState.CONNECTED_UNAUTHORIZED;
-        } catch (e) {
+        } catch (e: any) {
           // @ts-ignore
           if (e.code === ACTION_REJECTED) {
             toast.error(
               "Signature request rejected. Please refresh the page again to login"
             );
           } else {
-            toast.error(e as string);
+            toast.error(e.message as string);
           }
         }
         break;
