@@ -4,6 +4,7 @@ import { pack as msgpack, unpack as msgunpack } from "msgpackr";
 import { Mutex } from "async-mutex";
 import type { MutexInterface } from "async-mutex";
 import { useToast } from "vue-toastification";
+import { SOCKET_IDS } from "@/constants/socket-ids";
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 const SOCKET_CLOSED_ON_LOGOUT = 3000;
@@ -17,7 +18,7 @@ enum ConnectionState {
 }
 
 const NOT_ON_WAITLIST = 256;
-const WS_TIMER = 59000;
+const WS_TIMER = 3000;
 
 let socket: WebSocket;
 let ethersProvider: BrowserProvider;
@@ -87,7 +88,7 @@ function useSocketConnection() {
     );
 
     webSocketInterval = setInterval(function () {
-      sendMessage(255, { ping: true });
+      sendMessage(SOCKET_IDS.PING, { ping: true });
     }, WS_TIMER);
   }
 
