@@ -108,8 +108,8 @@ const REDEEM_XP = [
     xar: 100,
   },
   {
-    image: "https://via.placeholder.com/93X96",
-    name: "125 XAR NFT",
+    image: "/xars/500XAR.png",
+    name: "500 XAR NFT",
     requiredXP: 500,
     xar: 5000,
   },

@@ -12,6 +12,7 @@ import { useToast } from "vue-toastification";
 import useNotificationStore from "@/stores/notification";
 import useMetamask from "@/use/metamask";
 import NotWhiteListed from "@/components/not-whitelisted.vue";
+import useSendStore from "@/stores/send";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -24,6 +25,7 @@ const userStore = useUserStore();
 const notificationStore = useNotificationStore();
 const toast = useToast();
 const isNotWhitelisted = ref(false);
+const sendStore = useSendStore();
 const { connectMetamask } = useMetamask();
 
 async function initAuth() {
@@ -35,7 +37,7 @@ async function initAuth() {
     authStore.setAuthInitialized(true);
     const isLoggedIn = await auth.isLoggedIn();
     if (isLoggedIn) authStore.setLoginStatus(true);
-    else router.push({ name: "Login", query: { ...route.query } });
+    else await router.push({ name: "Login", query: { ...route.query } });
   } catch (error) {
     toast.error(error as string);
   } finally {
@@ -85,10 +87,11 @@ async function onWalletConnect() {
   authStore.setLoginStatus(true);
   await getUserInfo();
   await initSocketConnect();
+  await sendStore.fetchSupportedChains();
   rewardsStore.fetchRewards(userStore.address);
   userStore.fetchUserPointsAndRank();
   notificationStore.getNotifications();
-  if (authStore.loggedInWith !== "metamask") {
+  if (authStore.loggedInWith !== "walletconnect") {
     authStore.provider.on("disconnect", onWalletDisconnect);
   }
   loaderStore.hideLoader();

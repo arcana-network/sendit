@@ -1,4 +1,7 @@
 import { defineStore } from "pinia";
+import useSocketConnection from "@/use/socketConnection";
+import { SOCKET_IDS } from "@/constants/socket-ids";
+import chainList from "@/constants/chainList.ts";
 
 type SendStoreKind = {
   userInput: {
@@ -27,8 +30,17 @@ const useSendStore = defineStore("send", {
       supportedChains: [],
     } as SendStoreKind),
   actions: {
-    setSupportedChains(chains) {
-      this.supportedChains = chains;
+    async fetchSupportedChains() {
+      const socketConnection = useSocketConnection();
+      const { chains } = (await socketConnection.sendMessage(
+        SOCKET_IDS.GET_CHAINS
+      )) as { chains: any[] };
+      this.supportedChains = chains.map((chain) => {
+        return {
+          ...chain,
+          blockchain: chainList[chain.chain_id].block_chain,
+        };
+      });
     },
     resetUserInput() {
       this.userInput = {
