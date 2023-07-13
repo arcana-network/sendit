@@ -14,6 +14,8 @@ import { getBytes } from "ethers";
 import useSocketConnection from "@/use/socketConnection";
 import { useToast } from "vue-toastification";
 import { SOCKET_IDS } from "@/constants/socket-ids";
+import { isValidEmail } from "@/utils/validation";
+import { toUnicode } from "punycode";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -30,6 +32,13 @@ const twitterId = ref("");
 const hasTwitterError = ref(false);
 
 const { userInput, supportedChains } = toRefs(sendStore);
+
+const isEmailValid = computed(() => {
+  if (userInput.value.medium === "mail") {
+    return isValidEmail(userInput.value.recipientId);
+  }
+  return true;
+});
 
 function getSelectedChainInfo(chainId) {
   //@ts-ignore
@@ -84,12 +93,12 @@ async function proceed() {
   loadStore.showLoader("Sending tokens...");
   let hasUserRejectedChainSwitching = false;
   if (userInput.value.chain !== "") {
-    const chainId = await arcanaAuth
-      .getProvider()
-      .request({ method: "eth_chainId" });
+    const chainId = await authStore.provider.request({
+      method: "eth_chainId",
+    });
     if (Number(chainId) !== Number(userInput.value.chain)) {
       try {
-        await arcanaAuth.switchChain(userInput.value.chain);
+        await authStore.provider.switchChain(userInput.value.chain);
       } catch (e) {
         hasUserRejectedChainSwitching = true;
         toast.error(
@@ -100,11 +109,16 @@ async function proceed() {
   }
   if (!hasUserRejectedChainSwitching) {
     try {
-      const recipientId = twitterId.value || userInput.value.recipientId;
+      const normalisedEmail =
+        userInput.value.medium === "mail"
+          ? toUnicode(userInput.value.recipientId)
+          : null;
+      const recipientId =
+        twitterId.value || normalisedEmail || userInput.value.recipientId;
       const senderPublicKey = await arcanaAuth
         .getAuthInstance()
         .getPublicKey(recipientId);
-      const arcanaProvider = arcanaAuth.getProvider();
+      const arcanaProvider = authStore.provider;
       const amount = String(userInput.value.amount);
       const chainId = userInput.value.chain;
       const [tokenSymbol, tokenType] = userInput.value.token.split("-");
@@ -156,19 +170,31 @@ async function proceed() {
   }
 }
 
+async function switchChain(chainId: string) {
+  await authStore.provider.request({
+    method: "wallet_switchEthereumChain",
+    params: [
+      {
+        chainId: `0x${Number(chainId).toString(16)}`,
+      },
+    ],
+  });
+}
+
 watch(
   () => userInput.value.chain,
   async (selectedChainId, oldChain) => {
     if (userInput.value.chain !== "") {
       userInput.value.token = "";
-      const chainId = await arcanaAuth
-        .getProvider()
-        .request({ method: "eth_chainId" });
+      const chainId = await authStore.provider.request({
+        method: "eth_chainId",
+      });
       if (Number(chainId) !== Number(selectedChainId)) {
         try {
-          await arcanaAuth.switchChain(selectedChainId);
+          await switchChain(selectedChainId);
           fetchAssets(selectedChainId);
         } catch (e) {
+          console.error({ e });
           userInput.value.chain = oldChain;
           toast.error("Switching chain rejected by user");
         }
@@ -271,8 +297,11 @@ function handleMediumChange(medium) {
         >
           Please enter the recipient's ID
         </div>
-        <div class="text-[#ff4264] text-[10px]" v-if="hasTwitterError">
+        <div class="text-[#ff4264] text-[10px]" v-else-if="hasTwitterError">
           Invalid twitter username
+        </div>
+        <div class="text-[#ff4264] text-[10px]" v-else-if="!isEmailValid">
+          Invalid email
         </div>
       </div>
       <div class="flex flex-col space-y-1">

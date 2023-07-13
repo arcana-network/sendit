@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import useArcanaAuth from "@/use/arcanaAuth";
 import useSocketConnection from "@/use/socketConnection";
 import useLoaderStore from "@/stores/loader";
@@ -10,6 +10,8 @@ import useRewardsStore from "@/stores/rewards";
 import useUserStore from "@/stores/user";
 import { useToast } from "vue-toastification";
 import useNotificationStore from "@/stores/notification";
+import useMetamask from "@/use/metamask";
+import NotWhiteListed from "@/components/not-whitelisted.vue";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -21,13 +23,15 @@ const rewardsStore = useRewardsStore();
 const userStore = useUserStore();
 const notificationStore = useNotificationStore();
 const toast = useToast();
+const isNotWhitelisted = ref(false);
+const { connectMetamask } = useMetamask();
 
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
   try {
     await auth.init();
-    auth.getProvider().on("connect", onWalletConnect);
-    auth.getProvider().on("disconnect", onWalletDisconnect);
+    authStore.provider = auth.getProvider();
+    authStore.provider.on("connect", onWalletConnect);
     authStore.setAuthInitialized(true);
     const isLoggedIn = await auth.isLoggedIn();
     if (isLoggedIn) authStore.setLoginStatus(true);
@@ -44,27 +48,48 @@ async function initSocketConnect() {
     verifier: authStore.userInfo.loginType,
     verifier_id: authStore.userInfo.id,
   };
-  // @ts-ignore
-  await socketConnection.init(auth.getProvider(), account, () => {
-    authStore.setSocketLoginStatus(true);
-  });
+  await socketConnection.init(
+    // @ts-ignore
+    authStore.provider,
+    account,
+    () => {
+      authStore.setSocketLoginStatus(true);
+    },
+    () => {
+      isNotWhitelisted.value = true;
+      loaderStore.hideLoader();
+    }
+  );
 }
 
 async function getUserInfo() {
-  const userInfo = await auth.getUser();
-  authStore.setUserInfo(userInfo);
-  userStore.address = userInfo.address;
+  if (authStore.loggedInWith === "metamask") {
+    const data = await connectMetamask();
+    authStore.provider = data.provider;
+    authStore.setUserInfo({
+      address: data.accounts[0],
+      loginType: "null",
+      id: "null",
+    });
+    userStore.address = data.accounts[0];
+  } else if (authStore.loggedInWith === "") {
+    authStore.provider = auth.getProvider();
+    const userInfo = await auth.getUser();
+    authStore.setUserInfo(userInfo);
+    userStore.address = userInfo.address;
+  }
 }
 
 async function onWalletConnect() {
-  const isLoggedIn = await auth.isLoggedIn();
-  if (isLoggedIn) {
-    authStore.setLoginStatus(isLoggedIn);
-    await getUserInfo();
-    await initSocketConnect();
-    rewardsStore.fetchRewards(userStore.address);
-    userStore.fetchUserPointsAndRank();
-    notificationStore.getNotifications();
+  loaderStore.showLoader("Connecting...");
+  authStore.setLoginStatus(true);
+  await getUserInfo();
+  await initSocketConnect();
+  rewardsStore.fetchRewards(userStore.address);
+  userStore.fetchUserPointsAndRank();
+  notificationStore.getNotifications();
+  if (authStore.loggedInWith !== "metamask") {
+    authStore.provider.on("disconnect", onWalletDisconnect);
   }
   loaderStore.hideLoader();
 }
@@ -79,10 +104,17 @@ onMounted(initAuth);
 
 watch(
   () => authStore.isLoggedIn,
-  (newValue) => {
+  async (newValue) => {
     if (!newValue) {
       router.push({ name: "Login" });
     } else if (route.name === "Login") {
+      if (
+        authStore.loggedInWith === "metamask" ||
+        authStore.loggedInWith === "walletconnect"
+      ) {
+        await onWalletConnect();
+      }
+      loaderStore.hideLoader();
       router.push({ name: "Send" });
     }
   }
@@ -93,11 +125,28 @@ const showFullScreenLoader = computed(() => {
     loaderStore.show || (!authStore.isSocketLoggedIn && authStore.isLoggedIn)
   );
 });
+
+async function handleNoAccessBack() {
+  if (
+    authStore.loggedInWith !== "metamask" &&
+    authStore.loggedInWith !== "walletconnect"
+  ) {
+    await auth.getAuthInstance().logout();
+  } else {
+    onWalletDisconnect();
+  }
+  isNotWhitelisted.value = false;
+}
 </script>
 
 <template>
   <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
     <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
+    <NotWhiteListed
+      v-if="isNotWhitelisted"
+      @go-back="handleNoAccessBack"
+      @join-waitlist="router.push({ name: 'Waitlist' })"
+    />
   </main>
 </template>

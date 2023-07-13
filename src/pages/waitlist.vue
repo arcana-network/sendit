@@ -7,6 +7,8 @@ import { addUserToWaitlist } from "@/services/waitlist.service";
 import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
 import LandingDescription from "@/components/LandingDescription.vue";
+import { useRoute } from "vue-router";
+import { toUnicode } from "punycode";
 
 const hasStartedTyping = ref(false);
 const email = ref("");
@@ -15,6 +17,8 @@ const submissionSuccess = ref(false);
 const serverError = ref(false);
 const loaderStore = useLoaderStore();
 const toast = useToast();
+const route = useRoute();
+const community = route.query.community as string | undefined;
 
 const error = computed(() => {
   if (hasStartedTyping.value) {
@@ -31,29 +35,34 @@ const error = computed(() => {
         message: "Enter valid email address",
       };
     }
-    if (!address.value.trim()) {
-      return {
-        value: true,
-        field: "address",
-        message: "Wallet Address is required",
-      };
-    } else if (
-      !address.value.startsWith("0x") ||
-      address.value.length !== 42 ||
-      !address.value.substring(2).match(/^[0-9a-fA-F]+$/)
-    ) {
-      return {
-        value: true,
-        field: "address",
-        message: "Enter valid wallet address",
-      };
+    if (community !== undefined) {
+      if (!address.value.trim()) {
+        return {
+          value: true,
+          field: "address",
+          message: "Wallet Address is required",
+        };
+      } else if (
+        !address.value.startsWith("0x") ||
+        address.value.length !== 42 ||
+        !address.value.substring(2).match(/^[0-9a-fA-F]+$/)
+      ) {
+        return {
+          value: true,
+          field: "address",
+          message: "Enter valid wallet address",
+        };
+      }
     }
   }
   if (serverError.value) {
     return {
       value: true,
       field: "server",
-      message: "Something went wrong. Please try again",
+      message:
+        community === undefined
+          ? "Email already added in waitlist"
+          : "Email or address already added in waitlist",
     };
   }
   return {
@@ -64,12 +73,21 @@ const error = computed(() => {
 async function handleUserSubmission() {
   try {
     loaderStore.showLoader("Adding to waitlist...");
-    await addUserToWaitlist(email.value, address.value);
+    const isSubmitted = await addUserToWaitlist(
+      toUnicode(email.value),
+      address.value,
+      community
+    );
+    if (!isSubmitted)
+      throw new Error("Cannot add to waitlist. Please try again.");
     submissionSuccess.value = true;
   } catch (e) {
     serverError.value = true;
-    toast.error("Cannot add to waitlist. Please try again.");
-    console.error(error.value);
+    if (community !== undefined) {
+      toast.error("Email or address already added in waitlist");
+    } else {
+      toast.error("Email already added in waitlist");
+    }
   } finally {
     loaderStore.hideLoader();
   }
@@ -108,8 +126,8 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
             <span
               class="text-philippine-gray text-sm mb-6 mt-3 md:text-center md:mx-auto"
               >Experience SendIt, the revolutionary app that simplifies crypto
-              transactions using email, Twitter, and Github. Sign up now to be
-              among the first to use it!</span
+              transactions using email and twitter. Sign up now to be among the
+              first to use it!</span
             >
             <form
               class="w-full flex flex-col pb-8"
@@ -121,10 +139,10 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
                   <input
                     id="email"
                     v-model.trim="email"
-                    class="bg-transparent w-full rounded-[5px] text-[12px] placeholder:text-[#787878] flex-grow px-3 py-2 border-1 outline-none"
+                    class="bg-dark-charcoal w-full rounded-[5px] text-[12px] placeholder:text-[#787878] flex-grow px-3 py-2 border-1 outline-none"
                     placeholder="Enter email address"
                     :class="{
-                      'border-white': !error.value,
+                      'border-dark-charcoal': !error.value,
                       'border-[#ff4264]':
                         error.value && error.field === 'email',
                     }"
@@ -139,17 +157,20 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
                     }}</span>
                   </div>
                 </div>
-                <div class="flex flex-col gap-1 w-full">
+                <div
+                  v-if="community !== undefined"
+                  class="flex flex-col gap-1 w-full"
+                >
                   <label for="address" class="text-xs font-medium"
                     >Wallet Address</label
                   >
                   <input
                     id="address"
                     v-model.trim="address"
-                    class="bg-transparent w-full rounded-[5px] text-[12px] placeholder:text-[#787878] flex-grow px-3 py-2 border-1 outline-none"
+                    class="bg-dark-charcoal w-full rounded-[5px] text-[12px] placeholder:text-[#787878] flex-grow px-3 py-2 border-1 outline-none"
                     placeholder="Enter wallet address"
                     :class="{
-                      'border-white': !error.value,
+                      'border-dark-charcoal': !error.value,
                       'border-[#ff4264]':
                         error.value && error.field === 'address',
                     }"
@@ -177,12 +198,12 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
                   class="text-[10px] text-[#ff4264]"
                   >{{ error.message }}</span
                 >
-                <span v-else class="text-[10px]">No spam. We promise</span>
               </div>
             </form>
-            <div class="mt-5 text-sm">
-              Have access?
-              <RouterLink :to="{ name: 'Login' }">Sign In</RouterLink>
+            <div v-if="false" class="mt-5 text-sm">
+              <RouterLink :to="{ name: 'Login' }"
+                >Have access? Sign In</RouterLink
+              >
             </div>
           </div>
           <div
