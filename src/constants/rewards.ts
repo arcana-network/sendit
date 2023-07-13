@@ -1,13 +1,11 @@
 import NavigationIcon from "@/assets/images/icons/navigation.svg";
-import PiggyBankIcon from "@/assets/images/icons/piggy-bank.svg";
 import UserAddIcon from "@/assets/images/icons/user-add.svg";
 // import UserVoiceIcon from "@/assets/images/icons/user-voice.svg";
-import WalletIcon from "@/assets/images/icons/wallet.svg";
 
 const EARN_XP = [
   {
     image: UserAddIcon,
-    name: "Earn 450 XP",
+    name: "Earn 50 XP",
     description:
       "Invite a friend and earn XP as soon as they log in to their wallet.",
     task: "Invite",
