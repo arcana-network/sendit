@@ -53,7 +53,7 @@ async function fetchTxHistory() {
 
 function getSocialId(socialId: string, verifier: string) {
   if (verifier === "twitter") {
-    return `@${socialId}`;
+    return `${socialId}`;
   }
   return socialId;
 }
