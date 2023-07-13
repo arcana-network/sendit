@@ -11,9 +11,32 @@ import useMetaMask from "@/use/metamask";
 import { isValidEmail } from "@/utils/validation";
 import { toUnicode } from "punycode";
 import useAuthStore from "@/stores/auth";
+import useUserStore from "@/stores/user";
+
+import {
+  EthereumClient,
+  w3mConnectors,
+  w3mProvider,
+} from "@web3modal/ethereum";
+import { Web3Modal } from "@web3modal/html";
+import { configureChains, createConfig, getAccount } from "@wagmi/core";
+import { arbitrum, mainnet, polygon } from "@wagmi/core/chains";
+
+const chains = [arbitrum, mainnet, polygon];
+const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
+
+const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
+const wagmiConfig = createConfig({
+  autoConnect: true,
+  connectors: w3mConnectors({ projectId, chains }),
+  publicClient,
+});
+const ethereumClient = new EthereumClient(wagmiConfig, chains);
+const web3modal = new Web3Modal({ projectId }, ethereumClient);
 
 const arcanaAuth = useArcanaAuth();
 const authStore = useAuthStore();
+const userStore = useUserStore();
 const route = useRoute();
 const loaderStore = useLoaderStore();
 const passwordlessEmailId = ref("");
@@ -90,6 +113,30 @@ async function onConnectToMetamask() {
   }
 }
 
+async function onConnectToWalletConnect() {
+  const accountDetails = getAccount();
+  const isConnected = accountDetails.isConnected;
+  if (!isConnected) {
+    web3modal.subscribeModal(async () => {
+      const accountDetails = getAccount();
+      if (accountDetails.isConnected) onLoginWalletConnected(accountDetails);
+    });
+    web3modal.openModal();
+  } else onLoginWalletConnected(accountDetails);
+}
+
+async function onLoginWalletConnected(accountDetails) {
+  authStore.provider = await accountDetails.connector?.getProvider();
+  authStore.setUserInfo({
+    address: accountDetails.address,
+    loginType: "null",
+    id: "null",
+  });
+  authStore.isLoggedIn = true;
+  authStore.loggedInWith = "walletconnect";
+  userStore.address = accountDetails.address;
+}
+
 onMounted(async () => {
   if (verifier) {
     await loginAutomatically(
@@ -141,19 +188,41 @@ onMounted(async () => {
             </section>
             <section class="space-y-3 w-full flex flex-col items-start">
               <span class="text-xs text-philippine-gray">Connect Wallet</span>
-              <div class="flex flex-col space-y-2 w-full">
+              <div class="flex flex-col w-full">
                 <button
-                  v-if="isMetamaskInstalled()"
                   class="btn btn-login flex w-full justify-center items-center space-x-2"
+                  :class="{ 'opacity-50': !isMetamaskInstalled() }"
                   @click="onConnectToMetamask"
+                  :disabled="!isMetamaskInstalled()"
                 >
                   <img
                     src="@/assets/images/icons/metamask-fox.svg"
                     alt="metamask"
                     class="w-4"
                   />
-                  <span class="text-sm font-semibold text-white">
+                  <span
+                    class="text-sm font-semibold text-white"
+                    v-if="isMetamaskInstalled()"
+                  >
                     Metamask
+                  </span>
+                  <p v-else class="text-sm text-left text-vivid-vermilion">
+                    Install Metamask extension
+                  </p>
+                </button>
+              </div>
+              <div class="flex flex-col space-y-2 w-full">
+                <button
+                  class="btn btn-login flex w-full justify-center items-center space-x-2"
+                  @click="onConnectToWalletConnect"
+                >
+                  <img
+                    src="@/assets/images/icons/wallet-connect.svg"
+                    alt="metamask"
+                    class="w-4"
+                  />
+                  <span class="text-sm font-semibold text-white">
+                    Wallet Connect
                   </span>
                 </button>
               </div>
