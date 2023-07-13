@@ -42,10 +42,24 @@ const passwordlessEmailId = ref("");
 const toast = useToast();
 
 const query = route.query;
-const verifier = query.verifier;
-const verifierId = query.verifierId;
+const verifier = query.verifier as string;
+const verifierId = query.verifierId as string;
+
+if (verifier === "passwordless" && verifierId) {
+  passwordlessEmailId.value = verifierId;
+}
+
 const isWhitelistedLogin = computed(() => {
   return route.query.user !== undefined;
+});
+
+const socialLoginsFiltered = computed(() => {
+  if (verifier && verifierId) {
+    return socialLogins.filter((login) => {
+      return login.value === verifier;
+    });
+  }
+  return socialLogins;
 });
 
 const isValidPasswordlessEmail = computed(() => {
@@ -81,25 +95,25 @@ async function passwordlessLogin() {
   }
 }
 
-async function loginAutomatically(verifier: string, verifierId: string) {
-  loaderStore.showLoader("Logging in...");
-  try {
-    const authInstance = arcanaAuth.getAuthInstance();
-    if (verifier === "passwordless") {
-      loaderStore.showLoader(
-        `Click on the verification mail sent to ${verifierId}...`
-      );
-      await authInstance.loginWithLink(verifierId);
-    } else {
-      await authInstance.loginWithSocial(verifier);
-    }
-    await authInstance.isLoggedIn();
-  } catch (error) {
-    console.error({ error });
-  } finally {
-    loaderStore.hideLoader();
-  }
-}
+// async function loginAutomatically(verifier: string, verifierId: string) {
+//   loaderStore.showLoader("Logging in...");
+//   try {
+//     const authInstance = arcanaAuth.getAuthInstance();
+//     if (verifier === "passwordless") {
+//       loaderStore.showLoader(
+//         `Click on the verification mail sent to ${verifierId}...`
+//       );
+//       await authInstance.loginWithLink(verifierId);
+//     } else {
+//       await authInstance.loginWithSocial(verifier);
+//     }
+//     await authInstance.isLoggedIn();
+//   } catch (error) {
+//     console.error({ error });
+//   } finally {
+//     loaderStore.hideLoader();
+//   }
+// }
 
 async function onConnectToWalletConnect() {
   const accountDetails = getAccount();
@@ -124,15 +138,6 @@ async function onLoginWalletConnected(accountDetails) {
   authStore.loggedInWith = "walletconnect";
   userStore.address = accountDetails.address;
 }
-
-onMounted(async () => {
-  if (verifier) {
-    await loginAutomatically(
-      verifier as unknown as string,
-      verifierId as string
-    );
-  }
-});
 </script>
 
 <template>
@@ -151,16 +156,28 @@ onMounted(async () => {
                 Welcome to SendIt
               </h1>
               <p
+                v-if="verifier && verifierId"
+                class="text-xs lg:text-base text-philippine-gray max-w-[280px] md:text-center md:mx-auto"
+              >
+                Sign-in using the below method to get started
+              </p>
+              <p
+                v-else
                 class="text-xs lg:text-base text-philippine-gray max-w-[280px] md:text-center md:mx-auto"
               >
                 Sign-in using any of these methods to get started
               </p>
             </header>
-            <section class="space-y-3 w-full flex flex-col items-start">
-              <span class="text-xs text-philippine-gray">Social Login</span>
+            <section
+              v-if="!verifier || verifier !== 'passwordless'"
+              class="space-y-3 w-full flex flex-col items-start"
+            >
+              <span v-if="!verifier" class="text-xs text-philippine-gray"
+                >Social Login</span
+              >
               <div
                 class="flex flex-col space-y-2 w-full"
-                v-for="login in socialLogins"
+                v-for="login in socialLoginsFiltered"
                 :key="login.value"
               >
                 <button
@@ -176,7 +193,7 @@ onMounted(async () => {
             </section>
             <section
               class="space-y-3 w-full flex flex-col items-start"
-              v-if="isWhitelistedLogin"
+              v-if="isWhitelistedLogin && !verifier && !verifierId"
             >
               <span class="text-xs text-philippine-gray">Connect Wallet</span>
               <div class="flex flex-col space-y-2 w-full">
@@ -195,7 +212,10 @@ onMounted(async () => {
                 </button>
               </div>
             </section>
-            <section class="space-y-3 w-full flex flex-col items-start">
+            <section
+              v-if="!verifier || verifier === 'passwordless'"
+              class="space-y-3 w-full flex flex-col items-start"
+            >
               <span class="text-xs text-philippine-gray">Email ID</span>
               <form
                 class="flex justify-center items-center w-full bg-dark-charcoal px-2.5 rounded-md"
