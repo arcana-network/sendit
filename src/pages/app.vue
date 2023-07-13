@@ -72,7 +72,7 @@ async function getUserInfo() {
       id: "null",
     });
     userStore.address = data.accounts[0];
-  } else {
+  } else if (authStore.loggedInWith === "") {
     authStore.provider = auth.getProvider();
     const userInfo = await auth.getUser();
     authStore.setUserInfo(userInfo);
@@ -108,7 +108,10 @@ watch(
     if (!newValue) {
       router.push({ name: "Login" });
     } else if (route.name === "Login") {
-      if (authStore.loggedInWith === "metamask") {
+      if (
+        authStore.loggedInWith === "metamask" ||
+        authStore.loggedInWith === "walletconnect"
+      ) {
         await onWalletConnect();
       }
       loaderStore.hideLoader();
@@ -124,7 +127,10 @@ const showFullScreenLoader = computed(() => {
 });
 
 async function handleNoAccessBack() {
-  if (authStore.loggedInWith !== "metamask") {
+  if (
+    authStore.loggedInWith !== "metamask" &&
+    authStore.loggedInWith !== "walletconnect"
+  ) {
     await auth.getAuthInstance().logout();
   } else {
     onWalletDisconnect();
