@@ -88,7 +88,7 @@ async function onWalletConnect() {
   rewardsStore.fetchRewards(userStore.address);
   userStore.fetchUserPointsAndRank();
   notificationStore.getNotifications();
-  if (authStore.loggedInWith !== "metamask") {
+  if (authStore.loggedInWith !== "walletconnect") {
     authStore.provider.on("disconnect", onWalletDisconnect);
   }
   loaderStore.hideLoader();
