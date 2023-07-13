@@ -7,7 +7,6 @@ import AppHeader from "@/components/layout/AppHeader.vue";
 import LandingDescription from "@/components/LandingDescription.vue";
 import { socialLogins } from "@/constants/logins";
 import { useToast } from "vue-toastification";
-import useMetaMask from "@/use/metamask";
 import { isValidEmail } from "@/utils/validation";
 import { toUnicode } from "punycode";
 import useAuthStore from "@/stores/auth";
@@ -41,7 +40,6 @@ const route = useRoute();
 const loaderStore = useLoaderStore();
 const passwordlessEmailId = ref("");
 const toast = useToast();
-const { isMetamaskInstalled, connectMetamask } = useMetaMask();
 
 const query = route.query;
 const verifier = query.verifier;
@@ -95,19 +93,6 @@ async function loginAutomatically(verifier: string, verifierId: string) {
     await authInstance.isLoggedIn();
   } catch (error) {
     console.error({ error });
-  } finally {
-    loaderStore.hideLoader();
-  }
-}
-
-async function onConnectToMetamask() {
-  try {
-    loaderStore.showLoader("Logging in...");
-    await connectMetamask();
-    authStore.isLoggedIn = true;
-    authStore.loggedInWith = "metamask";
-  } catch (error: any) {
-    toast.error(error.message);
   } finally {
     loaderStore.hideLoader();
   }
@@ -188,29 +173,6 @@ onMounted(async () => {
             </section>
             <section class="space-y-3 w-full flex flex-col items-start">
               <span class="text-xs text-philippine-gray">Connect Wallet</span>
-              <div class="flex flex-col w-full">
-                <button
-                  class="btn btn-login flex w-full justify-center items-center space-x-2"
-                  :class="{ 'opacity-50': !isMetamaskInstalled() }"
-                  @click="onConnectToMetamask"
-                  :disabled="!isMetamaskInstalled()"
-                >
-                  <img
-                    src="@/assets/images/icons/metamask-fox.svg"
-                    alt="metamask"
-                    class="w-4"
-                  />
-                  <span
-                    class="text-sm font-semibold text-white"
-                    v-if="isMetamaskInstalled()"
-                  >
-                    Metamask
-                  </span>
-                  <p v-else class="text-sm text-left text-vivid-vermilion">
-                    Install Metamask extension
-                  </p>
-                </button>
-              </div>
               <div class="flex flex-col space-y-2 w-full">
                 <button
                   class="btn btn-login flex w-full justify-center items-center space-x-2"
