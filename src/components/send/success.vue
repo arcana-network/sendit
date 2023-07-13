@@ -54,9 +54,7 @@ function handleMail() {
         class="p-4 bg-chinese-black w-full rounded-md cursor-pointer break-all"
         @click.stop="handleLinkCopy"
       >
-        https://sendit.arcana.network/?{{
-          props.shareDetails.shareLink.split("?")[1]
-        }}
+        {{ props.shareDetails.shareLink }}
       </div>
       <div class="flex flex-col space-y-3 w-full">
         <button
