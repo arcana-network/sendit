@@ -55,6 +55,9 @@ async function socialLogin(type: string) {
   try {
     loaderStore.showLoader("Logging in...");
     await arcanaAuth.getAuthInstance().loginWithSocial(type);
+    authStore.provider = arcanaAuth.getProvider();
+    authStore.isLoggedIn = true;
+    authStore.loggedInWith = "";
   } catch (e: any) {
     toast.error(e);
   } finally {
@@ -70,6 +73,9 @@ async function passwordlessLogin() {
     await arcanaAuth
       .getAuthInstance()
       .loginWithLink(normaliseEmail(passwordlessEmailId.value));
+    authStore.provider = arcanaAuth.getProvider();
+    authStore.isLoggedIn = true;
+    authStore.loggedInWith = "";
   } catch (e: any) {
     toast.error(e);
   } finally {

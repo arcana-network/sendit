@@ -57,6 +57,18 @@ const notificationsContent = {
     path: "History",
     shoutout: false,
   }),
+  16: ({ points }) => ({
+    title: "Shoutout Verified",
+    body: `Congratulations on making a verified shoutout! You have earned ${points} XP`,
+    path: "",
+    shoutout: false,
+  }),
+  17: ({ points }) => ({
+    title: "First Transaction",
+    body: `Congratulations on completing your first transaction! You have earned ${points} XP`,
+    path: "",
+    shoutout: false,
+  }),
   256: ({ from, value, points }) => ({
     title: `Received ${value} from ${from}`,
     body: `You have received ${value} from ${from}. Give a shoutout on Twitter to earn ${points} XP.`,
