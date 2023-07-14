@@ -127,14 +127,14 @@ function shareTweet(record) {
                 {{ record.amount.value }} {{ record.amount.currency }}
               </div>
               <div
-                class="leaderboard-table-row-item ellipsis"
+                class="leaderboard-table-row-item ellipsis cursor-pointer"
                 :title="record.socialId"
                 @click.stop="copy(record.socialId, 'Social ID copied')"
               >
                 {{ getSocialId(record.socialId, record.verifier) }}
               </div>
               <div
-                class="leaderboard-table-row-item ellipsis"
+                class="leaderboard-table-row-item ellipsis cursor-pointer"
                 :title="record.walletAddress"
                 @click.stop="
                   copy(record.walletAddress, 'Wallet address copied')
@@ -143,7 +143,7 @@ function shareTweet(record) {
                 {{ record.walletAddress }}
               </div>
               <div
-                class="leaderboard-table-row-item ellipsis"
+                class="leaderboard-table-row-item ellipsis cursor-pointer"
                 :title="record.link"
                 @click.stop="copy(record.link, 'SendIt link copied')"
               >
@@ -160,7 +160,7 @@ function shareTweet(record) {
               <div v-else class="leaderboard-table-row-item">-</div>
               <div class="leaderboard-table-row-item">
                 <button
-                  class="underline"
+                  class="underline cursor-pointer"
                   v-if="!record.isSharedOnTwitter"
                   @click.stop="shareTweet(record)"
                 >
@@ -199,9 +199,11 @@ function shareTweet(record) {
                 <span class="text-philippine-gray"
                   >{{ record.txStatus === "sent" ? "To" : "From" }}:</span
                 >&nbsp;
-                <span @click.stop="copy(record.socialId, 'Social ID copied')">{{
-                  record.socialId
-                }}</span>
+                <span
+                  @click.stop="copy(record.socialId, 'Social ID copied')"
+                  class="cursor-pointer"
+                  >{{ record.socialId }}</span
+                >
               </div>
               <div class="text-xs ellipsis">
                 <span class="text-philippine-gray">Wallet Address:</span>&nbsp;
@@ -210,14 +212,17 @@ function shareTweet(record) {
                   @click.stop="
                     copy(record.walletAddress, 'Wallet address copied')
                   "
+                  class="cursor-pointer"
                   >{{ record.walletAddress }}</span
                 >
               </div>
               <div class="text-xs ellipsis">
                 <span class="text-philippine-gray">SendIt Link:</span>&nbsp;
-                <span @click.stop="copy(record.link, 'SendIt link copied')">{{
-                  record.link
-                }}</span>
+                <span
+                  @click.stop="copy(record.link, 'SendIt link copied')"
+                  class="cursor-pointer"
+                  >{{ record.link }}</span
+                >
               </div>
               <div class="text-xs ellipsis">
                 <span class="text-philippine-gray">{{ record.date }}</span>
@@ -228,7 +233,7 @@ function shareTweet(record) {
             </div>
             <button
               v-if="!record.isSharedOnTwitter"
-              class="flex flex-col p-3 rounded-[5px] bg-[#1a1a1a] justify-center items-center ml-auto"
+              class="flex flex-col p-3 rounded-[5px] bg-[#1a1a1a] justify-center items-center ml-auto cursor-pointer"
               @click.stop="shareTweet(record)"
             >
               <img src="@/assets/images/icons/twitter-blue.svg" class="my-3" />
