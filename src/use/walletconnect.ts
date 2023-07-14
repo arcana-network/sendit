@@ -5,10 +5,10 @@ import {
 } from "@web3modal/ethereum";
 import { Web3Modal } from "@web3modal/html";
 import { configureChains, createConfig, getAccount } from "@wagmi/core";
-import { arbitrum, mainnet, polygon } from "@wagmi/core/chains";
+import { mainnet, polygon, sepolia, polygonMumbai } from "@wagmi/core/chains";
 
 function useWalletConnect() {
-  const chains = [arbitrum, mainnet, polygon];
+  const chains = [mainnet, polygon, sepolia, polygonMumbai];
   const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 
   const { publicClient } = configureChains(chains, [
