@@ -55,7 +55,7 @@ async function handleEmailInvite() {
       </button>
       <span class="font-[500]">Invite</span>
       <form class="flex flex-col gap-5" @submit.prevent="handleEmailInvite">
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1 space-y-1">
           <label class="text-xs font-[500]" for="email-invite"
             >Add Email ID</label
           >
@@ -63,7 +63,7 @@ async function handleEmailInvite() {
             type="text"
             id="email-invite"
             placeholder="Email, comma separated"
-            class="text-sm placeholder:text-philippine-gray bg-[#313131] rounded-[5px] p-2"
+            class="text-sm placeholder:text-philippine-gray bg-[#313131] rounded-[5px] p-2 input"
             v-model="email"
           />
         </div>
