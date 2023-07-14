@@ -132,7 +132,7 @@ async function onLoginWalletConnected(accountDetails) {
   authStore.setUserInfo({
     address: accountDetails.address,
     loginType: "null",
-    id: "null",
+    id: accountDetails.address,
   });
   authStore.isLoggedIn = true;
   authStore.loggedInWith = "walletconnect";

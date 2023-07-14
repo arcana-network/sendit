@@ -1,17 +1,39 @@
 import NavigationIcon from "@/assets/images/icons/navigation.svg";
-import PiggyBankIcon from "@/assets/images/icons/piggy-bank.svg";
 import UserAddIcon from "@/assets/images/icons/user-add.svg";
 // import UserVoiceIcon from "@/assets/images/icons/user-voice.svg";
-import WalletIcon from "@/assets/images/icons/wallet.svg";
 
 const EARN_XP = [
   {
     image: UserAddIcon,
-    name: "Earn 40 XP",
+    name: "Earn 50 XP",
     description:
       "Invite a friend and earn XP as soon as they log in to their wallet.",
     task: "Invite",
     xp: 50,
+  },
+  {
+    image: UserAddIcon,
+    name: "Earn 500 XP",
+    description:
+      "Invite 10 friends and earn XP once all of them log in to their wallet.",
+    task: "Invite",
+    xp: 500,
+  },
+  {
+    image: UserAddIcon,
+    name: "Earn 5000 XP",
+    description:
+      "First 100 people to reach 25 claimed invites (invitee should have logged in) earn XP.",
+    task: "Invite",
+    xp: 5000,
+  },
+  {
+    image: UserAddIcon,
+    name: "Earn 10000 XP",
+    description:
+      "First 100 people to reach 50 claimed invites (invitee should have logged in) earn XP.",
+    task: "Invite",
+    xp: 10000,
   },
   // {
   //   image: UserVoiceIcon,
@@ -25,66 +47,89 @@ const EARN_XP = [
   // },
   {
     image: NavigationIcon,
+    name: "Earn 150 XP",
+    description: "Send crypto for the first time and earn XP",
+    task: "Transact",
+    xp: 150,
+  },
+  {
+    image: NavigationIcon,
+    name: "Earn 25 XP",
+    description: "Send crypto to a unique address and earn XP",
+    task: "Transact",
+    xp: 25,
+  },
+  {
+    image: NavigationIcon,
+    name: "Earn 100 XP",
+    description: "Complete 10 transactions on SendIt and earn XP",
+    task: "Transact",
+    xp: 100,
+  },
+  {
+    image: NavigationIcon,
+    name: "Earn 250 XP",
+    description: "Complete 25 transactions on SendIt and earn XP",
+    task: "Transact",
+    xp: 250,
+  },
+  {
+    image: NavigationIcon,
+    name: "Earn 500 XP",
+    description: "Complete 50 transactions on SendIt and earn XP",
+    task: "Transact",
+    xp: 500,
+  },
+  {
+    image: NavigationIcon,
+    name: "Earn 250 XP",
+    description:
+      "Earn 100th transaction performed through SendIt in a day earns XP",
+    task: "Transact",
+    xp: 250,
+  },
+  {
+    image: NavigationIcon,
+    name: "Earn 100 XP",
+    description:
+      "Shout out on Twitter after a SendIt transaction for the first time and earn XP",
+    task: "Transact",
+    xp: 100,
+  },
+  {
+    image: NavigationIcon,
+    name: "Earn 25 XP",
+    description: "Shoutout a SendIt send transaction on twitter & earn XP ",
+    task: "Transact",
+    xp: 25,
+  },
+  {
+    image: NavigationIcon,
+    name: "Earn 25 XP",
+    description: "Shoutout a SendIt receive transaction on twitter & earn XP ",
+    task: "Transact",
+    xp: 25,
+  },
+  {
+    image: NavigationIcon,
+    name: "Earn 50 XP",
+    description: "Top 500 members on the SendIt weekly leaderboard earns XP",
+    task: "Transact",
+    xp: 50,
+  },
+  {
+    image: NavigationIcon,
     name: "Earn 30 XP",
-    description: "Send crypto & earn by making a new transaction.",
+    description: "Top 1000 members on the SendIt weekly leaderboard earns XP",
     task: "Transact",
     xp: 30,
   },
   {
     image: NavigationIcon,
-    name: "Earn 30 XP",
-    description: "Earn with every 10 successful transactions (per user).",
+    name: "Earn 20 XP",
+    description: "Top 3000 members on the SendIt weekly leaderboard earns XP",
     task: "Transact",
-    xp: 30,
-  },
-  {
-    image: NavigationIcon,
-    name: "Earn 10 XP",
-    description: "Earn with every 5 transactions.",
-    task: "Transact",
-    xp: 10,
-  },
-  {
-    image: NavigationIcon,
-    name: "Earn 50 XP",
-    description: "Send to 5 people to earn points.",
-    task: "Transact",
-    xp: 50,
-  },
-  {
-    image: UserAddIcon,
-    name: "Earn 30 XP",
-    description: "Earn with every 10 successful invites.",
-    task: "Invite",
-    xp: 30,
-  },
-  {
-    image: NavigationIcon,
-    name: "Earn 30 XP",
-    description: "Send 100$ totally (per user).",
-    task: "Transact",
-    xp: 30,
-  },
-  {
-    image: PiggyBankIcon,
-    name: "Earn 50 XP",
-    description: "1,000,000 USD crossed in volume.",
-    task: "Transact",
-    xp: 50,
-  },
-  {
-    image: NavigationIcon,
-    name: "Earn 50 XP",
-    description: "10,000th txn (overall).",
-    task: "Transact",
-    xp: 50,
-  },
-  {
-    image: WalletIcon,
-    name: "Earn 50 XP",
-    description: "100,000th wallet (overall).",
-    task: "Transact",
-    xp: 50,
+    xp: 20,
   },
 ];
 
