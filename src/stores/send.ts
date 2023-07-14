@@ -45,7 +45,7 @@ const useSendStore = defineStore("send", {
     },
     resetUserInput() {
       this.userInput = {
-        medium: "",
+        medium: "mail",
         recipientId: "",
         chain: "",
         token: "",
