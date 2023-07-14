@@ -11,7 +11,7 @@
       address or Twitter handle. Now everyone can be a crypto owner!
     </p>
     <div class="my-5 flex justify-center items-center">
-      <img src="@/assets/gifs/send-flow.gif" class="w-full max-w-[480px]" />
+      <img src="@/assets/gifs/send-flow.gif" class="w-full max-w-[720px]" />
     </div>
   </section>
 </template>
