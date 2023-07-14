@@ -74,7 +74,7 @@ const notificationsContent = {
   }),
   256: ({ from, wei }) => {
     const weiInEth = formatEther(hexlify(wei));
-    const fromAddress = hexlify(from).toString().slice(0, 6);
+    const fromAddress = hexlify(from).toString();
     const truncatedFromAddress = truncateAddress(fromAddress);
     return {
       title: `Received ${weiInEth} from ${truncatedFromAddress}`,
