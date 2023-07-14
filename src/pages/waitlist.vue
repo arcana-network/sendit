@@ -109,7 +109,7 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
   <div class="min-h-screen flex flex-col">
     <AppHeader hide-nav hide-user-data />
     <div
-      class="flex h-full container flex-grow max-lg:flex-col max-lg:gap-12 p-4 max-lg:py-12"
+      class="flex h-full justify-center items-center container flex-grow max-lg:flex-col max-lg:gap-12 p-4 max-lg:py-12"
     >
       <div class="flex-grow flex flex-col w-full lg:w-1/2">
         <main class="flex-grow flex justify-center items-center p-4">
