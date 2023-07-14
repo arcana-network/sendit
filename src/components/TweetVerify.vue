@@ -28,7 +28,6 @@ async function handleTweetVerify() {
   if (tweetUrl.value) {
     loaderStore.showLoader("Verifying tweet...");
     try {
-      console.log(props.hash, tweetUrl.value);
       const message = {
         tx_hash: Buffer.from(getBytes(props.hash)),
         url: tweetUrl.value,
@@ -37,7 +36,6 @@ async function handleTweetVerify() {
         SOCKET_IDS.VERIFY_TWEET,
         message
       );
-      console.log(res);
       isTweetVerified.value = true;
       userStore.fetchUserPointsAndRank();
     } catch (e) {
