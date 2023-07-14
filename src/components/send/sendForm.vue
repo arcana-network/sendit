@@ -15,7 +15,7 @@ import useSocketConnection from "@/use/socketConnection";
 import { useToast } from "vue-toastification";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import { isValidEmail } from "@/utils/validation";
-import { toUnicode } from "punycode";
+import { normaliseEmail, normaliseTwitterHandle } from "@/utils/normalise";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -62,10 +62,13 @@ async function fetchAssets(chainId) {
   try {
     const walletAddress = authStore.walletAddress;
     const chain = getSelectedChainInfo(chainId);
-    //@ts-ignore
-    const { result } = await getAccountBalance(walletAddress, chain.blockchain);
+    const { result } = await getAccountBalance(walletAddress, [
+      //@ts-ignore
+      chain.blockchain,
+    ]);
     chainAssets.value = result.assets;
   } catch (error) {
+    toast.error(error as string);
     console.error(error);
   } finally {
     loadStore.hideLoader();
@@ -78,8 +81,8 @@ function messageArcana(
   fromEmail: string,
   toEmail: string,
   chainId: number,
-  from_verifier: "passwordless" | "twitter",
-  to_verifier: "passwordless" | "twitter"
+  from_verifier: "passwordless" | "twitter" | "null",
+  to_verifier: "passwordless" | "twitter" | "null"
 ) {
   const message = {
     hash: Buffer.from(getBytes(hash)),
@@ -91,6 +94,16 @@ function messageArcana(
     to_verifier,
   };
   return socketConnection.sendMessage(SOCKET_IDS.SEND_TX, message);
+}
+
+function getVerifier(verifier: string) {
+  if (verifier === "twitter") {
+    return "twitter";
+  }
+  if (verifier === "null") {
+    return "null";
+  }
+  return "passwordless";
 }
 
 async function proceed() {
@@ -115,7 +128,11 @@ async function proceed() {
     try {
       const normalisedEmail =
         userInput.value.medium === "mail"
-          ? toUnicode(userInput.value.recipientId.toLowerCase())
+          ? normaliseEmail(userInput.value.recipientId)
+          : null;
+      const normalisedTwitterId =
+        userInput.value.medium === "twitter"
+          ? normaliseTwitterHandle(userInput.value.recipientId)
           : null;
       const recipientId =
         twitterId.value || normalisedEmail || userInput.value.recipientId;
@@ -142,8 +159,7 @@ async function proceed() {
       const toEmail = recipientId;
       //@ts-ignore
       const fromEmail = authStore.userInfo.email || authStore.userInfo.id;
-      const fromVerifier =
-        authStore.userInfo.loginType === "twitter" ? "twitter" : "passwordless";
+      const fromVerifier = getVerifier(authStore.userInfo.loginType);
       const toVerifier =
         userInput.value.medium === "twitter" ? "twitter" : "passwordless";
       //@ts-ignore
@@ -159,7 +175,8 @@ async function proceed() {
       toast.success("Transaction Successful");
       sendRes.verifier_id = recipientId;
       sendRes.hash = hash;
-      sendRes.verifier_human = normalisedEmail || userInput.value.recipientId;
+      sendRes.verifier_human =
+        normalisedTwitterId || normalisedEmail || userInput.value.recipientId;
       emits("transaction-successful", sendRes);
     } catch (error: any) {
       console.error(error);

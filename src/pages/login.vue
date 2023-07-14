@@ -8,11 +8,11 @@ import LandingDescription from "@/components/LandingDescription.vue";
 import { socialLogins } from "@/constants/logins";
 import { useToast } from "vue-toastification";
 import { isValidEmail } from "@/utils/validation";
-import { toUnicode } from "punycode";
 import useAuthStore from "@/stores/auth";
 import useUserStore from "@/stores/user";
 import useWalletConnect from "@/use/walletconnect";
 import type { GetAccountResult, PublicClient } from "@wagmi/core";
+import { normaliseEmail } from "@/utils/normalise";
 
 const arcanaAuth = useArcanaAuth();
 const authStore = useAuthStore();
@@ -69,7 +69,7 @@ async function passwordlessLogin() {
     );
     await arcanaAuth
       .getAuthInstance()
-      .loginWithLink(toUnicode(passwordlessEmailId.value.toLowerCase()));
+      .loginWithLink(normaliseEmail(passwordlessEmailId.value));
   } catch (e: any) {
     toast.error(e);
   } finally {
