@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import useRewardsStore from "@/stores/rewards";
-import useUserStore from "@/stores/user";
 
 const rewardsStore = useRewardsStore();
-const userStore = useUserStore();
-
-rewardsStore.fetchRewards(userStore.address);
 </script>
 
 <template>

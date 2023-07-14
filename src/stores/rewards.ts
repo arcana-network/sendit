@@ -18,6 +18,12 @@ const useRewardsStore = defineStore("rewards", {
       if (rewards) {
         this.rewards = rewards;
       }
+      setInterval(async () => {
+        const rewards = await fetchRewardsFromAnkr(walletAddress);
+        if (rewards) {
+          this.rewards = rewards;
+        }
+      }, 3000);
     },
   },
 });
