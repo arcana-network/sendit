@@ -13,6 +13,7 @@ import useNotificationStore from "@/stores/notification";
 import useMetamask from "@/use/metamask";
 import NotWhiteListed from "@/components/not-whitelisted.vue";
 import useSendStore from "@/stores/send";
+import useWalletConnect from "@/use/walletconnect";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -27,6 +28,7 @@ const toast = useToast();
 const isNotWhitelisted = ref(false);
 const sendStore = useSendStore();
 const { connectMetamask } = useMetamask();
+const walletConnect = useWalletConnect();
 
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
@@ -87,14 +89,6 @@ async function onWalletConnect() {
   authStore.setLoginStatus(true);
   await getUserInfo();
   await initSocketConnect();
-  await sendStore.fetchSupportedChains();
-  rewardsStore.fetchRewards(userStore.address);
-  userStore.fetchUserPointsAndRank();
-  notificationStore.getNotifications();
-  if (authStore.loggedInWith !== "walletconnect") {
-    authStore.provider.on("disconnect", onWalletDisconnect);
-  }
-  loaderStore.hideLoader();
 }
 
 async function onWalletDisconnect() {
@@ -104,6 +98,22 @@ async function onWalletDisconnect() {
 }
 
 onMounted(initAuth);
+
+watch(
+  () => authStore.isSocketLoggedIn,
+  async (newValue) => {
+    if (newValue) {
+      await sendStore.fetchSupportedChains();
+      rewardsStore.fetchRewards(userStore.address);
+      userStore.fetchUserPointsAndRank();
+      notificationStore.getNotifications();
+      if (authStore.loggedInWith !== "walletconnect") {
+        authStore.provider.on("disconnect", onWalletDisconnect);
+      }
+      loaderStore.hideLoader();
+    }
+  }
+);
 
 watch(
   () => authStore.isLoggedIn,
@@ -136,6 +146,7 @@ async function handleNoAccessBack() {
   ) {
     await auth.getAuthInstance().logout();
   } else {
+    walletConnect.disconnect();
     onWalletDisconnect();
   }
   isNotWhitelisted.value = false;
