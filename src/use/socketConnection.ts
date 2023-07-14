@@ -1,5 +1,5 @@
 import { BrowserProvider, getBytes } from "ethers";
-import type { JsonRpcSigner } from "ethers";
+import { JsonRpcSigner, hashMessage } from "ethers";
 import { pack as msgpack, unpack as msgunpack } from "msgpackr";
 import { Mutex } from "async-mutex";
 import type { MutexInterface } from "async-mutex";
@@ -124,7 +124,16 @@ function useSocketConnection() {
     switch (state) {
       case ConnectionState.NOT_CONNECTED: {
         try {
-          const sig = await ethersSigner.signMessage(data.message);
+          const hash = hashMessage(data.message);
+          const existingSignature = localStorage.getItem(hash);
+          let sig: string;
+          if (existingSignature) {
+            sig = existingSignature;
+          } else {
+            localStorage.clear();
+            sig = await ethersSigner.signMessage(data.message);
+            localStorage.setItem(hash, sig);
+          }
           socket.send(
             msgpack({
               sig: getBytes(sig),
