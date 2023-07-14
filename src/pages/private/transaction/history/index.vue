@@ -10,6 +10,7 @@ import { hexlify, formatEther } from "ethers";
 import { nativeUnitMapping } from "@/constants/unitMapping.ts";
 import dayjs from "dayjs";
 import useUserStore from "@/stores/user";
+import { normaliseTwitterHandle } from "@/utils/normalise";
 
 const socket = useSocketConnection();
 
@@ -53,7 +54,7 @@ async function fetchTxHistory() {
 
 function getSocialId(socialId: string, verifier: string) {
   if (verifier === "twitter") {
-    return `@${socialId}`;
+    return normaliseTwitterHandle(socialId);
   }
   return socialId;
 }
@@ -61,7 +62,7 @@ function getSocialId(socialId: string, verifier: string) {
 function shareTweet(record) {
   const tweet =
     record.txStatus === "sent"
-      ? `Just sent a crypto transfer on #SendIt from ${record.socialId}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `
+      ? `Just sent a crypto transfer on #SendIt to ${record.socialId}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `
       : `Just received a crypto transfer on #SendIt from ${record.socialId}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `;
   composeAndSendTweet(tweet);
   tweetVerificationHash.value = record.txHash;

@@ -1,5 +1,5 @@
 import { BrowserProvider, getBytes } from "ethers";
-import type { JsonRpcSigner } from "ethers";
+import { JsonRpcSigner, hashMessage } from "ethers";
 import { pack as msgpack, unpack as msgunpack } from "msgpackr";
 import { Mutex } from "async-mutex";
 import type { MutexInterface } from "async-mutex";
@@ -10,6 +10,7 @@ const VITE_API_URL = import.meta.env.VITE_API_URL;
 const SOCKET_CLOSED_ON_LOGOUT = 3000;
 const SOCKET_CLOSED_ON_NO_ACCESS = 3001;
 const ACTION_REJECTED = "ACTION_REJECTED";
+const SENDIT_LAST_HASH_KEY = "sendit-last-hash";
 
 enum ConnectionState {
   NOT_CONNECTED,
@@ -51,6 +52,9 @@ function useSocketConnection() {
     if (onLoginError) {
       loginErrorFunc = onLoginError;
     }
+    if (webSocketInterval) {
+      clearInterval(webSocketInterval);
+    }
     state = ConnectionState.NOT_CONNECTED;
     if (!initialRelease) initialRelease = await lock.acquire();
     try {
@@ -86,10 +90,6 @@ function useSocketConnection() {
         verifier_id: currentAccount.verifier_id,
       })
     );
-
-    webSocketInterval = setInterval(function () {
-      sendMessage(SOCKET_IDS.PING, { ping: true });
-    }, WS_TIMER);
   }
 
   async function sendMessage(id: number, data?: any) {
@@ -125,7 +125,22 @@ function useSocketConnection() {
     switch (state) {
       case ConnectionState.NOT_CONNECTED: {
         try {
-          const sig = await ethersSigner.signMessage(data.message);
+          const hash = hashMessage(data.message);
+          const existingPairStr = localStorage.getItem(SENDIT_LAST_HASH_KEY);
+          let sig: string;
+          const existingPair = existingPairStr
+            ? JSON.parse(existingPairStr)
+            : {};
+          if (existingPair.hash === hash) {
+            sig = existingPair.sig;
+          } else {
+            localStorage.removeItem(SENDIT_LAST_HASH_KEY);
+            sig = await ethersSigner.signMessage(data.message);
+            localStorage.setItem(
+              SENDIT_LAST_HASH_KEY,
+              JSON.stringify({ hash, sig })
+            );
+          }
           socket.send(
             msgpack({
               sig: getBytes(sig),
@@ -149,6 +164,9 @@ function useSocketConnection() {
           state = ConnectionState.AUTHORIZED;
           if (onSocketLogin) onSocketLogin();
           if (initialRelease) initialRelease();
+          webSocketInterval = setInterval(function () {
+            sendMessage(SOCKET_IDS.PING, { ping: true });
+          }, WS_TIMER);
         }
         break;
       case ConnectionState.AUTHORIZED:

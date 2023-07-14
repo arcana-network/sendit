@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { toRefs, watch, ref, computed, type Ref } from "vue";
+import {
+  toRefs,
+  watch,
+  ref,
+  computed,
+  type Ref,
+  onBeforeMount,
+  onBeforeUnmount,
+} from "vue";
 import sendVia from "@/constants/sendVia";
 import useSendStore from "@/stores/send";
 import useAuthStore from "@/stores/auth";
@@ -15,10 +23,22 @@ import useSocketConnection from "@/use/socketConnection";
 import { useToast } from "vue-toastification";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import { isValidEmail } from "@/utils/validation";
-import { toUnicode } from "punycode";
+import { normaliseEmail, normaliseTwitterHandle } from "@/utils/normalise";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
+let assetInterval: NodeJS.Timer;
+
+onBeforeMount(async () => {
+  await fetchAssets();
+  assetInterval = setInterval(() => {
+    fetchAssets();
+  }, 3000);
+});
+
+onBeforeUnmount(() => {
+  clearInterval(assetInterval);
+});
 
 const sendStore = useSendStore();
 const authStore = useAuthStore();
@@ -30,6 +50,8 @@ const socketConnection = useSocketConnection();
 const toast = useToast();
 const twitterId = ref("");
 const hasTwitterError = ref(false);
+const hasStartedTyping = ref(false);
+const allAssets: Ref<any[]> = ref([]);
 
 const { userInput, supportedChains } = toRefs(sendStore);
 
@@ -40,9 +62,15 @@ const isEmailValid = computed(() => {
   return true;
 });
 
+if (userInput.value.chain) {
+  getChainAssets(userInput.value.chain);
+}
+
 function getSelectedChainInfo(chainId) {
   //@ts-ignore
-  return supportedChains.value.find((chain) => chain.chain_id === chainId);
+  return supportedChains.value.find(
+    (chain) => Number(chain.chain_id) === Number(chainId)
+  );
 }
 
 function getSelectedAssets(tokenSymbol, tokenType) {
@@ -53,14 +81,28 @@ function getSelectedAssets(tokenSymbol, tokenType) {
   );
 }
 
-async function fetchAssets(chainId) {
-  loadStore.showLoader("Fetching tokens...");
+function getChainAssets(chainId) {
+  const chain = getSelectedChainInfo(chainId);
+  if (chain) {
+    chainAssets.value = allAssets.value.filter(
+      (asset) => asset.blockchain === chain.blockchain
+    );
+  }
+}
+
+async function fetchAssets() {
   try {
     const walletAddress = authStore.walletAddress;
-    const chain = getSelectedChainInfo(chainId);
-    //@ts-ignore
-    const { result } = await getAccountBalance(walletAddress, chain.blockchain);
-    chainAssets.value = result.assets;
+    const data = await getAccountBalance(walletAddress, [
+      "eth",
+      "polygon",
+      "polygon_mumbai",
+    ]);
+    if (data?.result?.assets?.length) {
+      allAssets.value = data?.result?.assets;
+    } else {
+      console.error("You don't own any tokens on this chain");
+    }
   } catch (error) {
     console.error(error);
   } finally {
@@ -74,8 +116,8 @@ function messageArcana(
   fromEmail: string,
   toEmail: string,
   chainId: number,
-  from_verifier: "passwordless" | "twitter",
-  to_verifier: "passwordless" | "twitter"
+  from_verifier: "passwordless" | "twitter" | "null",
+  to_verifier: "passwordless" | "twitter" | "null"
 ) {
   const message = {
     hash: Buffer.from(getBytes(hash)),
@@ -87,6 +129,16 @@ function messageArcana(
     to_verifier,
   };
   return socketConnection.sendMessage(SOCKET_IDS.SEND_TX, message);
+}
+
+function getVerifier(verifier: string) {
+  if (verifier === "twitter") {
+    return "twitter";
+  }
+  if (verifier === "null") {
+    return "null";
+  }
+  return "passwordless";
 }
 
 async function proceed() {
@@ -111,7 +163,11 @@ async function proceed() {
     try {
       const normalisedEmail =
         userInput.value.medium === "mail"
-          ? toUnicode(userInput.value.recipientId.toLowerCase())
+          ? normaliseEmail(userInput.value.recipientId)
+          : null;
+      const normalisedTwitterId =
+        userInput.value.medium === "twitter"
+          ? normaliseTwitterHandle(userInput.value.recipientId)
           : null;
       const recipientId =
         twitterId.value || normalisedEmail || userInput.value.recipientId;
@@ -123,6 +179,10 @@ async function proceed() {
       const chainId = userInput.value.chain;
       const [tokenSymbol, tokenType] = userInput.value.token.split("-");
       const asset = getSelectedAssets(tokenSymbol, tokenType);
+      loadStore.showLoader(
+        "Attempting transfer of tokens. Please wait...",
+        "Blockchain transactions may take some time to complete depending on the network state. Please wait until transaction is completed."
+      );
       const tx =
         tokenType === "NATIVE"
           ? await nativeTokenTransfer(senderPublicKey, arcanaProvider, amount)
@@ -133,13 +193,13 @@ async function proceed() {
               //@ts-ignore
               asset.contractAddress
             );
-      chainAssets.value = [];
+      toast.success("Transaction Successful");
+      loadStore.showLoader("Tokens transferred. Generating share link...");
       const { hash, to } = tx;
       const toEmail = recipientId;
       //@ts-ignore
       const fromEmail = authStore.userInfo.email || authStore.userInfo.id;
-      const fromVerifier =
-        authStore.userInfo.loginType === "twitter" ? "twitter" : "passwordless";
+      const fromVerifier = getVerifier(authStore.userInfo.loginType);
       const toVerifier =
         userInput.value.medium === "twitter" ? "twitter" : "passwordless";
       //@ts-ignore
@@ -152,10 +212,10 @@ async function proceed() {
         fromVerifier,
         toVerifier
       )) as any;
-      toast.success("Transaction Successful");
       sendRes.verifier_id = recipientId;
       sendRes.hash = hash;
-      sendRes.verifier_human = normalisedEmail || userInput.value.recipientId;
+      sendRes.verifier_human =
+        normalisedTwitterId || normalisedEmail || userInput.value.recipientId;
       emits("transaction-successful", sendRes);
     } catch (error: any) {
       console.error(error);
@@ -168,6 +228,7 @@ async function proceed() {
       }
     } finally {
       loadStore.hideLoader();
+      hasStartedTyping.value = false;
     }
   }
 }
@@ -194,15 +255,17 @@ watch(
       if (Number(chainId) !== Number(selectedChainId)) {
         try {
           await switchChain(selectedChainId);
-          fetchAssets(selectedChainId);
+          getChainAssets(selectedChainId);
         } catch (e) {
           console.error({ e });
           userInput.value.chain = oldChain;
           toast.error("Switching chain rejected by user");
         }
       } else {
-        fetchAssets(selectedChainId);
+        getChainAssets(selectedChainId);
       }
+    } else {
+      chainAssets.value = [];
     }
   }
 );
@@ -290,8 +353,16 @@ function handleMediumChange(medium) {
         <input
           class="input"
           v-model.trim="userInput.recipientId"
-          @input="hasTwitterError = false"
+          @input="
+            hasTwitterError = false;
+            hasStartedTyping = true;
+          "
           @blur="handleTwitterUsername"
+          :placeholder="
+            userInput.medium === 'twitter'
+              ? 'Enter twitter username'
+              : 'Enter email'
+          "
         />
         <div
           class="text-[#ff4264] text-[10px]"
@@ -299,10 +370,16 @@ function handleMediumChange(medium) {
         >
           Please enter the recipient's ID
         </div>
-        <div class="text-[#ff4264] text-[10px]" v-else-if="hasTwitterError">
+        <div
+          class="text-[#ff4264] text-[10px]"
+          v-else-if="hasStartedTyping && hasTwitterError"
+        >
           Invalid twitter username
         </div>
-        <div class="text-[#ff4264] text-[10px]" v-else-if="!isEmailValid">
+        <div
+          class="text-[#ff4264] text-[10px]"
+          v-else-if="hasStartedTyping && !isEmailValid"
+        >
           Invalid email
         </div>
       </div>

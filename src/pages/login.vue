@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import useArcanaAuth from "@/use/arcanaAuth";
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import useLoaderStore from "@/stores/loader";
 import AppHeader from "@/components/layout/AppHeader.vue";
@@ -8,30 +8,11 @@ import LandingDescription from "@/components/LandingDescription.vue";
 import { socialLogins } from "@/constants/logins";
 import { useToast } from "vue-toastification";
 import { isValidEmail } from "@/utils/validation";
-import { toUnicode } from "punycode";
 import useAuthStore from "@/stores/auth";
 import useUserStore from "@/stores/user";
-
-import {
-  EthereumClient,
-  w3mConnectors,
-  w3mProvider,
-} from "@web3modal/ethereum";
-import { Web3Modal } from "@web3modal/html";
-import { configureChains, createConfig, getAccount } from "@wagmi/core";
-import { arbitrum, mainnet, polygon } from "@wagmi/core/chains";
-
-const chains = [arbitrum, mainnet, polygon];
-const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
-
-const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors: w3mConnectors({ projectId, chains }),
-  publicClient,
-});
-const ethereumClient = new EthereumClient(wagmiConfig, chains);
-const web3modal = new Web3Modal({ projectId }, ethereumClient);
+import useWalletConnect from "@/use/walletconnect";
+import type { GetAccountResult, PublicClient } from "@wagmi/core";
+import { normaliseEmail } from "@/utils/normalise";
 
 const arcanaAuth = useArcanaAuth();
 const authStore = useAuthStore();
@@ -40,12 +21,27 @@ const route = useRoute();
 const loaderStore = useLoaderStore();
 const passwordlessEmailId = ref("");
 const toast = useToast();
+const walletConnect = useWalletConnect();
 
 const query = route.query;
-const verifier = query.verifier;
-const verifierId = query.verifierId;
+const verifier = query.verifier as string;
+const verifierId = query.verifierId as string;
+
+if (verifier === "passwordless" && verifierId) {
+  passwordlessEmailId.value = verifierId;
+}
+
 const isWhitelistedLogin = computed(() => {
   return route.query.user !== undefined;
+});
+
+const socialLoginsFiltered = computed(() => {
+  if (verifier && verifierId) {
+    return socialLogins.filter((login) => {
+      return login.value === verifier;
+    });
+  }
+  return socialLogins;
 });
 
 const isValidPasswordlessEmail = computed(() => {
@@ -73,7 +69,7 @@ async function passwordlessLogin() {
     );
     await arcanaAuth
       .getAuthInstance()
-      .loginWithLink(toUnicode(passwordlessEmailId.value.toLowerCase()));
+      .loginWithLink(normaliseEmail(passwordlessEmailId.value));
   } catch (e: any) {
     toast.error(e);
   } finally {
@@ -81,58 +77,51 @@ async function passwordlessLogin() {
   }
 }
 
-async function loginAutomatically(verifier: string, verifierId: string) {
-  loaderStore.showLoader("Logging in...");
-  try {
-    const authInstance = arcanaAuth.getAuthInstance();
-    if (verifier === "passwordless") {
-      loaderStore.showLoader(
-        `Click on the verification mail sent to ${verifierId}...`
-      );
-      await authInstance.loginWithLink(verifierId);
-    } else {
-      await authInstance.loginWithSocial(verifier);
-    }
-    await authInstance.isLoggedIn();
-  } catch (error) {
-    console.error({ error });
-  } finally {
-    loaderStore.hideLoader();
-  }
-}
+// async function loginAutomatically(verifier: string, verifierId: string) {
+//   loaderStore.showLoader("Logging in...");
+//   try {
+//     const authInstance = arcanaAuth.getAuthInstance();
+//     if (verifier === "passwordless") {
+//       loaderStore.showLoader(
+//         `Click on the verification mail sent to ${verifierId}...`
+//       );
+//       await authInstance.loginWithLink(verifierId);
+//     } else {
+//       await authInstance.loginWithSocial(verifier);
+//     }
+//     await authInstance.isLoggedIn();
+//   } catch (error) {
+//     console.error({ error });
+//   } finally {
+//     loaderStore.hideLoader();
+//   }
+// }
 
 async function onConnectToWalletConnect() {
-  const accountDetails = getAccount();
+  const accountDetails = walletConnect.getAccount();
   const isConnected = accountDetails.isConnected;
   if (!isConnected) {
-    web3modal.subscribeModal(async () => {
-      const accountDetails = getAccount();
+    walletConnect.web3modal.subscribeModal(async () => {
+      const accountDetails = walletConnect.getAccount();
       if (accountDetails.isConnected) onLoginWalletConnected(accountDetails);
     });
-    web3modal.openModal();
+    walletConnect.web3modal.openModal();
   } else onLoginWalletConnected(accountDetails);
 }
 
-async function onLoginWalletConnected(accountDetails) {
+async function onLoginWalletConnected(
+  accountDetails: GetAccountResult<PublicClient>
+) {
   authStore.provider = await accountDetails.connector?.getProvider();
   authStore.setUserInfo({
-    address: accountDetails.address,
+    address: accountDetails.address as string,
     loginType: "null",
-    id: "null",
+    id: accountDetails.address,
   });
   authStore.isLoggedIn = true;
   authStore.loggedInWith = "walletconnect";
-  userStore.address = accountDetails.address;
+  userStore.address = accountDetails.address as string;
 }
-
-onMounted(async () => {
-  if (verifier) {
-    await loginAutomatically(
-      verifier as unknown as string,
-      verifierId as string
-    );
-  }
-});
 </script>
 
 <template>
@@ -151,16 +140,28 @@ onMounted(async () => {
                 Welcome to SendIt
               </h1>
               <p
+                v-if="verifier && verifierId"
+                class="text-xs lg:text-base text-philippine-gray max-w-[280px] md:text-center md:mx-auto"
+              >
+                Sign-in using the below method to get started
+              </p>
+              <p
+                v-else
                 class="text-xs lg:text-base text-philippine-gray max-w-[280px] md:text-center md:mx-auto"
               >
                 Sign-in using any of these methods to get started
               </p>
             </header>
-            <section class="space-y-3 w-full flex flex-col items-start">
-              <span class="text-xs text-philippine-gray">Social Login</span>
+            <section
+              v-if="!verifier || verifier !== 'passwordless'"
+              class="space-y-3 w-full flex flex-col items-start"
+            >
+              <span v-if="!verifier" class="text-xs text-philippine-gray"
+                >Social Login</span
+              >
               <div
                 class="flex flex-col space-y-2 w-full"
-                v-for="login in socialLogins"
+                v-for="login in socialLoginsFiltered"
                 :key="login.value"
               >
                 <button
@@ -176,7 +177,7 @@ onMounted(async () => {
             </section>
             <section
               class="space-y-3 w-full flex flex-col items-start"
-              v-if="isWhitelistedLogin"
+              v-if="isWhitelistedLogin && !verifier && !verifierId"
             >
               <span class="text-xs text-philippine-gray">Connect Wallet</span>
               <div class="flex flex-col space-y-2 w-full">
@@ -190,12 +191,15 @@ onMounted(async () => {
                     class="w-4"
                   />
                   <span class="text-sm font-semibold text-white">
-                    Wallet Connect
+                    Connect Wallet
                   </span>
                 </button>
               </div>
             </section>
-            <section class="space-y-3 w-full flex flex-col items-start">
+            <section
+              v-if="!verifier || verifier === 'passwordless'"
+              class="space-y-3 w-full flex flex-col items-start"
+            >
               <span class="text-xs text-philippine-gray">Email ID</span>
               <form
                 class="flex justify-center items-center w-full bg-dark-charcoal px-2.5 rounded-md"

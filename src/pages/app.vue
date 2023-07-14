@@ -12,6 +12,10 @@ import { useToast } from "vue-toastification";
 import useNotificationStore from "@/stores/notification";
 import useMetamask from "@/use/metamask";
 import NotWhiteListed from "@/components/not-whitelisted.vue";
+import useSendStore from "@/stores/send";
+import useWalletConnect from "@/use/walletconnect";
+import { getAccountBalance } from "@/services/ankr.service";
+import ReceiverMessage from "@/components/ReceiverMessage.vue";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -24,7 +28,10 @@ const userStore = useUserStore();
 const notificationStore = useNotificationStore();
 const toast = useToast();
 const isNotWhitelisted = ref(false);
+const hasBalance = ref(false);
+const sendStore = useSendStore();
 const { connectMetamask } = useMetamask();
+const walletConnect = useWalletConnect();
 
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
@@ -35,7 +42,7 @@ async function initAuth() {
     authStore.setAuthInitialized(true);
     const isLoggedIn = await auth.isLoggedIn();
     if (isLoggedIn) authStore.setLoginStatus(true);
-    else router.push({ name: "Login", query: { ...route.query } });
+    else await router.push({ name: "Login", query: { ...route.query } });
   } catch (error) {
     toast.error(error as string);
   } finally {
@@ -55,7 +62,25 @@ async function initSocketConnect() {
     () => {
       authStore.setSocketLoginStatus(true);
     },
-    () => {
+    async () => {
+      const { verifier, verifierId } = route.query;
+      if (verifier && verifierId) {
+        try {
+          const data = await getAccountBalance(userStore.address, [
+            "eth",
+            "polygon",
+            "polygon_mumbai",
+          ]);
+          if (data?.result?.assets?.length) {
+            hasBalance.value = true;
+          } else {
+            hasBalance.value = false;
+          }
+        } catch (error) {
+          console.log(error);
+          hasBalance.value = false;
+        }
+      }
       isNotWhitelisted.value = true;
       loaderStore.hideLoader();
     }
@@ -85,13 +110,6 @@ async function onWalletConnect() {
   authStore.setLoginStatus(true);
   await getUserInfo();
   await initSocketConnect();
-  rewardsStore.fetchRewards(userStore.address);
-  userStore.fetchUserPointsAndRank();
-  notificationStore.getNotifications();
-  if (authStore.loggedInWith !== "metamask") {
-    authStore.provider.on("disconnect", onWalletDisconnect);
-  }
-  loaderStore.hideLoader();
 }
 
 async function onWalletDisconnect() {
@@ -101,6 +119,22 @@ async function onWalletDisconnect() {
 }
 
 onMounted(initAuth);
+
+watch(
+  () => authStore.isSocketLoggedIn,
+  async (newValue) => {
+    if (newValue) {
+      await sendStore.fetchSupportedChains();
+      rewardsStore.fetchRewards(userStore.address);
+      userStore.fetchUserPointsAndRank();
+      notificationStore.getNotifications();
+      if (authStore.loggedInWith !== "walletconnect") {
+        authStore.provider.on("disconnect", onWalletDisconnect);
+      }
+      loaderStore.hideLoader();
+    }
+  }
+);
 
 watch(
   () => authStore.isLoggedIn,
@@ -133,6 +167,7 @@ async function handleNoAccessBack() {
   ) {
     await auth.getAuthInstance().logout();
   } else {
+    walletConnect.disconnect();
     onWalletDisconnect();
   }
   isNotWhitelisted.value = false;
@@ -143,8 +178,12 @@ async function handleNoAccessBack() {
   <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
     <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
+    <ReceiverMessage
+      v-if="isNotWhitelisted && hasBalance"
+      @dismiss="hasBalance = false"
+    />
     <NotWhiteListed
-      v-if="isNotWhitelisted"
+      v-if="isNotWhitelisted && !hasBalance"
       @go-back="handleNoAccessBack"
       @join-waitlist="router.push({ name: 'Waitlist' })"
     />

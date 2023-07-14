@@ -1,23 +1,17 @@
 <script setup lang="ts">
-import { toRefs, watch, ref, onMounted } from "vue";
+import { ref } from "vue";
 import SendForm from "@/components/send/sendForm.vue";
-import useSocketConnection from "@/use/socketConnection";
-import useAuthStore from "@/stores/auth";
 import useSendStore from "@/stores/send";
-import useLoaderStore from "@/stores/loader";
-import chainList from "@/constants/chainList.ts";
 import SendSuccess from "@/components/send/success.vue";
 import TweetVerify from "@/components/TweetVerify.vue";
-import { SOCKET_IDS } from "@/constants/socket-ids";
 import { composeAndSendTweet } from "@/utils/tweet";
 import useUserStore from "@/stores/user";
+import { EARN_XP_SEND_FORM } from "@/constants/rewards";
+import RewardsCard from "@/components/rewards-card.vue";
+import AppInvite from "@/components/AppInvite.vue";
 
-const socketConnection = useSocketConnection();
-const authStore = useAuthStore();
 const sendStore = useSendStore();
 const userStore = useUserStore();
-const loaderStore = useLoaderStore();
-const { isSocketLoggedIn } = toRefs(authStore);
 const showSuccessMessage = ref(false);
 const showTweetVerificationModal = ref(false);
 const shareDetails = ref({
@@ -27,34 +21,7 @@ const shareDetails = ref({
 const verifierId = ref("");
 const txHash = ref("");
 const verifierHuman = ref("");
-
-async function fetchSupportedChains() {
-  loaderStore.showLoader("Fetching list of chains...");
-  try {
-    // @ts-ignore
-    const { chains } = await socketConnection.sendMessage(
-      SOCKET_IDS.GET_CHAINS
-    );
-    sendStore.setSupportedChains(
-      chains.map((chain) => {
-        return {
-          ...chain,
-          blockchain: chainList[chain.chain_id].block_chain,
-        };
-      })
-    );
-  } catch (e) {
-    console.error(e);
-  } finally {
-    loaderStore.hideLoader();
-  }
-}
-
-onMounted(fetchSupportedChains);
-
-watch(isSocketLoggedIn, (newValue) => {
-  if (newValue) fetchSupportedChains();
-});
+const showInvitePopup = ref(false);
 
 function handleTxSucces(data) {
   showSuccessMessage.value = true;
@@ -74,7 +41,7 @@ function resetUserInput() {
 function handleShoutout() {
   showSuccessMessage.value = false;
   composeAndSendTweet(
-    `Just sent a crypto transfer on #SendIt from ${verifierHuman.value}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `
+    `Just sent a crypto transfer on #SendIt to ${verifierHuman.value}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `
   );
   showTweetVerificationModal.value = true;
   resetUserInput();
@@ -102,7 +69,17 @@ function handleSuccessModalClose() {
     :hash="txHash"
     @close="showTweetVerificationModal = false"
   />
-  <div class="flex flex-col justify-center items-center p-12 space-y-10">
+  <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
+  <div class="flex flex-col justify-center items-center p-10 space-y-10">
     <SendForm @transaction-successful="handleTxSucces" />
+  </div>
+  <div
+    class="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3 max-w-[1100px] m-auto"
+  >
+    <RewardsCard
+      v-for="item in EARN_XP_SEND_FORM"
+      :reward="item"
+      @invite="showInvitePopup = true"
+    />
   </div>
 </template>
