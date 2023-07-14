@@ -10,6 +10,7 @@ const VITE_API_URL = import.meta.env.VITE_API_URL;
 const SOCKET_CLOSED_ON_LOGOUT = 3000;
 const SOCKET_CLOSED_ON_NO_ACCESS = 3001;
 const ACTION_REJECTED = "ACTION_REJECTED";
+const SENDIT_LAST_HASH_KEY = "sendit-last-hash";
 
 enum ConnectionState {
   NOT_CONNECTED,
@@ -130,9 +131,13 @@ function useSocketConnection() {
           if (existingSignature) {
             sig = existingSignature;
           } else {
-            localStorage.clear();
+            const sendItLastHash = localStorage.getItem(
+              SENDIT_LAST_HASH_KEY
+            ) as string;
+            localStorage.removeItem(sendItLastHash);
             sig = await ethersSigner.signMessage(data.message);
             localStorage.setItem(hash, sig);
+            localStorage.setItem(SENDIT_LAST_HASH_KEY, hash);
           }
           socket.send(
             msgpack({
