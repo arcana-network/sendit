@@ -66,12 +66,12 @@ async function initSocketConnect() {
       const { verifier, verifierId } = route.query;
       if (verifier && verifierId) {
         try {
-          const { result } = await getAccountBalance(userStore.address, [
+          const data = await getAccountBalance(userStore.address, [
             "eth",
             "polygon",
             "polygon_mumbai",
           ]);
-          if (result?.assets?.length) {
+          if (data?.result?.assets?.length) {
             hasBalance.value = true;
           } else {
             hasBalance.value = false;
