@@ -16,7 +16,6 @@ async function getAccountBalance(walletAddress: string, blockchain: string[]) {
     params: { walletAddress, blockchain },
     id: 1,
   };
-  console.log(payload);
   return (await ANKR_SERVICE.post("?ankr_getAccountBalance=", payload)).data;
 }
 
