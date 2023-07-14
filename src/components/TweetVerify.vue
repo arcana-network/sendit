@@ -2,7 +2,6 @@
 import Overlay from "@/components/overlay.vue";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import useLoaderStore from "@/stores/loader";
-import useUserStore from "@/stores/user";
 import useSocketConnection from "@/use/socketConnection";
 import { getBytes } from "ethers";
 import { ref } from "vue";
@@ -19,7 +18,6 @@ const emit = defineEmits(["close"]);
 const isTweetVerified = ref(false);
 const router = useRouter();
 const tweetUrl = ref("");
-const userStore = useUserStore();
 const loaderStore = useLoaderStore();
 const socketConnection = useSocketConnection();
 const toast = useToast();
@@ -34,7 +32,6 @@ async function handleTweetVerify() {
       };
       await socketConnection.sendMessage(SOCKET_IDS.VERIFY_TWEET, message);
       isTweetVerified.value = true;
-      userStore.fetchUserPointsAndRank();
     } catch (e) {
       console.error(e);
       toast.error("Error verifying tweet. Please try again.");

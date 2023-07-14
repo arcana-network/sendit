@@ -178,8 +178,8 @@ const REDEEM_XP = [
   {
     image: "/xars/500XAR.png",
     name: "500 XAR NFT",
-    requiredXP: 500,
-    xar: 5000,
+    requiredXP: 5000,
+    xar: 500,
   },
 ];
 
