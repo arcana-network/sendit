@@ -115,7 +115,7 @@ const stats = computed(() => {
             </div>
           </div>
           <div class="space-x-3 flex items-center">
-            <button>Help</button>
+            <a href="mailto:support@arcana.network">Help</a>
             <button class="relative" @click.stop="toggleNotifications">
               <span
                 v-if="notificationStore.areUnreadNotifications"
