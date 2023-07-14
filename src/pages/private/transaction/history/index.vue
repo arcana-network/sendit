@@ -10,6 +10,7 @@ import { hexlify, formatEther } from "ethers";
 import { nativeUnitMapping } from "@/constants/unitMapping.ts";
 import dayjs from "dayjs";
 import useUserStore from "@/stores/user";
+import { normaliseTwitterHandle } from "@/utils/normalise";
 
 const socket = useSocketConnection();
 
@@ -53,7 +54,7 @@ async function fetchTxHistory() {
 
 function getSocialId(socialId: string, verifier: string) {
   if (verifier === "twitter") {
-    return `${socialId}`;
+    return normaliseTwitterHandle(socialId);
   }
   return socialId;
 }

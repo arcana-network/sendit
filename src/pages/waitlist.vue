@@ -8,7 +8,7 @@ import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
 import LandingDescription from "@/components/LandingDescription.vue";
 import { useRoute } from "vue-router";
-import { toUnicode } from "punycode";
+import { normaliseEmail } from "@/utils/normalise";
 
 const hasStartedTyping = ref(false);
 const email = ref("");
@@ -74,7 +74,7 @@ async function handleUserSubmission() {
   try {
     loaderStore.showLoader("Adding to waitlist...");
     const isSubmitted = await addUserToWaitlist(
-      toUnicode(email.value.toLowerCase()),
+      normaliseEmail(email.value),
       address.value,
       community
     );

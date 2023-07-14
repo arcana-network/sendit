@@ -6,29 +6,52 @@ import useSocketConnection from "@/use/socketConnection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
+import { normaliseEmail } from "@/utils/normalise";
 
 const emit = defineEmits(["close"]);
 
 const email = ref("");
 const loader = useLoaderStore();
 const toast = useToast();
+const hasStartedTyping = ref(false);
 
 const areEmailsValid = computed(() => {
-  if (!email.value.trim()) return false;
-  const emails = email.value.split(",");
-  for (let i = 0; i < emails.length; i++) {
-    if (!isValidEmail(emails[i].trim())) return false;
+  if (hasStartedTyping.value) {
+    if (!email.value.trim())
+      return {
+        valid: false,
+        message: "Email address is required",
+        type: "req",
+      };
+    const emails = email.value.split(",");
+    if (emails.length > 10) {
+      return {
+        valid: false,
+        message: "You can invite a maximum of 10 people at a time",
+        type: "max",
+      };
+    }
+    for (let i = 0; i < emails.length; i++) {
+      if (!isValidEmail(emails[i].trim()))
+        return {
+          valid: false,
+          message: `Email ${emails[i]} is not valid`,
+          type: "invalid",
+        };
+    }
   }
-  return true;
+  return {
+    valid: true,
+  };
 });
 
 async function handleEmailInvite() {
-  if (areEmailsValid.value) {
+  if (areEmailsValid.value.valid) {
     const socket = useSocketConnection();
     const invites = email.value.split(",").map((e) => {
       return {
         verifier: "passwordless",
-        verifier_id: e.trim(),
+        verifier_id: normaliseEmail(e),
       };
     });
     const message = {
@@ -40,7 +63,7 @@ async function handleEmailInvite() {
     toast.success("Invites sent");
     emit("close");
   } else {
-    alert("One or more emails are not valid");
+    toast.error("One or more emails are not valid");
   }
 }
 </script>
@@ -65,12 +88,16 @@ async function handleEmailInvite() {
             placeholder="Email, comma separated"
             class="text-sm placeholder:text-philippine-gray bg-[#313131] rounded-[5px] p-2 input"
             v-model="email"
+            @input="hasStartedTyping = true"
           />
+          <span v-if="!areEmailsValid.valid" class="text-[10px] text-[#ff4264]">
+            {{ areEmailsValid.message }}
+          </span>
         </div>
         <div class="flex justify-end">
           <button
             class="uppercase bg-white rounded-[5px] text-black text-sm font-[500] px-8 py-2"
-            :disabled="!areEmailsValid"
+            :disabled="!areEmailsValid.valid"
           >
             Send
           </button>

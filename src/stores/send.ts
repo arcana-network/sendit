@@ -14,6 +14,7 @@ type SendStoreKind = {
   supportedChains: {
     chain_id: number | string;
     name: string;
+    blockchain: string;
   }[];
 };
 
@@ -21,7 +22,7 @@ const useSendStore = defineStore("send", {
   state: () =>
     ({
       userInput: {
-        medium: "",
+        medium: "mail",
         recipientId: "",
         chain: "",
         token: "",
