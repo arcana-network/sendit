@@ -1,6 +1,29 @@
 import NavigationIcon from "@/assets/images/icons/navigation.svg";
 import UserAddIcon from "@/assets/images/icons/user-add.svg";
-// import UserVoiceIcon from "@/assets/images/icons/user-voice.svg";
+import UserVoiceIcon from "@/assets/images/icons/user-voice.svg";
+
+const EARN_XP_SEND_FORM = [
+  {
+    image: NavigationIcon,
+    name: "Earn 150 XP",
+    description: "Send crypto for the first time and earn XP.",
+    task: "",
+  },
+  {
+    image: UserVoiceIcon,
+    name: "Earn 100 XP",
+    description:
+      "Shout out on Twitter after a SendIt transaction for the first time and earn XP.",
+    task: "",
+  },
+  {
+    image: UserAddIcon,
+    name: "Earn 50 XP",
+    description:
+      "Invite a friend and earn XP as soon as they log in to their wallet.",
+    task: "invite",
+  },
+];
 
 const EARN_XP = [
   {
@@ -48,35 +71,35 @@ const EARN_XP = [
   {
     image: NavigationIcon,
     name: "Earn 150 XP",
-    description: "Send crypto for the first time and earn XP",
+    description: "Send crypto for the first time and earn XP.",
     task: "Transact",
     xp: 150,
   },
   {
     image: NavigationIcon,
     name: "Earn 25 XP",
-    description: "Send crypto to a unique address and earn XP",
+    description: "Send crypto to a unique address and earn XP.",
     task: "Transact",
     xp: 25,
   },
   {
     image: NavigationIcon,
     name: "Earn 100 XP",
-    description: "Complete 10 transactions on SendIt and earn XP",
+    description: "Complete 10 transactions on SendIt and earn XP.",
     task: "Transact",
     xp: 100,
   },
   {
     image: NavigationIcon,
     name: "Earn 250 XP",
-    description: "Complete 25 transactions on SendIt and earn XP",
+    description: "Complete 25 transactions on SendIt and earn XP.",
     task: "Transact",
     xp: 250,
   },
   {
     image: NavigationIcon,
     name: "Earn 500 XP",
-    description: "Complete 50 transactions on SendIt and earn XP",
+    description: "Complete 50 transactions on SendIt and earn XP.",
     task: "Transact",
     xp: 500,
   },
@@ -84,50 +107,50 @@ const EARN_XP = [
     image: NavigationIcon,
     name: "Earn 250 XP",
     description:
-      "Earn 100th transaction performed through SendIt in a day earns XP",
+      "Earn 100th transaction performed through SendIt in a day earns XP.",
     task: "Transact",
     xp: 250,
   },
   {
-    image: NavigationIcon,
+    image: UserVoiceIcon,
     name: "Earn 100 XP",
     description:
-      "Shout out on Twitter after a SendIt transaction for the first time and earn XP",
+      "Shout out on Twitter after a SendIt transaction for the first time and earn XP.",
     task: "Transact",
     xp: 100,
   },
   {
-    image: NavigationIcon,
+    image: UserVoiceIcon,
     name: "Earn 25 XP",
-    description: "Shoutout a SendIt send transaction on twitter & earn XP ",
+    description: "Shoutout a SendIt send transaction on twitter & earn XP.",
     task: "Transact",
     xp: 25,
   },
   {
-    image: NavigationIcon,
+    image: UserVoiceIcon,
     name: "Earn 25 XP",
-    description: "Shoutout a SendIt receive transaction on twitter & earn XP ",
+    description: "Shoutout a SendIt receive transaction on twitter & earn XP.",
     task: "Transact",
     xp: 25,
   },
   {
     image: NavigationIcon,
     name: "Earn 50 XP",
-    description: "Top 500 members on the SendIt weekly leaderboard earns XP",
+    description: "Top 500 members on the SendIt weekly leaderboard earns XP.",
     task: "Transact",
     xp: 50,
   },
   {
     image: NavigationIcon,
     name: "Earn 30 XP",
-    description: "Top 1000 members on the SendIt weekly leaderboard earns XP",
+    description: "Top 1000 members on the SendIt weekly leaderboard earns XP.",
     task: "Transact",
     xp: 30,
   },
   {
     image: NavigationIcon,
     name: "Earn 20 XP",
-    description: "Top 3000 members on the SendIt weekly leaderboard earns XP",
+    description: "Top 3000 members on the SendIt weekly leaderboard earns XP.",
     task: "Transact",
     xp: 20,
   },
@@ -160,4 +183,4 @@ const REDEEM_XP = [
   },
 ];
 
-export { EARN_XP, REDEEM_XP };
+export { EARN_XP, REDEEM_XP, EARN_XP_SEND_FORM };

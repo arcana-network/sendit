@@ -6,6 +6,9 @@ import SendSuccess from "@/components/send/success.vue";
 import TweetVerify from "@/components/TweetVerify.vue";
 import { composeAndSendTweet } from "@/utils/tweet";
 import useUserStore from "@/stores/user";
+import { EARN_XP_SEND_FORM } from "@/constants/rewards";
+import RewardsCard from "@/components/rewards-card.vue";
+import AppInvite from "@/components/AppInvite.vue";
 
 const sendStore = useSendStore();
 const userStore = useUserStore();
@@ -18,6 +21,7 @@ const shareDetails = ref({
 const verifierId = ref("");
 const txHash = ref("");
 const verifierHuman = ref("");
+const showInvitePopup = ref(false);
 
 function handleTxSucces(data) {
   showSuccessMessage.value = true;
@@ -65,7 +69,17 @@ function handleSuccessModalClose() {
     :hash="txHash"
     @close="showTweetVerificationModal = false"
   />
-  <div class="flex flex-col justify-center items-center p-12 space-y-10">
+  <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
+  <div class="flex flex-col justify-center items-center p-10 space-y-10">
     <SendForm @transaction-successful="handleTxSucces" />
+  </div>
+  <div
+    class="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3 max-w-[1100px] m-auto"
+  >
+    <RewardsCard
+      v-for="item in EARN_XP_SEND_FORM"
+      :reward="item"
+      @invite="showInvitePopup = true"
+    />
   </div>
 </template>
