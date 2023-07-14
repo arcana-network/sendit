@@ -166,7 +166,7 @@ const stats = computed(() => {
               v-if="showMobileMenu"
               ref="mobileMenu"
             >
-              <MobileMenu />
+              <MobileMenu @navigated="showMobileMenu = false" />
             </div>
           </nav>
         </div>
