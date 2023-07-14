@@ -105,8 +105,6 @@ async function fetchAssets() {
     }
   } catch (error) {
     console.error(error);
-  } finally {
-    loadStore.hideLoader();
   }
 }
 
@@ -193,7 +191,7 @@ async function proceed() {
               //@ts-ignore
               asset.contractAddress
             );
-      toast.success("Transaction Successful");
+      toast.success("Transaction being mined");
       loadStore.showLoader("Tokens transferred. Generating share link...");
       const { hash, to } = tx;
       const toEmail = recipientId;
