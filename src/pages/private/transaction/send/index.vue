@@ -5,13 +5,11 @@ import useSendStore from "@/stores/send";
 import SendSuccess from "@/components/send/success.vue";
 import TweetVerify from "@/components/TweetVerify.vue";
 import { composeAndSendTweet } from "@/utils/tweet";
-import useUserStore from "@/stores/user";
 import { EARN_XP_SEND_FORM } from "@/constants/rewards";
 import RewardsCard from "@/components/rewards-card.vue";
 import AppInvite from "@/components/AppInvite.vue";
 
 const sendStore = useSendStore();
-const userStore = useUserStore();
 const showSuccessMessage = ref(false);
 const showTweetVerificationModal = ref(false);
 const shareDetails = ref({
@@ -49,7 +47,6 @@ function handleShoutout() {
 
 function handleSuccessModalClose() {
   showSuccessMessage.value = false;
-  userStore.fetchUserPointsAndRank();
   resetUserInput();
 }
 </script>

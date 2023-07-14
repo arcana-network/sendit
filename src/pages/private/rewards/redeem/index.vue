@@ -16,8 +16,6 @@ type Reward = {
   requiredXP: number;
 };
 
-userStore.fetchUserPointsAndRank();
-
 function handleRedeem(reward: Reward) {
   if (reward.requiredXP <= userStore.points) {
     showClaimNFTPopup.value = true;
@@ -52,11 +50,14 @@ function handleRedeem(reward: Reward) {
             <span v-else class="text-xs text-philippine-gray"
               >Earn XP to redeem this NFT.</span
             >
+            <span class="text-sm text-philippine-gray"
+              >Costs {{ reward.requiredXP }} XP</span
+            >
           </div>
           <img
             :src="reward.image"
             :alt="reward.name"
-            class="w-[93px] h-[96px] object-contain"
+            class="w-[120px] h-[120px] object-contain bg-[#252344]"
           />
         </div>
         <button
