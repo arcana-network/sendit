@@ -63,13 +63,17 @@ async function fetchAssets(chainId) {
   try {
     const walletAddress = authStore.walletAddress;
     const chain = getSelectedChainInfo(chainId);
-    const { result } = await getAccountBalance(walletAddress, [
+    const data = await getAccountBalance(walletAddress, [
       //@ts-ignore
       chain.blockchain,
     ]);
-    chainAssets.value = result.assets;
+    if (data?.result?.assets?.length) {
+      chainAssets.value = data?.result?.assets;
+    } else {
+      toast.error("You don't own any tokens on this chain");
+    }
   } catch (error) {
-    toast.error(error as string);
+    toast.error("Something went wrong. Please contact support");
     console.error(error);
   } finally {
     loadStore.hideLoader();
