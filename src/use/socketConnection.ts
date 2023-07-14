@@ -134,10 +134,7 @@ function useSocketConnection() {
           if (existingPair.hash === hash) {
             sig = existingPair.sig;
           } else {
-            const sendItLastHash = localStorage.getItem(
-              SENDIT_LAST_HASH_KEY
-            ) as string;
-            localStorage.removeItem(sendItLastHash);
+            localStorage.removeItem(SENDIT_LAST_HASH_KEY);
             sig = await ethersSigner.signMessage(data.message);
             localStorage.setItem(
               SENDIT_LAST_HASH_KEY,
