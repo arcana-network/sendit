@@ -11,6 +11,9 @@ import { nativeUnitMapping } from "@/constants/unitMapping.ts";
 import dayjs from "dayjs";
 import useUserStore from "@/stores/user";
 import { normaliseTwitterHandle } from "@/utils/normalise";
+import useLoaderStore from "@/stores/loader";
+import copyToClipboard from "@/utils/copyToClipboard";
+import { useToast } from "vue-toastification";
 
 const socket = useSocketConnection();
 
@@ -18,6 +21,8 @@ const history = ref([] as any[]);
 const showTweetVerificationModal = ref(false);
 const userStore = useUserStore();
 const tweetVerificationHash = ref("");
+const loaderStore = useLoaderStore();
+const toast = useToast();
 
 onBeforeMount(() => {
   fetchTxHistory();
@@ -29,6 +34,7 @@ async function fetchTxHistory() {
     offset: 0,
     count: 500,
   };
+  loaderStore.showLoader("Fetching transaction history...");
   const txHistory = (await socket.sendMessage(
     SOCKET_IDS.GET_TX_HISTORY,
     message
@@ -44,12 +50,20 @@ async function fetchTxHistory() {
       socialId: record.user.verifier_human || hexlify(record.user_address),
       verifier: record.user?.verifier,
       walletAddress: hexlify(record.user_address),
-      link: record.link,
+      link: record.share_url,
       points: record.points || "",
       isSharedOnTwitter: record.shared || false,
       date: dayjs.unix(record.tx_date).format("DD MMM YYYY"),
     };
   });
+  loaderStore.hideLoader();
+}
+
+async function copy(data: string, message: string) {
+  if (data) {
+    await copyToClipboard(data);
+    toast.success(message);
+  }
 }
 
 function getSocialId(socialId: string, verifier: string) {
@@ -115,18 +129,23 @@ function shareTweet(record) {
               <div
                 class="leaderboard-table-row-item ellipsis"
                 :title="record.socialId"
+                @click.stop="copy(record.socialId, 'Social ID copied')"
               >
                 {{ getSocialId(record.socialId, record.verifier) }}
               </div>
               <div
                 class="leaderboard-table-row-item ellipsis"
                 :title="record.walletAddress"
+                @click.stop="
+                  copy(record.walletAddress, 'Wallet address copied')
+                "
               >
                 {{ record.walletAddress }}
               </div>
               <div
                 class="leaderboard-table-row-item ellipsis"
                 :title="record.link"
+                @click.stop="copy(record.link, 'SendIt link copied')"
               >
                 {{ record.link }}
               </div>
@@ -169,10 +188,7 @@ function shareTweet(record) {
             :class="{ 'border-jet border-0 border-t-1': index !== 0 }"
           >
             <div class="px-2 flex flex-col gap-1 w-[60%]">
-              <div
-                class="text-sm font-bold text-[14px]"
-                :title="record.walletAddress"
-              >
+              <div class="text-sm font-bold text-[14px]">
                 <span class="capitalize">{{ record.txStatus }}</span
                 >&nbsp;
                 <span
@@ -183,15 +199,25 @@ function shareTweet(record) {
                 <span class="text-philippine-gray"
                   >{{ record.txStatus === "sent" ? "To" : "From" }}:</span
                 >&nbsp;
-                <span>{{ record.socialId }}</span>
+                <span @click.stop="copy(record.socialId, 'Social ID copied')">{{
+                  record.socialId
+                }}</span>
               </div>
               <div class="text-xs ellipsis">
                 <span class="text-philippine-gray">Wallet Address:</span>&nbsp;
-                <span>{{ record.walletAddress }}</span>
+                <span
+                  :title="record.walletAddress"
+                  @click.stop="
+                    copy(record.walletAddress, 'Wallet address copied')
+                  "
+                  >{{ record.walletAddress }}</span
+                >
               </div>
               <div class="text-xs ellipsis">
                 <span class="text-philippine-gray">SendIt Link:</span>&nbsp;
-                <span>{{ record.link }}</span>
+                <span @click.stop="copy(record.link, 'SendIt link copied')">{{
+                  record.link
+                }}</span>
               </div>
               <div class="text-xs ellipsis">
                 <span class="text-philippine-gray">{{ record.date }}</span>
