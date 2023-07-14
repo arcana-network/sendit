@@ -22,7 +22,7 @@ const useSendStore = defineStore("send", {
   state: () =>
     ({
       userInput: {
-        medium: "",
+        medium: "mail",
         recipientId: "",
         chain: "",
         token: "",

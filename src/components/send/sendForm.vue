@@ -30,6 +30,7 @@ const socketConnection = useSocketConnection();
 const toast = useToast();
 const twitterId = ref("");
 const hasTwitterError = ref(false);
+const hasStartedTyping = ref(false);
 
 const { userInput, supportedChains } = toRefs(sendStore);
 
@@ -189,6 +190,7 @@ async function proceed() {
       }
     } finally {
       loadStore.hideLoader();
+      hasStartedTyping.value = false;
     }
   }
 }
@@ -311,8 +313,16 @@ function handleMediumChange(medium) {
         <input
           class="input"
           v-model.trim="userInput.recipientId"
-          @input="hasTwitterError = false"
+          @input="
+            hasTwitterError = false;
+            hasStartedTyping = true;
+          "
           @blur="handleTwitterUsername"
+          :placeholder="
+            userInput.medium === 'twitter'
+              ? 'Enter twitter username'
+              : 'Enter email'
+          "
         />
         <div
           class="text-[#ff4264] text-[10px]"
@@ -320,10 +330,16 @@ function handleMediumChange(medium) {
         >
           Please enter the recipient's ID
         </div>
-        <div class="text-[#ff4264] text-[10px]" v-else-if="hasTwitterError">
+        <div
+          class="text-[#ff4264] text-[10px]"
+          v-else-if="hasStartedTyping && hasTwitterError"
+        >
           Invalid twitter username
         </div>
-        <div class="text-[#ff4264] text-[10px]" v-else-if="!isEmailValid">
+        <div
+          class="text-[#ff4264] text-[10px]"
+          v-else-if="hasStartedTyping && !isEmailValid"
+        >
           Invalid email
         </div>
       </div>

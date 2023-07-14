@@ -191,7 +191,7 @@ async function onLoginWalletConnected(
                     class="w-4"
                   />
                   <span class="text-sm font-semibold text-white">
-                    Wallet Connect
+                    Connect Wallet
                   </span>
                 </button>
               </div>
