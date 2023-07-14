@@ -32,10 +32,7 @@ async function handleTweetVerify() {
         tx_hash: Buffer.from(getBytes(props.hash)),
         url: tweetUrl.value,
       };
-      const res = await socketConnection.sendMessage(
-        SOCKET_IDS.VERIFY_TWEET,
-        message
-      );
+      await socketConnection.sendMessage(SOCKET_IDS.VERIFY_TWEET, message);
       isTweetVerified.value = true;
       userStore.fetchUserPointsAndRank();
     } catch (e) {

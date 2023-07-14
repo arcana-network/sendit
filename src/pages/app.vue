@@ -37,12 +37,15 @@ async function initAuth() {
   loaderStore.showLoader("Initializing...");
   try {
     await auth.init();
-    authStore.provider = auth.getProvider();
-    authStore.provider.on("connect", onWalletConnect);
+    const arcanaAuthProvider = auth.getProvider();
+    authStore.provider = arcanaAuthProvider;
+    arcanaAuthProvider.on("connect", onWalletConnect);
     authStore.setAuthInitialized(true);
     const isLoggedIn = await auth.isLoggedIn();
-    if (isLoggedIn) authStore.setLoginStatus(true);
-    else await router.push({ name: "Login", query: { ...route.query } });
+    if (isLoggedIn) {
+      authStore.isLoggedIn = true;
+      authStore.loggedInWith = "";
+    } else await router.push({ name: "Login", query: { ...route.query } });
   } catch (error) {
     toast.error(error as string);
   } finally {
@@ -107,7 +110,6 @@ async function getUserInfo() {
 
 async function onWalletConnect() {
   loaderStore.showLoader("Connecting...");
-  authStore.setLoginStatus(true);
   await getUserInfo();
   await initSocketConnect();
 }
@@ -142,12 +144,7 @@ watch(
     if (!newValue) {
       router.push({ name: "Login", query: { ...route.query } });
     } else if (route.name === "Login") {
-      if (
-        authStore.loggedInWith === "metamask" ||
-        authStore.loggedInWith === "walletconnect"
-      ) {
-        await onWalletConnect();
-      }
+      await onWalletConnect();
       loaderStore.hideLoader();
       router.push({ name: "Send", query: { ...route.query } });
     }
