@@ -39,13 +39,13 @@ const useSendStore = defineStore("send", {
       this.supportedChains = chains.map((chain) => {
         return {
           ...chain,
-          blockchain: chainList[chain.chain_id].block_chain,
+          blockchain: chainList[Number(chain.chain_id)].blockchain,
         };
       });
     },
     resetUserInput() {
       this.userInput = {
-        medium: "",
+        medium: "mail",
         recipientId: "",
         chain: "",
         token: "",
