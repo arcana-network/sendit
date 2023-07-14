@@ -59,7 +59,7 @@ function getSelectedAssets(tokenSymbol, tokenType) {
 }
 
 async function fetchAssets(chainId) {
-  loadStore.showLoader("Fetching tokens...");
+  loadStore.showLoader("Fetching user owned tokens...");
   try {
     const walletAddress = authStore.walletAddress;
     const chain = getSelectedChainInfo(chainId);
@@ -145,6 +145,10 @@ async function proceed() {
       const chainId = userInput.value.chain;
       const [tokenSymbol, tokenType] = userInput.value.token.split("-");
       const asset = getSelectedAssets(tokenSymbol, tokenType);
+      loadStore.showLoader(
+        "Attempting transfer of tokens. Please wait...",
+        "Blockchain transactions may take some time to complete depending on the network state. Please wait until transaction is completed."
+      );
       const tx =
         tokenType === "NATIVE"
           ? await nativeTokenTransfer(senderPublicKey, arcanaProvider, amount)
@@ -155,7 +159,8 @@ async function proceed() {
               //@ts-ignore
               asset.contractAddress
             );
-      chainAssets.value = [];
+      toast.success("Transaction Successful");
+      loadStore.showLoader("Tokens transferred. Generating share link...");
       const { hash, to } = tx;
       const toEmail = recipientId;
       //@ts-ignore
@@ -173,7 +178,6 @@ async function proceed() {
         fromVerifier,
         toVerifier
       )) as any;
-      toast.success("Transaction Successful");
       sendRes.verifier_id = recipientId;
       sendRes.hash = hash;
       sendRes.verifier_human =
@@ -226,6 +230,8 @@ watch(
       } else {
         fetchAssets(selectedChainId);
       }
+    } else {
+      chainAssets.value = [];
     }
   }
 );

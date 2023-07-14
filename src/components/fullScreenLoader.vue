@@ -15,6 +15,12 @@ const loaderStore = useLoaderStore();
         <div class="text-center text-white text-base uppercase font-bold">
           {{ loaderStore.message || "Please Wait..." }}
         </div>
+        <div
+          v-if="loaderStore.submessage"
+          class="text-center text-philippine-gray text-xs"
+        >
+          {{ loaderStore.submessage }}
+        </div>
       </div>
     </div>
   </Overlay>
