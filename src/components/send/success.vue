@@ -64,7 +64,7 @@ function handleMail() {
           "
           @click.stop="handleTwitterDM"
         >
-          Send on twitter DM
+          Send via twitter DM
         </button>
         <button
           class="btn btn-submit text-sm w-full font-bold"
