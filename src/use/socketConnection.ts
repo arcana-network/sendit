@@ -126,18 +126,23 @@ function useSocketConnection() {
       case ConnectionState.NOT_CONNECTED: {
         try {
           const hash = hashMessage(data.message);
-          const existingSignature = localStorage.getItem(hash);
+          const existingPairStr = localStorage.getItem(SENDIT_LAST_HASH_KEY);
           let sig: string;
-          if (existingSignature) {
-            sig = existingSignature;
+          const existingPair = existingPairStr
+            ? JSON.parse(existingPairStr)
+            : {};
+          if (existingPair.hash === hash) {
+            sig = existingPair.sig;
           } else {
             const sendItLastHash = localStorage.getItem(
               SENDIT_LAST_HASH_KEY
             ) as string;
             localStorage.removeItem(sendItLastHash);
             sig = await ethersSigner.signMessage(data.message);
-            localStorage.setItem(hash, sig);
-            localStorage.setItem(SENDIT_LAST_HASH_KEY, hash);
+            localStorage.setItem(
+              SENDIT_LAST_HASH_KEY,
+              JSON.stringify({ hash, sig })
+            );
           }
           socket.send(
             msgpack({
