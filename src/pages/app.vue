@@ -14,6 +14,8 @@ import useMetamask from "@/use/metamask";
 import NotWhiteListed from "@/components/not-whitelisted.vue";
 import useSendStore from "@/stores/send";
 import useWalletConnect from "@/use/walletconnect";
+import { getAccountBalance } from "@/services/ankr.service";
+import ReceiverMessage from "@/components/ReceiverMessage.vue";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -26,6 +28,7 @@ const userStore = useUserStore();
 const notificationStore = useNotificationStore();
 const toast = useToast();
 const isNotWhitelisted = ref(false);
+const hasBalance = ref(false);
 const sendStore = useSendStore();
 const { connectMetamask } = useMetamask();
 const walletConnect = useWalletConnect();
@@ -59,7 +62,25 @@ async function initSocketConnect() {
     () => {
       authStore.setSocketLoginStatus(true);
     },
-    () => {
+    async () => {
+      const { verifier, verifierId } = route.query;
+      if (verifier && verifierId) {
+        try {
+          const { result } = await getAccountBalance(userStore.address, [
+            "eth",
+            "polygon",
+            "polygon_mumbai",
+          ]);
+          if (result?.assets?.length) {
+            hasBalance.value = true;
+          } else {
+            hasBalance.value = false;
+          }
+        } catch (error) {
+          console.log(error);
+          hasBalance.value = false;
+        }
+      }
       isNotWhitelisted.value = true;
       loaderStore.hideLoader();
     }
@@ -157,8 +178,12 @@ async function handleNoAccessBack() {
   <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
     <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
+    <ReceiverMessage
+      v-if="isNotWhitelisted && hasBalance"
+      @dismiss="hasBalance = false"
+    />
     <NotWhiteListed
-      v-if="isNotWhitelisted"
+      v-if="isNotWhitelisted && !hasBalance"
       @go-back="handleNoAccessBack"
       @join-waitlist="router.push({ name: 'Waitlist' })"
     />

@@ -62,10 +62,13 @@ async function fetchAssets(chainId) {
   try {
     const walletAddress = authStore.walletAddress;
     const chain = getSelectedChainInfo(chainId);
-    //@ts-ignore
-    const { result } = await getAccountBalance(walletAddress, chain.blockchain);
+    const { result } = await getAccountBalance(walletAddress, [
+      //@ts-ignore
+      chain.blockchain,
+    ]);
     chainAssets.value = result.assets;
   } catch (error) {
+    toast.error(error as string);
     console.error(error);
   } finally {
     loadStore.hideLoader();

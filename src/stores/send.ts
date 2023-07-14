@@ -14,6 +14,7 @@ type SendStoreKind = {
   supportedChains: {
     chain_id: number | string;
     name: string;
+    blockchain: string;
   }[];
 };
 
