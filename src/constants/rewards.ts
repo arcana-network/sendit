@@ -1,6 +1,29 @@
 import NavigationIcon from "@/assets/images/icons/navigation.svg";
 import UserAddIcon from "@/assets/images/icons/user-add.svg";
-// import UserVoiceIcon from "@/assets/images/icons/user-voice.svg";
+import UserVoiceIcon from "@/assets/images/icons/user-voice.svg";
+
+const EARN_XP_SEND_FORM = [
+  {
+    image: NavigationIcon,
+    name: "Earn 150 XP",
+    description: "Send crypto for the first time and earn XP.",
+    task: "",
+  },
+  {
+    image: UserVoiceIcon,
+    name: "Earn 100 XP",
+    description:
+      "Shout out on Twitter after a SendIt transaction for the first time and earn XP.",
+    task: "",
+  },
+  {
+    image: UserAddIcon,
+    name: "Earn 50 XP",
+    description:
+      "Invite a friend and earn XP as soon as they log in to their wallet.",
+    task: "invite",
+  },
+];
 
 const EARN_XP = [
   {
