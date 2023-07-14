@@ -134,9 +134,11 @@ async function onLoginWalletConnected(
   <div class="flex flex-col min-h-[100vh]">
     <AppHeader hide-nav hide-user-data />
     <div
-      class="flex h-full container flex-grow max-lg:flex-col max-lg:gap-12 p-4 max-lg:py-12"
+      class="flex h-full justify-center items-center container flex-grow max-lg:flex-col max-lg:gap-12 p-4 max-lg:py-12"
     >
-      <div class="flex flex-col items-center justify-center w-full lg:w-1/2">
+      <div
+        class="flex flex-col flex-grow items-center justify-center w-full lg:w-1/2"
+      >
         <section
           class="w-full flex flex-col md:justify-center md:items-center md:text-center relative"
         >
