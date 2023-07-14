@@ -7,10 +7,14 @@ import useArcanaAuth from "@/use/arcanaAuth";
 import { truncateAddress } from "@/utils/truncateAddress";
 
 import copyToClipboard from "@/utils/copyToClipboard";
+import useWalletConnect from "@/use/walletconnect";
+import useSocketConnection from "@/use/socketConnection";
 
 const authStore = useAuthStore();
 const { userInfo }: { userInfo: any } = toRefs(authStore);
 const arcanaAuth = useArcanaAuth();
+const walletConnect = useWalletConnect();
+const socketConnection = useSocketConnection();
 
 const toast = useToast();
 
@@ -19,7 +23,12 @@ function onWalletAddressCopy() {
 }
 
 function logout() {
-  arcanaAuth.getAuthInstance().logout();
+  if (authStore.loggedInWith === "walletconnect") {
+    walletConnect.disconnect();
+    socketConnection.disconnect();
+    authStore.setSocketLoginStatus(false);
+    authStore.setLoginStatus(false);
+  } else arcanaAuth.getAuthInstance().logout();
 }
 </script>
 

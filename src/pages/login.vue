@@ -11,27 +11,8 @@ import { isValidEmail } from "@/utils/validation";
 import { toUnicode } from "punycode";
 import useAuthStore from "@/stores/auth";
 import useUserStore from "@/stores/user";
-
-import {
-  EthereumClient,
-  w3mConnectors,
-  w3mProvider,
-} from "@web3modal/ethereum";
-import { Web3Modal } from "@web3modal/html";
-import { configureChains, createConfig, getAccount } from "@wagmi/core";
-import { arbitrum, mainnet, polygon } from "@wagmi/core/chains";
-
-const chains = [arbitrum, mainnet, polygon];
-const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
-
-const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors: w3mConnectors({ projectId, chains }),
-  publicClient,
-});
-const ethereumClient = new EthereumClient(wagmiConfig, chains);
-const web3modal = new Web3Modal({ projectId }, ethereumClient);
+import useWalletConnect from "@/use/walletconnect";
+import type { GetAccountResult, PublicClient } from "@wagmi/core";
 
 const arcanaAuth = useArcanaAuth();
 const authStore = useAuthStore();
@@ -40,6 +21,7 @@ const route = useRoute();
 const loaderStore = useLoaderStore();
 const passwordlessEmailId = ref("");
 const toast = useToast();
+const walletConnect = useWalletConnect();
 
 const query = route.query;
 const verifier = query.verifier as string;
@@ -116,27 +98,29 @@ async function passwordlessLogin() {
 // }
 
 async function onConnectToWalletConnect() {
-  const accountDetails = getAccount();
+  const accountDetails = walletConnect.getAccount();
   const isConnected = accountDetails.isConnected;
   if (!isConnected) {
-    web3modal.subscribeModal(async () => {
-      const accountDetails = getAccount();
+    walletConnect.web3modal.subscribeModal(async () => {
+      const accountDetails = walletConnect.getAccount();
       if (accountDetails.isConnected) onLoginWalletConnected(accountDetails);
     });
-    web3modal.openModal();
+    walletConnect.web3modal.openModal();
   } else onLoginWalletConnected(accountDetails);
 }
 
-async function onLoginWalletConnected(accountDetails) {
+async function onLoginWalletConnected(
+  accountDetails: GetAccountResult<PublicClient>
+) {
   authStore.provider = await accountDetails.connector?.getProvider();
   authStore.setUserInfo({
-    address: accountDetails.address,
+    address: accountDetails.address as string,
     loginType: "null",
     id: accountDetails.address,
   });
   authStore.isLoggedIn = true;
   authStore.loggedInWith = "walletconnect";
-  userStore.address = accountDetails.address;
+  userStore.address = accountDetails.address as string;
 }
 </script>
 
