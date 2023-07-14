@@ -6,6 +6,7 @@ import useSocketConnection from "@/use/socketConnection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
+import { toUnicode } from "punycode";
 
 const emit = defineEmits(["close"]);
 
@@ -28,7 +29,7 @@ async function handleEmailInvite() {
     const invites = email.value.split(",").map((e) => {
       return {
         verifier: "passwordless",
-        verifier_id: e.trim(),
+        verifier_id: toUnicode(e.trim().toLowerCase()),
       };
     });
     const message = {
