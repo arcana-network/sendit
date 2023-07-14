@@ -1,3 +1,6 @@
+import { truncateAddress } from "@/utils/truncateAddress";
+import { hexlify, formatEther } from "ethers";
+
 const notificationsContent = {
   0: ({ points }) => ({
     title: `You have earned ${points} points`,
@@ -69,12 +72,17 @@ const notificationsContent = {
     path: "",
     shoutout: false,
   }),
-  256: ({ from, value, points }) => ({
-    title: `Received ${value} from ${from}`,
-    body: `You have received ${value} from ${from}. Give a shoutout on Twitter to earn ${points} XP.`,
-    path: "History",
-    shoutout: true,
-  }),
+  256: ({ from, wei }) => {
+    const weiInEth = formatEther(hexlify(wei));
+    const fromAddress = hexlify(from).toString().slice(0, 6);
+    const truncatedFromAddress = truncateAddress(fromAddress);
+    return {
+      title: `Received ${weiInEth} from ${truncatedFromAddress}`,
+      body: `You have received ${weiInEth} from ${truncatedFromAddress}.`,
+      path: "History",
+      shoutout: true,
+    };
+  },
   272: ({ nft_value, points }) => ({
     title: "NFT Claimed",
     body: `You have converted ${points} XP into ${nft_value}`,
