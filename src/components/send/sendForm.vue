@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { toRefs, watch, ref, computed, type Ref } from "vue";
+import {
+  toRefs,
+  watch,
+  ref,
+  computed,
+  type Ref,
+  onBeforeMount,
+  onBeforeUnmount,
+} from "vue";
 import sendVia from "@/constants/sendVia";
 import useSendStore from "@/stores/send";
 import useAuthStore from "@/stores/auth";
@@ -19,6 +27,18 @@ import { normaliseEmail, normaliseTwitterHandle } from "@/utils/normalise";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
+let assetInterval: NodeJS.Timer;
+
+onBeforeMount(async () => {
+  await fetchAssets();
+  assetInterval = setInterval(() => {
+    fetchAssets();
+  }, 3000);
+});
+
+onBeforeUnmount(() => {
+  clearInterval(assetInterval);
+});
 
 const sendStore = useSendStore();
 const authStore = useAuthStore();
@@ -31,6 +51,7 @@ const toast = useToast();
 const twitterId = ref("");
 const hasTwitterError = ref(false);
 const hasStartedTyping = ref(false);
+const allAssets: Ref<any[]> = ref([]);
 
 const { userInput, supportedChains } = toRefs(sendStore);
 
@@ -42,12 +63,14 @@ const isEmailValid = computed(() => {
 });
 
 if (userInput.value.chain) {
-  fetchAssets(userInput.value.chain);
+  getChainAssets(userInput.value.chain);
 }
 
 function getSelectedChainInfo(chainId) {
   //@ts-ignore
-  return supportedChains.value.find((chain) => chain.chain_id === chainId);
+  return supportedChains.value.find(
+    (chain) => Number(chain.chain_id) === Number(chainId)
+  );
 }
 
 function getSelectedAssets(tokenSymbol, tokenType) {
@@ -58,22 +81,29 @@ function getSelectedAssets(tokenSymbol, tokenType) {
   );
 }
 
-async function fetchAssets(chainId) {
-  loadStore.showLoader("Fetching user owned tokens...");
+function getChainAssets(chainId) {
+  const chain = getSelectedChainInfo(chainId);
+  if (chain) {
+    chainAssets.value = allAssets.value.filter(
+      (asset) => asset.blockchain === chain.blockchain
+    );
+  }
+}
+
+async function fetchAssets() {
   try {
     const walletAddress = authStore.walletAddress;
-    const chain = getSelectedChainInfo(chainId);
     const data = await getAccountBalance(walletAddress, [
-      //@ts-ignore
-      chain.blockchain,
+      "eth",
+      "polygon",
+      "polygon_mumbai",
     ]);
     if (data?.result?.assets?.length) {
-      chainAssets.value = data?.result?.assets;
+      allAssets.value = data?.result?.assets;
     } else {
-      toast.error("You don't own any tokens on this chain");
+      console.error("You don't own any tokens on this chain");
     }
   } catch (error) {
-    toast.error("Something went wrong. Please contact support");
     console.error(error);
   } finally {
     loadStore.hideLoader();
@@ -225,14 +255,14 @@ watch(
       if (Number(chainId) !== Number(selectedChainId)) {
         try {
           await switchChain(selectedChainId);
-          fetchAssets(selectedChainId);
+          getChainAssets(selectedChainId);
         } catch (e) {
           console.error({ e });
           userInput.value.chain = oldChain;
           toast.error("Switching chain rejected by user");
         }
       } else {
-        fetchAssets(selectedChainId);
+        getChainAssets(selectedChainId);
       }
     } else {
       chainAssets.value = [];
