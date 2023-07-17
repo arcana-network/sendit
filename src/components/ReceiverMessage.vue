@@ -1,42 +1,42 @@
 <script setup lang="ts">
 import Overlay from "@/components/overlay.vue";
-import useArcanaAuth from "@/use/arcanaAuth";
-import { addUserToWaitlist } from "@/services/waitlist.service";
-import { computed, onMounted, ref } from "vue";
-import useLoaderStore from "@/stores/loader";
-import { normaliseEmail } from "@/utils/normalise";
-import { useToast } from "vue-toastification";
+import useNotificationStore from "@/stores/notification";
+import { truncateAddress } from "@/utils/truncateAddress";
+import { composeAndSendTweet } from "@/utils/tweet";
+import { hexlify } from "ethers";
+import { useRouter } from "vue-router";
 
-const loaderStore = useLoaderStore();
-const email = ref("");
-const toast = useToast();
+const emits = defineEmits(["dismiss"]);
+const notificationStore = useNotificationStore();
+const router = useRouter();
 
-function showWallet() {
-  const arcanaAuth = useArcanaAuth();
-  arcanaAuth.getAuthInstance().showWallet();
+const transactionCount = notificationStore.notificationReceivedToken.length;
+const isMultipleTransactions = transactionCount > 1;
+
+const transactionDetails =
+  transactionCount === 1 ? notificationStore.notificationReceivedToken[0] : "";
+
+const tweetMessage = (walletAddress: string) =>
+  `Ka ching! :money_with_wings:  Just received a crypto transfer on #SendIt from ${truncateAddress(
+    walletAddress
+  )}! No wallet, no problem. Join the revolution at https://sendit.arcana.network/ !`;
+
+function handleShoutout(transactionDetails: any) {
+  emits("dismiss");
+  const id = transactionDetails.id;
+  notificationStore.markAsRead(id);
+  const from = transactionDetails.info.from;
+  const fromAddress = hexlify(from).toString();
+  composeAndSendTweet(tweetMessage(fromAddress));
 }
 
-onMounted(() => {
-  setTimeout(showWallet, 1000);
-});
-
-const disableSubmit = computed(() => {
-  return !email.value.trim();
-});
-
-async function handleUserSubmission() {
-  try {
-    loaderStore.showLoader("Adding to waitlist...");
-    const isSubmitted = await addUserToWaitlist(
-      normaliseEmail(email.value),
-      ""
-    );
-    if (!isSubmitted) toast.error("Cannot add to waitlist. Please try again.");
-  } catch (e) {
-    toast.error("Email already added in waitlist");
-  } finally {
-    loaderStore.hideLoader();
-  }
+function viewTransactions() {
+  emits("dismiss");
+  const notificationIDs = notificationStore.notificationReceivedToken.map(
+    (item: any) => item.id
+  );
+  notificationStore.markMultipleAsRead(notificationIDs);
+  router.push({ name: "History" });
 }
 </script>
 
@@ -52,41 +52,41 @@ async function handleUserSubmission() {
             alt="success"
             class="w-[50px] aspect-square"
           />
-          <span class="font-[500] text-4xl">Cha-ching!</span>
-          <span class="text-2xl">You’ve got crypto!</span>
-          <span class="text-xl text-philippine-gray text-center">
-            The balance in your wallet has been updated. Loved how simple it was
-            to receive crypto? Join the waitlist to access SendIt below.
+          <span class="font-[500] text-xl uppercase">{{
+            isMultipleTransactions
+              ? "Received Multiple Transaction"
+              : "Received Crypto"
+          }}</span>
+          <span
+            v-if="isMultipleTransactions"
+            class="text-xs text-philippine-gray text-center"
+          >
+            You have received crypto from multiple sources. View the
+            transactions page for more details and for XP earning opportunities.
+          </span>
+          <span class="text-xs text-philippine-gray text-center" v-else>
+            {{ transactionDetails.content.body }}. View the transactions page
+            for more details or click the button below to earn XP!
           </span>
         </div>
-        <form class="flex flex-col space-y-1.5 w-full rounded-md">
-          <label for="email-waitlist" class="text-xs"
-            >Email ID for Waitlist</label
+        <button
+          v-if="isMultipleTransactions"
+          class="flex justify-center items-center p-2 space-x-2 border-2 rounded-md"
+          @click="viewTransactions"
+        >
+          View Transactions
+        </button>
+        <button
+          v-else
+          class="flex justify-center items-center p-2 space-x-2 border-2 rounded-md"
+          @click="handleShoutout(transactionDetails)"
+        >
+          <span class="uppercase text-sm">Shoutout on Twitter</span>
+          <span
+            class="text-cornflower-blue text-xs font-light bg-feep-koamaru p-1 rounded-md"
+            >Earn 40 XP</span
           >
-          <div class="w-full rounded-md flex bg-dark-charcoal px-2">
-            <input
-              type="email"
-              class="flex-1 bg-transparent input text-lg text-white"
-              placeholder="you@gmail.com"
-              v-model.trim="email"
-            />
-            <button
-              class="flex items-center justify-center"
-              :disabled="disableSubmit"
-              :class="{
-                'cursor-not-allowed': disableSubmit,
-                'cursor-pointer': !disableSubmit,
-                'opacity-50': disableSubmit,
-              }"
-              @click.prevent="handleUserSubmission"
-            >
-              <img
-                src="@/assets/images/icons/arrow-right.svg"
-                alt="email login"
-              />
-            </button>
-          </div>
-        </form>
+        </button>
       </div>
     </div>
   </Overlay>

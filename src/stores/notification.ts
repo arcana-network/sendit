@@ -5,6 +5,7 @@ import notificationsContent from "@/constants/notificationsContent";
 
 const socket = useSocketConnection();
 const COUNT = 10;
+const Notification_Type_Received_Crypto = 256;
 
 const useNotificationStore = defineStore("notification", {
   state: () => ({
@@ -26,6 +27,12 @@ const useNotificationStore = defineStore("notification", {
     },
     notificationCount(state) {
       return state.notifications.filter((n) => !n.read).length;
+    },
+    notificationReceivedToken(state) {
+      return state.notifications.filter(
+        (n) =>
+          n.notification_type === Notification_Type_Received_Crypto && !n.read
+      );
     },
   },
   actions: {
