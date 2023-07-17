@@ -5,6 +5,7 @@ import notificationsContent from "@/constants/notificationsContent";
 
 const socket = useSocketConnection();
 const COUNT = 10;
+const Notification_Type_Received_Crypto = 256;
 
 const useNotificationStore = defineStore("notification", {
   state: () => ({
@@ -26,6 +27,12 @@ const useNotificationStore = defineStore("notification", {
     },
     notificationCount(state) {
       return state.notifications.filter((n) => !n.read).length;
+    },
+    notificationReceivedToken(state) {
+      return state.notifications.filter(
+        (n) =>
+          n.notification_type === Notification_Type_Received_Crypto && !n.read
+      );
     },
   },
   actions: {
@@ -65,6 +72,21 @@ const useNotificationStore = defineStore("notification", {
       if (response.ok) {
         const index = this.notifications.findIndex(
           (n) => n.id === notificationId
+        );
+        this.notifications[index].read = true;
+      }
+    },
+    async markMultipleAsRead(notificationIDs: Array<string>) {
+      const payload = {
+        ids: notificationIDs,
+      };
+      const response = (await socket.sendMessage(
+        SOCKET_IDS.NOTIFICATION_MARK_AS_READ,
+        payload
+      )) as any;
+      if (response.ok) {
+        const index = this.notifications.findIndex((n) =>
+          notificationIDs.includes(n.id)
         );
         this.notifications[index].read = true;
       }
