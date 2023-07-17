@@ -9,8 +9,8 @@ const route = useRoute();
     <div class="flex flex-col p-8">
       <span class="text-3.5xl">Rewards</span>
       <span class="text-sm text-philippine-gray max-w-[720px]"
-        >Find all your rewards you have won. Keep earning more XP to increase
-        your leaderboard rank.</span
+        >Find all your rewards below. Earn more XP to increase your leaderboard
+        rank.</span
       >
     </div>
     <div
