@@ -18,21 +18,21 @@ const transactionDetails =
 const tweetMessage = (walletAddress: string) =>
   `Ka ching! :money_with_wings:  Just received a crypto transfer on #SendIt from ${walletAddress}! No wallet, no problem. Join the revolution at https://sendit.arcana.network/ !`;
 
-function handleShoutout(transactionDetails: any) {
+async function handleShoutout(transactionDetails: any) {
   emits("dismiss");
   const id = transactionDetails.id;
-  notificationStore.markAsRead(id);
+  await notificationStore.markAsRead(id);
   const from = transactionDetails.info.from;
   const fromAddress = hexlify(from).toString();
   composeAndSendTweet(tweetMessage(fromAddress));
 }
 
-function viewTransactions() {
+async function viewTransactions() {
   emits("dismiss");
   const notificationIDs = notificationStore.notificationReceivedToken.map(
     (item: any) => item.id
   );
-  notificationStore.markMultipleAsRead(notificationIDs);
+  await notificationStore.markMultipleAsRead(notificationIDs);
   router.push({ name: "History" });
 }
 </script>
@@ -42,7 +42,10 @@ function viewTransactions() {
     <div
       class="max-w-[500px] w-screen bg-eerie-black rounded-[10px] border-1 border-jet flex flex-col relative p-4 gap-5"
     >
-      <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-5 relative">
+        <button class="absolute right-0" @click="emits('dismiss')">
+          <img src="@/assets/images/icons/close.svg" alt="close" />
+        </button>
         <div class="flex flex-col justify-center items-center gap-4">
           <img
             src="@/assets/images/icons/check-mark-success.svg"
@@ -51,7 +54,7 @@ function viewTransactions() {
           />
           <span class="font-[500] text-xl uppercase">{{
             isMultipleTransactions
-              ? "Received Multiple Transaction"
+              ? "Received Multiple Transactions"
               : "Received Crypto"
           }}</span>
           <span
@@ -62,7 +65,7 @@ function viewTransactions() {
             transactions page for more details and for XP earning opportunities.
           </span>
           <span class="text-xs text-philippine-gray text-center" v-else>
-            {{ transactionDetails.content.body }}. View the transactions page
+            {{ transactionDetails?.content?.body }}. View the transactions page
             for more details or click the button below to earn XP!
           </span>
         </div>
