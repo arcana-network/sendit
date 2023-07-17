@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import Overlay from "@/components/overlay.vue";
-import useSocketConnection from "@/use/socketConnection";
-import { SOCKET_IDS } from "@/constants/socket-ids";
 import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
 
@@ -12,16 +10,11 @@ type ClaimNFTProps = {
 const props = defineProps<ClaimNFTProps>();
 
 const emit = defineEmits(["close"]);
-const socket = useSocketConnection();
 const loader = useLoaderStore();
 const toast = useToast();
 
 async function redeemXP() {
   loader.showLoader("Redeeming NFT...");
-  const message = {
-    nft_points: props.details.xar,
-  };
-  await socket.sendMessage(SOCKET_IDS.REDEEM_REWARDS, message);
   emit("close");
   toast.success("NFT redeemed successfully");
   loader.hideLoader();
