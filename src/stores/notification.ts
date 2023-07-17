@@ -85,10 +85,9 @@ const useNotificationStore = defineStore("notification", {
         payload
       )) as any;
       if (response.ok) {
-        const index = this.notifications.findIndex((n) =>
-          notificationIDs.includes(n.id)
-        );
-        this.notifications[index].read = true;
+        this.notifications = this.notifications
+          .filter((n) => notificationIDs.indexOf(n.id))
+          .map((n) => ({ ...n, read: true }));
       }
     },
   },
