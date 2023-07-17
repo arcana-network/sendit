@@ -153,9 +153,9 @@ watch(
 );
 
 watch(
-  () => notificationStore.notificationReceivedToken,
+  () => notificationStore.notificationReceivedToken.length,
   (newValue) => {
-    showReceivedCryptoMessage.value = !!newValue.length;
+    showReceivedCryptoMessage.value = !!newValue;
   }
 );
 
