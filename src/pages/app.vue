@@ -32,6 +32,7 @@ const hasBalance = ref(false);
 const sendStore = useSendStore();
 const { connectMetamask } = useMetamask();
 const walletConnect = useWalletConnect();
+const showReceivedCryptoMessage = ref(false);
 
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
@@ -151,6 +152,13 @@ watch(
   }
 );
 
+watch(
+  () => notificationStore.notificationReceivedToken,
+  (newValue) => {
+    showReceivedCryptoMessage.value = !!newValue.length;
+  }
+);
+
 const showFullScreenLoader = computed(() => {
   return (
     loaderStore.show || (!authStore.isSocketLoggedIn && authStore.isLoggedIn)
@@ -176,8 +184,8 @@ async function handleNoAccessBack() {
     <FullScreenLoader v-if="showFullScreenLoader" />
     <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
     <ReceiverMessage
-      v-if="isNotWhitelisted && hasBalance"
-      @dismiss="hasBalance = false"
+      v-if="showReceivedCryptoMessage"
+      @dismiss="showReceivedCryptoMessage = false"
     />
     <NotWhiteListed
       v-if="isNotWhitelisted && !hasBalance"

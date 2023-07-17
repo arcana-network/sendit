@@ -31,20 +31,6 @@ const useUserStore = defineStore("user", {
         }
       )) as any;
       this.rank = leaderboardResponse.user_rank;
-      setInterval(async () => {
-        const response = (await socket.sendMessage(
-          SOCKET_IDS.GET_PROFILE,
-          null
-        )) as any;
-        this.points = response.points;
-        const leaderboardResponse = (await socket.sendMessage(
-          SOCKET_IDS.GET_LEADERBOARD,
-          {
-            ltype: LEADERBOARD_TYPES.WEEKLY,
-          }
-        )) as any;
-        this.rank = leaderboardResponse.user_rank;
-      }, 3000);
     },
   },
 });

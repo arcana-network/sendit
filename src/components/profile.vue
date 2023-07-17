@@ -9,12 +9,18 @@ import { truncateAddress } from "@/utils/truncateAddress";
 import copyToClipboard from "@/utils/copyToClipboard";
 import useWalletConnect from "@/use/walletconnect";
 import useSocketConnection from "@/use/socketConnection";
+import useSendStore from "@/stores/send";
+import useRewardsStore from "@/stores/rewards";
+import useNotificationStore from "@/stores/notification";
 
 const authStore = useAuthStore();
 const { userInfo }: { userInfo: any } = toRefs(authStore);
 const arcanaAuth = useArcanaAuth();
 const walletConnect = useWalletConnect();
 const socketConnection = useSocketConnection();
+const sendStore = useSendStore();
+const rewardsStore = useRewardsStore();
+const notificationStore = useNotificationStore();
 
 const toast = useToast();
 
@@ -29,6 +35,9 @@ function logout() {
     authStore.setSocketLoginStatus(false);
     authStore.setLoginStatus(false);
   } else arcanaAuth.getAuthInstance().logout();
+  sendStore.resetUserInput();
+  rewardsStore.$reset();
+  notificationStore.$reset();
 }
 </script>
 
