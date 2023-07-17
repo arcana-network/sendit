@@ -18,21 +18,21 @@ const transactionDetails =
 const tweetMessage = (walletAddress: string) =>
   `Ka ching! :money_with_wings:  Just received a crypto transfer on #SendIt from ${walletAddress}! No wallet, no problem. Join the revolution at https://sendit.arcana.network/ !`;
 
-function handleShoutout(transactionDetails: any) {
+async function handleShoutout(transactionDetails: any) {
   emits("dismiss");
   const id = transactionDetails.id;
-  notificationStore.markAsRead(id);
+  await notificationStore.markAsRead(id);
   const from = transactionDetails.info.from;
   const fromAddress = hexlify(from).toString();
   composeAndSendTweet(tweetMessage(fromAddress));
 }
 
-function viewTransactions() {
+async function viewTransactions() {
   emits("dismiss");
   const notificationIDs = notificationStore.notificationReceivedToken.map(
     (item: any) => item.id
   );
-  notificationStore.markMultipleAsRead(notificationIDs);
+  await notificationStore.markMultipleAsRead(notificationIDs);
   router.push({ name: "History" });
 }
 </script>
@@ -54,7 +54,7 @@ function viewTransactions() {
           />
           <span class="font-[500] text-xl uppercase">{{
             isMultipleTransactions
-              ? "Received Multiple Transaction"
+              ? "Received Multiple Transactions"
               : "Received Crypto"
           }}</span>
           <span
@@ -65,7 +65,7 @@ function viewTransactions() {
             transactions page for more details and for XP earning opportunities.
           </span>
           <span class="text-xs text-philippine-gray text-center" v-else>
-            {{ transactionDetails.content.body }}. View the transactions page
+            {{ transactionDetails?.content?.body }}. View the transactions page
             for more details or click the button below to earn XP!
           </span>
         </div>
