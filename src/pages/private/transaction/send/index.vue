@@ -8,6 +8,7 @@ import { composeAndSendTweet } from "@/utils/tweet";
 import { EARN_XP_SEND_FORM } from "@/constants/rewards";
 import RewardsCard from "@/components/rewards-card.vue";
 import AppInvite from "@/components/AppInvite.vue";
+import useUserStore from "@/stores/user";
 
 const sendStore = useSendStore();
 const showSuccessMessage = ref(false);
@@ -20,6 +21,7 @@ const verifierId = ref("");
 const txHash = ref("");
 const verifierHuman = ref("");
 const showInvitePopup = ref(false);
+const userStore = useUserStore();
 
 function handleTxSucces(data) {
   showSuccessMessage.value = true;
@@ -47,6 +49,7 @@ function handleShoutout() {
 
 function handleSuccessModalClose() {
   showSuccessMessage.value = false;
+  userStore.fetchUserPointsAndRank();
   resetUserInput();
 }
 </script>

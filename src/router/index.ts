@@ -61,12 +61,6 @@ const routes: RouteRecordRaw[] = [
                   import("@/pages/private/rewards/my-rewards/index.vue"),
               },
               {
-                name: "Redeem XP",
-                path: "redeem",
-                component: () =>
-                  import("@/pages/private/rewards/redeem/index.vue"),
-              },
-              {
                 name: "Earn XP",
                 path: "earn",
                 component: () =>

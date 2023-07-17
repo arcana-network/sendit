@@ -25,12 +25,6 @@ const route = useRoute();
       >
       <router-link
         class="px-2 py-1 cursor-pointer rounded-[5px]"
-        :class="{ 'bg-[#141414] text-white': route.name === 'Redeem XP' }"
-        :to="{ name: 'Redeem XP' }"
-        >Redeem XP</router-link
-      >
-      <router-link
-        class="px-2 py-1 cursor-pointer rounded-[5px]"
         :class="{ 'bg-[#141414] text-white': route.name === 'Earn XP' }"
         :to="{ name: 'Earn XP' }"
         >Earn XP</router-link
