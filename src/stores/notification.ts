@@ -69,6 +69,21 @@ const useNotificationStore = defineStore("notification", {
         this.notifications[index].read = true;
       }
     },
+    async markMultipleAsRead(notificationIDs: Array<string>) {
+      const payload = {
+        ids: notificationIDs,
+      };
+      const response = (await socket.sendMessage(
+        SOCKET_IDS.NOTIFICATION_MARK_AS_READ,
+        payload
+      )) as any;
+      if (response.ok) {
+        const index = this.notifications.findIndex((n) =>
+          notificationIDs.includes(n.id)
+        );
+        this.notifications[index].read = true;
+      }
+    },
   },
 });
 
