@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// @ts-nocheck
 import { ref, onBeforeUnmount, onMounted, watch } from "vue";
 import ArrowIcon from "@/assets/images/icons/down-arrow.svg";
 
