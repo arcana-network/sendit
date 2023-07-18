@@ -7,7 +7,7 @@ type SendStoreKind = {
   userInput: {
     medium: "" | "twitter" | "mail";
     recipientId: string;
-    chain: string;
+    chain: string | number;
     token: string;
     amount: string;
   };
