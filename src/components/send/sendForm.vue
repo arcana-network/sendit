@@ -256,7 +256,7 @@ watch(
       });
       if (Number(chainId) !== Number(selectedChainId)) {
         try {
-          await switchChain(selectedChainId);
+          await switchChain(selectedChainId as string);
           getChainAssets(selectedChainId);
         } catch (e) {
           console.error({ e });
