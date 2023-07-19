@@ -80,7 +80,7 @@ function handleMail() {
           <span class="font-bold text-xs">Shoutout on twitter</span>
           <span
             class="text-cornflower-blue text-xs font-light bg-feep-koamaru p-1 rounded-md"
-            >Earn 40 XP</span
+            >Earn 25 XP</span
           >
         </button>
       </div>
