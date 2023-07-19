@@ -398,7 +398,7 @@ function handleMediumChange(medium) {
         />
         <div
           class="text-[#ff4264] text-[10px]"
-          v-if="!userInput.chain && chainAssets.length"
+          v-if="userInput.chain && !chainAssets.length"
         >
           You don't own any tokens on this chain. Please switch the chain or
           load some tokens to continue
