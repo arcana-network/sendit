@@ -9,6 +9,7 @@ import { EARN_XP_SEND_FORM } from "@/constants/rewards";
 import RewardsCard from "@/components/rewards-card.vue";
 import AppInvite from "@/components/AppInvite.vue";
 import useUserStore from "@/stores/user";
+import generateSenditUrl from "@/utils/generateSenditUrl";
 
 const sendStore = useSendStore();
 const showSuccessMessage = ref(false);
@@ -41,7 +42,7 @@ function resetUserInput() {
 function handleShoutout() {
   showSuccessMessage.value = false;
   composeAndSendTweet(
-    `Just sent a crypto transfer on #SendIt to ${verifierHuman.value}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `
+    `Whoosh! I just sent crypto to an email address using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
   );
   showTweetVerificationModal.value = true;
   resetUserInput();

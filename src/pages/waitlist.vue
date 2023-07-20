@@ -9,6 +9,7 @@ import { useToast } from "vue-toastification";
 import LandingDescription from "@/components/LandingDescription.vue";
 import { useRoute } from "vue-router";
 import { normaliseEmail } from "@/utils/normalise";
+import generateSenditUrl from "@/utils/generateSenditUrl";
 
 const hasStartedTyping = ref(false);
 const email = ref("");
@@ -102,11 +103,14 @@ function handleInput() {
   }
 }
 
-const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to discover what this product has to offer. Make sure to claim yours too at https://sendit.arcana.network!`;
+const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to discover what this product has to offer. #GetOnWeb3 and join the waitlist at ${generateSenditUrl()}!`;
 </script>
 
 <template>
   <div class="min-h-screen flex flex-col">
+    <div class="bg-[#7fdca4] p-2 text-center text-[#212123] font-[500] text-sm">
+      Whitelisting has started! Please check your registered email.
+    </div>
     <AppHeader hide-nav hide-user-data />
     <div
       class="flex h-full justify-center items-center container flex-grow max-lg:flex-col max-lg:gap-12 p-4 max-lg:py-12"

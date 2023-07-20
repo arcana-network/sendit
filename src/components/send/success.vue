@@ -16,7 +16,7 @@ type SendSuccessProps = {
 const props = defineProps<SendSuccessProps>();
 const emit = defineEmits(["close", "shoutout"]);
 const toast = useToast();
-const message = `Just sent you a some tokens via #SendIt. Claim them here: ${props.shareDetails.shareLink}`;
+const message = `Just sent you some tokens via #SendIt. Claim them by clicking the link ${props.shareDetails.shareLink}`;
 
 async function handleLinkCopy() {
   await copyToClipboard(props.shareDetails.shareLink);
@@ -80,7 +80,7 @@ function handleMail() {
           <span class="font-bold text-xs">Shoutout on twitter</span>
           <span
             class="text-cornflower-blue text-xs font-light bg-feep-koamaru p-1 rounded-md"
-            >Earn 40 XP</span
+            >Earn 25 XP</span
           >
         </button>
       </div>

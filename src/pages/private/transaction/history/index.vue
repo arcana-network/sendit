@@ -14,6 +14,8 @@ import { normaliseTwitterHandle } from "@/utils/normalise";
 import useLoaderStore from "@/stores/loader";
 import copyToClipboard from "@/utils/copyToClipboard";
 import { useToast } from "vue-toastification";
+import chainList from "@/constants/chainList";
+import generateSenditUrl from "@/utils/generateSenditUrl";
 
 const socket = useSocketConnection();
 
@@ -45,6 +47,7 @@ async function fetchTxHistory() {
         value: formatEther(hexlify(record.amount)),
         currency: nativeUnitMapping[Number(record.chainId)],
       },
+      chain: chainList[Number(record.chainId)]?.name || "N/A",
       txHash: hexlify(record.hash),
       txStatus: record.sent ? "sent" : "received",
       socialId: record.user.verifier_human || hexlify(record.user_address),
@@ -76,8 +79,8 @@ function getSocialId(socialId: string, verifier: string) {
 function shareTweet(record) {
   const tweet =
     record.txStatus === "sent"
-      ? `Just sent a crypto transfer on #SendIt to ${record.socialId}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `
-      : `Just received a crypto transfer on #SendIt from ${record.socialId}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `;
+      ? `Whoosh! I just sent crypto to an email address using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
+      : `Cha-ching! 💸 Just received crypto on #SendIt. Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `;
   composeAndSendTweet(tweet);
   tweetVerificationHash.value = record.txHash;
   showTweetVerificationModal.value = true;
@@ -102,6 +105,7 @@ function shareTweet(record) {
       >
         <div class="leaderboard-table-header-item">Date</div>
         <div class="leaderboard-table-header-item">Amount</div>
+        <div class="leaderboard-table-header-item">Chain</div>
         <div class="leaderboard-table-header-item">Social ID</div>
         <div class="leaderboard-table-header-item">Wallet Address</div>
         <div class="leaderboard-table-header-item">Sendit Link</div>
@@ -126,6 +130,7 @@ function shareTweet(record) {
               <div class="leaderboard-table-row-item">
                 {{ record.amount.value }} {{ record.amount.currency }}
               </div>
+              <div class="leaderboard-table-row-item">{{ record.chain }}</div>
               <div
                 class="leaderboard-table-row-item ellipsis cursor-pointer"
                 :title="record.socialId"
@@ -172,7 +177,7 @@ function shareTweet(record) {
               </div>
               <div
                 v-if="!record.isSharedOnTwitter"
-                class="leaderboard-table-row-item text-[#659CFF] text-[10px] bg-[#293C5F] px-1 rounded-[5px]"
+                class="leaderboard-table-row-item text-center text-[#659CFF] text-[10px] bg-[#293C5F] px-1 rounded-[5px]"
               >
                 Earn 25 XP
               </div>
@@ -194,6 +199,10 @@ function shareTweet(record) {
                 <span
                   >{{ record.amount.value }} {{ record.amount.currency }}</span
                 >
+              </div>
+              <div class="text-xs ellipsis">
+                <span class="text-philippine-gray">Chain:</span>&nbsp;
+                <span>{{ record.chain }}</span>
               </div>
               <div class="text-xs ellipsis">
                 <span class="text-philippine-gray"
@@ -238,7 +247,7 @@ function shareTweet(record) {
             >
               <img src="@/assets/images/icons/twitter-blue.svg" class="my-3" />
               <div
-                class="leaderboard-table-row-item text-[#659CFF] text-[10px] bg-[#293C5F] px-2 py-1 rounded-[5px]"
+                class="leaderboard-table-row-item text-[#659CFF] text-[10px] bg-[#293C5F] px-1 py-1 rounded-[5px] text-center"
               >
                 Earn 25 XP
               </div>
@@ -265,8 +274,10 @@ function shareTweet(record) {
 <style scoped>
 .leaderboard-table-header,
 .leaderboard-table-row {
-  grid-template-columns: 10% 8% 12% 13% 20% 7% 5% 10% 5%;
-  grid-gap: 1rem;
+  grid-template-columns:
+    calc(10% - 0.5rem) 8% 10% calc(12% - 0.5rem) calc(13% - 0.5rem)
+    calc(18% - 0.5rem) 6% 4% 10% 5%;
+  grid-gap: 0.5rem;
 }
 
 .star-icon::before {

@@ -24,7 +24,8 @@ const notificationStore = useNotificationStore();
 
 const toast = useToast();
 
-function onWalletAddressCopy() {
+async function handleCopy() {
+  await copyToClipboard(userInfo.value.address);
   toast.success("Wallet address copied to clipboard");
 }
 
@@ -65,11 +66,7 @@ function logout() {
           <span class="text-sm text-left overflow-hidden">{{
             truncateAddress(userInfo.address)
           }}</span>
-          <button
-            @click.prevent="
-              copyToClipboard(userInfo.address, onWalletAddressCopy)
-            "
-          >
+          <button @click.stop="handleCopy">
             <img :src="CopyIcon" alt="copy" />
           </button>
         </div>

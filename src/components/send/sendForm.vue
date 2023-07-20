@@ -24,6 +24,7 @@ import { useToast } from "vue-toastification";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import { isValidEmail } from "@/utils/validation";
 import { normaliseEmail, normaliseTwitterHandle } from "@/utils/normalise";
+import Dropdown from "@/components/lib/dropdown.vue";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -84,9 +85,12 @@ function getSelectedAssets(tokenSymbol, tokenType) {
 function getChainAssets(chainId) {
   const chain = getSelectedChainInfo(chainId);
   if (chain) {
-    chainAssets.value = allAssets.value.filter(
-      (asset) => asset.blockchain === chain.blockchain
-    );
+    chainAssets.value = allAssets.value
+      .filter((asset) => asset.blockchain === chain.blockchain)
+      .map((asset) => ({
+        ...asset,
+        name: `${asset.tokenSymbol}-${asset.tokenType}`,
+      }));
   }
 }
 
@@ -178,8 +182,8 @@ async function proceed() {
       const [tokenSymbol, tokenType] = userInput.value.token.split("-");
       const asset = getSelectedAssets(tokenSymbol, tokenType);
       loadStore.showLoader(
-        "Attempting transfer of tokens. Please wait...",
-        "Blockchain transactions may take some time to complete depending on the network state. Please wait until transaction is completed."
+        "Transferring Tokens...",
+        "Please approve the transaction and wait until it is completed."
       );
       const tx =
         tokenType === "NATIVE"
@@ -191,8 +195,7 @@ async function proceed() {
               //@ts-ignore
               asset.contractAddress
             );
-      toast.success("Transaction being mined");
-      loadStore.showLoader("Tokens transferred. Generating share link...");
+      loadStore.showLoader("Generating SendIt link...");
       const { hash, to } = tx;
       const toEmail = recipientId;
       //@ts-ignore
@@ -252,7 +255,7 @@ watch(
       });
       if (Number(chainId) !== Number(selectedChainId)) {
         try {
-          await switchChain(selectedChainId);
+          await switchChain(selectedChainId as string);
           getChainAssets(selectedChainId);
         } catch (e) {
           console.error({ e });
@@ -331,18 +334,11 @@ function handleMediumChange(medium) {
           @click="handleMediumChange(medium.value)"
           class="border-1 border-jet p-1.5 bg-[#666] rounded-full hover:border-white hover:bg-[#999] cursor-pointer"
           :class="{
-            'border-white outline-1 outline outline-white':
-              userInput.medium === medium.value,
+            'border-white': userInput.medium === medium.value,
           }"
         >
           <img :src="medium.icon" :alt="medium.value" />
         </div>
-      </div>
-      <div
-        class="text-[#ff4264] text-[10px]"
-        v-if="!userInput.medium && userInput.recipientId.trim()"
-      >
-        Please select a medium to send
       </div>
     </div>
     <form class="space-y-3">
@@ -383,47 +379,25 @@ function handleMediumChange(medium) {
       </div>
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Chain</label>
-        <div class="pr-3 w-full bg-dark-charcoal rounded-md">
-          <select class="input w-full" name="chains" v-model="userInput.chain">
-            <option
-              id="chains"
-              v-for="chain in supportedChains"
-              :key="chain.chain_id"
-              :value="chain.chain_id"
-            >
-              {{ chain.name }}
-            </option>
-          </select>
-        </div>
-        <div
-          class="text-[#ff4264] text-[10px]"
-          v-if="!userInput.chain && userInput.amount"
-        >
-          Please select a chain
-        </div>
+        <Dropdown
+          @update:model-value="(value) => (userInput.chain = value.chain_id)"
+          :options="supportedChains"
+          display-field="name"
+          placeholder="Select Chain"
+        />
       </div>
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Token</label>
-        <div class="pr-3 w-full bg-dark-charcoal rounded-md">
-          <select
-            class="input w-full"
-            name="assets"
-            v-model="userInput.token"
-            :disabled="disableTokenInput"
-          >
-            <option
-              id="assets"
-              v-for="asset in chainAssets"
-              :key="`${asset.tokenSymbol}-${asset.tokenType}`"
-              :value="`${asset.tokenSymbol}-${asset.tokenType}`"
-            >
-              {{ `${asset.tokenSymbol} - ${asset.tokenType}` }}
-            </option>
-          </select>
-        </div>
+        <Dropdown
+          @update:model-value="(value) => (userInput.token = value.name)"
+          :options="chainAssets"
+          display-field="name"
+          placeholder="Select Token"
+          :disabled="disableTokenInput"
+        />
         <div
           class="text-[#ff4264] text-[10px]"
-          v-if="!userInput.chain && chainAssets.length"
+          v-if="userInput.chain && !chainAssets.length"
         >
           You don't own any tokens on this chain. Please switch the chain or
           load some tokens to continue

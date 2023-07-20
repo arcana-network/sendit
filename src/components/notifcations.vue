@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import useNotificationStore from "@/stores/notification";
+import generateSenditUrl from "@/utils/generateSenditUrl";
 import { composeAndSendTweet } from "@/utils/tweet";
 import { toRefs } from "vue";
 import { useRouter } from "vue-router";
@@ -18,8 +19,8 @@ function onClickNotification(notification) {
   notificationStore.markAsRead(notification.id);
 }
 
-function getTweetMessage({ from }) {
-  return `Just received a crypto transfer on #SendIt from ${from}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `;
+function getTweetMessage() {
+  return `Cha-ching! 💸 Just received crypto on #SendIt. Join the #GetOnWeb3 revolution at ${generateSenditUrl()}!`;
 }
 </script>
 
@@ -50,9 +51,7 @@ function getTweetMessage({ from }) {
           </div>
           <button
             v-if="notification.shoutout"
-            @click.prevent="
-              composeAndSendTweet(getTweetMessage(notification.info))
-            "
+            @click.prevent="composeAndSendTweet(getTweetMessage())"
             class="h-20 w-20 p-0.5 border-1 border-philippine-gray rounded-md flex flex-col items-center"
           >
             <img

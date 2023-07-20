@@ -1,5 +1,6 @@
 import { truncateAddress } from "@/utils/truncateAddress";
 import { hexlify, formatEther } from "ethers";
+import chains from "@/constants/chainList";
 
 const notificationsContent = {
   0: ({ points }) => ({
@@ -72,13 +73,15 @@ const notificationsContent = {
     path: "",
     shoutout: false,
   }),
-  256: ({ from, wei }) => {
+  256: ({ from, wei, chain_id }) => {
+    const chainInfo = chains[chain_id];
+    const currency = chainInfo?.currency || "";
     const weiInEth = formatEther(hexlify(wei));
     const fromAddress = hexlify(from).toString();
     const truncatedFromAddress = truncateAddress(fromAddress);
     return {
-      title: `Received ${weiInEth} from ${truncatedFromAddress}`,
-      body: `You have received ${weiInEth} from ${truncatedFromAddress}.`,
+      title: `Received ${weiInEth} ${currency} from ${truncatedFromAddress}`,
+      body: `You have received ${weiInEth} ${currency} from ${truncatedFromAddress}.`,
       path: "History",
       shoutout: true,
     };
