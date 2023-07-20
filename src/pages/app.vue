@@ -16,6 +16,7 @@ import useSendStore from "@/stores/send";
 import useWalletConnect from "@/use/walletconnect";
 import { getAccountBalance } from "@/services/ankr.service";
 import ReceiverMessage from "@/components/ReceiverMessage.vue";
+import { SOCKET_IDS } from "@/constants/socket-ids";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -127,6 +128,11 @@ watch(
   () => authStore.isSocketLoggedIn,
   async (newValue) => {
     if (newValue) {
+      if (route.query.id && route.query.id !== "-1") {
+        await socketConnection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
+          id: Number(route.query.id),
+        });
+      }
       await sendStore.fetchSupportedChains();
       rewardsStore.fetchRewards(userStore.address);
       userStore.fetchUserPointsAndRank();

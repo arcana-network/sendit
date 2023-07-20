@@ -182,8 +182,8 @@ async function proceed() {
       const [tokenSymbol, tokenType] = userInput.value.token.split("-");
       const asset = getSelectedAssets(tokenSymbol, tokenType);
       loadStore.showLoader(
-        "Attempting transfer of tokens. Please wait...",
-        "Blockchain transactions may take some time to complete depending on the network state. Please wait until transaction is completed."
+        "Transferring Tokens...",
+        "Please approve the transaction and wait until it is completed."
       );
       const tx =
         tokenType === "NATIVE"
@@ -195,8 +195,7 @@ async function proceed() {
               //@ts-ignore
               asset.contractAddress
             );
-      toast.success("Transaction being mined");
-      loadStore.showLoader("Tokens transferred. Generating share link...");
+      loadStore.showLoader("Generating SendIt link...");
       const { hash, to } = tx;
       const toEmail = recipientId;
       //@ts-ignore

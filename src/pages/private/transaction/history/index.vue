@@ -15,6 +15,7 @@ import useLoaderStore from "@/stores/loader";
 import copyToClipboard from "@/utils/copyToClipboard";
 import { useToast } from "vue-toastification";
 import chainList from "@/constants/chainList";
+import generateSenditUrl from "@/utils/generateSenditUrl";
 
 const socket = useSocketConnection();
 
@@ -78,8 +79,12 @@ function getSocialId(socialId: string, verifier: string) {
 function shareTweet(record) {
   const tweet =
     record.txStatus === "sent"
-      ? `Just sent a crypto transfer on #SendIt to ${record.socialId}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `
-      : `Just received a crypto transfer on #SendIt from ${record.socialId}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `;
+      ? `Just sent a crypto transfer on #SendIt to ${
+          record.socialId
+        }! No wallet, no problem. Join the revolution at ${generateSenditUrl()}! `
+      : `Just received a crypto transfer on #SendIt from ${
+          record.socialId
+        }! No wallet, no problem. Join the revolution at ${generateSenditUrl()}! `;
   composeAndSendTweet(tweet);
   tweetVerificationHash.value = record.txHash;
   showTweetVerificationModal.value = true;
