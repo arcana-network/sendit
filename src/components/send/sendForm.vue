@@ -295,7 +295,8 @@ const disableSubmit = computed(() => {
     !userInput.value.chain ||
     !userInput.value.medium ||
     !userInput.value.recipientId ||
-    !userInput.value.token
+    !userInput.value.token ||
+    Number(tokenBalance.value) < Number(userInput.value.amount)
   );
 });
 
@@ -414,6 +415,12 @@ function handleMediumChange(medium) {
           >
         </div>
         <input class="input" type="number" v-model="userInput.amount" />
+        <div
+          class="text-[#ff4264] text-[10px]"
+          v-if="Number(tokenBalance) < Number(userInput.amount)"
+        >
+          Entered amount is greater than your wallet balance.
+        </div>
       </div>
       <button
         @click.prevent="proceed"
