@@ -190,6 +190,7 @@ async function handleNoAccessBack() {
 function handleShoutout({ hash }: any) {
   showTweetVerificationModal.value = true;
   tweetHash.value = hash;
+  showReceivedCryptoMessage.value = false;
 }
 </script>
 

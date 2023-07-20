@@ -3,6 +3,7 @@ import Overlay from "@/components/overlay.vue";
 import useNotificationStore from "@/stores/notification";
 import generateSenditUrl from "@/utils/generateSenditUrl";
 import { composeAndSendTweet } from "@/utils/tweet";
+import { hexlify } from "ethers";
 import { useRouter } from "vue-router";
 
 const emits = defineEmits(["dismiss", "tweet-shoutout"]);
@@ -15,15 +16,14 @@ const isMultipleTransactions = transactionCount > 1;
 const transactionDetails =
   transactionCount === 1 ? notificationStore.notificationReceivedToken[0] : "";
 
-const tweetMessage = () =>
-  `Cha-ching! 💸 Just received crypto on #SendIt. Join the #GetOnWeb3 revolution at ${generateSenditUrl()}!`;
+const tweetMessage = `Cha-ching! 💸 Just received crypto on #SendIt. Join the #GetOnWeb3 revolution at ${generateSenditUrl()}!`;
 
 async function handleShoutout(transactionDetails: any) {
-  emits("dismiss");
-  emits("tweet-shoutout", transactionDetails);
+  composeAndSendTweet(tweetMessage);
+  console.log(transactionDetails);
+  emits("tweet-shoutout", { hash: hexlify(transactionDetails.info.tx_hash) });
   const id = transactionDetails.id;
   await notificationStore.markAsRead(id);
-  composeAndSendTweet(tweetMessage());
 }
 
 async function viewTransactions() {
