@@ -109,7 +109,7 @@ const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to d
 <template>
   <div class="min-h-screen flex flex-col">
     <div class="bg-[#7fdca4] p-2 text-center text-[#212123] font-[500] text-sm">
-      Whitelisting has started! Please check your registered email
+      Whitelisting has started! Please check your registered email.
     </div>
     <AppHeader hide-nav hide-user-data />
     <div
