@@ -79,12 +79,8 @@ function getSocialId(socialId: string, verifier: string) {
 function shareTweet(record) {
   const tweet =
     record.txStatus === "sent"
-      ? `Just sent a crypto transfer on #SendIt to ${
-          record.socialId
-        }! No wallet, no problem. Join the revolution at ${generateSenditUrl()}! `
-      : `Just received a crypto transfer on #SendIt from ${
-          record.socialId
-        }! No wallet, no problem. Join the revolution at ${generateSenditUrl()}! `;
+      ? `Whoosh! I just sent crypto to an email address using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
+      : `Cha-ching! 💸 Just received crypto on #SendIt. Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `;
   composeAndSendTweet(tweet);
   tweetVerificationHash.value = record.txHash;
   showTweetVerificationModal.value = true;
