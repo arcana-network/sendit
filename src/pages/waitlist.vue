@@ -103,7 +103,7 @@ function handleInput() {
   }
 }
 
-const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to discover what this product has to offer. Make sure to claim yours too at ${generateSenditUrl()}!`;
+const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to discover what this product has to offer. #GetOnWeb3 and join the waitlist at ${generateSenditUrl()}!`;
 </script>
 
 <template>

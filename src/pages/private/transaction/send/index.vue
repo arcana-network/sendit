@@ -42,9 +42,7 @@ function resetUserInput() {
 function handleShoutout() {
   showSuccessMessage.value = false;
   composeAndSendTweet(
-    `Just sent a crypto transfer on #SendIt to ${
-      verifierHuman.value
-    }! No wallet, no problem. Join the revolution at ${generateSenditUrl()}! `
+    `Whoosh! I just sent crypto to an email address using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
   );
   showTweetVerificationModal.value = true;
   resetUserInput();
