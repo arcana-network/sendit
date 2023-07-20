@@ -17,6 +17,7 @@ import useWalletConnect from "@/use/walletconnect";
 import { getAccountBalance } from "@/services/ankr.service";
 import ReceiverMessage from "@/components/ReceiverMessage.vue";
 import { SOCKET_IDS } from "@/constants/socket-ids";
+import TweetVerify from "@/components/TweetVerify.vue";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -34,6 +35,8 @@ const sendStore = useSendStore();
 const { connectMetamask } = useMetamask();
 const walletConnect = useWalletConnect();
 const showReceivedCryptoMessage = ref(false);
+const showTweetVerificationModal = ref(false);
+const tweetHash = ref("");
 
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
@@ -183,6 +186,11 @@ async function handleNoAccessBack() {
   }
   isNotWhitelisted.value = false;
 }
+
+function handleShoutout({ hash }: any) {
+  showTweetVerificationModal.value = true;
+  tweetHash.value = hash;
+}
 </script>
 
 <template>
@@ -192,6 +200,13 @@ async function handleNoAccessBack() {
     <ReceiverMessage
       v-if="showReceivedCryptoMessage"
       @dismiss="showReceivedCryptoMessage = false"
+      @tweet-shoutout="handleShoutout"
+    />
+    <TweetVerify
+      v-if="showTweetVerificationModal"
+      :xp="25"
+      :hash="tweetHash"
+      @close="showTweetVerificationModal = false"
     />
     <NotWhiteListed
       v-if="isNotWhitelisted && !hasBalance"
