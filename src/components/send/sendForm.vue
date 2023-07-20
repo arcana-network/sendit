@@ -28,6 +28,7 @@ import Dropdown from "@/components/lib/dropdown.vue";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
+const INSUFFICIENT_FUNDS = "INSUFFICIENT_FUNDS";
 let assetInterval: NodeJS.Timer;
 
 onBeforeMount(async () => {
@@ -220,11 +221,12 @@ async function proceed() {
         normalisedTwitterId || normalisedEmail || userInput.value.recipientId;
       emits("transaction-successful", sendRes);
     } catch (error: any) {
-      console.error(error);
       if (error.code === ACTION_REJECTED) {
         toast.error(
           "Signature request rejected. Please refresh the page again to login"
         );
+      } else if (error.code === INSUFFICIENT_FUNDS) {
+        toast.error("Insufficient Gas to make this transaction.");
       } else {
         toast.error(error.message as string);
       }
