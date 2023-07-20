@@ -16,7 +16,7 @@ type SendSuccessProps = {
 const props = defineProps<SendSuccessProps>();
 const emit = defineEmits(["close", "shoutout"]);
 const toast = useToast();
-const message = `Just sent you a some tokens via #SendIt. Claim them here: ${props.shareDetails.shareLink}`;
+const message = `Just sent you some tokens via #SendIt. Claim them by clicking the link ${props.shareDetails.shareLink}`;
 
 async function handleLinkCopy() {
   await copyToClipboard(props.shareDetails.shareLink);
