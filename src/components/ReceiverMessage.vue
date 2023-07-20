@@ -5,7 +5,7 @@ import generateSenditUrl from "@/utils/generateSenditUrl";
 import { composeAndSendTweet } from "@/utils/tweet";
 import { useRouter } from "vue-router";
 
-const emits = defineEmits(["dismiss"]);
+const emits = defineEmits(["dismiss", "tweet-shoutout"]);
 const notificationStore = useNotificationStore();
 const router = useRouter();
 
@@ -20,6 +20,7 @@ const tweetMessage = () =>
 
 async function handleShoutout(transactionDetails: any) {
   emits("dismiss");
+  emits("tweet-shoutout", transactionDetails);
   const id = transactionDetails.id;
   await notificationStore.markAsRead(id);
   composeAndSendTweet(tweetMessage());

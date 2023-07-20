@@ -28,6 +28,7 @@ import Dropdown from "@/components/lib/dropdown.vue";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
+const INSUFFICIENT_FUNDS = "INSUFFICIENT_FUNDS";
 let assetInterval: NodeJS.Timer;
 
 onBeforeMount(async () => {
@@ -219,11 +220,12 @@ async function proceed() {
         normalisedTwitterId || normalisedEmail || userInput.value.recipientId;
       emits("transaction-successful", sendRes);
     } catch (error: any) {
-      console.error(error);
       if (error.code === ACTION_REJECTED) {
         toast.error(
           "Signature request rejected. Please refresh the page again to login"
         );
+      } else if (error.code === INSUFFICIENT_FUNDS) {
+        toast.error("Insufficient Gas to make this transaction.");
       } else {
         toast.error(error.message as string);
       }
@@ -292,7 +294,8 @@ const disableSubmit = computed(() => {
     !userInput.value.chain ||
     !userInput.value.medium ||
     !userInput.value.recipientId ||
-    !userInput.value.token
+    !userInput.value.token ||
+    Number(tokenBalance.value) < Number(userInput.value.amount)
   );
 });
 
@@ -411,6 +414,12 @@ function handleMediumChange(medium) {
           >
         </div>
         <input class="input" type="number" v-model="userInput.amount" />
+        <div
+          class="text-[#ff4264] text-[10px]"
+          v-if="Number(tokenBalance) < Number(userInput.amount)"
+        >
+          Entered amount is greater than your wallet balance.
+        </div>
       </div>
       <button
         @click.prevent="proceed"
