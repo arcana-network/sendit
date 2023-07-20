@@ -9,6 +9,7 @@ import { useToast } from "vue-toastification";
 import LandingDescription from "@/components/LandingDescription.vue";
 import { useRoute } from "vue-router";
 import { normaliseEmail } from "@/utils/normalise";
+import generateSenditUrl from "@/utils/generateSenditUrl";
 
 const hasStartedTyping = ref(false);
 const email = ref("");
@@ -102,7 +103,7 @@ function handleInput() {
   }
 }
 
-const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to discover what this product has to offer. Make sure to claim yours too at https://sendit.arcana.network!`;
+const tweetMessage = `Just secured my spot on the #SendIt waitlist! Excited to discover what this product has to offer. Make sure to claim yours too at ${generateSenditUrl()}!`;
 </script>
 
 <template>

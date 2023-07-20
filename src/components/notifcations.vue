@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import useNotificationStore from "@/stores/notification";
+import generateSenditUrl from "@/utils/generateSenditUrl";
 import { composeAndSendTweet } from "@/utils/tweet";
 import { toRefs } from "vue";
 import { useRouter } from "vue-router";
@@ -19,7 +20,7 @@ function onClickNotification(notification) {
 }
 
 function getTweetMessage({ from }) {
-  return `Just received a crypto transfer on #SendIt from ${from}! No wallet, no problem. Join the revolution at https://sendit.arcana.network! `;
+  return `Just received a crypto transfer on #SendIt from ${from}! No wallet, no problem. Join the revolution at ${generateSenditUrl()}!`;
 }
 </script>
 

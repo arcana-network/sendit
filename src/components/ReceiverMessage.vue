@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Overlay from "@/components/overlay.vue";
 import useNotificationStore from "@/stores/notification";
+import generateSenditUrl from "@/utils/generateSenditUrl";
 import { composeAndSendTweet } from "@/utils/tweet";
 import { hexlify } from "ethers";
 import { useRouter } from "vue-router";
@@ -16,7 +17,7 @@ const transactionDetails =
   transactionCount === 1 ? notificationStore.notificationReceivedToken[0] : "";
 
 const tweetMessage = (walletAddress: string) =>
-  `Ka ching! :money_with_wings:  Just received a crypto transfer on #SendIt from ${walletAddress}! No wallet, no problem. Join the revolution at https://sendit.arcana.network/ !`;
+  `Just received a crypto transfer on #SendIt from ${walletAddress}! No wallet, no problem. Join the revolution at ${generateSenditUrl()}!`;
 
 async function handleShoutout(transactionDetails: any) {
   emits("dismiss");
