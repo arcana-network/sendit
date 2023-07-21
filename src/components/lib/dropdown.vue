@@ -115,10 +115,10 @@ watch(
         @click.stop="onChange(option, $event)"
       >
         <span
-          v-if="displayField"
-          :title="props.showTooltip ? option[displayField] : ''"
+          v-if="props.displayField"
+          :title="props.showTooltip ? option[props.displayField] : ''"
         >
-          {{ option[displayField] }}
+          {{ option[props.displayField] }}
         </span>
         <span v-else :title="props.showTooltip ? option : ''">
           {{ option }}
