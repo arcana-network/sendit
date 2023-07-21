@@ -72,7 +72,7 @@ body {
 }
 
 .input {
-  @apply outline-none border-none rounded-md p-2 bg-dark-charcoal;
+  @apply outline-none border-none rounded-md p-2 bg-dark-charcoal placeholder:text-[#989898];
 }
 
 .form-card {

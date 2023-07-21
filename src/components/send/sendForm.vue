@@ -22,7 +22,7 @@ import { getBytes } from "ethers";
 import useSocketConnection from "@/use/socketConnection";
 import { useToast } from "vue-toastification";
 import { SOCKET_IDS } from "@/constants/socket-ids";
-import { isValidEmail } from "@/utils/validation";
+import { isValidEmail, isValidTwitterHandle } from "@/utils/validation";
 import { normaliseEmail, normaliseTwitterHandle } from "@/utils/normalise";
 import Dropdown from "@/components/lib/dropdown.vue";
 
@@ -60,6 +60,13 @@ const { userInput, supportedChains } = toRefs(sendStore);
 const isEmailValid = computed(() => {
   if (userInput.value.medium === "mail") {
     return isValidEmail(userInput.value.recipientId);
+  }
+  return true;
+});
+
+const isTwitterValid = computed(() => {
+  if (userInput.value.medium === "twitter") {
+    return isValidTwitterHandle(userInput.value.recipientId);
   }
   return true;
 });
@@ -357,8 +364,8 @@ function handleMediumChange(medium) {
           @blur="handleTwitterUsername"
           :placeholder="
             userInput.medium === 'twitter'
-              ? 'Enter twitter username'
-              : 'Enter email'
+              ? 'Enter twitter username eg @mytwitterhandle'
+              : 'Enter email. eg abc@example.com'
           "
         />
         <div
@@ -369,7 +376,7 @@ function handleMediumChange(medium) {
         </div>
         <div
           class="text-[#ff4264] text-[10px]"
-          v-else-if="hasStartedTyping && hasTwitterError"
+          v-else-if="hasStartedTyping && (!isTwitterValid || hasTwitterError)"
         >
           Invalid twitter username
         </div>
@@ -385,6 +392,7 @@ function handleMediumChange(medium) {
         <Dropdown
           @update:model-value="(value) => (userInput.chain = value.chain_id)"
           :options="supportedChains"
+          :model-value="getSelectedChainInfo(userInput.chain)"
           display-field="name"
           placeholder="Select Chain"
         />
@@ -395,6 +403,7 @@ function handleMediumChange(medium) {
           @update:model-value="(value) => (userInput.token = value.name)"
           :options="chainAssets"
           display-field="name"
+          :model-value="userInput.token"
           placeholder="Select Token"
           :disabled="disableTokenInput"
         />
