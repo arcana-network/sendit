@@ -12,7 +12,11 @@ const emits = defineEmits(["invite"]);
 </script>
 
 <template>
-  <div class="flex w-80 h-28 border-1 border-jet rounded-md">
+  <div
+    class="flex w-80 h-28 border-1 border-jet rounded-md"
+    :class="{ 'cursor-pointer': reward.task }"
+    @click.stop="reward.task ? emits(reward.task) : void 0"
+  >
     <div class="bg-eerie-black p-4 flex items-center">
       <img :src="reward.image" :alt="reward.name" class="w-8 h-8" />
     </div>
