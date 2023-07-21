@@ -335,7 +335,7 @@ function handleMediumChange(medium) {
   <div
     class="w-full max-w-[450px] space-y-4 border-1 border-jet p-4 rounded-md bg-eerie-black"
   >
-    <h1 class="uppercase">Transaction Details</h1>
+    <h1 class="uppercase font-bold">Transaction Details</h1>
     <div class="space-y-1">
       <h2 class="text-xs font-medium">Send Via</h2>
       <div class="flex items-center space-x-2">
