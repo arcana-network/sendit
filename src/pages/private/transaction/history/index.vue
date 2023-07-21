@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, onBeforeUnmount, ref } from "vue";
 import useSocketConnection from "@/use/socketConnection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 // import dayjs from "dayjs";
@@ -25,23 +25,45 @@ const userStore = useUserStore();
 const tweetVerificationHash = ref("");
 const loaderStore = useLoaderStore();
 const toast = useToast();
+let currentPage = 1;
+let endOFHistory = false;
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
   fetchTxHistory();
   userStore.fetchUserPointsAndRank();
+  document.onscroll = function () {
+    if (
+      window.innerHeight + window.scrollY >=
+      document.body.offsetHeight - window.outerHeight * 0.3
+    ) {
+      if (!endOFHistory) {
+        currentPage++;
+        fetchTxHistory();
+      }
+    }
+  };
+});
+
+onBeforeUnmount(() => {
+  document.onscroll = null;
+  currentPage = 1;
 });
 
 async function fetchTxHistory() {
+  if (currentPage === 1) {
+    loaderStore.showLoader("Loading transaction history...");
+  } else {
+    loaderStore.showLoader("Loading more transactions...");
+  }
   const message = {
-    offset: 0,
-    count: 500,
+    offset: (currentPage - 1) * 20,
+    count: 20,
   };
-  loaderStore.showLoader("Fetching transaction history...");
   const txHistory = (await socket.sendMessage(
     SOCKET_IDS.GET_TX_HISTORY,
     message
   )) as { txns: any[] };
-  history.value = txHistory.txns.map((record) => {
+  const txns = txHistory.txns.map((record) => {
     return {
       amount: {
         value: formatEther(hexlify(record.amount)),
@@ -59,6 +81,9 @@ async function fetchTxHistory() {
       date: dayjs.unix(record.tx_date).format("DD MMM YYYY"),
     };
   });
+  if (txns.length < 20) endOFHistory = true;
+  if (currentPage === 1) history.value = txns;
+  else history.value = [...history.value, ...txns];
   loaderStore.hideLoader();
 }
 

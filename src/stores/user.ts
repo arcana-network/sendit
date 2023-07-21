@@ -28,6 +28,8 @@ const useUserStore = defineStore("user", {
         SOCKET_IDS.GET_LEADERBOARD,
         {
           ltype: LEADERBOARD_TYPES.WEEKLY,
+          offset: 0,
+          limit: 3,
         }
       )) as any;
       this.rank = leaderboardResponse.user_rank;
