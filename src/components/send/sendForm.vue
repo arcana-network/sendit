@@ -33,9 +33,6 @@ let assetInterval: NodeJS.Timer;
 
 onBeforeMount(async () => {
   await fetchAssets();
-  assetInterval = setInterval(() => {
-    fetchAssets();
-  }, 30000);
 });
 
 onBeforeUnmount(() => {
@@ -258,6 +255,7 @@ async function switchChain(chainId: string) {
 watch(
   () => userInput.value.chain,
   async (selectedChainId, oldChain) => {
+    await fetchAssets();
     if (userInput.value.chain !== "") {
       userInput.value.token = "";
       const chainId = await authStore.provider.request({
