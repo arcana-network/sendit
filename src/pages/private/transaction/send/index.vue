@@ -79,7 +79,7 @@ function getToValue(verifier, verifier_human) {
   />
   <TweetVerify
     v-if="showTweetVerificationModal"
-    :xp="25"
+    :xp="5"
     :hash="txHash"
     @close="showTweetVerificationModal = false"
   />

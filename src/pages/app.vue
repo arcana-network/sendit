@@ -211,7 +211,7 @@ function handleShoutout({ hash }: any) {
     />
     <TweetVerify
       v-if="showTweetVerificationModal"
-      :xp="25"
+      :xp="5"
       :hash="tweetHash"
       @close="showTweetVerificationModal = false"
     />

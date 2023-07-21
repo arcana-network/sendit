@@ -214,7 +214,7 @@ function getToValue(verifier, verifier_human) {
                 v-if="!record.isSharedOnTwitter"
                 class="leaderboard-table-row-item text-center text-[#659CFF] text-[10px] bg-[#293C5F] px-1 rounded-[5px]"
               >
-                Earn 25 XP
+                Earn 5 XP
               </div>
               <div v-else></div>
             </div>
@@ -288,7 +288,7 @@ function getToValue(verifier, verifier_human) {
               <div
                 class="leaderboard-table-row-item text-[#659CFF] text-[10px] bg-[#293C5F] px-1 py-1 rounded-[5px] text-center"
               >
-                Earn 25 XP
+                Earn 5 XP
               </div>
             </button>
           </div>
@@ -304,7 +304,7 @@ function getToValue(verifier, verifier_human) {
     <TweetVerify
       v-if="showTweetVerificationModal"
       @close="showTweetVerificationModal = false"
-      :xp="25"
+      :xp="5"
       :hash="tweetVerificationHash"
     />
   </div>
