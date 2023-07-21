@@ -35,7 +35,7 @@ onBeforeMount(async () => {
   await fetchAssets();
   assetInterval = setInterval(() => {
     fetchAssets();
-  }, 3000);
+  }, 30000);
 });
 
 onBeforeUnmount(() => {
