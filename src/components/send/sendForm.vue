@@ -218,6 +218,7 @@ async function proceed() {
       sendRes.hash = hash;
       sendRes.verifier_human =
         normalisedTwitterId || normalisedEmail || userInput.value.recipientId;
+      sendRes.verifier = toVerifier;
       emits("transaction-successful", sendRes);
     } catch (error: any) {
       if (error.code === ACTION_REJECTED) {

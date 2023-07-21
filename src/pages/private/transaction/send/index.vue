@@ -10,6 +10,7 @@ import RewardsCard from "@/components/rewards-card.vue";
 import AppInvite from "@/components/AppInvite.vue";
 import useUserStore from "@/stores/user";
 import generateSenditUrl from "@/utils/generateSenditUrl";
+import { normaliseTwitterHandle } from "@/utils/normalise";
 
 const sendStore = useSendStore();
 const showSuccessMessage = ref(false);
@@ -23,6 +24,7 @@ const txHash = ref("");
 const verifierHuman = ref("");
 const showInvitePopup = ref(false);
 const userStore = useUserStore();
+const verifier = ref("");
 
 function handleTxSucces(data) {
   showSuccessMessage.value = true;
@@ -33,6 +35,7 @@ function handleTxSucces(data) {
   verifierId.value = data.verifier_id;
   txHash.value = data.hash;
   verifierHuman.value = data.verifier_human;
+  verifier.value = data.verifier;
 }
 
 function resetUserInput() {
@@ -42,7 +45,10 @@ function resetUserInput() {
 function handleShoutout() {
   showSuccessMessage.value = false;
   composeAndSendTweet(
-    `Whoosh! I just sent crypto to an email address using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
+    `Whoosh! I just sent crypto to ${getToValue(
+      verifier.value,
+      verifierHuman.value
+    )} using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
   );
   showTweetVerificationModal.value = true;
   resetUserInput();
@@ -52,6 +58,13 @@ function handleSuccessModalClose() {
   showSuccessMessage.value = false;
   userStore.fetchUserPointsAndRank();
   resetUserInput();
+}
+
+function getToValue(verifier, verifier_human) {
+  console.log(verifier, verifier_human);
+  if (verifier === "twitter") {
+    return `${normaliseTwitterHandle(verifier_human)}`;
+  } else return `an email address`;
 }
 </script>
 
