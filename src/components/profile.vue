@@ -50,11 +50,11 @@ function logout() {
       <span class="text-base uppercase font-bold text-left">Profile</span>
     </div>
     <div class="space-y-4 w-full p-4">
-      <div class="flex flex-col">
+      <div class="flex flex-col" v-if="userInfo.name">
         <span class="text-philippine-gray text-xs text-left">Name</span>
         <span class="text-sm text-left">{{ userInfo.name }}</span>
       </div>
-      <div class="flex flex-col justify-start">
+      <div class="flex flex-col justify-start" v-if="userInfo.email">
         <span class="text-philippine-gray text-xs text-left">Email ID</span>
         <span class="text-sm text-left">{{ userInfo.email }}</span>
       </div>
