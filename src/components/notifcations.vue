@@ -25,9 +25,9 @@ function getTweetMessage() {
 </script>
 
 <template>
-  <div class="w-full max-h-96" v-if="notificationCount">
+  <div class="w-full lg:w-screen lg:max-w-sm max-h-96" v-if="notificationCount">
     <div
-      class="form-card p-0 space-y-[1px] w-full max-w-96 max-h-96 flex divide-y-[1px] divide-philippine-gray"
+      class="form-card space-y-[1px] w-full lg:max-w-sm max-h-96 flex divide-y-[1px] divide-philippine-gray"
     >
       <div class="w-full p-4 flex justify-between">
         <span class="text-base uppercase font-bold">Notifications</span>
@@ -35,9 +35,9 @@ function getTweetMessage() {
           Mark all as read
         </button>
       </div>
-      <div class="pb-4 flex-1 flex overflow-auto">
+      <div class="pb-4 flex-1 flex overflow-auto w-full">
         <div
-          class="w-full flex-1 divide-y-[1px] overflow-auto divide-philippine-gray"
+          class="w-full flex flex-col flex-1 divide-y-[1px] overflow-auto divide-philippine-gray"
         >
           <div
             class="p-4 flex"
