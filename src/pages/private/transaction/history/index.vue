@@ -99,7 +99,7 @@ function getToValue(verifier, verifier_human) {
 
 <template>
   <div class="flex flex-col">
-    <div class="flex flex-col p-8">
+    <div class="flex flex-col p-8 max-lg:px-4">
       <span class="text-3.5xl">Transaction History</span>
       <span class="text-sm text-philippine-gray max-w-[720px]"
         >All your previously completed transactions are listed below. You can
@@ -108,7 +108,7 @@ function getToValue(verifier, verifier_human) {
       >
     </div>
     <div
-      class="flex-col bg-eerie-black rounded-[10px] border border-jet mx-8 my-5 overflow-hidden"
+      class="flex-col bg-eerie-black rounded-[10px] border border-jet mx-8 max-lg:mx-4 my-5 overflow-hidden"
     >
       <div
         class="hidden md:grid leaderboard-table-header text-[12px] text-philippine-gray py-4 px-6"
@@ -242,6 +242,10 @@ function getToValue(verifier, verifier_human) {
                   class="cursor-pointer"
                   >{{ record.link }}</span
                 >
+              </div>
+              <div v-if="record.points" class="text-xs ellipsis">
+                <span class="text-philippine-gray">Points Earned:</span>&nbsp;
+                <span class="font-bold">{{ record.points }}</span>
               </div>
               <div class="text-xs ellipsis">
                 <span class="text-philippine-gray">{{ record.date }}</span>

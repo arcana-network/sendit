@@ -84,7 +84,9 @@ function getToValue(verifier, verifier_human) {
     @close="showTweetVerificationModal = false"
   />
   <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
-  <div class="flex flex-col justify-center items-center p-10 space-y-10">
+  <div
+    class="flex flex-col justify-center items-center p-10 max-lg:px-4 space-y-10"
+  >
     <SendForm @transaction-successful="handleTxSucces" />
   </div>
   <div

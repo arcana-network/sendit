@@ -5,10 +5,10 @@ const emit = defineEmits(["navigated"]);
 </script>
 
 <template>
-  <div class="form-card p-4 flex space-y-2 divide-philippine-gray">
+  <div class="form-card flex flex-col gap-2 py-3 divide-philippine-gray w-full">
     <div v-for="menu in navMenu" :key="menu.routeName" class="w-full">
       <RouterLink
-        class="text-sm w-full"
+        class="text-sm w-full px-6 py-3 flex"
         :to="{ name: menu.routeName }"
         @click.stop="emit('navigated')"
         >{{ menu.label }}</RouterLink
