@@ -108,7 +108,9 @@ async function fetchAssets() {
       "polygon_mumbai",
     ]);
     if (data?.result?.assets?.length) {
-      allAssets.value = data?.result?.assets;
+      allAssets.value = data?.result?.assets?.filter(
+        (asset) => asset.tokenType === "NATIVE"
+      );
     } else {
       console.error("You don't own any tokens on this chain");
     }
@@ -255,7 +257,7 @@ async function switchChain(chainId: string) {
 watch(
   () => userInput.value.chain,
   async (selectedChainId, oldChain) => {
-    await fetchAssets();
+    fetchAssets();
     if (userInput.value.chain !== "") {
       userInput.value.token = "";
       const chainId = await authStore.provider.request({
@@ -326,6 +328,10 @@ async function handleTwitterUsername() {
 function handleMediumChange(medium) {
   userInput.value.medium = medium;
   handleTwitterUsername();
+}
+
+function getTokenModelValue(tokenName) {
+  return chainAssets.value.find((asset) => asset.name === tokenName) || {};
 }
 </script>
 
@@ -402,7 +408,7 @@ function handleMediumChange(medium) {
           @update:model-value="(value) => (userInput.token = value.name)"
           :options="chainAssets"
           display-field="name"
-          :model-value="userInput.token"
+          :model-value="getTokenModelValue(userInput.token)"
           placeholder="Select Token"
           :disabled="disableTokenInput"
         />
