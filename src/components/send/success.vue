@@ -37,7 +37,7 @@ function handleMail() {
 <template>
   <Overlay>
     <div
-      class="w-[450px] flex flex-col items-center border-1 border-jet p-4 rounded-md bg-eerie-black space-y-5 relative"
+      class="w-screen max-w-[450px] flex flex-col items-center border-1 border-jet p-4 rounded-md bg-eerie-black space-y-5 relative"
     >
       <button class="absolute right-4 top-4" @click.stop="emit('close')">
         <img src="@/assets/images/icons/close.svg" alt="close" />

@@ -128,7 +128,7 @@ const stats = computed(() => {
                 class="min-w-fit"
               />
               <div
-                class="absolute top-10 -right-10 z-[999]"
+                class="max-lg:fixed absolute top-10 max-lg:top-16 max-lg:right-2 max-lg:left-2 -right-10 z-[999]"
                 v-if="showNotifications"
                 ref="notificationMenu"
               >
@@ -142,7 +142,7 @@ const stats = computed(() => {
                 class="min-w-fit"
               />
               <div
-                class="absolute top-10 right-0"
+                class="max-lg:fixed absolute top-10 right-0 max-lg:top-16 max-lg:right-2 max-lg:left-2"
                 v-if="showProfile"
                 ref="profileMenu"
               >
