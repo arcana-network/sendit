@@ -115,6 +115,12 @@ async function getUserInfo() {
 
 async function onWalletConnect() {
   loaderStore.showLoader("Connecting...");
+  authStore.provider.on("accountsChanged", (accounts) => {
+    authStore.setUserInfo({
+      address: accounts[0],
+    });
+    userStore.address = accounts[0];
+  });
   await getUserInfo();
   await initSocketConnect();
 }
