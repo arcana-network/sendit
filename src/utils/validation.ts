@@ -23,4 +23,11 @@ function isValidEmail(email: string) {
   return false;
 }
 
-export { isValidEmail };
+function isValidTwitterHandle(handle: string) {
+  if (handle.startsWith("@")) {
+    handle = handle.slice(1);
+  }
+  return /^[a-zA-Z0-9_]{1,15}$/.test(handle);
+}
+
+export { isValidEmail, isValidTwitterHandle };
