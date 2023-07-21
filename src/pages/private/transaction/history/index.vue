@@ -69,8 +69,8 @@ async function copy(data: string, message: string) {
   }
 }
 
-function getSocialId(socialId: string, verifier: string) {
-  if (verifier === "twitter") {
+function getSocialId(socialId: string, verifier: number) {
+  if (verifier === 1) {
     return normaliseTwitterHandle(socialId);
   }
   return socialId;
@@ -79,11 +79,21 @@ function getSocialId(socialId: string, verifier: string) {
 function shareTweet(record) {
   const tweet =
     record.txStatus === "sent"
-      ? `Whoosh! I just sent crypto to an email address using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
+      ? `Whoosh! I just sent crypto to ${getToValue(
+          record.verifier,
+          record.socialId
+        )} using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
       : `Cha-ching! 💸 Just received crypto on #SendIt. Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `;
   composeAndSendTweet(tweet);
   tweetVerificationHash.value = record.txHash;
   showTweetVerificationModal.value = true;
+}
+
+function getToValue(verifier, verifier_human) {
+  console.log(verifier, verifier_human);
+  if (verifier === 1) {
+    return `${normaliseTwitterHandle(verifier_human)}`;
+  } else return `an email address`;
 }
 </script>
 
