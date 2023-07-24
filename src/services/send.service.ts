@@ -36,7 +36,7 @@ async function erc20TokenTransfer(
     receiverWalletAddress,
     parseUnits(amount.toFixed(tokenDecimals), tokenDecimals)
   );
-  return await tx.wait();
+  return { ...(await tx.wait()), to: receiverWalletAddress };
 }
 
 export { nativeTokenTransfer, erc20TokenTransfer };
