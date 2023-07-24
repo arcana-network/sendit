@@ -45,7 +45,6 @@ async function initAuth() {
     const arcanaAuthProvider = auth.getProvider();
     authStore.provider = arcanaAuthProvider;
     arcanaAuthProvider.on("connect", () => {
-      console.log("Connect on provider");
       onWalletConnect();
     });
     authStore.setAuthInitialized(true);
@@ -117,7 +116,6 @@ async function getUserInfo() {
 }
 
 async function onWalletConnect() {
-  console.log("on wallet connect");
   loaderStore.showLoader("Connecting...");
   authStore.provider.on("accountsChanged", (accounts) => {
     authStore.setUserInfo({
@@ -164,7 +162,6 @@ watch(
     if (!newValue) {
       router.push({ name: "Login", query: { ...route.query } });
     } else if (route.name === "Login") {
-      console.log("Connect on login status change");
       if (authStore.loggedInWith !== "") {
         await onWalletConnect();
       }
