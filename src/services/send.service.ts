@@ -31,7 +31,7 @@ async function erc20TokenTransfer(
   const wallet = await web3Provider.getSigner();
   const receiverWalletAddress = computeAddress(`0x${publickey}`);
   const tokenContract = new Contract(tokenAddress, erc20Abi, wallet);
-  const tokenDecimals = await tokenContract.decimals();
+  const tokenDecimals = Number(await tokenContract.decimals());
   const tx = await tokenContract.transfer(
     receiverWalletAddress,
     parseUnits(amount.toFixed(tokenDecimals), tokenDecimals)
