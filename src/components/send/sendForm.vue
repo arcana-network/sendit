@@ -184,7 +184,7 @@ async function proceed() {
         .getAuthInstance()
         .getPublicKey(recipientId);
       const arcanaProvider = authStore.provider;
-      const amount = String(userInput.value.amount);
+      const amount = userInput.value.amount as number;
       const chainId = userInput.value.chain;
       const [tokenSymbol, tokenType] = userInput.value.token.split("-");
       const asset = getSelectedAssets(tokenSymbol, tokenType);

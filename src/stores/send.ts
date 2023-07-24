@@ -9,7 +9,7 @@ type SendStoreKind = {
     recipientId: string;
     chain: string | number;
     token: string;
-    amount: string;
+    amount: number | null;
   };
   supportedChains: {
     chain_id: number | string;
@@ -26,7 +26,7 @@ const useSendStore = defineStore("send", {
         recipientId: "",
         chain: "",
         token: "",
-        amount: "",
+        amount: null,
       },
       supportedChains: [],
     } as SendStoreKind),
@@ -49,7 +49,7 @@ const useSendStore = defineStore("send", {
         recipientId: "",
         chain: "",
         token: "",
-        amount: "",
+        amount: null,
       };
     },
   },
