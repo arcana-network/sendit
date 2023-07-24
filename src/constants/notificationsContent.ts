@@ -11,7 +11,7 @@ const notificationsContent = {
   }),
   1: ({ points }) => ({
     title: `Invite sent`,
-    body: `A invitiation has been sent to your friend. You will earn ${points} XP when they join.`,
+    body: `An invite has been sent to your friend. You will earn ${points} XP when they join.`,
     path: "",
     shoutout: false,
   }),
