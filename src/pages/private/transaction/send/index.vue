@@ -61,7 +61,6 @@ function handleSuccessModalClose() {
 }
 
 function getToValue(verifier, verifier_human) {
-  console.log(verifier, verifier_human);
   if (verifier === "twitter") {
     return `${normaliseTwitterHandle(verifier_human)}`;
   } else return `an email address`;

@@ -115,7 +115,6 @@ function shareTweet(record) {
 }
 
 function getToValue(verifier, verifier_human) {
-  console.log(verifier, verifier_human);
   if (verifier === 1) {
     return `${normaliseTwitterHandle(verifier_human)}`;
   } else return `an email address`;
