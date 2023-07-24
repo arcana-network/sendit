@@ -34,7 +34,7 @@ onBeforeMount(async () => {
   document.onscroll = function () {
     if (
       window.innerHeight + window.scrollY >=
-      document.body.offsetHeight - window.outerHeight * 0.3
+      document.body.offsetHeight - window.outerHeight * 0.4
     ) {
       if (!endOFHistory) {
         currentPage++;
@@ -115,7 +115,6 @@ function shareTweet(record) {
 }
 
 function getToValue(verifier, verifier_human) {
-  console.log(verifier, verifier_human);
   if (verifier === 1) {
     return `${normaliseTwitterHandle(verifier_human)}`;
   } else return `an email address`;

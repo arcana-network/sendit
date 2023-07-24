@@ -26,7 +26,7 @@ const showInvitePopup = ref(false);
 const userStore = useUserStore();
 const verifier = ref("");
 
-function handleTxSucces(data) {
+function handleTxSuccess(data) {
   showSuccessMessage.value = true;
   shareDetails.value = {
     shareLink: data.share_url,
@@ -61,7 +61,6 @@ function handleSuccessModalClose() {
 }
 
 function getToValue(verifier, verifier_human) {
-  console.log(verifier, verifier_human);
   if (verifier === "twitter") {
     return `${normaliseTwitterHandle(verifier_human)}`;
   } else return `an email address`;
@@ -87,7 +86,7 @@ function getToValue(verifier, verifier_human) {
   <div
     class="flex flex-col justify-center items-center p-10 max-lg:px-4 space-y-10"
   >
-    <SendForm @transaction-successful="handleTxSucces" />
+    <SendForm @transaction-successful="handleTxSuccess" />
   </div>
   <div
     class="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3 max-w-[1100px] m-auto"

@@ -13,7 +13,12 @@ async function getAccountBalance(walletAddress: string, blockchain: string[]) {
   const payload = {
     jsonrpc: "2.0",
     method: "ankr_getAccountBalance",
-    params: { walletAddress, blockchain },
+    params: {
+      walletAddress,
+      blockchain,
+      nativeFirst: true,
+      onlyWhitelisted: false,
+    },
     id: 1,
   };
   return (await ANKR_SERVICE.post("?ankr_getAccountBalance=", payload)).data;

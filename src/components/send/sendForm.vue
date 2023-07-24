@@ -21,7 +21,7 @@ import {
 import { getBytes } from "ethers";
 import useSocketConnection from "@/use/socketConnection";
 import { useToast } from "vue-toastification";
-import { SOCKET_IDS } from "@/constants/socket-ids";
+import { SOCKET_IDS, TOKEN_TYPES } from "@/constants/socket-ids";
 import { isValidEmail, isValidTwitterHandle } from "@/utils/validation";
 import { normaliseEmail, normaliseTwitterHandle } from "@/utils/normalise";
 import Dropdown from "@/components/lib/dropdown.vue";
@@ -108,9 +108,7 @@ async function fetchAssets() {
       "polygon_mumbai",
     ]);
     if (data?.result?.assets?.length) {
-      allAssets.value = data?.result?.assets?.filter(
-        (asset) => asset.tokenType === "NATIVE"
-      );
+      allAssets.value = data?.result?.assets;
     } else {
       console.error("You don't own any tokens on this chain");
     }
@@ -126,7 +124,8 @@ function messageArcana(
   toEmail: string,
   chainId: number,
   from_verifier: "passwordless" | "twitter" | "null",
-  to_verifier: "passwordless" | "twitter" | "null"
+  to_verifier: "passwordless" | "twitter" | "null",
+  type: number
 ) {
   const message = {
     hash: Buffer.from(getBytes(hash)),
@@ -136,6 +135,7 @@ function messageArcana(
     from_verifier,
     to_id: toEmail,
     to_verifier,
+    type,
   };
   return socketConnection.sendMessage(SOCKET_IDS.SEND_TX, message);
 }
@@ -218,7 +218,8 @@ async function proceed() {
         toEmail,
         Number(chainId),
         fromVerifier,
-        toVerifier
+        toVerifier,
+        tokenType === "NATIVE" ? TOKEN_TYPES.NATIVE : TOKEN_TYPES.ERC20
       )) as any;
       sendRes.verifier_id = recipientId;
       sendRes.hash = hash;
@@ -234,6 +235,7 @@ async function proceed() {
       } else if (error.code === INSUFFICIENT_FUNDS) {
         toast.error("Insufficient Gas to make this transaction.");
       } else {
+        console.log(error);
         toast.error(error.message as string);
       }
     } finally {

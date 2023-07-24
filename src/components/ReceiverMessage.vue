@@ -20,7 +20,6 @@ const tweetMessage = `Cha-ching! 💸 Just received crypto on #SendIt. Join the 
 
 async function handleShoutout(transactionDetails: any) {
   composeAndSendTweet(tweetMessage);
-  console.log(transactionDetails);
   emits("tweet-shoutout", { hash: hexlify(transactionDetails.info.tx_hash) });
   const id = transactionDetails.id;
   await notificationStore.markAsRead(id);

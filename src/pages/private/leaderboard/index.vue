@@ -13,10 +13,23 @@ const socket = useSocketConnection();
 
 const rankers = ref([] as any[]);
 let currentPage = 1;
+let endOFLeaderboard = false;
 
 onBeforeMount(() => {
   if (route.query.duration === "weekly") fetchLeaderboard("weekly");
   else fetchLeaderboard();
+  document.onscroll = function () {
+    if (
+      window.innerHeight + window.scrollY >=
+      document.body.offsetHeight - window.outerHeight * 0.4
+    ) {
+      if (!endOFLeaderboard) {
+        currentPage++;
+        if (route.query.duration === "weekly") fetchLeaderboard("weekly");
+        else fetchLeaderboard();
+      }
+    }
+  };
 });
 
 const headerHeight = computed(() => {
@@ -45,6 +58,7 @@ async function fetchLeaderboard(duration: "global" | "weekly" = "global") {
       joinDate: dayjs.unix(ranking.join_time).format("DD MMM YYYY"),
     };
   });
+  if (leaderboardRankings.length < 10) endOFLeaderboard = true;
   if (currentPage === 1) {
     rankers.value = leaderboardRankings;
   } else {
