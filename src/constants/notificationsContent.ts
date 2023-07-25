@@ -61,6 +61,7 @@ const notificationsContent = {
     path: "History",
     shoutout: false,
   }),
+  10: () => ({}),
   16: ({ points }) => ({
     title: "Shoutout Verified",
     body: `Congratulations on making a verified shoutout! You have earned ${points} XP`,

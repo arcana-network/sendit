@@ -41,6 +41,7 @@ const useNotificationStore = defineStore("notification", {
         SOCKET_IDS.NOTIFICATION,
         this.getNotificationpayload
       )) as any;
+      console.log(notifications);
       this.notifications = notifications.map((n) => ({
         ...n,
         content: notificationsContent[n.notification_type](n.info),

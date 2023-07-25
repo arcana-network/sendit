@@ -11,7 +11,7 @@ const MobileMenu = defineAsyncComponent(
   () => import("@/components/mobileMenu.vue")
 );
 const Notifications = defineAsyncComponent(
-  () => import("@/components/notifcations.vue")
+  () => import("@/components/notifications.vue")
 );
 const Profile = defineAsyncComponent(() => import("@/components/profile.vue"));
 

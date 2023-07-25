@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref, watch } from "vue";
+import { computed, onBeforeMount, onBeforeUnmount, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import StarIcon from "@/components/StarIcon.vue";
 import useSocketConnection from "@/use/socketConnection";
@@ -32,6 +32,10 @@ onBeforeMount(() => {
   };
 });
 
+onBeforeUnmount(() => {
+  document.onscroll = null;
+});
+
 const headerHeight = computed(() => {
   return document.querySelector("#header")?.clientHeight as number;
 });
@@ -42,8 +46,8 @@ async function fetchLeaderboard(duration: "global" | "weekly" = "global") {
       duration === "weekly"
         ? LEADERBOARD_TYPES.WEEKLY
         : LEADERBOARD_TYPES.GLOBAL,
-    offset: (currentPage - 1) * 10,
-    count: 10,
+    offset: (currentPage - 1) * 100,
+    count: 100,
   };
   const leaderboard = (await socket.sendMessage(
     SOCKET_IDS.GET_LEADERBOARD,
@@ -70,6 +74,7 @@ watch(
   () => route.query.duration,
   async () => {
     currentPage = 1;
+    endOFLeaderboard = false;
     if (route.query.duration === "weekly") fetchLeaderboard("weekly");
     else fetchLeaderboard();
   }

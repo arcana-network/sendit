@@ -6,7 +6,7 @@ import { SOCKET_IDS } from "@/constants/socket-ids";
 // import { ethers } from "ethers";
 import { composeAndSendTweet } from "@/utils/tweet";
 import TweetVerify from "@/components/TweetVerify.vue";
-import { hexlify, formatEther } from "ethers";
+import { hexlify, formatUnits } from "ethers";
 import { nativeUnitMapping } from "@/constants/unitMapping.ts";
 import dayjs from "dayjs";
 import useUserStore from "@/stores/user";
@@ -16,6 +16,7 @@ import copyToClipboard from "@/utils/copyToClipboard";
 import { useToast } from "vue-toastification";
 import chainList from "@/constants/chainList";
 import generateSenditUrl from "@/utils/generateSenditUrl";
+import { beautifyAmount } from "@/utils/beautifyAmount";
 
 const socket = useSocketConnection();
 
@@ -44,6 +45,20 @@ onBeforeMount(async () => {
   };
 });
 
+function getDecimals(info: any) {
+  if ("decimals" in info) {
+    return info.decimals;
+  }
+  return 18;
+}
+
+function getCurrency(chainId: string | number, info: any) {
+  if ("symbol" in info) {
+    return info.symbol;
+  }
+  return nativeUnitMapping[Number(chainId)];
+}
+
 onBeforeUnmount(() => {
   document.onscroll = null;
   currentPage = 1;
@@ -66,8 +81,8 @@ async function fetchTxHistory() {
   const txns = txHistory.txns.map((record) => {
     return {
       amount: {
-        value: formatEther(hexlify(record.amount)),
-        currency: nativeUnitMapping[Number(record.chainId)],
+        value: formatUnits(hexlify(record.amount), getDecimals(record.info)),
+        currency: getCurrency(record.chainId, record.info),
       },
       chain: chainList[Number(record.chainId)]?.name || "N/A",
       txHash: hexlify(record.hash),
@@ -161,8 +176,12 @@ function getToValue(verifier, verifier_human) {
               :key="record.txHash"
             >
               <div class="leaderboard-table-row-item">{{ record.date }}</div>
-              <div class="leaderboard-table-row-item">
-                {{ record.amount.value }} {{ record.amount.currency }}
+              <div
+                class="leaderboard-table-row-item"
+                :title="`${record.amount.value} ${record.amount.currency}`"
+              >
+                {{ beautifyAmount(record.amount.value) }}
+                {{ record.amount.currency }}
               </div>
               <div class="leaderboard-table-row-item">{{ record.chain }}</div>
               <div
@@ -205,13 +224,13 @@ function getToValue(verifier, verifier_human) {
                 >
                   Share on Twitter
                 </button>
-                <span v-else class="text-philippine-gray text-center"
-                  >Shared on Twitter</span
-                >
+                <div v-else class="text-philippine-gray text-center">
+                  Shared on Twitter
+                </div>
               </div>
               <div
                 v-if="!record.isSharedOnTwitter"
-                class="leaderboard-table-row-item text-center text-[#659CFF] text-[10px] bg-[#293C5F] px-1 rounded-[5px]"
+                class="leaderboard-table-row-item text-center text-[#659CFF] text-[10px] bg-[#293C5F] px-1 rounded-[5px] grid content-center"
               >
                 Earn 5 XP
               </div>
@@ -259,7 +278,7 @@ function getToValue(verifier, verifier_human) {
                   >{{ record.walletAddress }}</span
                 >
               </div>
-              <div class="text-xs ellipsis">
+              <div class="text-xs ellipsis" v-if="record.link">
                 <span class="text-philippine-gray">SendIt Link:</span>&nbsp;
                 <span
                   @click.stop="copy(record.link, 'SendIt link copied')"
