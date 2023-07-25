@@ -44,7 +44,7 @@ function logout() {
 
 <template>
   <div
-    class="form-card p-0 space-y-[1px] w-screen lg:max-w-xs divide-y-[1px] divide-philippine-gray"
+    class="form-card p-0 space-y-[1px] lg:max-w-xs divide-y-[1px] divide-jet"
   >
     <div class="w-full p-4 flex justify-start">
       <span class="text-base uppercase font-bold text-left">Profile</span>

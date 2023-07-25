@@ -116,6 +116,7 @@ async function onWalletConnect() {
       });
       userStore.address = accounts[0];
       socketConnection.disconnect();
+      authStore.isSocketLoggedIn = false;
       await getUserInfo();
       await initSocketConnect();
       loaderStore.hideLoader();

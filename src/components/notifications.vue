@@ -27,7 +27,7 @@ function getTweetMessage() {
 <template>
   <div class="w-full lg:w-screen lg:max-w-sm max-h-96" v-if="notificationCount">
     <div
-      class="form-card space-y-[1px] w-full lg:max-w-sm max-h-96 flex divide-y-[1px] divide-philippine-gray"
+      class="form-card space-y-[1px] w-full lg:max-w-sm max-h-96 flex divide-y-[1px] divide-jet"
     >
       <div class="w-full p-4 flex justify-between">
         <span class="text-base uppercase font-bold">Notifications</span>
@@ -37,7 +37,7 @@ function getTweetMessage() {
       </div>
       <div class="pb-4 flex-1 flex overflow-auto w-full">
         <div
-          class="w-full flex flex-col flex-1 divide-y-[1px] overflow-auto divide-philippine-gray"
+          class="w-full flex flex-col flex-1 divide-y-[1px] overflow-auto divide-jet"
         >
           <div
             class="p-4 flex"
