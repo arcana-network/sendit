@@ -43,7 +43,9 @@ onBeforeUnmount(() => {
 const sendStore = useSendStore();
 const authStore = useAuthStore();
 const loadStore = useLoaderStore();
-const chainAssets: Ref<any[]> = ref([]);
+const chainAssets: Ref<any[]> = computed(() => {
+  return getChainAssets(userInput.value.chain);
+});
 const tokenBalance = ref(0);
 const arcanaAuth = useArcanaAuth();
 const socketConnection = useSocketConnection();
@@ -69,10 +71,6 @@ const isTwitterValid = computed(() => {
   return true;
 });
 
-if (userInput.value.chain) {
-  getChainAssets(userInput.value.chain);
-}
-
 function getSelectedChainInfo(chainId) {
   //@ts-ignore
   return supportedChains.value.find(
@@ -91,13 +89,14 @@ function getSelectedAssets(tokenSymbol, tokenType) {
 function getChainAssets(chainId) {
   const chain = getSelectedChainInfo(chainId);
   if (chain) {
-    chainAssets.value = allAssets.value
+    return allAssets.value
       .filter((asset) => asset.blockchain === chain.blockchain)
       .map((asset) => ({
         ...asset,
         name: `${asset.tokenSymbol}-${asset.tokenType}`,
       }));
   }
+  return [];
 }
 
 async function fetchAssets() {
@@ -111,7 +110,7 @@ async function fetchAssets() {
     if (data?.result?.assets?.length) {
       allAssets.value = data?.result?.assets;
     } else {
-      console.error("You don't own any tokens on this chain");
+      allAssets.value = [];
     }
   } catch (error) {
     console.error(error);
@@ -227,6 +226,7 @@ async function proceed() {
       sendRes.verifier_human =
         normalisedTwitterId || normalisedEmail || userInput.value.recipientId;
       sendRes.verifier = toVerifier;
+      fetchAssets();
       emits("transaction-successful", sendRes);
     } catch (error: any) {
       if (error === SELF_TX_ERROR || error.message === SELF_TX_ERROR) {
@@ -265,7 +265,7 @@ async function switchChain(chainId: string) {
 watch(
   () => userInput.value.chain,
   async (selectedChainId, oldChain) => {
-    fetchAssets();
+    await fetchAssets();
     if (userInput.value.chain !== "") {
       userInput.value.token = "";
       const chainId = await authStore.provider.request({
@@ -274,29 +274,32 @@ watch(
       if (Number(chainId) !== Number(selectedChainId)) {
         try {
           await switchChain(selectedChainId as string);
-          getChainAssets(selectedChainId);
         } catch (e) {
           console.error({ e });
           userInput.value.chain = oldChain;
           toast.error("Switching chain rejected by user");
         }
-      } else {
-        getChainAssets(selectedChainId);
       }
-    } else {
-      chainAssets.value = [];
     }
   }
 );
 
 watch(
   () => userInput.value.token,
-  (selectedToken) => {
+  async (selectedToken) => {
     if (selectedToken) {
+      await fetchAssets();
       const [tokenSymbol, tokenType] = selectedToken.split("-");
       //@ts-ignore
       tokenBalance.value = getSelectedAssets(tokenSymbol, tokenType).balance;
     } else tokenBalance.value = 0;
+  }
+);
+
+watch(
+  () => authStore.userInfo.address,
+  () => {
+    fetchAssets();
   }
 );
 
