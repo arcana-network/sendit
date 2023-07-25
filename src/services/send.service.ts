@@ -1,6 +1,8 @@
 import { EthereumProvider } from "@arcana/auth";
 import { BrowserProvider, computeAddress, parseUnits, Contract } from "ethers";
 
+const SELF_TX_ERROR = "self-transactions are not permitted";
+
 async function nativeTokenTransfer(
   publickey: string,
   provider: EthereumProvider,
@@ -9,6 +11,7 @@ async function nativeTokenTransfer(
   const web3Provider = new BrowserProvider(provider);
   const wallet = await web3Provider.getSigner();
   const receiverWalletAddress = computeAddress(`0x${publickey}`);
+  if (wallet.address === receiverWalletAddress) throw new Error(SELF_TX_ERROR);
   const tx = await wallet.sendTransaction({
     to: receiverWalletAddress,
     value: parseUnits(amount.toFixed(18), 18),
@@ -30,6 +33,7 @@ async function erc20TokenTransfer(
   const web3Provider = new BrowserProvider(provider);
   const wallet = await web3Provider.getSigner();
   const receiverWalletAddress = computeAddress(`0x${publickey}`);
+  if (wallet.address === receiverWalletAddress) throw new Error(SELF_TX_ERROR);
   const tokenContract = new Contract(tokenAddress, erc20Abi, wallet);
   const tokenDecimals = Number(await tokenContract.decimals());
   const tx = await tokenContract.transfer(

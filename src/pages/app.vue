@@ -10,7 +10,6 @@ import useRewardsStore from "@/stores/rewards";
 import useUserStore from "@/stores/user";
 import { useToast } from "vue-toastification";
 import useNotificationStore from "@/stores/notification";
-import useMetamask from "@/use/metamask";
 import NotWhiteListed from "@/components/not-whitelisted.vue";
 import useSendStore from "@/stores/send";
 import useWalletConnect from "@/use/walletconnect";
@@ -32,7 +31,6 @@ const toast = useToast();
 const isNotWhitelisted = ref(false);
 const hasBalance = ref(false);
 const sendStore = useSendStore();
-const { connectMetamask } = useMetamask();
 const walletConnect = useWalletConnect();
 const showReceivedCryptoMessage = ref(false);
 const showTweetVerificationModal = ref(false);
@@ -98,16 +96,7 @@ async function initSocketConnect() {
 }
 
 async function getUserInfo() {
-  if (authStore.loggedInWith === "metamask") {
-    const data = await connectMetamask();
-    authStore.provider = data.provider;
-    authStore.setUserInfo({
-      address: data.accounts[0],
-      loginType: "null",
-      id: "null",
-    });
-    userStore.address = data.accounts[0];
-  } else if (authStore.loggedInWith === "") {
+  if (authStore.loggedInWith === "") {
     authStore.provider = auth.getProvider();
     const userInfo = await auth.getUser();
     authStore.setUserInfo(userInfo);
@@ -117,12 +106,21 @@ async function getUserInfo() {
 
 async function onWalletConnect() {
   loaderStore.showLoader("Connecting...");
-  authStore.provider.on("accountsChanged", (accounts) => {
-    authStore.setUserInfo({
-      address: accounts[0],
+  if (authStore.loggedInWith === "walletconnect") {
+    authStore.provider.on("accountsChanged", async (accounts) => {
+      loaderStore.showLoader("Switching the account...");
+      authStore.setUserInfo({
+        address: accounts[0],
+        loginType: "null",
+        id: "null",
+      });
+      userStore.address = accounts[0];
+      socketConnection.disconnect();
+      await getUserInfo();
+      await initSocketConnect();
+      loaderStore.hideLoader();
     });
-    userStore.address = accounts[0];
-  });
+  }
   await getUserInfo();
   await initSocketConnect();
 }
