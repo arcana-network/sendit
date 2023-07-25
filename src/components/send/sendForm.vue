@@ -238,11 +238,26 @@ async function proceed() {
       } else if (error.code === INSUFFICIENT_FUNDS) {
         toast.error("Insufficient Gas to make this transaction.");
       } else {
-        const displayError = (error?.data?.originalError?.error?.message ||
-          error?.data?.originalError?.code ||
-          error.message ||
-          error) as string;
-        toast.error(displayError);
+        if (error.error.data?.originalError?.body) {
+          const body = error.error.data?.originalError?.body;
+          const errorBody =
+            typeof body === "string"
+              ? JSON.parse(error.error.data?.originalError?.body)
+              : body;
+          if (errorBody?.error?.message) {
+            toast.error(errorBody?.error?.message);
+          } else {
+            toast.error(errorBody?.error || errorBody);
+          }
+        } else {
+          const displayError = (error.error?.data?.originalError?.error
+            ?.message ||
+            error.error?.data?.originalError?.reason ||
+            error.error?.data?.originalError?.code ||
+            error.message ||
+            error) as string;
+          toast.error(displayError);
+        }
       }
     } finally {
       loadStore.hideLoader();

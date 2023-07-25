@@ -97,7 +97,6 @@ const notificationsContent = {
     shoutout: false,
   }),
   256: ({ from, wei, chain_id, tx_info }) => {
-    console.log(tx_info);
     const currency = getCurrency(chain_id, tx_info);
     const amount = formatUnits(hexlify(wei), getDecimals(tx_info));
     const fromAddress = hexlify(from).toString();
