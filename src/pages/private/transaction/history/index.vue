@@ -47,7 +47,7 @@ onBeforeMount(async () => {
 
 function getDecimals(info: any) {
   if ("decimals" in info) {
-    return info.decimals as number;
+    return (info.decimals as number) || 0;
   }
   return 18;
 }

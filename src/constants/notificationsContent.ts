@@ -5,7 +5,7 @@ import { beautifyAmount } from "@/utils/beautifyAmount";
 
 function getDecimals(txInfo: any) {
   if (txInfo && "decimals" in txInfo) {
-    return txInfo.decimals as number;
+    return (txInfo.decimals as number) || 0;
   }
   return 18;
 }
@@ -115,6 +115,24 @@ const notificationsContent = {
     title: "NFT Claimed",
     body: `You have converted ${points} XP into ${nft_value}`,
     path: "History",
+    shoutout: false,
+  }),
+  513: ({ points }) => ({
+    title: "10 Transactions completed",
+    body: `Congratulations on completing 10 transactions on #Sendit successfully! You have earned ${points} XP as a bonus`,
+    path: "",
+    shoutout: false,
+  }),
+  514: ({ points }) => ({
+    title: "25 Transactions completed",
+    body: `Congratulations on completing 25 transactions on #Sendit successfully! You have earned ${points} XP as a bonus`,
+    path: "",
+    shoutout: false,
+  }),
+  515: ({ points }) => ({
+    title: "50 Transactions completed",
+    body: `Congratulations on completing 50 transactions on #Sendit successfully! You have earned ${points} XP as a bonus`,
+    path: "",
     shoutout: false,
   }),
 };
