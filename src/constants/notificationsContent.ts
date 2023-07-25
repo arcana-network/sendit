@@ -5,7 +5,7 @@ import { beautifyAmount } from "@/utils/beautifyAmount";
 
 function getDecimals(txInfo: any) {
   if (txInfo && "decimals" in txInfo) {
-    return txInfo.decimals as number;
+    return (txInfo.decimals as number) || 0;
   }
   return 18;
 }
