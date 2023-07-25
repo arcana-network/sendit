@@ -29,6 +29,7 @@ import Dropdown from "@/components/lib/dropdown.vue";
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
 const INSUFFICIENT_FUNDS = "INSUFFICIENT_FUNDS";
+const SELF_TX_ERROR = "self-transactions are not permitted";
 let assetInterval: NodeJS.Timer;
 
 onBeforeMount(async () => {
@@ -228,15 +229,20 @@ async function proceed() {
       sendRes.verifier = toVerifier;
       emits("transaction-successful", sendRes);
     } catch (error: any) {
-      if (error.code === ACTION_REJECTED) {
+      if (error === SELF_TX_ERROR || error.message === SELF_TX_ERROR) {
+        toast.error("You cannot send tokens to yourself");
+      } else if (error.code === ACTION_REJECTED) {
         toast.error(
           "Signature request rejected. Please refresh the page again to login"
         );
       } else if (error.code === INSUFFICIENT_FUNDS) {
         toast.error("Insufficient Gas to make this transaction.");
       } else {
-        console.log(error);
-        toast.error(error.message as string);
+        const displayError = (error?.data?.originalError?.error?.message ||
+          error?.data?.originalError?.code ||
+          error.message ||
+          error) as string;
+        toast.error(displayError);
       }
     } finally {
       loadStore.hideLoader();
