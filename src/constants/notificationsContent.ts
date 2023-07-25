@@ -117,6 +117,24 @@ const notificationsContent = {
     path: "History",
     shoutout: false,
   }),
+  513: ({ points }) => ({
+    title: "10 Transactions completed",
+    body: `Congratulations on completing 10 transactions on #Sendit successfully! You have earned ${points} XP as a bonus`,
+    path: "",
+    shoutout: false,
+  }),
+  514: ({ points }) => ({
+    title: "25 Transactions completed",
+    body: `Congratulations on completing 25 transactions on #Sendit successfully! You have earned ${points} XP as a bonus`,
+    path: "",
+    shoutout: false,
+  }),
+  515: ({ points }) => ({
+    title: "50 Transactions completed",
+    body: `Congratulations on completing 50 transactions on #Sendit successfully! You have earned ${points} XP as a bonus`,
+    path: "",
+    shoutout: false,
+  }),
 };
 
 export default notificationsContent;
