@@ -20,7 +20,7 @@ const message = `Just sent you some tokens via #SendIt. Claim them by clicking t
 
 async function handleLinkCopy() {
   await copyToClipboard(props.shareDetails.shareLink);
-  toast.success("Link copied");
+  toast.success("SendIt link copied");
 }
 
 function handleTwitterDM() {
