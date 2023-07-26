@@ -78,23 +78,20 @@ function getSelectedChainInfo(chainId) {
   );
 }
 
-function getSelectedAssets(tokenSymbol, tokenType) {
+function getSelectedAssets(contractAddress: string) {
   return chainAssets.value.find(
     (asset) =>
       //@ts-ignore
-      asset.tokenSymbol === tokenSymbol && asset.tokenType === tokenType
+      asset.contractAddress === contractAddress
   );
 }
 
 function getChainAssets(chainId) {
   const chain = getSelectedChainInfo(chainId);
   if (chain) {
-    return allAssets.value
-      .filter((asset) => asset.blockchain === chain.blockchain)
-      .map((asset) => ({
-        ...asset,
-        name: `${asset.tokenSymbol}-${asset.tokenType}`,
-      }));
+    return allAssets.value.filter(
+      (asset) => asset.blockchain === chain.blockchain
+    );
   }
   return [];
 }
@@ -108,7 +105,15 @@ async function fetchAssets() {
       "polygon_mumbai",
     ]);
     if (data?.result?.assets?.length) {
-      allAssets.value = data?.result?.assets;
+      allAssets.value = data?.result?.assets.map((asset) => {
+        const address =
+          asset.tokenType === "NATIVE" ? "NATIVE" : asset.contractAddress;
+        return {
+          ...asset,
+          contractAddress: address,
+          name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
+        };
+      });
     } else {
       allAssets.value = [];
     }
@@ -186,21 +191,19 @@ async function proceed() {
       const arcanaProvider = authStore.provider;
       const amount = userInput.value.amount as number;
       const chainId = userInput.value.chain;
-      const [tokenSymbol, tokenType] = userInput.value.token.split("-");
-      const asset = getSelectedAssets(tokenSymbol, tokenType);
       loadStore.showLoader(
         "Transferring Tokens...",
         "Please approve the transaction and wait until it is completed."
       );
       const tx =
-        tokenType === "NATIVE"
+        userInput.value.token === "NATIVE"
           ? await nativeTokenTransfer(senderPublicKey, arcanaProvider, amount)
           : await erc20TokenTransfer(
               senderPublicKey,
               arcanaProvider,
               amount,
               //@ts-ignore
-              asset.contractAddress
+              userInput.value.token
             );
       loadStore.showLoader("Generating SendIt link...");
       const { hash, to } = tx;
@@ -219,7 +222,9 @@ async function proceed() {
         Number(chainId),
         fromVerifier,
         toVerifier,
-        tokenType === "NATIVE" ? TOKEN_TYPES.NATIVE : TOKEN_TYPES.ERC20
+        userInput.value.token === "NATIVE"
+          ? TOKEN_TYPES.NATIVE
+          : TOKEN_TYPES.ERC20
       )) as any;
       sendRes.verifier_id = recipientId;
       sendRes.hash = hash;
@@ -238,11 +243,11 @@ async function proceed() {
       } else if (error.code === INSUFFICIENT_FUNDS) {
         toast.error("Insufficient Gas to make this transaction.");
       } else {
-        if (error.error.data?.originalError?.body) {
-          const body = error.error.data?.originalError?.body;
+        if (error.error?.data?.originalError?.body) {
+          const body = error.error?.data?.originalError?.body;
           const errorBody =
             typeof body === "string"
-              ? JSON.parse(error.error.data?.originalError?.body)
+              ? JSON.parse(error.error?.data?.originalError?.body)
               : body;
           if (errorBody?.error?.message) {
             toast.error(errorBody?.error?.message);
@@ -304,9 +309,8 @@ watch(
   async (selectedToken) => {
     if (selectedToken) {
       await fetchAssets();
-      const [tokenSymbol, tokenType] = selectedToken.split("-");
       //@ts-ignore
-      tokenBalance.value = getSelectedAssets(tokenSymbol, tokenType).balance;
+      tokenBalance.value = getSelectedAssets(selectedToken)?.balance || 0;
     } else tokenBalance.value = 0;
   }
 );
@@ -314,6 +318,7 @@ watch(
 watch(
   () => authStore.userInfo.address,
   () => {
+    sendStore.resetUserInput();
     fetchAssets();
   }
 );
@@ -356,8 +361,11 @@ function handleMediumChange(medium) {
   handleTwitterUsername();
 }
 
-function getTokenModelValue(tokenName) {
-  return chainAssets.value.find((asset) => asset.name === tokenName) || {};
+function getTokenModelValue(tokenAddress) {
+  return (
+    chainAssets.value.find((asset) => asset.contractAddress === tokenAddress) ||
+    {}
+  );
 }
 </script>
 
@@ -431,7 +439,9 @@ function getTokenModelValue(tokenName) {
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Token</label>
         <Dropdown
-          @update:model-value="(value) => (userInput.token = value.name)"
+          @update:model-value="
+            (value) => (userInput.token = value.contractAddress)
+          "
           :options="chainAssets"
           display-field="name"
           :model-value="getTokenModelValue(userInput.token)"
