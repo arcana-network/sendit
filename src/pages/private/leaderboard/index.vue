@@ -48,6 +48,7 @@ async function fetchLeaderboard(duration: "global" | "weekly" = "global") {
         : LEADERBOARD_TYPES.GLOBAL,
     offset: (currentPage - 1) * 100,
     count: 100,
+    limit: 100,
   };
   const leaderboard = (await socket.sendMessage(
     SOCKET_IDS.GET_LEADERBOARD,
