@@ -93,7 +93,7 @@ const restRankers = computed(() => rankers.value.slice(3));
         >Using this app earns you points that you can redeem for rewards.
         Compete against other users to earn more rewards and improve your
         ranking. The top ranked users will earn additional points and be
-        eligible for special airdrops from Arcana.</span
+        eligible for special rewards from Arcana.</span
       >
     </div>
     <div
