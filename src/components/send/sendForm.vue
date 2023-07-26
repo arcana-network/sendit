@@ -105,15 +105,9 @@ async function fetchAssets() {
       "polygon_mumbai",
     ]);
     if (data?.result?.assets?.length) {
-      allAssets.value = data?.result?.assets.map((asset) => {
-        const address =
-          asset.tokenType === "NATIVE" ? "NATIVE" : asset.contractAddress;
-        return {
-          ...asset,
-          contractAddress: address,
-          name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
-        };
-      });
+      allAssets.value = data?.result?.assets.filter(
+        (asset) => asset.tokenType === "NATIVE"
+      );
     } else {
       allAssets.value = [];
     }
