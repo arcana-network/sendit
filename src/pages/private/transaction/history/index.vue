@@ -79,6 +79,20 @@ async function fetchTxHistory() {
     message
   )) as { txns: any[] };
   const txns = txHistory.txns.map((record) => {
+    let points;
+    if (!record.sent) {
+      if (record.shared) {
+        points = "5";
+      } else {
+        points = "";
+      }
+    } else {
+      if (record.shared) {
+        points = record.points + 5;
+      } else {
+        points = record.points;
+      }
+    }
     return {
       amount: {
         value: formatUnits(hexlify(record.amount), getDecimals(record.info)),
@@ -91,7 +105,7 @@ async function fetchTxHistory() {
       verifier: record.user?.verifier,
       walletAddress: hexlify(record.user_address),
       link: record.share_url,
-      points: record.points || "",
+      points,
       isSharedOnTwitter: record.shared || false,
       date: dayjs.unix(record.tx_date).format("DD MMM YYYY"),
     };
@@ -224,7 +238,7 @@ function getToValue(verifier, verifier_human) {
                 >
                   Share on Twitter
                 </button>
-                <div v-else class="text-philippine-gray text-center">
+                <div v-else class="text-philippine-gray lg-max:text-center">
                   Shared on Twitter
                 </div>
               </div>
