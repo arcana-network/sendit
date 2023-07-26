@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import UnderMaintenance from "@/pages/under-maintenance.vue";
-// import { defineAsyncComponent } from "vue";
-// import useLoaderStore from "@/stores/loader";
+import { defineAsyncComponent } from "vue";
+import useLoaderStore from "@/stores/loader";
 
-// const FullScreenLoader = defineAsyncComponent(
-//   () => import("@/components/fullScreenLoader.vue")
-// );
+const FullScreenLoader = defineAsyncComponent(
+  () => import("@/components/fullScreenLoader.vue")
+);
 
-// const loaderStore = useLoaderStore();
+const loaderStore = useLoaderStore();
 </script>
 
 <template>
   <main class="bg-[#0e0e0e] text-white h-full min-h-screen relative">
-    <!-- <img
+    <img
       src="@/assets/images/bg-top-right.png"
       class="absolute top-[72px] right-0 z-0 filter grayscale w-[33vw]"
     />
@@ -21,7 +20,6 @@ import UnderMaintenance from "@/pages/under-maintenance.vue";
       class="absolute bottom-0 left-0 z-0 filter grayscale w-[33vw]"
     />
     <FullScreenLoader v-if="loaderStore.show" />
-    <RouterView class="relative z-10"> </RouterView> -->
-    <UnderMaintenance />
+    <RouterView class="relative z-10"> </RouterView>
   </main>
 </template>
