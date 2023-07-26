@@ -86,3 +86,29 @@ body {
 .ellipsis {
   @apply text-ellipsis whitespace-nowrap overflow-hidden;
 }
+
+.Vue-Toastification__container {
+  z-index: 999999999 !important;
+}
+
+.Vue-Toastification__toast {
+  min-height: unset !important;
+  max-height: 120px !important;
+  padding: 1rem !important;
+  font-family: Onest, sans-serif !important;
+  text-overflow: ellipsis !important;
+}
+
+.Vue-Toastification__icon {
+  width: 14px !important;
+  margin-right: 8px !important;
+}
+
+.Vue-Toastification__toast-body {
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+.Vue-Toastification__progress-bar {
+  height: 2px !important;
+}

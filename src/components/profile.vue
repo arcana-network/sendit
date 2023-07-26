@@ -26,7 +26,7 @@ const toast = useToast();
 
 async function handleCopy() {
   await copyToClipboard(userInfo.value.address);
-  toast.success("Wallet address copied to clipboard");
+  toast.success("Wallet address copied");
 }
 
 function logout() {
@@ -44,7 +44,7 @@ function logout() {
 
 <template>
   <div
-    class="form-card p-0 space-y-[1px] w-screen lg:max-w-xs divide-y-[1px] divide-philippine-gray"
+    class="form-card p-0 space-y-[1px] lg:w-screen lg:max-w-xs divide-y-[1px] divide-jet"
   >
     <div class="w-full p-4 flex justify-start">
       <span class="text-base uppercase font-bold text-left">Profile</span>

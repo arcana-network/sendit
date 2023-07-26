@@ -21,4 +21,9 @@ const LEADERBOARD_TYPES = {
   WEEKLY: "w".charCodeAt(0),
 };
 
-export { SOCKET_IDS, LEADERBOARD_TYPES };
+const TOKEN_TYPES = {
+  NATIVE: 0,
+  ERC20: 1,
+};
+
+export { SOCKET_IDS, LEADERBOARD_TYPES, TOKEN_TYPES };

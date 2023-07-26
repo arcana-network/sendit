@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref, watch } from "vue";
+import { computed, onBeforeMount, onBeforeUnmount, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import StarIcon from "@/components/StarIcon.vue";
 import useSocketConnection from "@/use/socketConnection";
@@ -13,10 +13,27 @@ const socket = useSocketConnection();
 
 const rankers = ref([] as any[]);
 let currentPage = 1;
+let endOFLeaderboard = false;
 
 onBeforeMount(() => {
   if (route.query.duration === "weekly") fetchLeaderboard("weekly");
   else fetchLeaderboard();
+  document.onscroll = function () {
+    if (
+      window.innerHeight + window.scrollY >=
+      document.body.offsetHeight - window.outerHeight * 0.4
+    ) {
+      if (!endOFLeaderboard) {
+        currentPage++;
+        if (route.query.duration === "weekly") fetchLeaderboard("weekly");
+        else fetchLeaderboard();
+      }
+    }
+  };
+});
+
+onBeforeUnmount(() => {
+  document.onscroll = null;
 });
 
 const headerHeight = computed(() => {
@@ -29,8 +46,9 @@ async function fetchLeaderboard(duration: "global" | "weekly" = "global") {
       duration === "weekly"
         ? LEADERBOARD_TYPES.WEEKLY
         : LEADERBOARD_TYPES.GLOBAL,
-    offset: (currentPage - 1) * 10,
-    count: 10,
+    offset: (currentPage - 1) * 100,
+    count: 100,
+    limit: 100,
   };
   const leaderboard = (await socket.sendMessage(
     SOCKET_IDS.GET_LEADERBOARD,
@@ -45,6 +63,7 @@ async function fetchLeaderboard(duration: "global" | "weekly" = "global") {
       joinDate: dayjs.unix(ranking.join_time).format("DD MMM YYYY"),
     };
   });
+  if (leaderboardRankings.length < 10) endOFLeaderboard = true;
   if (currentPage === 1) {
     rankers.value = leaderboardRankings;
   } else {
@@ -56,6 +75,7 @@ watch(
   () => route.query.duration,
   async () => {
     currentPage = 1;
+    endOFLeaderboard = false;
     if (route.query.duration === "weekly") fetchLeaderboard("weekly");
     else fetchLeaderboard();
   }

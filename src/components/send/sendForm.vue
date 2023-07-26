@@ -21,7 +21,7 @@ import {
 import { getBytes } from "ethers";
 import useSocketConnection from "@/use/socketConnection";
 import { useToast } from "vue-toastification";
-import { SOCKET_IDS } from "@/constants/socket-ids";
+import { SOCKET_IDS, TOKEN_TYPES } from "@/constants/socket-ids";
 import { isValidEmail, isValidTwitterHandle } from "@/utils/validation";
 import { normaliseEmail, normaliseTwitterHandle } from "@/utils/normalise";
 import Dropdown from "@/components/lib/dropdown.vue";
@@ -29,6 +29,7 @@ import Dropdown from "@/components/lib/dropdown.vue";
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
 const INSUFFICIENT_FUNDS = "INSUFFICIENT_FUNDS";
+const SELF_TX_ERROR = "self-transactions are not permitted";
 let assetInterval: NodeJS.Timer;
 
 onBeforeMount(async () => {
@@ -42,7 +43,9 @@ onBeforeUnmount(() => {
 const sendStore = useSendStore();
 const authStore = useAuthStore();
 const loadStore = useLoaderStore();
-const chainAssets: Ref<any[]> = ref([]);
+const chainAssets: Ref<any[]> = computed(() => {
+  return getChainAssets(userInput.value.chain);
+});
 const tokenBalance = ref(0);
 const arcanaAuth = useArcanaAuth();
 const socketConnection = useSocketConnection();
@@ -68,10 +71,6 @@ const isTwitterValid = computed(() => {
   return true;
 });
 
-if (userInput.value.chain) {
-  getChainAssets(userInput.value.chain);
-}
-
 function getSelectedChainInfo(chainId) {
   //@ts-ignore
   return supportedChains.value.find(
@@ -90,13 +89,14 @@ function getSelectedAssets(tokenSymbol, tokenType) {
 function getChainAssets(chainId) {
   const chain = getSelectedChainInfo(chainId);
   if (chain) {
-    chainAssets.value = allAssets.value
+    return allAssets.value
       .filter((asset) => asset.blockchain === chain.blockchain)
       .map((asset) => ({
         ...asset,
         name: `${asset.tokenSymbol}-${asset.tokenType}`,
       }));
   }
+  return [];
 }
 
 async function fetchAssets() {
@@ -108,11 +108,9 @@ async function fetchAssets() {
       "polygon_mumbai",
     ]);
     if (data?.result?.assets?.length) {
-      allAssets.value = data?.result?.assets?.filter(
-        (asset) => asset.tokenType === "NATIVE"
-      );
+      allAssets.value = data?.result?.assets;
     } else {
-      console.error("You don't own any tokens on this chain");
+      allAssets.value = [];
     }
   } catch (error) {
     console.error(error);
@@ -126,7 +124,8 @@ function messageArcana(
   toEmail: string,
   chainId: number,
   from_verifier: "passwordless" | "twitter" | "null",
-  to_verifier: "passwordless" | "twitter" | "null"
+  to_verifier: "passwordless" | "twitter" | "null",
+  type: number
 ) {
   const message = {
     hash: Buffer.from(getBytes(hash)),
@@ -136,6 +135,7 @@ function messageArcana(
     from_verifier,
     to_id: toEmail,
     to_verifier,
+    type,
   };
   return socketConnection.sendMessage(SOCKET_IDS.SEND_TX, message);
 }
@@ -218,23 +218,46 @@ async function proceed() {
         toEmail,
         Number(chainId),
         fromVerifier,
-        toVerifier
+        toVerifier,
+        tokenType === "NATIVE" ? TOKEN_TYPES.NATIVE : TOKEN_TYPES.ERC20
       )) as any;
       sendRes.verifier_id = recipientId;
       sendRes.hash = hash;
       sendRes.verifier_human =
         normalisedTwitterId || normalisedEmail || userInput.value.recipientId;
       sendRes.verifier = toVerifier;
+      fetchAssets();
       emits("transaction-successful", sendRes);
     } catch (error: any) {
-      if (error.code === ACTION_REJECTED) {
+      if (error === SELF_TX_ERROR || error.message === SELF_TX_ERROR) {
+        toast.error("You cannot send tokens to yourself");
+      } else if (error.code === ACTION_REJECTED) {
         toast.error(
           "Signature request rejected. Please refresh the page again to login"
         );
       } else if (error.code === INSUFFICIENT_FUNDS) {
         toast.error("Insufficient Gas to make this transaction.");
       } else {
-        toast.error(error.message as string);
+        if (error.error.data?.originalError?.body) {
+          const body = error.error.data?.originalError?.body;
+          const errorBody =
+            typeof body === "string"
+              ? JSON.parse(error.error.data?.originalError?.body)
+              : body;
+          if (errorBody?.error?.message) {
+            toast.error(errorBody?.error?.message);
+          } else {
+            toast.error(errorBody?.error || errorBody);
+          }
+        } else {
+          const displayError = (error.error?.data?.originalError?.error
+            ?.message ||
+            error.error?.data?.originalError?.reason ||
+            error.error?.data?.originalError?.code ||
+            error.message ||
+            error) as string;
+          toast.error(displayError);
+        }
       }
     } finally {
       loadStore.hideLoader();
@@ -257,7 +280,7 @@ async function switchChain(chainId: string) {
 watch(
   () => userInput.value.chain,
   async (selectedChainId, oldChain) => {
-    fetchAssets();
+    await fetchAssets();
     if (userInput.value.chain !== "") {
       userInput.value.token = "";
       const chainId = await authStore.provider.request({
@@ -266,29 +289,32 @@ watch(
       if (Number(chainId) !== Number(selectedChainId)) {
         try {
           await switchChain(selectedChainId as string);
-          getChainAssets(selectedChainId);
         } catch (e) {
           console.error({ e });
           userInput.value.chain = oldChain;
           toast.error("Switching chain rejected by user");
         }
-      } else {
-        getChainAssets(selectedChainId);
       }
-    } else {
-      chainAssets.value = [];
     }
   }
 );
 
 watch(
   () => userInput.value.token,
-  (selectedToken) => {
+  async (selectedToken) => {
     if (selectedToken) {
+      await fetchAssets();
       const [tokenSymbol, tokenType] = selectedToken.split("-");
       //@ts-ignore
       tokenBalance.value = getSelectedAssets(tokenSymbol, tokenType).balance;
     } else tokenBalance.value = 0;
+  }
+);
+
+watch(
+  () => authStore.userInfo.address,
+  () => {
+    fetchAssets();
   }
 );
 
