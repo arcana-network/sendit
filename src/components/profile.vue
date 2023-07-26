@@ -26,7 +26,7 @@ const toast = useToast();
 
 async function handleCopy() {
   await copyToClipboard(userInfo.value.address);
-  toast.success("Wallet address copied to clipboard");
+  toast.success("Wallet address copied");
 }
 
 function logout() {
