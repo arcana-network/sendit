@@ -35,7 +35,12 @@ async function erc20TokenTransfer(
   const receiverWalletAddress = computeAddress(`0x${publickey}`);
   if (wallet.address === receiverWalletAddress) throw new Error(SELF_TX_ERROR);
   const tokenContract = new Contract(tokenAddress, erc20Abi, wallet);
-  const tokenDecimals = Number(await tokenContract.decimals());
+  let tokenDecimals: number;
+  try {
+    tokenDecimals = Number(await tokenContract.decimals());
+  } catch (e) {
+    tokenDecimals = 0;
+  }
   const tx = await tokenContract.transfer(
     receiverWalletAddress,
     parseUnits(amount.toFixed(tokenDecimals), tokenDecimals)
