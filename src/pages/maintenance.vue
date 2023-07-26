@@ -7,7 +7,7 @@ import UnderMaintenanceImg from "@/assets/images/under-maintanence.svg";
     <img
       :src="UnderMaintenanceImg"
       alt="under maintanence"
-      class="border-2 h-full w-full"
+      class="h-full w-full"
     />
   </div>
 </template>
