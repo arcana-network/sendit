@@ -108,9 +108,7 @@ async function fetchAssets() {
       "polygon_mumbai",
     ]);
     if (data?.result?.assets?.length) {
-      allAssets.value = data?.result?.assets.filter(
-        (asset) => asset.tokenType === "NATIVE"
-      );
+      allAssets.value = data?.result?.assets;
     } else {
       allAssets.value = [];
     }
