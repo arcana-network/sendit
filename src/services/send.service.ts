@@ -1,5 +1,5 @@
 import { EthereumProvider } from "@arcana/auth";
-import { BrowserProvider, computeAddress, parseUnits, Contract } from "ethers";
+import { BrowserProvider, computeAddress, Contract } from "ethers";
 import { Decimal } from "decimal.js";
 
 const SELF_TX_ERROR = "self-transactions are not permitted";
