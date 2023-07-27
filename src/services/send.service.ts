@@ -16,7 +16,7 @@ async function nativeTokenTransfer(
     to: receiverWalletAddress,
     value: parseUnits(amount.toFixed(18), 18),
   });
-  return await tx.wait();
+  return await tx.wait(4);
 }
 
 const erc20Abi = [
@@ -45,7 +45,7 @@ async function erc20TokenTransfer(
     receiverWalletAddress,
     parseUnits(amount.toFixed(tokenDecimals), tokenDecimals)
   );
-  return { ...(await tx.wait()), to: receiverWalletAddress };
+  return { ...(await tx.wait(4)), to: receiverWalletAddress };
 }
 
 export { nativeTokenTransfer, erc20TokenTransfer };
