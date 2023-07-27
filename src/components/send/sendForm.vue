@@ -404,6 +404,7 @@ function getTokenModelValue(tokenAddress) {
           @input="
             hasTwitterError = false;
             hasStartedTyping = true;
+            twitterId = '';
           "
           @blur="handleTwitterUsername"
           :placeholder="
