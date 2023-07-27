@@ -183,8 +183,10 @@ async function proceed() {
         userInput.value.medium === "twitter"
           ? normaliseTwitterHandle(userInput.value.recipientId)
           : null;
-      const recipientId =
-        twitterId.value || normalisedEmail || userInput.value.recipientId;
+      const recipientId = twitterId.value || normalisedEmail;
+      if (!recipientId || recipientId === null) {
+        throw new Error("Invalid recipient id");
+      }
       const senderPublicKey = await arcanaAuth
         .getAuthInstance()
         .getPublicKey(recipientId);
@@ -334,6 +336,9 @@ const disableSubmit = computed(() => {
     !userInput.value.medium ||
     !userInput.value.recipientId ||
     !userInput.value.token ||
+    hasTwitterError.value ||
+    !isTwitterValid.value ||
+    !isEmailValid.value ||
     Number(tokenBalance.value) < Number(userInput.value.amount)
   );
 });
