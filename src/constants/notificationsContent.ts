@@ -84,6 +84,12 @@ const notificationsContent = {
       shoutout: false,
     };
   },
+  11: ({ points }) => ({
+    title: "Tokens sent",
+    body: `You have sent tokens to your friend. You earned ${points} XP.`,
+    path: "History",
+    shoutout: false,
+  }),
   16: ({ points }) => ({
     title: "Shoutout Verified",
     body: `Congratulations on making a verified shoutout! You have earned ${points} XP`,
