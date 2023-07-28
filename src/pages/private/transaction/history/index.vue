@@ -46,14 +46,14 @@ onBeforeMount(async () => {
 });
 
 function getDecimals(info: any) {
-  if ("decimals" in info) {
+  if (info && "decimals" in info) {
     return (info.decimals as number) || 0;
   }
   return 18;
 }
 
 function getCurrency(chainId: string | number, info: any) {
-  if ("symbol" in info) {
+  if (info && "symbol" in info) {
     return info.symbol || "units";
   }
   return nativeUnitMapping[Number(chainId)];

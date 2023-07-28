@@ -38,7 +38,10 @@ const isWhitelistedLogin = computed(() => {
 const socialLoginsFiltered = computed(() => {
   if (verifier && verifierId) {
     return socialLogins.filter((login) => {
-      return login.value === verifier;
+      return (
+        login.value === verifier ||
+        (login.value === "google" && verifier === "passwordless")
+      );
     });
   }
   return socialLogins;
@@ -132,6 +135,10 @@ async function onLoginWalletConnected(
 
 <template>
   <div class="flex flex-col min-h-[100vh]">
+    <div class="bg-[#7fdca4] p-2 text-center text-[#212123] font-[500] text-sm">
+      Passwordless email login is experiencing disruption. Please use Google
+      login if you have a Google email.
+    </div>
     <AppHeader hide-nav hide-user-data />
     <div
       class="flex h-full justify-center items-center container flex-grow max-lg:flex-col max-lg:gap-12 p-4 max-lg:py-12"
@@ -160,10 +167,7 @@ async function onLoginWalletConnected(
                 Sign-in using any of these methods to get started
               </p>
             </header>
-            <section
-              v-if="!verifier || verifier !== 'passwordless'"
-              class="space-y-3 w-full flex flex-col items-start"
-            >
+            <section class="space-y-3 w-full flex flex-col items-start">
               <span v-if="!verifier" class="text-xs text-philippine-gray"
                 >Social Login</span
               >

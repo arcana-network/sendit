@@ -44,7 +44,7 @@ async function handleTweetVerify() {
 }
 
 function handleViewRewards() {
-  router.push({ name: "Rewards" });
+  router.push({ name: "Leaderboard" });
   emit("close");
 }
 </script>
@@ -68,8 +68,7 @@ function handleViewRewards() {
             >{{ props.xp }} XP Earned</span
           >
           <span class="text-xs text-philippine-gray max-w-[320px] text-center">
-            Copy the link to send it to your recipient or click the button below
-            to share it using the sharing methods supported by your OS.
+            Check out the leaderboard to see your current standing
           </span>
         </div>
         <div class="flex justify-end">
@@ -77,7 +76,7 @@ function handleViewRewards() {
             class="uppercase w-full border-white border-1 rounded-[5px] text-xs font-bold px-8 py-3"
             @click.stop="handleViewRewards"
           >
-            View Rewards
+            View Leaderboard
           </button>
         </div>
       </div>

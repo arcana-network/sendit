@@ -5,8 +5,12 @@ import useLoaderStore from "@/stores/loader";
 const FullScreenLoader = defineAsyncComponent(
   () => import("@/components/fullScreenLoader.vue")
 );
+const AppMaintenance = defineAsyncComponent(
+  () => import("@/pages/maintenance.vue")
+);
 
 const loaderStore = useLoaderStore();
+const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
 </script>
 
 <template>
@@ -19,7 +23,12 @@ const loaderStore = useLoaderStore();
       src="@/assets/images/bg-bottom-left.png"
       class="absolute bottom-0 left-0 z-0 filter grayscale w-[33vw]"
     />
-    <FullScreenLoader v-if="loaderStore.show" />
-    <RouterView class="relative z-10"> </RouterView>
+    <div v-if="isAppDown">
+      <AppMaintenance />
+    </div>
+    <div v-else>
+      <FullScreenLoader v-if="loaderStore.show" />
+      <RouterView class="relative z-10"> </RouterView>
+    </div>
   </main>
 </template>

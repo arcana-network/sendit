@@ -18,7 +18,7 @@ async function nativeTokenTransfer(
     to: receiverWalletAddress,
     value: decimalAmount.mul(10 ** 18).toString(),
   });
-  return await tx.wait();
+  return await tx.wait(4);
 }
 
 const erc20Abi = [
@@ -48,7 +48,7 @@ async function erc20TokenTransfer(
     receiverWalletAddress,
     decimalAmount.mul(10 ** tokenDecimals).toString()
   );
-  return { ...(await tx.wait()), to: receiverWalletAddress };
+  return { ...(await tx.wait(4)), to: receiverWalletAddress };
 }
 
 export { nativeTokenTransfer, erc20TokenTransfer };
