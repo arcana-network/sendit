@@ -33,6 +33,8 @@ let webSocketInterval: NodeJS.Timer;
 type Account = {
   verifier: string;
   verifier_id: string;
+  referrer?: string;
+  referral?: string;
 };
 
 function useSocketConnection() {
@@ -88,6 +90,7 @@ function useSocketConnection() {
         addr: getBytes(await ethersSigner.getAddress()),
         verifier: currentAccount.verifier,
         verifier_id: currentAccount.verifier_id,
+        referrer: currentAccount.referrer,
       })
     );
   }

@@ -7,7 +7,8 @@ const routes: RouteRecordRaw[] = [
   {
     name: "Waitlist",
     path: "/",
-    component: Waitlist,
+    // component: Waitlist,
+    redirect: { name: "App" },
   },
   {
     name: "Invite",

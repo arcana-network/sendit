@@ -62,6 +62,7 @@ async function initSocketConnect() {
   const account = {
     verifier: authStore.userInfo.loginType,
     verifier_id: authStore.userInfo.id,
+    referrer: route.query.referrer as string,
   };
   await socketConnection.init(
     // @ts-ignore
