@@ -346,7 +346,7 @@ const disableSubmit = computed(() => {
 async function handleTwitterUsername() {
   if (userInput.value.medium === "twitter" && userInput.value.recipientId) {
     const message = {
-      username: userInput.value.recipientId,
+      username: userInput.value.recipientId.replace("@", ""),
     };
     try {
       const res = (await socketConnection.sendMessage(
