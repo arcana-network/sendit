@@ -14,11 +14,17 @@ async function nativeTokenTransfer(
   const receiverWalletAddress = computeAddress(`0x${publickey}`);
   if (wallet.address === receiverWalletAddress) throw new Error(SELF_TX_ERROR);
   const decimalAmount = new Decimal(amount);
-  const tx = await wallet.sendTransaction({
+  const txHash = await wallet.sendUncheckedTransaction({
     to: receiverWalletAddress,
     value: decimalAmount.mul(10 ** 18).toString(),
   });
-  return await tx.wait();
+  try {
+    const tx = await web3Provider.waitForTransaction(txHash, 4);
+    return tx;
+  } catch (e: any) {
+    console.log(e, e.code === "TIMEOUT");
+    return { hash: txHash };
+  }
 }
 
 const erc20Abi = [
@@ -48,7 +54,7 @@ async function erc20TokenTransfer(
     receiverWalletAddress,
     decimalAmount.mul(10 ** tokenDecimals).toString()
   );
-  return { ...(await tx.wait()), to: receiverWalletAddress };
+  return { ...(await tx.wait(4)), to: receiverWalletAddress };
 }
 
 export { nativeTokenTransfer, erc20TokenTransfer };
