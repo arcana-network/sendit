@@ -25,6 +25,9 @@ const verifierHuman = ref("");
 const showInvitePopup = ref(false);
 const userStore = useUserStore();
 const verifier = ref("");
+const amount = ref("");
+const token = ref("");
+const chain = ref("");
 
 function handleTxSuccess(data) {
   showSuccessMessage.value = true;
@@ -32,6 +35,9 @@ function handleTxSuccess(data) {
     shareLink: data.share_url,
     isShareRequired: data.share_reqd,
   };
+  amount.value = data.amount;
+  token.value = data.token;
+  chain.value = data.chain;
   verifierId.value = data.verifier_id;
   txHash.value = data.hash;
   verifierHuman.value = data.verifier_human;
@@ -73,6 +79,9 @@ function getToValue(verifier, verifier_human) {
     :medium="sendStore.userInput.medium"
     :share-details="shareDetails"
     :verifier-id="verifierId"
+    :amount="amount"
+    :currency="token"
+    :chain="chain"
     @shoutout="handleShoutout"
     @close="handleSuccessModalClose"
   />
