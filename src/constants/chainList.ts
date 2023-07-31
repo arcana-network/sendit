@@ -20,6 +20,13 @@ const chains = {
     blockchain: "polygon_mumbai",
     currency: "MATIC",
   },
+  42161: {
+    name: "Arbitrum One",
+    blockchain: "arbitrum",
+    chain_id: 42161,
+    rpc_url: "https://arb1.arbitrum.io/rpc",
+    currency: "ETH",
+  },
 };
 
 export default chains;
