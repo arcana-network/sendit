@@ -1,11 +1,11 @@
 import { EthereumProvider } from "@arcana/auth";
-import { BrowserProvider, computeAddress, Contract } from "ethers";
+import {BrowserProvider, computeAddress, Contract, TransactionReceipt} from "ethers";
 import { Decimal } from "decimal.js";
 
 const SELF_TX_ERROR = "self-transactions are not permitted";
 
 async function fillTxGas(prov, tx) {
-  const net = await prov._detectNetwork();
+  const net = await prov.getNetwork();
   if (net.chainId === 137n) {
     const resp = await (await fetch('https://gasstation.polygon.technology/v2')).json()
     tx.maxPriorityFeePerGas = Decimal(resp.standard.maxPriorityFee).mul(Decimal.pow(10, 9)).toHexadecimal()
@@ -17,7 +17,7 @@ async function nativeTokenTransfer(
   publickey: string,
   provider: EthereumProvider,
   amount: number
-) {
+): Promise<TransactionReceipt> {
   const web3Provider = new BrowserProvider(provider);
   const wallet = await web3Provider.getSigner();
   const receiverWalletAddress = computeAddress(`0x${publickey}`);
@@ -28,7 +28,7 @@ async function nativeTokenTransfer(
     type: 2,
     gasLimit: 21000,
     to: receiverWalletAddress,
-    value: decimalAmount.mul(10 ** 18).toHexadecimal(),
+    value: decimalAmount.mul(Decimal.pow(10, 18)).toHexadecimal(),
   }
   await fillTxGas(web3Provider, rawTx)
 
