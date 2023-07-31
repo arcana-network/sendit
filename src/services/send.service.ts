@@ -8,8 +8,8 @@ async function fillTxGas(prov, tx) {
   const net = await prov.getNetwork();
   if (net.chainId === 137n) {
     const resp = await (await fetch('https://gasstation.polygon.technology/v2')).json()
-    tx.maxPriorityFeePerGas = Decimal(resp.standard.maxPriorityFee).mul(Decimal.pow(10, 9)).toHexadecimal()
-    tx.maxFeePerGas = Decimal(resp.standard.maxFee).mul(Decimal.pow(10, 9)).toHexadecimal()
+    tx.maxPriorityFeePerGas = new Decimal(resp.standard.maxPriorityFee).mul(Decimal.pow(10, 9)).toHexadecimal()
+    tx.maxFeePerGas = new Decimal(resp.standard.maxFee).mul(Decimal.pow(10, 9)).toHexadecimal()
   }
 }
 
