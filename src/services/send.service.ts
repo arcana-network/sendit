@@ -33,7 +33,11 @@ async function nativeTokenTransfer(
   await fillTxGas(web3Provider, rawTx)
 
   const tx = await wallet.sendTransaction(rawTx);
-  return await tx.wait(4);
+  const confirmed = await tx.wait(4)
+    if (confirmed == null) {
+        throw new Error('???')
+    }
+  return confirmed;
 }
 
 const erc20Abi = [
@@ -65,7 +69,13 @@ async function erc20TokenTransfer(
   );
   await fillTxGas(web3Provider, ptx)
   const tx = await wallet.sendTransaction(ptx)
-  return { ...(await tx.wait(4)), to: receiverWalletAddress };
+  const confirmed = await tx.wait(4)
+
+    if (confirmed == null) {
+        throw new Error('???')
+    }
+
+  return { hash: confirmed.hash, to: receiverWalletAddress };
 }
 
 export { nativeTokenTransfer, erc20TokenTransfer };
