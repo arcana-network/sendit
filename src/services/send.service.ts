@@ -16,9 +16,13 @@ async function nativeTokenTransfer(
   const decimalAmount = new Decimal(amount);
   const tx = await wallet.sendTransaction({
     to: receiverWalletAddress,
-    value: decimalAmount.mul(10 ** 18).toString(),
+    value: decimalAmount.mul(Decimal.pow(10, 18)).toHexadecimal(),
   });
-  return await tx.wait(4);
+  const confirmed = await tx.wait(4);
+  if (confirmed == null) {
+    throw new Error("Invalid transaction");
+  }
+  return confirmed;
 }
 
 const erc20Abi = [
@@ -44,11 +48,18 @@ async function erc20TokenTransfer(
   } catch (e) {
     tokenDecimals = 0;
   }
-  const tx = await tokenContract.transfer(
+  const ptx = await tokenContract.transfer.populateTransaction(
     receiverWalletAddress,
     decimalAmount.mul(10 ** tokenDecimals).toString()
   );
-  return { ...(await tx.wait(4)), to: receiverWalletAddress };
+  const tx = await wallet.sendTransaction(ptx);
+  const confirmed = await tx.wait(4);
+
+  if (confirmed == null) {
+    throw new Error("Invalid transaction");
+  }
+
+  return { hash: confirmed.hash, to: receiverWalletAddress };
 }
 
 export { nativeTokenTransfer, erc20TokenTransfer };

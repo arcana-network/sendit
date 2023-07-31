@@ -78,6 +78,7 @@ async function initSocketConnect() {
             "eth",
             "polygon",
             "polygon_mumbai",
+            "arbitrum",
           ]);
           if (data?.result?.assets?.length) {
             hasBalance.value = true;
