@@ -34,9 +34,9 @@ async function nativeTokenTransfer(
 
   const tx = await wallet.sendTransaction(rawTx);
   const confirmed = await tx.wait(4)
-    if (confirmed == null) {
-        throw new Error('???')
-    }
+  if (confirmed == null) {
+    throw new Error('???')
+  }
   return confirmed;
 }
 
