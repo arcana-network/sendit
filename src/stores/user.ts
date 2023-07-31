@@ -27,7 +27,7 @@ const useUserStore = defineStore("user", {
       const leaderboardResponse = (await socket.sendMessage(
         SOCKET_IDS.GET_LEADERBOARD,
         {
-          ltype: LEADERBOARD_TYPES.WEEKLY,
+          ltype: LEADERBOARD_TYPES.GLOBAL,
           offset: 0,
           limit: 3,
         }

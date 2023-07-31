@@ -50,7 +50,7 @@ async function erc20TokenTransfer(
   }
   const ptx = await tokenContract.transfer.populateTransaction(
     receiverWalletAddress,
-    decimalAmount.mul(10 ** tokenDecimals).toString()
+    decimalAmount.mul(Decimal.pow(10, tokenDecimals)).toString()
   );
   const tx = await wallet.sendTransaction(ptx);
   const confirmed = await tx.wait(4);
