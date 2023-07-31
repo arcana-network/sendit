@@ -20,10 +20,6 @@ const chains = {
     blockchain: "polygon_mumbai",
     currency: "MATIC",
   },
-  42161: {
-    name: "Arbitrum One",
-    blockchain: "arbitrum",
-  }
 };
 
 export default chains;
