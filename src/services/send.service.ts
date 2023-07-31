@@ -1,24 +1,43 @@
 import { EthereumProvider } from "@arcana/auth";
-import { BrowserProvider, computeAddress, Contract } from "ethers";
+import {BrowserProvider, computeAddress, Contract, TransactionReceipt} from "ethers";
 import { Decimal } from "decimal.js";
 
 const SELF_TX_ERROR = "self-transactions are not permitted";
+
+async function fillTxGas(prov, tx) {
+  const net = await prov.getNetwork();
+  if (net.chainId === 137n) {
+    const resp = await (await fetch('https://gasstation.polygon.technology/v2')).json()
+    tx.maxPriorityFeePerGas = new Decimal(resp.standard.maxPriorityFee).mul(Decimal.pow(10, 9)).toHexadecimal()
+    tx.maxFeePerGas = new Decimal(resp.standard.maxFee).mul(Decimal.pow(10, 9)).toHexadecimal()
+  }
+}
 
 async function nativeTokenTransfer(
   publickey: string,
   provider: EthereumProvider,
   amount: number
-) {
+): Promise<TransactionReceipt> {
   const web3Provider = new BrowserProvider(provider);
   const wallet = await web3Provider.getSigner();
   const receiverWalletAddress = computeAddress(`0x${publickey}`);
   if (wallet.address === receiverWalletAddress) throw new Error(SELF_TX_ERROR);
   const decimalAmount = new Decimal(amount);
-  const tx = await wallet.sendTransaction({
+
+  const rawTx = {
+    type: 2,
+    gasLimit: 21000,
     to: receiverWalletAddress,
-    value: decimalAmount.mul(10 ** 18).toString(),
-  });
-  return await tx.wait(4);
+    value: decimalAmount.mul(Decimal.pow(10, 18)).toHexadecimal(),
+  }
+  await fillTxGas(web3Provider, rawTx)
+
+  const tx = await wallet.sendTransaction(rawTx);
+  const confirmed = await tx.wait(4)
+  if (confirmed == null) {
+    throw new Error('???')
+  }
+  return confirmed;
 }
 
 const erc20Abi = [
@@ -44,11 +63,19 @@ async function erc20TokenTransfer(
   } catch (e) {
     tokenDecimals = 0;
   }
-  const tx = await tokenContract.transfer(
+  const ptx = await tokenContract.transfer.populateTransaction(
     receiverWalletAddress,
-    decimalAmount.mul(10 ** tokenDecimals).toString()
+    decimalAmount.mul(Decimal.pow(10, tokenDecimals)).toString()
   );
-  return { ...(await tx.wait(4)), to: receiverWalletAddress };
+  await fillTxGas(web3Provider, ptx)
+  const tx = await wallet.sendTransaction(ptx)
+  const confirmed = await tx.wait(4)
+
+    if (confirmed == null) {
+        throw new Error('???')
+    }
+
+  return { hash: confirmed.hash, to: receiverWalletAddress };
 }
 
 export { nativeTokenTransfer, erc20TokenTransfer };
