@@ -25,6 +25,7 @@ import { SOCKET_IDS, TOKEN_TYPES } from "@/constants/socket-ids";
 import { isValidEmail, isValidTwitterHandle } from "@/utils/validation";
 import { normaliseEmail, normaliseTwitterHandle } from "@/utils/normalise";
 import Dropdown from "@/components/lib/dropdown.vue";
+import chains from "@/constants/chainList";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -237,6 +238,12 @@ async function proceed() {
       sendRes.verifier_human =
         normalisedTwitterId || normalisedEmail || userInput.value.recipientId;
       sendRes.verifier = toVerifier;
+      sendRes.amount = amount;
+      sendRes.chain = chains[Number(chainId)].name;
+      sendRes.token =
+        userInput.value.token === "NATIVE"
+          ? chains[Number(chainId)].currency
+          : userInput.value.token;
       fetchAssets();
       emits("transaction-successful", sendRes);
     } catch (error: any) {

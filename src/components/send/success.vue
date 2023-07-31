@@ -11,12 +11,21 @@ type SendSuccessProps = {
     isShareRequired: boolean;
     shareLink: string;
   };
+  amount: string;
+  currency: string;
+  chain: string;
 };
 
 const props = defineProps<SendSuccessProps>();
 const emit = defineEmits(["close", "shoutout"]);
 const toast = useToast();
-const message = `Just sent you some tokens via #SendIt. Claim them by clicking the link ${props.shareDetails.shareLink}`;
+const message = `Hello!
+
+I has sent you {{ .Amount }} {{ .Currency }} on {{ .Chain }} through SendIt!
+Login here using this email to claim (please ensure the URL is of the format "sendit.arcana.network") - ${props.shareDetails.shareLink}
+
+SendIt is a product made by Arcana Network to allow users to send crypto to anyone even if they don't have a wallet yet.
+Find out more about Arcana here - https://arcana.network`;
 
 async function handleLinkCopy() {
   await copyToClipboard(props.shareDetails.shareLink);
