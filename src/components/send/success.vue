@@ -20,10 +20,10 @@ const props = defineProps<SendSuccessProps>();
 const emit = defineEmits(["close", "shoutout"]);
 const toast = useToast();
 const message = `Hello!
-
-I has sent you {{ .Amount }} {{ .Currency }} on {{ .Chain }} through SendIt!
+\r\n
+I have sent you ${props.amount} ${props.currency} on ${props.chain} through SendIt!
 Login here using this email to claim (please ensure the URL is of the format "sendit.arcana.network") - ${props.shareDetails.shareLink}
-
+\r\n
 SendIt is a product made by Arcana Network to allow users to send crypto to anyone even if they don't have a wallet yet.
 Find out more about Arcana here - https://arcana.network`;
 
@@ -38,7 +38,11 @@ function handleTwitterDM() {
 
 function handleMail() {
   window.open(
-    `mailto:${props.verifierId}?subject=SendIt%20-%20Claim%20your%20tokens&body=${message}`
+    `mailto:${
+      props.verifierId
+    }?subject=SendIt%20-%20Claim%20your%20tokens&body=${encodeURIComponent(
+      message
+    )}`
   );
 }
 </script>
