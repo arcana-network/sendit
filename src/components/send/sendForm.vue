@@ -103,6 +103,7 @@ async function fetchAssets() {
       "eth",
       "polygon",
       "polygon_mumbai",
+      "arbitrum",
     ]);
     if (data?.result?.assets?.length) {
       allAssets.value = data?.result?.assets.map((asset) => {
@@ -209,6 +210,9 @@ async function proceed() {
             );
       loadStore.showLoader("Generating SendIt link...");
       const { hash, to } = tx;
+      if (to == null) {
+        throw new Error("Invalid transaction");
+      }
       const toEmail = recipientId;
       //@ts-ignore
       const fromEmail = authStore.userInfo.email || authStore.userInfo.id;
