@@ -209,10 +209,6 @@ async function proceed() {
             );
       loadStore.showLoader("Generating SendIt link...");
       const { hash, to } = tx;
-      if (to == null) {
-        throw new Error('???')
-      }
-
       const toEmail = recipientId;
       //@ts-ignore
       const fromEmail = authStore.userInfo.email || authStore.userInfo.id;
