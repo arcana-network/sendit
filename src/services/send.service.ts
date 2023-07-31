@@ -4,6 +4,15 @@ import { Decimal } from "decimal.js";
 
 const SELF_TX_ERROR = "self-transactions are not permitted";
 
+async function fillTxGas(prov, tx) {
+  const net = await prov._detectNetwork();
+  if (net.chainId === 137n) {
+    const resp = await (await fetch('https://gasstation.polygon.technology/v2')).json()
+    tx.maxPriorityFeePerGas = Decimal(resp.standard.maxPriorityFee).mul(Decimal.pow(10, 9)).toHexadecimal()
+    tx.maxFeePerGas = Decimal(resp.standard.maxFee).mul(Decimal.pow(10, 9)).toHexadecimal()
+  }
+}
+
 async function nativeTokenTransfer(
   publickey: string,
   provider: EthereumProvider,
@@ -14,10 +23,16 @@ async function nativeTokenTransfer(
   const receiverWalletAddress = computeAddress(`0x${publickey}`);
   if (wallet.address === receiverWalletAddress) throw new Error(SELF_TX_ERROR);
   const decimalAmount = new Decimal(amount);
-  const tx = await wallet.sendTransaction({
+
+  const rawTx = {
+    type: 2,
+    gasLimit: 21000,
     to: receiverWalletAddress,
-    value: decimalAmount.mul(10 ** 18).toString(),
-  });
+    value: decimalAmount.mul(10 ** 18).toHexadecimal(),
+  }
+  await fillTxGas(web3Provider, rawTx)
+
+  const tx = await wallet.sendTransaction(rawTx);
   return await tx.wait(4);
 }
 
@@ -44,10 +59,12 @@ async function erc20TokenTransfer(
   } catch (e) {
     tokenDecimals = 0;
   }
-  const tx = await tokenContract.transfer(
+  const ptx = await tokenContract.transfer.populateTransaction(
     receiverWalletAddress,
-    decimalAmount.mul(10 ** tokenDecimals).toString()
+    decimalAmount.mul(Decimal.pow(10, tokenDecimals)).toString()
   );
+  await fillTxGas(web3Provider, ptx)
+  const tx = await wallet.sendTransaction(ptx)
   return { ...(await tx.wait(4)), to: receiverWalletAddress };
 }
 
