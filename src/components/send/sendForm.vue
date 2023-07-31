@@ -17,6 +17,7 @@ import useArcanaAuth from "@/use/arcanaAuth";
 import {
   nativeTokenTransfer,
   erc20TokenTransfer,
+  type FeeData,
 } from "@/services/send.service.ts";
 import { getBytes } from "ethers";
 import useSocketConnection from "@/use/socketConnection";
@@ -26,6 +27,8 @@ import { isValidEmail, isValidTwitterHandle } from "@/utils/validation";
 import { normaliseEmail, normaliseTwitterHandle } from "@/utils/normalise";
 import Dropdown from "@/components/lib/dropdown.vue";
 import chains from "@/constants/chainList";
+import { hexlify } from "ethers";
+import { GAS_SUPPORTED_CHAINS } from "@/constants/socket-ids";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -199,15 +202,34 @@ async function proceed() {
         "Transferring Tokens...",
         "Please approve the transaction and wait until it is completed."
       );
+      let feeData: FeeData | null = null;
+      if (GAS_SUPPORTED_CHAINS.includes(Number(chainId))) {
+        const gasStation: any = await socketConnection.sendMessage(
+          SOCKET_IDS.GET_GAS_STATION,
+          {
+            chain_id: chainId,
+          }
+        );
+        feeData = {
+          maxFeePerGas: hexlify(gasStation.max_fee),
+          maxPriorityFeePerGas: hexlify(gasStation.max_priority_fee),
+        };
+      }
       const tx =
         userInput.value.token === "NATIVE"
-          ? await nativeTokenTransfer(senderPublicKey, arcanaProvider, amount)
+          ? await nativeTokenTransfer(
+              senderPublicKey,
+              arcanaProvider,
+              amount,
+              feeData
+            )
           : await erc20TokenTransfer(
               senderPublicKey,
               arcanaProvider,
               amount,
               //@ts-ignore
-              userInput.value.token
+              userInput.value.token,
+              feeData
             );
       loadStore.showLoader("Generating SendIt link...");
       const { hash, to } = tx;
