@@ -265,7 +265,8 @@ async function proceed() {
       sendRes.token =
         userInput.value.token === "NATIVE"
           ? chains[Number(chainId)].currency
-          : userInput.value.token;
+          : getTokenModelValue(userInput.value.token)?.tokenSymbol ||
+            "Unnamed Token";
       fetchAssets();
       resetAll();
       emits("transaction-successful", sendRes);
