@@ -202,6 +202,6 @@ watch(
 
 .custom-select.disabled .custom-select-value,
 .custom-select.disabled {
-  opacity: 0.4;
+  opacity: 0.6;
 }
 </style>

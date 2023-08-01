@@ -13,7 +13,7 @@ const emits = defineEmits(["invite"]);
 
 <template>
   <div
-    class="flex w-80 h-28 border-1 border-jet rounded-md"
+    class="flex w-80 h-28 border-1 border-jet bg-[#0e0e0e] rounded-md overflow-hidden"
     :class="{ 'cursor-pointer': reward.task }"
     @click.stop="reward.task ? emits(reward.task) : void 0"
   >

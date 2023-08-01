@@ -267,6 +267,7 @@ async function proceed() {
           ? chains[Number(chainId)].currency
           : userInput.value.token;
       fetchAssets();
+      resetAll();
       emits("transaction-successful", sendRes);
     } catch (error: any) {
       if (error === SELF_TX_ERROR || error.message === SELF_TX_ERROR) {
@@ -304,6 +305,20 @@ async function proceed() {
       hasStartedTyping.value = false;
     }
   }
+}
+
+function resetAll() {
+  tokenBalance.value = 0;
+  twitterId.value = "";
+  hasTwitterError.value = false;
+  hasStartedTyping.value = false;
+  userInput.value = {
+    chain: "",
+    token: "",
+    medium: "mail",
+    recipientId: "",
+    amount: 0,
+  };
 }
 
 async function switchChain(chainId: string) {
@@ -502,7 +517,12 @@ function getTokenModelValue(tokenAddress) {
             >Balance: {{ tokenBalance }}</span
           >
         </div>
-        <input class="input" type="number" v-model="userInput.amount" />
+        <input
+          class="input disabled:opacity-60"
+          type="number"
+          v-model="userInput.amount"
+          :disabled="!userInput.chain && !userInput.token"
+        />
         <div
           class="text-[#ff4264] text-[10px]"
           v-if="Number(tokenBalance) < Number(userInput.amount)"
@@ -510,15 +530,17 @@ function getTokenModelValue(tokenAddress) {
           Entered amount is greater than your wallet balance.
         </div>
       </div>
-      <button
-        @click.prevent="proceed"
-        type="submit"
-        class="w-full text-sm btn btn-submit"
-        :disabled="disableSubmit"
-        :class="{ 'opacity-50': disableSubmit }"
-      >
-        Send it
-      </button>
+      <div class="flex justify-center pt-4">
+        <button
+          @click.prevent="proceed"
+          type="submit"
+          class="w-full text-sm btn btn-submit"
+          :disabled="disableSubmit"
+          :class="{ 'opacity-50': disableSubmit }"
+        >
+          Send it
+        </button>
+      </div>
     </form>
   </div>
 </template>
