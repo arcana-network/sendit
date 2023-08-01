@@ -11,7 +11,7 @@ type SendSuccessProps = {
     isShareRequired: boolean;
     shareLink: string;
   };
-  amount: string;
+  amount: string | number;
   currency: string;
   chain: string;
 };

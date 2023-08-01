@@ -17,6 +17,7 @@ import useArcanaAuth from "@/use/arcanaAuth";
 import {
   nativeTokenTransfer,
   erc20TokenTransfer,
+  type FeeData,
 } from "@/services/send.service.ts";
 import { getBytes } from "ethers";
 import useSocketConnection from "@/use/socketConnection";
@@ -26,6 +27,8 @@ import { isValidEmail, isValidTwitterHandle } from "@/utils/validation";
 import { normaliseEmail, normaliseTwitterHandle } from "@/utils/normalise";
 import Dropdown from "@/components/lib/dropdown.vue";
 import chains from "@/constants/chainList";
+import { hexlify } from "ethers";
+import { GAS_SUPPORTED_CHAINS } from "@/constants/socket-ids";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -199,15 +202,34 @@ async function proceed() {
         "Transferring Tokens...",
         "Please approve the transaction and wait until it is completed."
       );
+      let feeData: FeeData | null = null;
+      if (GAS_SUPPORTED_CHAINS.includes(Number(chainId))) {
+        const gasStation: any = await socketConnection.sendMessage(
+          SOCKET_IDS.GET_GAS_STATION,
+          {
+            chain_id: chainId,
+          }
+        );
+        feeData = {
+          maxFeePerGas: hexlify(gasStation.max_fee),
+          maxPriorityFeePerGas: hexlify(gasStation.max_priority_fee),
+        };
+      }
       const tx =
         userInput.value.token === "NATIVE"
-          ? await nativeTokenTransfer(senderPublicKey, arcanaProvider, amount)
+          ? await nativeTokenTransfer(
+              senderPublicKey,
+              arcanaProvider,
+              amount,
+              feeData
+            )
           : await erc20TokenTransfer(
               senderPublicKey,
               arcanaProvider,
               amount,
               //@ts-ignore
-              userInput.value.token
+              userInput.value.token,
+              feeData
             );
       loadStore.showLoader("Generating SendIt link...");
       const { hash, to } = tx;
@@ -245,6 +267,7 @@ async function proceed() {
           ? chains[Number(chainId)].currency
           : userInput.value.token;
       fetchAssets();
+      resetAll();
       emits("transaction-successful", sendRes);
     } catch (error: any) {
       if (error === SELF_TX_ERROR || error.message === SELF_TX_ERROR) {
@@ -282,6 +305,20 @@ async function proceed() {
       hasStartedTyping.value = false;
     }
   }
+}
+
+function resetAll() {
+  tokenBalance.value = 0;
+  twitterId.value = "";
+  hasTwitterError.value = false;
+  hasStartedTyping.value = false;
+  userInput.value = {
+    chain: "",
+    token: "",
+    medium: "mail",
+    recipientId: "",
+    amount: 0,
+  };
 }
 
 async function switchChain(chainId: string) {
@@ -480,7 +517,12 @@ function getTokenModelValue(tokenAddress) {
             >Balance: {{ tokenBalance }}</span
           >
         </div>
-        <input class="input" type="number" v-model="userInput.amount" />
+        <input
+          class="input disabled:opacity-60"
+          type="number"
+          v-model="userInput.amount"
+          :disabled="!userInput.chain && !userInput.token"
+        />
         <div
           class="text-[#ff4264] text-[10px]"
           v-if="Number(tokenBalance) < Number(userInput.amount)"
@@ -488,15 +530,17 @@ function getTokenModelValue(tokenAddress) {
           Entered amount is greater than your wallet balance.
         </div>
       </div>
-      <button
-        @click.prevent="proceed"
-        type="submit"
-        class="w-full text-sm btn btn-submit"
-        :disabled="disableSubmit"
-        :class="{ 'opacity-50': disableSubmit }"
-      >
-        Send it
-      </button>
+      <div class="flex justify-center pt-4">
+        <button
+          @click.prevent="proceed"
+          type="submit"
+          class="w-full text-sm btn btn-submit"
+          :disabled="disableSubmit"
+          :class="{ 'opacity-50': disableSubmit }"
+        >
+          Send it
+        </button>
+      </div>
     </form>
   </div>
 </template>
