@@ -30,7 +30,6 @@ async function nativeTokenTransfer(
     rawTx.maxFeePerGas = feeData.maxFeePerGas;
     rawTx.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas;
   }
-  console.log(rawTx);
   const tx = await wallet.sendTransaction(rawTx);
   const confirmed = await tx.wait(4);
   if (confirmed == null) {
