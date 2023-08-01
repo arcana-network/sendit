@@ -26,7 +26,7 @@ async function nativeTokenTransfer(
     value: decimalAmount.mul(Decimal.pow(10, 18)).toHexadecimal(),
   };
   if (feeData) {
-    rawTx.gasLimit = 21000;
+    rawTx.gasLimit = 21000n;
     rawTx.maxFeePerGas = feeData.maxFeePerGas;
     rawTx.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas;
   }
@@ -66,6 +66,7 @@ async function erc20TokenTransfer(
     receiverWalletAddress,
     decimalAmount.mul(Decimal.pow(10, tokenDecimals)).toString()
   );
+  ptx.gasLimit = await web3Provider.estimateGas(ptx);
   if (feeData) {
     ptx.maxFeePerGas = BigInt(feeData.maxFeePerGas);
     ptx.maxPriorityFeePerGas = BigInt(feeData.maxPriorityFeePerGas);
