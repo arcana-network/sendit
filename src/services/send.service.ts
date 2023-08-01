@@ -26,10 +26,10 @@ async function nativeTokenTransfer(
     value: decimalAmount.mul(Decimal.pow(10, 18)).toHexadecimal(),
   };
   if (feeData) {
+    rawTx.gasLimit = 21000n;
     rawTx.maxFeePerGas = feeData.maxFeePerGas;
     rawTx.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas;
   }
-  rawTx.gasLimit = await web3Provider.estimateGas(rawTx);
   const tx = await wallet.sendTransaction(rawTx);
   const confirmed = await tx.wait(4);
   if (confirmed == null) {
