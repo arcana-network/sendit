@@ -66,6 +66,7 @@ async function erc20TokenTransfer(
     receiverWalletAddress,
     decimalAmount.mul(Decimal.pow(10, tokenDecimals)).toString()
   );
+  ptx.from = await wallet.getAddress()
   ptx.gasLimit = await web3Provider.estimateGas(ptx);
   if (feeData) {
     ptx.maxFeePerGas = BigInt(feeData.maxFeePerGas);
