@@ -66,11 +66,11 @@ async function erc20TokenTransfer(
     receiverWalletAddress,
     decimalAmount.mul(Decimal.pow(10, tokenDecimals)).toString()
   );
+  ptx.gasLimit = await web3Provider.estimateGas(ptx);
   if (feeData) {
     ptx.maxFeePerGas = BigInt(feeData.maxFeePerGas);
     ptx.maxPriorityFeePerGas = BigInt(feeData.maxPriorityFeePerGas);
   }
-  ptx.gasLimit = await web3Provider.estimateGas(ptx);
   const tx = await wallet.sendTransaction(ptx);
   const confirmed = await tx.wait(4);
 
