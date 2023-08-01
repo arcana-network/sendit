@@ -313,13 +313,6 @@ function resetAll() {
   twitterId.value = "";
   hasTwitterError.value = false;
   hasStartedTyping.value = false;
-  userInput.value = {
-    chain: "",
-    token: "",
-    medium: "mail",
-    recipientId: "",
-    amount: 0,
-  };
 }
 
 async function switchChain(chainId: string) {
