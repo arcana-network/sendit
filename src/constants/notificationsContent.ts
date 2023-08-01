@@ -119,7 +119,13 @@ const notificationsContent = {
   272: ({ nft_value, points }) => ({
     title: "NFT Claimed",
     body: `You have converted ${points} XP into ${nft_value}`,
-    path: "History",
+    shoutout: false,
+  }),
+  273: ({ nft_value }) => ({
+    title: "NFT Awarded",
+    body: `	
+Congratulations on being one of the weekly winners! You have received a ${nft_value} $XAR NFT!`,
+    path: "My Rewards",
     shoutout: false,
   }),
   513: ({ points }) => ({
