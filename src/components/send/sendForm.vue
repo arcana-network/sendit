@@ -29,6 +29,7 @@ import Dropdown from "@/components/lib/dropdown.vue";
 import chains from "@/constants/chainList";
 import { hexlify } from "ethers";
 import { GAS_SUPPORTED_CHAINS } from "@/constants/socket-ids";
+import { Decimal } from "decimal.js";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -63,6 +64,7 @@ const { userInput, supportedChains } = toRefs(sendStore);
 
 const isEmailValid = computed(() => {
   if (userInput.value.medium === "mail") {
+    hasTwitterError.value = false;
     return isValidEmail(userInput.value.recipientId);
   }
   return true;
@@ -160,6 +162,12 @@ function getVerifier(verifier: string) {
   return "passwordless";
 }
 
+function getCurrency(chainId: string | number) {
+  return userInput.value.token === "NATIVE"
+    ? chains[Number(chainId)].currency
+    : getTokenModelValue(userInput.value.token)?.tokenSymbol || "Unnamed Token";
+}
+
 async function proceed() {
   loadStore.showLoader("Sending tokens...");
   let hasUserRejectedChainSwitching = false;
@@ -168,17 +176,30 @@ async function proceed() {
       method: "eth_chainId",
     });
     if (Number(chainId) !== Number(userInput.value.chain)) {
+      loadStore.showLoader(
+        "Switching chain...",
+        `Switch to ${
+          chains[Number(userInput.value.chain)].name
+        } chain before sending tokens`
+      );
       try {
-        await authStore.provider.switchChain(userInput.value.chain);
+        await switchChain(userInput.value.chain as string);
       } catch (e) {
         hasUserRejectedChainSwitching = true;
-        toast.error(
-          "Switching chain rejected by user. Cannot proceed with this transaction."
-        );
       }
     }
   }
   if (!hasUserRejectedChainSwitching) {
+    loadStore.showLoader(
+      "Sending tokens...",
+      `Sending ${new Decimal(
+        userInput.value.amount as number
+      ).toString()} ${getCurrency(userInput.value.chain)} to ${
+        userInput.value.recipientId
+      } on ${
+        chains[Number(userInput.value.chain)].name
+      } chain. Please approve the transaction on your wallet and wait until it is completed.`
+    );
     try {
       const normalisedEmail =
         userInput.value.medium === "mail"
@@ -198,10 +219,6 @@ async function proceed() {
       const arcanaProvider = authStore.provider;
       const amount = userInput.value.amount as number;
       const chainId = userInput.value.chain;
-      loadStore.showLoader(
-        "Transferring Tokens...",
-        "Please approve the transaction and wait until it is completed."
-      );
       let feeData: FeeData | null = null;
       if (GAS_SUPPORTED_CHAINS.includes(Number(chainId))) {
         const gasStation: any = await socketConnection.sendMessage(
@@ -262,11 +279,7 @@ async function proceed() {
       sendRes.verifier = toVerifier;
       sendRes.amount = amount;
       sendRes.chain = chains[Number(chainId)].name;
-      sendRes.token =
-        userInput.value.token === "NATIVE"
-          ? chains[Number(chainId)].currency
-          : getTokenModelValue(userInput.value.token)?.tokenSymbol ||
-            "Unnamed Token";
+      sendRes.token = getCurrency(chainId);
       fetchAssets();
       resetAll();
       emits("transaction-successful", sendRes);
@@ -275,7 +288,7 @@ async function proceed() {
         toast.error("You cannot send tokens to yourself");
       } else if (error.code === ACTION_REJECTED) {
         toast.error(
-          "Signature request rejected. Please refresh the page again to login"
+          "Signature request rejected. Please retry sending, approve the transaction on your wallet and wait until it is completed."
         );
       } else if (error.code === INSUFFICIENT_FUNDS) {
         toast.error("Insufficient Gas to make this transaction.");
@@ -305,6 +318,11 @@ async function proceed() {
       loadStore.hideLoader();
       hasStartedTyping.value = false;
     }
+  } else {
+    loadStore.hideLoader();
+    toast.error(
+      "Switching chain rejected by user. Cannot proceed with this transaction."
+    );
   }
 }
 
@@ -320,7 +338,7 @@ async function switchChain(chainId: string) {
     method: "wallet_switchEthereumChain",
     params: [
       {
-        chainId: `0x${Number(chainId).toString(16)}`,
+        chainId: new Decimal(chainId).toHexadecimal(),
       },
     ],
   });
@@ -329,21 +347,28 @@ async function switchChain(chainId: string) {
 watch(
   () => userInput.value.chain,
   async (selectedChainId, oldChain) => {
-    await fetchAssets();
     if (userInput.value.chain !== "") {
-      userInput.value.token = "";
       const chainId = await authStore.provider.request({
         method: "eth_chainId",
       });
       if (Number(chainId) !== Number(selectedChainId)) {
         try {
+          loadStore.showLoader(
+            "Switching Chain...",
+            `Switching to ${
+              chains[Number(userInput.value.chain)].name
+            } chain. Please approve the transaction on your wallet to switch the chain.`
+          );
           await switchChain(selectedChainId as string);
+          userInput.value.token = "";
         } catch (e) {
           console.error({ e });
           userInput.value.chain = oldChain;
           toast.error("Switching chain rejected by user");
         }
       }
+      await fetchAssets();
+      loadStore.hideLoader();
     }
   }
 );
@@ -386,7 +411,11 @@ const disableSubmit = computed(() => {
 });
 
 async function handleTwitterUsername() {
-  if (userInput.value.medium === "twitter" && userInput.value.recipientId) {
+  if (
+    userInput.value.medium === "twitter" &&
+    userInput.value.recipientId &&
+    isTwitterValid.value
+  ) {
     const message = {
       username: userInput.value.recipientId.replace("@", ""),
     };
@@ -398,7 +427,6 @@ async function handleTwitterUsername() {
       twitterId.value = res.id;
     } catch (error) {
       hasTwitterError.value = true;
-      toast.error("Invalid twitter username");
     }
   }
 }
@@ -428,9 +456,10 @@ function getTokenModelValue(tokenAddress) {
           v-for="medium in sendVia"
           :key="medium.value"
           @click="handleMediumChange(medium.value)"
-          class="border-1 border-jet p-1.5 bg-[#666] rounded-full hover:border-white hover:bg-[#999] cursor-pointer"
+          class="border-1 p-1.5 rounded-full transition-all hover:bg-[#313131] cursor-pointer"
           :class="{
-            'border-white': userInput.medium === medium.value,
+            'border-[#4D4D4D]': userInput.medium !== medium.value,
+            'border-white bg-[#313131]': userInput.medium === medium.value,
           }"
         >
           <img :src="medium.icon" :alt="medium.value" />
@@ -448,6 +477,7 @@ function getTokenModelValue(tokenAddress) {
             hasStartedTyping = true;
             twitterId = '';
           "
+          autocomplete="off"
           @blur="handleTwitterUsername"
           :placeholder="
             userInput.medium === 'twitter'
@@ -515,7 +545,7 @@ function getTokenModelValue(tokenAddress) {
           class="input disabled:opacity-60"
           type="number"
           v-model="userInput.amount"
-          :disabled="!userInput.chain && !userInput.token"
+          :disabled="!userInput.chain || !userInput.token"
         />
         <div
           class="text-[#ff4264] text-[10px]"

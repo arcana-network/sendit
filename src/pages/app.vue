@@ -109,17 +109,15 @@ async function onWalletConnect() {
   loaderStore.showLoader("Connecting...");
   if (authStore.loggedInWith === "walletconnect") {
     authStore.provider.on("accountsChanged", async (accounts) => {
-      loaderStore.showLoader("Switching the account...");
+      socketConnection.disconnect();
+      authStore.isSocketLoggedIn = false;
+      await initSocketConnect();
       authStore.setUserInfo({
         address: accounts[0],
         loginType: "null",
         id: "null",
       });
       userStore.address = accounts[0];
-      socketConnection.disconnect();
-      authStore.isSocketLoggedIn = false;
-      await getUserInfo();
-      await initSocketConnect();
       loaderStore.hideLoader();
     });
   }

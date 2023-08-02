@@ -44,10 +44,15 @@
   font-style: normal;
 }
 
+html {
+  background-color: #0e0e0e;
+}
+
 body {
   font-family: Onest, sans-serif;
   color: #ffffff;
   min-height: 100vh;
+  background-color: #0e0e0e;
 }
 
 #app {
@@ -93,7 +98,7 @@ body {
 
 .Vue-Toastification__toast {
   min-height: unset !important;
-  max-height: 120px !important;
+  max-height: 360px !important;
   padding: 1rem !important;
   font-family: Onest, sans-serif !important;
   text-overflow: ellipsis !important;
