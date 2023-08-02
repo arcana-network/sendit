@@ -65,7 +65,9 @@ class Connection {
     }
 
     private async openSocket() {
-        await this.mutex.acquire();
+        if (!this.mutex.isLocked()) {
+            await this.mutex.acquire();
+        }
 
         this.socketSerial++;
         const closeCb = this.getCloseCb(this.socketSerial);
@@ -128,9 +130,6 @@ class Connection {
                     this.socket.readyState === WebSocket.OPEN
                 ) {
                     this.socket.close(Connection.DISCONNECTION_INTENTIONAL);
-                }
-                if (this.mutex.isLocked()) {
-                    this.mutex.release();
                 }
                 // basically preventing any other callback from reinitializing the socket
                 this.socketSerial++;
