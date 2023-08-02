@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import useArcanaAuth from "@/use/arcanaAuth";
-import useSocketConnection from "@/use/socketConnection";
 import useLoaderStore from "@/stores/loader";
 import FullScreenLoader from "@/components/fullScreenLoader.vue";
 import { useRouter, useRoute } from "vue-router";
@@ -17,13 +16,14 @@ import { getAccountBalance } from "@/services/ankr.service";
 import ReceiverMessage from "@/components/ReceiverMessage.vue";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import TweetVerify from "@/components/TweetVerify.vue";
+import {useConnection} from "@/stores/connection.ts";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 const auth = useArcanaAuth();
-const socketConnection = useSocketConnection();
+const conn = useConnection();
 const rewardsStore = useRewardsStore();
 const userStore = useUserStore();
 const notificationStore = useNotificationStore();
@@ -63,7 +63,7 @@ async function initSocketConnect() {
     verifier: authStore.userInfo.loginType,
     verifier_id: authStore.userInfo.id,
   };
-  await socketConnection.init(
+  await conn.initialize(
     // @ts-ignore
     authStore.provider,
     account,
