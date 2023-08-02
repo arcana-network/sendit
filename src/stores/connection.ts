@@ -20,10 +20,10 @@ type Account = {
 };
 
 export class SocketError extends Error {
-    code: number
+    code: number;
     constructor(message: string, code: number) {
         super(message);
-        this.code = code
+        this.code = code;
     }
 }
 
