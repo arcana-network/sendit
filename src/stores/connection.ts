@@ -19,6 +19,14 @@ type Account = {
     verifier_id: string;
 };
 
+export class SocketError extends Error {
+    code: number
+    constructor(message: string, code: number) {
+        super(message);
+        this.code = code
+    }
+}
+
 class Connection {
     static ON_CONNECT = Symbol();
     static ON_DISCONNECT = Symbol();
@@ -35,7 +43,7 @@ class Connection {
     // @ts-ignore
     private socket: WebSocket;
     private callbackMap = new Map<
-        Number,
+        number,
         [(_: unknown) => void, (_: unknown) => void]
     >();
     private mutex = new Mutex();
@@ -70,7 +78,7 @@ class Connection {
         this.socket.addEventListener("error", closeCb);
     }
 
-    private genRandUID(): Number {
+    private genRandUID(): number {
         return Buffer.from(randomBytes(4)).readUInt32LE();
     }
 
@@ -195,7 +203,7 @@ class Connection {
                 this.callbackMap.delete(id);
                 const [resolve, reject] = cbs;
                 if (data.error) {
-                    reject(data.msg);
+                    reject(new SocketError(data.msg, data.code));
                 } else {
                     resolve(data);
                 }
