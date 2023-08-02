@@ -65,10 +65,6 @@ class Connection {
     }
 
     private async openSocket() {
-        if (!this.mutex.isLocked()) {
-            await this.mutex.acquire();
-        }
-
         this.socketSerial++;
         const closeCb = this.getCloseCb(this.socketSerial);
 
@@ -133,6 +129,9 @@ class Connection {
                 }
                 // basically preventing any other callback from reinitializing the socket
                 this.socketSerial++;
+                if (!this.mutex.isLocked()) {
+                    await this.mutex.acquire();
+                }
                 await new Promise((resolve) => setTimeout(resolve, 5000));
                 await this.openSocket();
             }
