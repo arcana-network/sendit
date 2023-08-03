@@ -17,6 +17,8 @@ enum ConnectionState {
 type Account = {
   verifier: string;
   verifier_id: string;
+  referrer?: string;
+  referral?: string;
 };
 
 export class SocketError extends Error {
