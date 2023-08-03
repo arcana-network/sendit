@@ -26,7 +26,7 @@ const useUserStore = defineStore("user", {
         null
       )) as any;
       this.points = response.points;
-      this.rank = response.user_rank;
+      this.rank = response.global_rank;
     },
   },
 });
