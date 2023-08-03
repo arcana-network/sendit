@@ -82,26 +82,6 @@ async function passwordlessLogin() {
   }
 }
 
-// async function loginAutomatically(verifier: string, verifierId: string) {
-//   loaderStore.showLoader("Logging in...");
-//   try {
-//     const authInstance = arcanaAuth.getAuthInstance();
-//     if (verifier === "passwordless") {
-//       loaderStore.showLoader(
-//         `Click on the verification mail sent to ${verifierId}...`
-//       );
-//       await authInstance.loginWithLink(verifierId);
-//     } else {
-//       await authInstance.loginWithSocial(verifier);
-//     }
-//     await authInstance.isLoggedIn();
-//   } catch (error) {
-//     console.error({ error });
-//   } finally {
-//     loaderStore.hideLoader();
-//   }
-// }
-
 async function onConnectToWalletConnect() {
   const accountDetails = walletConnect.getAccount();
   const isConnected = accountDetails.isConnected;
