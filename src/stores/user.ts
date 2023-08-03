@@ -1,6 +1,9 @@
 import { defineStore } from "pinia";
-import useSocketConnection from "@/use/socketConnection";
-import { SOCKET_IDS, LEADERBOARD_TYPES } from "@/constants/socket-ids";
+import { useConnection } from "@/stores/connection";
+import activePiniaInstance from "@/stores";
+import { SOCKET_IDS } from "@/constants/socket-ids";
+
+const conn = useConnection(activePiniaInstance);
 
 type User = {
   points: number;
@@ -18,21 +21,12 @@ const useUserStore = defineStore("user", {
     } as User),
   actions: {
     async fetchUserPointsAndRank() {
-      const socket = useSocketConnection();
-      const response = (await socket.sendMessage(
+      const response = (await conn.sendMessage(
         SOCKET_IDS.GET_PROFILE,
         null
       )) as any;
       this.points = response.points;
-      const leaderboardResponse = (await socket.sendMessage(
-        SOCKET_IDS.GET_LEADERBOARD,
-        {
-          ltype: LEADERBOARD_TYPES.GLOBAL,
-          offset: 0,
-          limit: 3,
-        }
-      )) as any;
-      this.rank = leaderboardResponse.user_rank;
+      this.rank = response.global_rank;
     },
   },
 });

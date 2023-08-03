@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import useArcanaAuth from "@/use/arcanaAuth";
-import useSocketConnection from "@/use/socketConnection";
 import useLoaderStore from "@/stores/loader";
 import FullScreenLoader from "@/components/fullScreenLoader.vue";
 import { useRouter, useRoute } from "vue-router";
@@ -13,17 +12,24 @@ import useNotificationStore from "@/stores/notification";
 import NotWhiteListed from "@/components/not-whitelisted.vue";
 import useSendStore from "@/stores/send";
 import useWalletConnect from "@/use/walletconnect";
-import { getAccountBalance } from "@/services/ankr.service";
 import ReceiverMessage from "@/components/ReceiverMessage.vue";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import TweetVerify from "@/components/TweetVerify.vue";
+import {
+  Connection,
+  useConnection,
+  SocketConnectionAccount,
+} from "@/stores/connection.ts";
+import { getBytes } from "ethers";
+
+const ACTION_REJECTED = "ACTION_REJECTED";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 const auth = useArcanaAuth();
-const socketConnection = useSocketConnection();
+const conn = useConnection();
 const rewardsStore = useRewardsStore();
 const userStore = useUserStore();
 const notificationStore = useNotificationStore();
@@ -59,41 +65,30 @@ async function initAuth() {
 }
 
 async function initSocketConnect() {
-  const account = {
+  const account: SocketConnectionAccount = {
     verifier: authStore.userInfo.loginType,
     verifier_id: authStore.userInfo.id,
   };
-  await socketConnection.init(
+  if (route.query.referrer) {
+    account.referrer = Buffer.from(getBytes(route.query.referrer as string));
+  }
+  await conn.initialize(
     // @ts-ignore
     authStore.provider,
-    account,
-    () => {
-      authStore.setSocketLoginStatus(true);
-    },
-    async () => {
-      const { verifier, verifierId } = route.query;
-      if (verifier && verifierId) {
-        try {
-          const data = await getAccountBalance(userStore.address, [
-            "eth",
-            "polygon",
-            "polygon_mumbai",
-            "arbitrum",
-          ]);
-          if (data?.result?.assets?.length) {
-            hasBalance.value = true;
-          } else {
-            hasBalance.value = false;
-          }
-        } catch (error) {
-          console.log(error);
-          hasBalance.value = false;
-        }
-      }
-      isNotWhitelisted.value = true;
-      loaderStore.hideLoader();
-    }
+    account
   );
+  conn.onEvent(Connection.ON_ERROR, (error) => {
+    if (error.code === ACTION_REJECTED) {
+      loaderStore.hideLoader();
+      toast.error("Signature rejected");
+      if (authStore.loggedInWith === "walletconnect") {
+        walletConnect.disconnect();
+        onWalletDisconnect();
+      } else {
+        auth.getAuthInstance().logout();
+      }
+    }
+  });
 }
 
 async function getUserInfo() {
@@ -109,17 +104,13 @@ async function onWalletConnect() {
   loaderStore.showLoader("Connecting...");
   if (authStore.loggedInWith === "walletconnect") {
     authStore.provider.on("accountsChanged", async (accounts) => {
-      loaderStore.showLoader("Switching the account...");
+      await initSocketConnect();
       authStore.setUserInfo({
         address: accounts[0],
         loginType: "null",
         id: "null",
       });
       userStore.address = accounts[0];
-      socketConnection.disconnect();
-      authStore.isSocketLoggedIn = false;
-      await getUserInfo();
-      await initSocketConnect();
       loaderStore.hideLoader();
     });
   }
@@ -128,19 +119,18 @@ async function onWalletConnect() {
 }
 
 async function onWalletDisconnect() {
-  socketConnection.disconnect();
-  authStore.setSocketLoginStatus(false);
+  conn.closeSocket();
   authStore.setLoginStatus(false);
 }
 
 onMounted(initAuth);
 
 watch(
-  () => authStore.isSocketLoggedIn,
+  () => conn.connected,
   async (newValue) => {
     if (newValue) {
       if (route.query.id && route.query.id !== "-1") {
-        await socketConnection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
+        await conn.connection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
           id: Number(route.query.id),
         });
       }
@@ -179,9 +169,7 @@ watch(
 );
 
 const showFullScreenLoader = computed(() => {
-  return (
-    loaderStore.show || (!authStore.isSocketLoggedIn && authStore.isLoggedIn)
-  );
+  return loaderStore.show || (!conn.connected && authStore.isLoggedIn);
 });
 
 async function handleNoAccessBack() {
