@@ -31,10 +31,6 @@ if (verifier === "passwordless" && verifierId) {
   passwordlessEmailId.value = verifierId;
 }
 
-const isWhitelistedLogin = computed(() => {
-  return route.query.user !== undefined;
-});
-
 const socialLoginsFiltered = computed(() => {
   if (verifier && verifierId) {
     return socialLogins.filter((login) => {
@@ -189,7 +185,7 @@ async function onLoginWalletConnected(
             </section>
             <section
               class="space-y-3 w-full flex flex-col items-start"
-              v-if="isWhitelistedLogin && !verifier && !verifierId"
+              v-if="!verifier && !verifierId"
             >
               <span class="text-xs text-philippine-gray">Connect Wallet</span>
               <div class="flex flex-col space-y-2 w-full">
