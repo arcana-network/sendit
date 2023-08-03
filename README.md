@@ -12,7 +12,7 @@
 <a title="CodeCov" href="https://codecov.io/gh/arcana-network/send-it"> 
  <img src="https://codecov.io/gh/arcana-network/sendit-it/branch/dev/graph/badge.svg?token=KmdjEs3enL"/></a>
 </p><p id="start" align="center">
-<a href="https://docs.arcana.network/"><img src="https://raw.githubusercontent.com/arcana-network/branding/main/an_banner_docs.png" alt="Arcana Network SendIt Application"/></a>
+<a href="https://docs.arcana.network/"><img src="https://raw.githubusercontent.com/arcana-network/branding/main/arcana_sendit_banner.png" alt="Arcana Network SendIt Application"/></a>
 </p>
 
 # SendIt Application
