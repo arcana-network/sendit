@@ -8,7 +8,7 @@ import { truncateAddress } from "@/utils/truncateAddress";
 
 import copyToClipboard from "@/utils/copyToClipboard";
 import useWalletConnect from "@/use/walletconnect";
-import useSocketConnection from "@/use/socketConnection";
+import { useConnection } from "@/stores/connection";
 import useSendStore from "@/stores/send";
 import useRewardsStore from "@/stores/rewards";
 import useNotificationStore from "@/stores/notification";
@@ -17,7 +17,7 @@ const authStore = useAuthStore();
 const { userInfo }: { userInfo: any } = toRefs(authStore);
 const arcanaAuth = useArcanaAuth();
 const walletConnect = useWalletConnect();
-const socketConnection = useSocketConnection();
+const conn = useConnection();
 const sendStore = useSendStore();
 const rewardsStore = useRewardsStore();
 const notificationStore = useNotificationStore();
@@ -32,8 +32,7 @@ async function handleCopy() {
 function logout() {
   if (authStore.loggedInWith === "walletconnect") {
     walletConnect.disconnect();
-    socketConnection.disconnect();
-    authStore.setSocketLoginStatus(false);
+    conn.closeSocket();
     authStore.setLoginStatus(false);
   } else arcanaAuth.getAuthInstance().logout();
   sendStore.resetUserInput();
