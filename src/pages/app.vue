@@ -15,7 +15,9 @@ import useWalletConnect from "@/use/walletconnect";
 import ReceiverMessage from "@/components/ReceiverMessage.vue";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import TweetVerify from "@/components/TweetVerify.vue";
-import { useConnection } from "@/stores/connection.ts";
+import { Connection, useConnection } from "@/stores/connection.ts";
+
+const ACTION_REJECTED = "ACTION_REJECTED";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -68,6 +70,18 @@ async function initSocketConnect() {
     authStore.provider,
     account
   );
+  conn.onEvent(Connection.ON_ERROR, (error) => {
+    if (error.code === ACTION_REJECTED) {
+      loaderStore.hideLoader();
+      toast.error("Signature rejected");
+      if (authStore.loggedInWith === "walletconnect") {
+        walletConnect.disconnect();
+        onWalletDisconnect();
+      } else {
+        auth.getAuthInstance().logout();
+      }
+    }
+  });
 }
 
 async function getUserInfo() {

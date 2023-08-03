@@ -214,10 +214,13 @@ export const useConnection = defineStore("connection", {
     },
   getters: {
     sendMessage(state) {
-      return state.connection.sendMessage;
+      return state.connection.sendMessage.bind(state.connection);
     },
     closeSocket(state) {
-      return state.connection.closeSocket;
+      return state.connection.closeSocket.bind(state.connection);
+    },
+    onEvent(state) {
+      return state.connection.emitter.on.bind(state.connection.emitter);
     },
   },
   actions: {
@@ -247,3 +250,5 @@ export const useConnection = defineStore("connection", {
     },
   },
 });
+
+export { Connection };
