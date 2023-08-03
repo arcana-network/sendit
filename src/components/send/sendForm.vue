@@ -20,7 +20,7 @@ import {
   type FeeData,
 } from "@/services/send.service.ts";
 import { getBytes } from "ethers";
-import useSocketConnection from "@/use/socketConnection";
+import { useConnection } from "@/stores/connection";
 import { useToast } from "vue-toastification";
 import { SOCKET_IDS, TOKEN_TYPES } from "@/constants/socket-ids";
 import { isValidEmail, isValidTwitterHandle } from "@/utils/validation";
@@ -52,7 +52,7 @@ const chainAssets: Ref<any[]> = computed(() => {
 });
 const tokenBalance = ref(0);
 const arcanaAuth = useArcanaAuth();
-const socketConnection = useSocketConnection();
+const conn = useConnection();
 const toast = useToast();
 const twitterId = ref("");
 const hasTwitterError = ref(false);
@@ -147,7 +147,7 @@ function messageArcana(
     to_verifier,
     type,
   };
-  return socketConnection.sendMessage(SOCKET_IDS.SEND_TX, message);
+  return conn.sendMessage(SOCKET_IDS.SEND_TX, message);
 }
 
 function getVerifier(verifier: string) {
@@ -204,7 +204,7 @@ async function proceed() {
       );
       let feeData: FeeData | null = null;
       if (GAS_SUPPORTED_CHAINS.includes(Number(chainId))) {
-        const gasStation: any = await socketConnection.sendMessage(
+        const gasStation: any = await conn.sendMessage(
           SOCKET_IDS.GET_GAS_STATION,
           {
             chain_id: chainId,
@@ -391,7 +391,7 @@ async function handleTwitterUsername() {
       username: userInput.value.recipientId.replace("@", ""),
     };
     try {
-      const res = (await socketConnection.sendMessage(
+      const res = (await conn.sendMessage(
         SOCKET_IDS.TWITTER_USERNAME_TO_ID,
         message
       )) as { id: string };

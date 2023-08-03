@@ -12,11 +12,10 @@ import useNotificationStore from "@/stores/notification";
 import NotWhiteListed from "@/components/not-whitelisted.vue";
 import useSendStore from "@/stores/send";
 import useWalletConnect from "@/use/walletconnect";
-import { getAccountBalance } from "@/services/ankr.service";
 import ReceiverMessage from "@/components/ReceiverMessage.vue";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import TweetVerify from "@/components/TweetVerify.vue";
-import {useConnection} from "@/stores/connection.ts";
+import { useConnection } from "@/stores/connection.ts";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -67,33 +66,7 @@ async function initSocketConnect() {
   await conn.initialize(
     // @ts-ignore
     authStore.provider,
-    account,
-    () => {
-      authStore.setSocketLoginStatus(true);
-    },
-    async () => {
-      const { verifier, verifierId } = route.query;
-      if (verifier && verifierId) {
-        try {
-          const data = await getAccountBalance(userStore.address, [
-            "eth",
-            "polygon",
-            "polygon_mumbai",
-            "arbitrum",
-          ]);
-          if (data?.result?.assets?.length) {
-            hasBalance.value = true;
-          } else {
-            hasBalance.value = false;
-          }
-        } catch (error) {
-          console.log(error);
-          hasBalance.value = false;
-        }
-      }
-      isNotWhitelisted.value = true;
-      loaderStore.hideLoader();
-    }
+    account
   );
 }
 
@@ -117,8 +90,7 @@ async function onWalletConnect() {
         id: "null",
       });
       userStore.address = accounts[0];
-      socketConnection.disconnect();
-      authStore.isSocketLoggedIn = false;
+      conn.closeSocket();
       await getUserInfo();
       await initSocketConnect();
       loaderStore.hideLoader();
@@ -129,19 +101,18 @@ async function onWalletConnect() {
 }
 
 async function onWalletDisconnect() {
-  socketConnection.disconnect();
-  authStore.setSocketLoginStatus(false);
+  conn.closeSocket();
   authStore.setLoginStatus(false);
 }
 
 onMounted(initAuth);
 
 watch(
-  () => authStore.isSocketLoggedIn,
+  () => conn.connected,
   async (newValue) => {
     if (newValue) {
       if (route.query.id && route.query.id !== "-1") {
-        await socketConnection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
+        await conn.connection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
           id: Number(route.query.id),
         });
       }
@@ -180,9 +151,7 @@ watch(
 );
 
 const showFullScreenLoader = computed(() => {
-  return (
-    loaderStore.show || (!authStore.isSocketLoggedIn && authStore.isLoggedIn)
-  );
+  return loaderStore.show || (!conn.connected && authStore.isLoggedIn);
 });
 
 async function handleNoAccessBack() {

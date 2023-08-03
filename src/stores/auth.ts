@@ -2,7 +2,6 @@ import { defineStore } from "pinia";
 
 type AuthStore = {
   isLoggedIn: boolean;
-  isSocketLoggedIn: boolean;
   userInfo: Record<string, any>;
   isAuthSDKInitialized: boolean;
   loggedInWith: "" | "metamask" | "walletconnect";
@@ -13,7 +12,6 @@ const useAuthStore = defineStore("auth", {
   state: () =>
     ({
       isLoggedIn: false,
-      isSocketLoggedIn: false,
       userInfo: {},
       isAuthSDKInitialized: false,
       loggedInWith: "",
@@ -28,9 +26,6 @@ const useAuthStore = defineStore("auth", {
   actions: {
     setLoginStatus(status: boolean): void {
       this.isLoggedIn = status;
-    },
-    setSocketLoginStatus(status: boolean): void {
-      this.isSocketLoggedIn = status;
     },
     setUserInfo(info: object): void {
       this.userInfo = info;
