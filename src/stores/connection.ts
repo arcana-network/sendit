@@ -17,6 +17,7 @@ enum ConnectionState {
 type Account = {
   verifier: string;
   verifier_id: string;
+  referrer?: Buffer;
 };
 
 export class SocketError extends Error {
@@ -251,4 +252,4 @@ export const useConnection = defineStore("connection", {
   },
 });
 
-export { Connection };
+export { Connection, Account as SocketConnectionAccount };
