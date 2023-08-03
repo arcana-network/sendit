@@ -231,11 +231,6 @@ async function onLoginWalletConnected(
             </section>
           </section>
         </section>
-        <div class="mt-20 text-sm">
-          <RouterLink :to="{ name: 'Waitlist' }"
-            >Need access? Join the Waitlist</RouterLink
-          >
-        </div>
       </div>
       <LandingDescription class="flex-grow" />
     </div>
