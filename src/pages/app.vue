@@ -15,7 +15,12 @@ import useWalletConnect from "@/use/walletconnect";
 import ReceiverMessage from "@/components/ReceiverMessage.vue";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import TweetVerify from "@/components/TweetVerify.vue";
-import { Connection, useConnection } from "@/stores/connection.ts";
+import {
+  Connection,
+  useConnection,
+  SocketConnectionAccount,
+} from "@/stores/connection.ts";
+import { getBytes } from "ethers";
 
 const ACTION_REJECTED = "ACTION_REJECTED";
 
@@ -60,11 +65,13 @@ async function initAuth() {
 }
 
 async function initSocketConnect() {
-  const account = {
+  const account: SocketConnectionAccount = {
     verifier: authStore.userInfo.loginType,
     verifier_id: authStore.userInfo.id,
-    referrer: route.query.referrer as string,
   };
+  if (route.query.referrer) {
+    account.referrer = Buffer.from(getBytes(route.query.referrer as string));
+  }
   await conn.initialize(
     // @ts-ignore
     authStore.provider,
