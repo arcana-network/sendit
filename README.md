@@ -27,7 +27,9 @@ You can check out the SendIt application deployed on Arcana Mainnet: https://sen
 
 ## Using SendIt
 
-Simply log into https://sendit.arcana.network. 
+Simply log in to SendIt via the following link:
+
+https://sendit.arcana.network/app
 
 ### Send Crypto 
 
@@ -39,9 +41,13 @@ Whitelisted users can also use the Arcana wallet to send and receive crypto from
 
 ### Receive Crypto
 
-To receive crypto that has been gifted/sent to a user via email ID or twitter, the sender must ensure that they email or share the SendIt link displayed in the app after they confirm the send transaction. The recipient can use this link to claim the crypto.  As part of claiming the crypto, they need to use the same emailID or Twitter handle and log into the SendIt app: https://sendit.arcana.network.  For email log in, a verification email will be sent to the same email ID. User needs to verify to log in. Post log in, user's email ID or Twitter handle, that was used to log in is associated with a wallet address automatically.  This wallet is completely private, owned by the user. User can see the SendIt app dashboard, click on the Arcana wallet on the bottom right and view the wallet balance.
+To receive crypto that has been gifted/sent to a user via email ID or twitter, the sender must ensure that they email or share the SendIt link displayed in the app after they confirm the send transaction to the recipient. The recipient gets notified of blockchain transfer via this email. They can use the link shared by the sender to claim the crypto.  As part of claiming the crypto, they need to use the same emailID or Twitter handle and log into the SendIt app usign this link: 
 
-The recipients become automatially whitelisted and they can send / share crypto with other users via email ID, Twitter handle via SendIt. They can also share crypto via any wallet address by using the Arcana wallet UI to send crypto, view NFTs and more.
+https://sendit.arcana.network/app  
+
+For email log in, a verification email will be sent by Arcana Network to the same email ID of the recipient used to log in to SendIt. Once the recipient is authenticated, they can instantantly access the embedded Arcana wallet displayed in the context of the SendIt app on the bottom right. This wallet is completely private, owned by the user and can be used for signing blockchain transactions.
+
+The recipients become automatially whitelisted for SendIt usage. They can further send/share crypto with other users via email ID, Twitter handle through SendIt. They can also share crypto via any wallet address by using the Arcana wallet UI. Users can also view NFTs and more.
 
 For details on using the Arcana wallet, see [Arcana Wallet User Guide](https://docs.arcana.network/user-guides/wallet-ui/index.html).
 
