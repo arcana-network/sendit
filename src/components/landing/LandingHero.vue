@@ -30,12 +30,11 @@
       />
       <img
         src="@/assets/images/landing/hero-image-375w.png"
-        srcset="
-          @/assets/images/landing/hero-image-375w.png   375w,
-          @/assets/images/landing/hero-image-1440w.png 1440w
-        "
-        sizes="(max-width: 767px) 375px, 1440px"
-        class="relative top-0 left-0 right-0 h-[812px] md:h-[1059px] object-cover object-center w-full z-[2]"
+        class="md:hidden relative top-0 left-0 right-0 h-[812px] md:h-[1059px] object-cover object-center w-full z-[2]"
+      />
+      <img
+        src="@/assets/images/landing/hero-image-1440w.png"
+        class="max-md:hidden relative top-0 left-0 right-0 h-[812px] md:h-[1059px] object-cover object-center w-full z-[2]"
       />
     </div>
   </div>
