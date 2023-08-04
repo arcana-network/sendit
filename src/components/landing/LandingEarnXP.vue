@@ -1,5 +1,5 @@
 <template>
-  <div class="landing-container">
+  <div class="landing-container" id="earn-xp">
     <div>
       <h3>
         <div>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="how-does-it-work">
     <div class="landing-container">
       <h3>
         How does it

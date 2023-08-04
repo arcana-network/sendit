@@ -1,5 +1,5 @@
 <template>
-  <div class="landing-container">
+  <div class="landing-container" id="why-sendit">
     <h3>Why SendIt?</h3>
     <div>
       <div>
