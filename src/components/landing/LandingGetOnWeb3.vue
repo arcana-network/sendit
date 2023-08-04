@@ -1,8 +1,8 @@
 <template>
-  <div id="getonweb3">
-    <div class="landing-container">
+  <div id="getonweb3" class="h-[234px] md:h-[571px] relative flex items-center">
+    <div class="landing-container flex flex-col items-center gap-4">
       <h3 class="landing-section-title">#GetOnWeb</h3>
-      <p>
+      <p class="landing-section-description max-w-[688px] text-center">
         There's no better way to inspire others to embrace crypto than by
         getting them to experience it firsthand. With SendIt, you can
         effortlessly send crypto to anyone, including those without a wallet.
@@ -18,6 +18,7 @@
       "
       sizes="(max-width: 767px) 375px, 1440px"
       loading="lazy"
+      class="object-cover object-center absolute inset-0 z-[-1] w-full h-full"
     />
   </div>
 </template>
