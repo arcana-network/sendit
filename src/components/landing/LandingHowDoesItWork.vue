@@ -48,9 +48,9 @@ onBeforeUnmount(() => {
     <div class="landing-container flex flex-col gap-4 md:gap-6">
       <div class="flex justify-center">
         <h3 class="flex">
-          <span class="landing-section-title">How does it&nbsp;</span>
+          <span class="landing-section-title uppercase">How does it&nbsp;</span>
           <div class="flex flex-col">
-            <span class="landing-section-title">work?</span>
+            <span class="landing-section-title uppercase">work?</span>
             <img
               src="@/assets/images/landing/how-does-it-work-vector-underline.svg"
               class="max-md:w-[87px]"

@@ -1,6 +1,6 @@
 <template>
   <div class="landing-container" id="why-sendit">
-    <h3 class="landing-section-title">Why SendIt?</h3>
+    <h3 class="landing-section-title uppercase">Why SendIt?</h3>
     <div>
       <div>
         <div>
