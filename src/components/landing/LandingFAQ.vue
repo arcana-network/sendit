@@ -33,26 +33,45 @@ const faqs = [
 <template>
   <div>
     <div class="landing-container">
-      <h3>
-        <div>
-          <span class="font-caveat">Constantly</span>
-          <img src="@/assets/images/landing/faq-vector-strikethrough.svg" />
+      <h3 class="flex">
+        <div class="relative">
+          <span
+            class="font-caveat absolute -top-[100%] left-1/2 transform transform -translate-x-1/2 text-[1.25rem] md:text-[2rem]"
+            >Constantly</span
+          >
+          <img
+            class="absolute top-[35%]"
+            src="@/assets/images/landing/faq-vector-strikethrough.svg"
+          />
           <span class="landing-section-title">Frequently</span>
         </div>
-        <span class="landing-section-title">Asked Questions</span>
+        <span class="landing-section-title">&nbsp;Asked Questions</span>
       </h3>
-      <div>
-        <Disclosure v-for="faq in faqs" :key="faq.index">
-          <DisclosureButton class="py-2">
-            {{ faq.question }}
+      <div class="flex flex-col">
+        <Disclosure
+          v-for="faq in faqs"
+          :key="faq.index"
+          class="border-b border-b-solid border-b-[#8d8d8d]"
+          as="div"
+        >
+          <DisclosureButton
+            class="landing-section-description py-[1.4rem] flex justify-between"
+            style="color: white"
+          >
+            <span>{{ faq.question }}</span>
           </DisclosureButton>
-          <DisclosurePanel class="text-gray-500">
+          <DisclosurePanel class="landing-section-description pb-[1.4rem]">
             {{ faq.answer }}
           </DisclosurePanel>
         </Disclosure>
-        <Disclosure>
-          <DisclosureButton class="py-2"> Need more support? </DisclosureButton>
-          <DisclosurePanel class="text-gray-500">
+        <Disclosure as="div" class="flex justify-between">
+          <DisclosureButton
+            class="landing-section-description py-[1.4rem]"
+            style="color: white"
+          >
+            <span>Need more support?</span>
+          </DisclosureButton>
+          <DisclosurePanel class="landing-section-description pb-[1.4rem]">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua Mail and
             Telegram.

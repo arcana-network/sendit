@@ -36,9 +36,9 @@ const LandingFooter = defineAsyncComponent(
     <LandingHeader />
     <LandingHero />
     <LandingNumbers />
-    <LandingWhySendit />
-    <LandingSenditTagline />
     <LandingHowDoesItWork />
+    <LandingSenditTagline />
+    <LandingWhySendit />
     <LandingEarnXP />
     <LandingGetOnWeb3 />
     <LandingFAQ />
