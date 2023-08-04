@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from "vue";
 import useLoaderStore from "@/stores/loader";
+import { useRoute } from "vue-router";
 
 const FullScreenLoader = defineAsyncComponent(
   () => import("@/components/fullScreenLoader.vue")
@@ -10,16 +11,19 @@ const AppMaintenance = defineAsyncComponent(
 );
 
 const loaderStore = useLoaderStore();
+const route = useRoute();
 const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
 </script>
 
 <template>
   <main class="bg-[#0e0e0e] text-white h-full min-h-screen relative">
     <img
+      v-if="route.name !== 'Landing'"
       src="@/assets/images/bg-top-right.png"
       class="absolute top-[72px] right-0 z-0 filter grayscale w-[33vw]"
     />
     <img
+      v-if="route.name !== 'Landing'"
       src="@/assets/images/bg-bottom-left.png"
       class="absolute bottom-0 left-0 z-0 filter grayscale w-[33vw]"
     />

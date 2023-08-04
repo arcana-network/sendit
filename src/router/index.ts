@@ -1,14 +1,13 @@
 import { createWebHistory, createRouter, RouteRecordRaw } from "vue-router";
-// import Waitlist from "@/pages/waitlist.vue";
 import Invite from "@/pages/invite.vue";
 import App from "@/pages/app.vue";
+import Landing from "@/pages/landing.vue";
 
 const routes: RouteRecordRaw[] = [
   {
-    name: "Waitlist",
+    name: "Landing",
     path: "/",
-    // component: Waitlist,
-    redirect: { name: "App" },
+    component: Landing,
   },
   {
     name: "Invite",

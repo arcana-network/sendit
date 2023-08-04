@@ -88,6 +88,10 @@ body {
   @apply max-w-[1440px] mx-auto;
 }
 
+.landing-container {
+  @apply mx-auto max-w-[1180px] px-5;
+}
+
 .ellipsis {
   @apply text-ellipsis whitespace-nowrap overflow-hidden;
 }
