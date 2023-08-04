@@ -1,26 +1,33 @@
 <template>
   <div class="landing-container" id="earn-xp">
-    <div>
-      <h3>
-        <div>
-          <img src="@/assets/images/landing/earn-xp-vector-pointer.svg" />
-          <span class="landing-section-title uppercase">Earn XP</span>
+    <div class="flex justify-center">
+      <h3 class="max-md:hidden flex">
+        <div class="relative">
+          <img
+            src="@/assets/images/landing/earn-xp-vector-pointer.svg"
+            class="absolute bottom-full"
+          />
+          <span class="landing-section-title uppercase">Earn XP&nbsp;</span>
         </div>
         <span class="landing-section-title uppercase">for Using SendIt</span>
       </h3>
-      <h3 class="landing-section-title uppercase">Earn XP <span>!</span></h3>
+      <h3 class="landing-section-title uppercase md:hidden">
+        Earn XP <span style="color: #fd7132">!</span>
+      </h3>
     </div>
-    <div>
-      <div>
-        <h4>Convenience, and Rewards!</h4>
-        <p>
+    <div class="flex max-md:flex-col-reverse md:items-center">
+      <div class="flex flex-col gap-4">
+        <h4 class="text-[1rem] md:text-[2rem] max-md:text-center">
+          Convenience, and Rewards!
+        </h4>
+        <p class="landing-section-description max-w-[500px] max-md:text-center">
           Your ultimate solution for hassle-free crypto transfers. Earn points
           with every transaction while contributing to crypto's mainstream
           adoption. Share SendIt with friends on socials for even more points.
           Win weekly leaderboard challenges for a big airdrops! Also, tune into
           our socials for updates on rewards that will melt faces! 🤑🤑🤑
         </p>
-        <div>
+        <div class="flex gap-4 max-md:justify-center">
           <a href="https://discord.gg/6g7fQvEpdy" target="_blank"
             ><img
               src="@/assets/images/landing/icons/discord.svg"
@@ -56,6 +63,7 @@
         sizes="(max-width: 767px) 300px, 836px"
         loading="lazy"
         alt="Earn XP for using SendIt"
+        class="md:-mr-[180px]"
       />
     </div>
   </div>
