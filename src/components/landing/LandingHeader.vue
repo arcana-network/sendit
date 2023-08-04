@@ -1,5 +1,33 @@
+<script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref } from "vue";
+
+const hasScrolledHeaderHeight = ref(false);
+
+onMounted(() => {
+  document
+    .querySelector("#landing-page")
+    ?.addEventListener("scroll", (ev: any) => {
+      hasScrolledHeaderHeight.value = ev.target?.scrollTop > 63;
+    });
+});
+
+onBeforeUnmount(() => {
+  document
+    .querySelector("#landing-page")
+    ?.removeEventListener("scroll", (ev: any) => {
+      hasScrolledHeaderHeight.value = ev.target?.scrollTop > 63;
+    });
+});
+</script>
+
 <template>
-  <header class="sticky top-0 py-4 z-[1000]">
+  <header
+    class="sticky top-0 py-4 z-[1000] transition-all duration-[500ms] ease-in-out"
+    :class="{
+      'bg-[#0E0E0E]': hasScrolledHeaderHeight,
+      'bg-transparent': !hasScrolledHeaderHeight,
+    }"
+  >
     <div class="landing-container relative">
       <div class="flex md:justify-center">
         <a href="/" class="flex">

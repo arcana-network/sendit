@@ -28,7 +28,11 @@ const LandingFooter = defineAsyncComponent(
 </script>
 
 <template>
-  <div class="bg-[#0E0E0E] h-screen" style="overflow-x: hidden">
+  <div
+    class="bg-[#0E0E0E] h-screen"
+    id="landing-page"
+    style="overflow-x: hidden"
+  >
     <LandingHeader />
     <LandingHero />
     <LandingNumbers />
