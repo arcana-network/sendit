@@ -64,17 +64,29 @@ const faqs = [
             {{ faq.answer }}
           </DisclosurePanel>
         </Disclosure>
-        <Disclosure as="div" class="flex justify-between">
+        <Disclosure as="div">
           <DisclosureButton
-            class="landing-section-description py-[1.4rem]"
+            class="landing-section-description py-[1.4rem] flex justify-between"
             style="color: white"
           >
             <span>Need more support?</span>
           </DisclosureButton>
           <DisclosurePanel class="landing-section-description pb-[1.4rem]">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua Mail and
-            Telegram.
+            eiusmod tempor incididunt ut labore et dolore magna aliqua
+            <a
+              href="mailto:support@arcana.network"
+              target="_blank"
+              class="font-bold text-white"
+              >Mail</a
+            >
+            and
+            <a
+              href="https://t.me/ArcanaNetwork"
+              target="_blank"
+              class="font-bold text-white"
+              >Telegram</a
+            >.
           </DisclosurePanel>
         </Disclosure>
       </div>
