@@ -2,9 +2,9 @@
   <div id="how-does-it-work">
     <div class="landing-container">
       <h3>
-        How does it
+        <span class="landing-section-title">How does it</span>
         <div>
-          <span>work?</span>
+          <span class="landing-section-title">work?</span>
           <img
             src="@/assets/images/landing/how-does-it-work-vector-underline.svg"
           />

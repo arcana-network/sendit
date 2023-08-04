@@ -4,11 +4,11 @@
       <h3>
         <div>
           <img src="@/assets/images/landing/earn-xp-vector-pointer.svg" />
-          <span>Earn XP</span>
+          <span class="landing-section-title">Earn XP</span>
         </div>
-        for Using SendIt
+        <span class="landing-section-title">for Using SendIt</span>
       </h3>
-      <h3>Earn XP <span>!</span></h3>
+      <h3 class="landing-section-title">Earn XP <span>!</span></h3>
     </div>
     <div>
       <div>

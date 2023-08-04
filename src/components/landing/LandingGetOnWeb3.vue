@@ -1,7 +1,7 @@
 <template>
   <div id="getonweb3">
     <div class="landing-container">
-      <h3>#GetOnWeb</h3>
+      <h3 class="landing-section-title">#GetOnWeb</h3>
       <p>
         There's no better way to inspire others to embrace crypto than by
         getting them to experience it firsthand. With SendIt, you can

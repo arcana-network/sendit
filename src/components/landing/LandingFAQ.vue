@@ -37,9 +37,9 @@ const faqs = [
         <div>
           <span class="font-caveat">Constantly</span>
           <img src="@/assets/images/landing/faq-vector-strikethrough.svg" />
-          <span>Frequently</span>
+          <span class="landing-section-title">Frequently</span>
         </div>
-        Asked Questions
+        <span class="landing-section-title">Asked Questions</span>
       </h3>
       <div>
         <Disclosure v-for="faq in faqs" :key="faq.index">
