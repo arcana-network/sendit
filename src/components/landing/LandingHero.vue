@@ -21,7 +21,7 @@
         >
       </form>
     </div>
-    <div class="relative z-[1]">
+    <div class="relative -z-[1]">
       <div
         class="h-[456px] absolute top-0 left-0 right-0 z-[3]"
         style="
@@ -39,7 +39,7 @@
       />
       <img
         src="@/assets/images/landing/hero-image-1440w.png"
-        class="max-md:hidden relative top-0 left-0 right-0 max-h-screen h-[812px] md:h-[1059px] object-cover object-center w-full z-[2]"
+        class="max-md:hidden relative top-0 left-0 right-0 h-[812px] md:h-[1059px] object-cover object-center w-full z-[2]"
       />
     </div>
   </div>

@@ -4,7 +4,7 @@ import { onBeforeUnmount, onMounted, ref } from "vue";
 const currentSlide = ref(1);
 const totalSlides = 4;
 let carouselTimer: NodeJS.Timer;
-const carouselInterval = 3000;
+const carouselInterval = 4000;
 
 function nextSlide() {
   if (currentSlide.value < totalSlides) {
@@ -106,7 +106,7 @@ onBeforeUnmount(() => {
           alt="Step 4 - The receiver gets the assets in a readymade wallet linked to their Email or Twitter ID."
         />
       </div>
-      <div class="md:hidden flex gap-4 justify-center">
+      <div class="md:hidden flex gap-4 justify-center items-center">
         <button
           v-for="i in 4"
           :key="`slide-${i}`"

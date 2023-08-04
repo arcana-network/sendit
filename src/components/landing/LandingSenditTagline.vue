@@ -3,9 +3,13 @@
     <div
       class="p-[1.25rem] md:p-[3.75rem] rounded-[0.625rem] md:rounded-[1.875rem]"
       style="
-        background: rgba(0, 0, 0, 0.1);
         backdrop-filter: blur(50px);
-        border: 1px solid #8d8d8d;
+        border: 1px solid #8d8d8d50;
+        background: linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.1),
+          rgba(0, 0, 0, 0.1)
+        );
       "
     >
       <div class="flex max-md:flex-col max-md:items-center md:justify-center">
@@ -20,7 +24,7 @@
           />
           <img
             src="@/assets/images/landing/SendIt-text.svg"
-            class="h-4 md:h-8"
+            class="h-3 md:h-8"
             alt="SendIt"
           />
           <span class="landing-section-title">&nbsp;is&nbsp;like&nbsp;</span>
