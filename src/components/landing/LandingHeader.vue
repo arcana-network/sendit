@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
 const hasScrolledHeaderHeight = ref(false);
+const router = useRouter();
 
 onMounted(() => {
   document
@@ -48,6 +50,7 @@ onBeforeUnmount(() => {
       >
         <button
           class="text-[0.75rem] leading-[1.125rem] uppercase font-500 border-[#363636] border border-solid rounded-[5px] md:rounded-[10px] px-4 py-2 md:px-6 md:py-3 cursor-pointer hover:bg-[#363636] hover:text-white transition-colors duration-200 ease-in-out"
+          @click.stop="router.push({ name: 'App' })"
         >
           Launch App
         </button>
