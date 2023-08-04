@@ -11,13 +11,24 @@
           </p>
         </div>
         <img
-          src=""
+          src="@/assets/landing/why-sendit-1-111w.png"
+          srcset="
+            @/assets/images/landing/why-sendit-1-111w.png 111w,
+            @/assets/images/landing/why-sendit-1-344w.png 344w
+          "
+          sizes="(max-width: 767px) 111px, 344px"
           alt="People roll their eyes if you mention Web3"
           loading="lazy"
-          width="344"
-          height="194"
         />
-        <img src="" loading="lazy" width="618" height="319" />
+        <img
+          src="@/assets/landing/why-sendit-bg-163w.svg"
+          srcset="
+            @/assets/images/landing/why-sendit-bg-163w.svg 163w,
+            @/assets/images/landing/why-sendit-bg-557w.svg 557w
+          "
+          sizes="(max-width: 767px) 163px, 557px"
+          loading="lazy"
+        />
       </div>
       <div>
         <div>
@@ -28,13 +39,24 @@
           </p>
         </div>
         <img
-          src=""
+          src="@/assets/landing/why-sendit-2-156w.png"
+          srcset="
+            @/assets/images/landing/why-sendit-2-156w.png 156w,
+            @/assets/images/landing/why-sendit-2-502w.png 502w
+          "
+          sizes="(max-width: 767px) 156px, 502px"
           alt="People are scared they’ll make mistakes with wallet addresses"
           loading="lazy"
-          width="502"
-          height="231"
         />
-        <img src="" loading="lazy" width="618" height="319" />
+        <img
+          src="@/assets/landing/why-sendit-bg-163w.svg"
+          srcset="
+            @/assets/images/landing/why-sendit-bg-163w.svg 163w,
+            @/assets/images/landing/why-sendit-bg-557w.svg 557w
+          "
+          sizes="(max-width: 767px) 163px, 557px"
+          loading="lazy"
+        />
       </div>
       <div>
         <div>
@@ -46,13 +68,24 @@
           </p>
         </div>
         <img
-          src=""
+          src="@/assets/landing/why-sendit-3-66w.png"
+          srcset="
+            @/assets/images/landing/why-sendit-3-66w.png   66w,
+            @/assets/images/landing/why-sendit-3-241w.png 241w
+          "
+          sizes="(max-width: 767px) 66px, 241px"
           alt="The Crypto learning curve scares people"
           loading="lazy"
-          width="241"
-          height="227"
         />
-        <img src="" loading="lazy" width="618" height="319" />
+        <img
+          src="@/assets/landing/why-sendit-bg-163w.svg"
+          srcset="
+            @/assets/images/landing/why-sendit-bg-163w.svg 163w,
+            @/assets/images/landing/why-sendit-bg-557w.svg 557w
+          "
+          sizes="(max-width: 767px) 163px, 557px"
+          loading="lazy"
+        />
       </div>
       <div>
         <div>
@@ -64,13 +97,24 @@
           </p>
         </div>
         <img
-          src=""
+          src="@/assets/landing/why-sendit-4-70w.png"
+          srcset="
+            @/assets/images/landing/why-sendit-4-70w.png   70w,
+            @/assets/images/landing/why-sendit-4-242w.png 242w
+          "
+          sizes="(max-width: 767px) 70px, 242px"
           alt="People roll their eyes if you mention Web3"
           loading="lazy"
-          width="242"
-          height="227"
         />
-        <img src="" loading="lazy" width="618" height="319" />
+        <img
+          src="@/assets/landing/why-sendit-bg-163w.svg"
+          srcset="
+            @/assets/images/landing/why-sendit-bg-163w.svg 163w,
+            @/assets/images/landing/why-sendit-bg-557w.svg 557w
+          "
+          sizes="(max-width: 767px) 163px, 557px"
+          loading="lazy"
+        />
       </div>
     </div>
   </div>

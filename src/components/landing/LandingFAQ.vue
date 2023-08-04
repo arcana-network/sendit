@@ -33,7 +33,14 @@ const faqs = [
 <template>
   <div>
     <div class="landing-container">
-      <h3>Frequently Asked Questions</h3>
+      <h3>
+        <div>
+          <span class="font-caveat">Constantly</span>
+          <img src="@/assets/images/landing/faq-vector-strikethrough.svg" />
+          <span>Frequently</span>
+        </div>
+        Asked Questions
+      </h3>
       <div>
         <Disclosure v-for="faq in faqs" :key="faq.index">
           <DisclosureButton class="py-2">

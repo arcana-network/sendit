@@ -10,5 +10,14 @@
         revolution. Together, we'll change the world for the better.
       </p>
     </div>
+    <img
+      src="@/assets/images/landing/get-on-web3-375w.png"
+      srcset="
+        @/assets/images/landing/get-on-web3-375w.png   375w,
+        @/assets/images/landing/get-on-web3-1440w.png 1440w
+      "
+      sizes="(max-width: 767px) 375px, 1440px"
+      loading="lazy"
+    />
   </div>
 </template>
