@@ -11,7 +11,7 @@
           </p>
         </div>
         <img
-          src="@/assets/landing/why-sendit-1-111w.png"
+          src="@/assets/images/landing/why-sendit-1-111w.png"
           srcset="
             @/assets/images/landing/why-sendit-1-111w.png 111w,
             @/assets/images/landing/why-sendit-1-344w.png 344w
@@ -21,7 +21,7 @@
           loading="lazy"
         />
         <img
-          src="@/assets/landing/why-sendit-bg-163w.svg"
+          src="@/assets/images/landing/why-sendit-bg-163w.svg"
           srcset="
             @/assets/images/landing/why-sendit-bg-163w.svg 163w,
             @/assets/images/landing/why-sendit-bg-557w.svg 557w
@@ -39,7 +39,7 @@
           </p>
         </div>
         <img
-          src="@/assets/landing/why-sendit-2-156w.png"
+          src="@/assets/images/landing/why-sendit-2-156w.png"
           srcset="
             @/assets/images/landing/why-sendit-2-156w.png 156w,
             @/assets/images/landing/why-sendit-2-502w.png 502w
@@ -49,7 +49,7 @@
           loading="lazy"
         />
         <img
-          src="@/assets/landing/why-sendit-bg-163w.svg"
+          src="@/assets/images/landing/why-sendit-bg-163w.svg"
           srcset="
             @/assets/images/landing/why-sendit-bg-163w.svg 163w,
             @/assets/images/landing/why-sendit-bg-557w.svg 557w
@@ -68,7 +68,7 @@
           </p>
         </div>
         <img
-          src="@/assets/landing/why-sendit-3-66w.png"
+          src="@/assets/images/landing/why-sendit-3-66w.png"
           srcset="
             @/assets/images/landing/why-sendit-3-66w.png   66w,
             @/assets/images/landing/why-sendit-3-241w.png 241w
@@ -78,7 +78,7 @@
           loading="lazy"
         />
         <img
-          src="@/assets/landing/why-sendit-bg-163w.svg"
+          src="@/assets/images/landing/why-sendit-bg-163w.svg"
           srcset="
             @/assets/images/landing/why-sendit-bg-163w.svg 163w,
             @/assets/images/landing/why-sendit-bg-557w.svg 557w
@@ -97,7 +97,7 @@
           </p>
         </div>
         <img
-          src="@/assets/landing/why-sendit-4-70w.png"
+          src="@/assets/images/landing/why-sendit-4-70w.png"
           srcset="
             @/assets/images/landing/why-sendit-4-70w.png   70w,
             @/assets/images/landing/why-sendit-4-242w.png 242w
@@ -107,7 +107,7 @@
           loading="lazy"
         />
         <img
-          src="@/assets/landing/why-sendit-bg-163w.svg"
+          src="@/assets/images/landing/why-sendit-bg-163w.svg"
           srcset="
             @/assets/images/landing/why-sendit-bg-163w.svg 163w,
             @/assets/images/landing/why-sendit-bg-557w.svg 557w
