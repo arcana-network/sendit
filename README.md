@@ -17,7 +17,7 @@
 
 # SendIt Application
 
-The Arcana Network SendIt application allows users to send crypto via email or Twitter handle of the receiver. Having a wallet address is not a pre-requisite for receiving crypto. Once the recipient accepts and claims the received crypto, a new wallet address is automatically associated with their email identifier or Twitter handle. All the received crypto can be accessed using this wallet.
+The Arcana Network SendIt application allows users to send crypto via email or Twitter handle of the receiver. Having a wallet address is not a pre-requisite for the receiver as SendIt takes care of that securely and with full ownership for the recipient. As soon as the sender confirms the crypto send transaction to the recipient's email or Twitter handle, a new wallet address is automatically associated with it. All the received crypto can be accessed using this wallet address only by the receiver post authentication.
 
 SendIt uses the Arcana Auth SDK under the covers that helps users onboard Web3 apps easily.  For more details, see [Arcana Auth Documentation](https://docs.arcana.network).
 
