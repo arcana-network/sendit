@@ -20,6 +20,10 @@ function handleAction(reward) {
     showTweetVerifyPopup.value = true;
   } else if (reward.task === "Transact") {
     router.push({ name: "Send" });
+  } else if (reward.task === "Follow") {
+    window.open(reward.url, "_blank");
+  } else if (reward.task === "Trxn History") {
+    router.push({ name: "History" });
   }
 }
 </script>
@@ -44,9 +48,11 @@ function handleAction(reward) {
             <span class="text-base font-bold text-[#d8d8d8]">{{
               reward.name
             }}</span>
-            <span class="text-sm text-philippine-gray">{{
-              reward.description
-            }}</span>
+            <span
+              class="text-sm text-philippine-gray"
+              :title="reward.description"
+              >{{ reward.description.slice(0, 60) }}...</span
+            >
           </div>
           <div class="flex items-center justify-center">
             <button
@@ -61,10 +67,5 @@ function handleAction(reward) {
       </div>
     </div>
     <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
-    <!-- <TweetVerify
-      v-if="showTweetVerifyPopup"
-      :xp="tweetXp"
-      @close="showTweetVerifyPopup = false"
-    /> -->
   </div>
 </template>

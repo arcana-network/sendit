@@ -99,7 +99,7 @@ const EARN_XP = [
   {
     image: NavigationIcon,
     name: "Earn 500 XP",
-    description: "Complete 50 transactions on SendIt and earn XP.",
+    description: "Send crypto for the first time and earn XP.",
     task: "Transact",
     xp: 500,
   },
@@ -121,17 +121,17 @@ const EARN_XP = [
   },
   {
     image: UserVoiceIcon,
-    name: "Earn 25 XP",
-    description: "Shoutout a SendIt send transaction on twitter & earn XP.",
-    task: "Transact",
-    xp: 25,
+    name: "Earn 5 XP",
+    description: "Shout out on Twitter after a SendIt transaction & earn XP.",
+    task: "Trxn History",
+    xp: 5,
   },
   {
     image: UserVoiceIcon,
-    name: "Earn 25 XP",
+    name: "Earn 5 XP",
     description: "Shoutout a SendIt receive transaction on twitter & earn XP.",
-    task: "Transact",
-    xp: 25,
+    task: "Trxn History",
+    xp: 5,
   },
   {
     image: NavigationIcon,
@@ -152,6 +152,54 @@ const EARN_XP = [
     name: "Earn 20 XP",
     description: "Top 3000 members on the SendIt weekly leaderboard earns XP.",
     task: "Transact",
+    xp: 20,
+  },
+  {
+    image: NavigationIcon,
+    name: "Earn 100 XP",
+    description:
+      "Earn 100 XP for performing a txn to a new user on mainnet. 10 XP immediately on sending and 90 XP when the recipient logs in to SendIt.",
+    task: "Transact",
+    xp: 100,
+  },
+  {
+    image: NavigationIcon,
+    name: "Earn 10 XP",
+    description:
+      "Earn 10 XP for performing a txn to an existing user on mainnet.",
+    task: "Transact",
+    xp: 10,
+  },
+  {
+    image: NavigationIcon,
+    name: "Earn 20 XP",
+    description:
+      "Earn 20 XP for performing a txn to a new user on testnet. 2 XP immediately on sending and 18 XP when the recipient logs in to SendIt.",
+    task: "Transact",
+    xp: 20,
+  },
+  {
+    image: NavigationIcon,
+    name: "Earn 2 XP",
+    description:
+      "Earn 2 XP for performing a txn to an existing user on testnet.",
+    task: "Transact",
+    xp: 2,
+  },
+  {
+    image: UserVoiceIcon,
+    name: "Earn 20 XP",
+    description: "Earn 20 XP for following us on Twitter.",
+    task: "Follow",
+    url: "https://twitter.com/ArcanaNetwork",
+    xp: 20,
+  },
+  {
+    image: UserVoiceIcon,
+    name: "Earn 20 XP",
+    description: "Earn 20 XP for following us on Telegram.",
+    task: "Follow",
+    url: "https://t.me/ArcanaNetwork",
     xp: 20,
   },
 ];
