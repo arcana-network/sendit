@@ -16,11 +16,11 @@
         <div class="flex items-center">
           <img
             src="@/assets/images/landing/apostrophe-open-outline.svg"
-            class="h-2 md:h-4 -mt-4"
+            class="h-2 md:h-4 -mt-2 md:-mt-4"
           />
           <img
             src="@/assets/images/landing/apostrophe-open-filled.svg"
-            class="h-2 md:h-4 -mt-4 mr-1 md:mr-2"
+            class="h-2 md:h-4 -mt-2 md:-mt-4 mr-1 md:mr-2"
           />
           <img
             src="@/assets/images/landing/SendIt-text.svg"
@@ -43,11 +43,11 @@
           ><span class="landing-section-title -mt-2">3</span>
           <img
             src="@/assets/images/landing/apostrophe-close-filled.svg"
-            class="h-2 md:h-4 -mt-4 ml-1 md:ml-2"
+            class="h-2 md:h-4 -mt-2 md:-mt-4 ml-1 md:ml-2"
           />
           <img
             src="@/assets/images/landing/apostrophe-close-outline.svg"
-            class="h-2 md:h-4 -mt-4"
+            class="h-2 md:h-4 -mt-2 md:-mt-4"
           />
         </div>
       </div>

@@ -53,25 +53,50 @@ const faqs = [
           :key="faq.index"
           class="border-b border-b-solid border-b-[#8d8d8d]"
           as="div"
+          v-slot="{ open }"
         >
           <DisclosureButton
-            class="landing-section-description py-[1.4rem] flex justify-between"
+            class="landing-section-description py-[1.4rem] flex justify-between items-center w-full gap-4"
             style="color: white"
           >
-            <span>{{ faq.question }}</span>
+            <span class="text-start">{{ faq.question }}</span>
+            <img
+              v-if="open"
+              src="@/assets/images/landing/minus-icon.svg"
+              class="max-md:w-4 max-md:h-4"
+            />
+            <img
+              v-else
+              src="@/assets/images/landing/plus-icon.svg"
+              class="max-md:w-4 max-md:h-4"
+            />
           </DisclosureButton>
-          <DisclosurePanel class="landing-section-description pb-[1.4rem]">
+          <DisclosurePanel
+            class="landing-section-description pb-[1.4rem] pr-[1.4rem] max-w-[950px]"
+          >
             {{ faq.answer }}
           </DisclosurePanel>
         </Disclosure>
-        <Disclosure as="div">
+        <Disclosure as="div" v-slot="{ open }">
           <DisclosureButton
-            class="landing-section-description py-[1.4rem] flex justify-between"
+            class="landing-section-description py-[1.4rem] flex justify-between items-center w-full gap-4"
             style="color: white"
           >
-            <span>Need more support?</span>
+            <span class="text-start">Need more support?</span>
+            <img
+              v-if="open"
+              src="@/assets/images/landing/minus-icon.svg"
+              class="max-md:w-4 max-md:h-4"
+            />
+            <img
+              v-else
+              src="@/assets/images/landing/plus-icon.svg"
+              class="max-md:w-4 max-md:h-4"
+            />
           </DisclosureButton>
-          <DisclosurePanel class="landing-section-description pb-[1.4rem]">
+          <DisclosurePanel
+            class="landing-section-description pb-[1.4rem] pr-[1.4rem] max-w-[950px]"
+          >
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua
             <a

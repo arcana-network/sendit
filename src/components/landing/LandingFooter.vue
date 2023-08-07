@@ -1,5 +1,12 @@
 <template>
-  <footer>
+  <footer
+    class="rounded-t-[16px] md:rounded-t-[30px] border border-solid border-[#8d8d8d50]"
+    style="
+      border-bottom: none;
+      background-color: rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(50px);
+    "
+  >
     <div
       class="landing-container flex max-md:flex-col max-md:gap-2 max-md:items-center md:justify-between max-md:text-center landing-section-description w-full"
     >
@@ -66,3 +73,5 @@
     </div>
   </footer>
 </template>
+
+<style scoped></style>
