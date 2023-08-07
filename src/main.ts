@@ -4,6 +4,8 @@ import { Buffer } from "buffer";
 import Toast from "vue-toastification";
 
 import "vue-toastification/dist/index.css";
+import "@fontsource/caveat/700.css";
+import "@fontsource/syne/700.css";
 
 import "@/style.css";
 import App from "@/App.vue";
