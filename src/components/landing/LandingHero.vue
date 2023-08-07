@@ -12,13 +12,30 @@
         This is the simplest way to send crypto to anyone even if they don’t
         have a wallet. Don’t believe us? Try it for yourself for free!
       </p>
-      <form>
-        <input placeholder="someone@example.com" />
-        <button>Sign Up!</button>
-        <img src="@/assets/images/landing/try-it-out-vector-pointer.svg" />
-        <span class="font-caveat text-[1.25rem] md:text-[2rem]"
-          >Sign-up now, get 50XP!</span
+      <form
+        class="relative flex gap-2 md:gap-4 md:border md:border-solid md:border-[#8d8d8d] md:bg-[#3b3b3b] md:p-1 md:rounded-[10px]"
+      >
+        <input
+          placeholder="someone@example.com"
+          class="max-md:bg-[#3b3b3b] md:bg-transparent max-md:rounded-[5px] h-[40px] px-2 w-[160px] md:w-[300px] text-[12px] md:text-[14px] text-white placeholder:text-[#8d8d8d]"
+        />
+        <div
+          class="relative flex items-center justify-center w-[80px] md:w-[120px] h-[40px]"
         >
+          <button
+            class="font-[500] text-[12px] uppercase w-[80px] md:w-[120px] flex items-center justify-center h-[40px] bg-white rounded-[5px] md:rounded-[10px] text-[#3b3b3b]"
+          >
+            Sign Up!
+          </button>
+          <img
+            class="absolute top-[120%] md:top-[125%] -left-[20%] md:left-0 h-[50px] md:h-[80px]"
+            src="@/assets/images/landing/try-it-out-vector-pointer.svg"
+          />
+          <span
+            class="font-caveat text-[1.25rem] md:text-[2rem] absolute w-max top-[200%] md:top-[250%] -left-[230%]"
+            >Sign-up now, get 50XP!</span
+          >
+        </div>
       </form>
     </div>
     <div class="relative -z-[1]">
