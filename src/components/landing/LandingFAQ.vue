@@ -31,7 +31,7 @@ const faqs = [
 </script>
 
 <template>
-  <div>
+  <div class="mt-[3rem] md:mt-[8rem]">
     <div class="landing-container">
       <h3 class="flex">
         <div class="relative">

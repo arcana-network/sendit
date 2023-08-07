@@ -1,6 +1,6 @@
 <template>
   <footer
-    class="rounded-t-[16px] md:rounded-t-[30px] border border-solid border-[#8d8d8d50]"
+    class="rounded-t-[16px] md:rounded-t-[30px] border border-solid border-[#8d8d8d50] mt-[3rem] md:mt-[8rem]"
     style="border-bottom: none; backdrop-filter: blur(50px)"
   >
     <div

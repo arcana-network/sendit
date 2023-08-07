@@ -1,5 +1,5 @@
 <template>
-  <div class="landing-container" id="why-sendit">
+  <div class="landing-container mt-[3rem] md:mt-[8rem]" id="why-sendit">
     <h3 class="landing-section-title uppercase text-center">Why SendIt?</h3>
     <div
       class="grid gap-3 md:gap-6"

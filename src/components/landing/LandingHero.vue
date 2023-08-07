@@ -45,19 +45,21 @@ async function handlePasswordlessLogin() {
 <template>
   <div class="relative -mt-[63px] md:-mt-[82px]">
     <div
-      class="landing-container absolute z-[10] h-full w-full flex flex-col justify-center items-center left-1/2 transform -translate-x-1/2"
+      class="landing-container absolute z-[10] h-full max-h-screen w-full flex flex-col justify-center items-center left-1/2 transform -translate-x-1/2"
     >
       <h3
         class="landing-section-title uppercase max-md:max-w-[200px] text-center"
       >
         Send crypto over email
       </h3>
-      <p class="landing-section-description max-w-[560px] text-center">
+      <p
+        class="landing-section-description max-w-[560px] text-center max-md:mt-5 md:mt-1"
+      >
         This is the simplest way to send crypto to anyone even if they don’t
         have a wallet. Don’t believe us? Try it for yourself for free!
       </p>
       <form
-        class="relative flex gap-2 md:gap-4 md:border md:border-solid md:border-[#8d8d8d] md:bg-[#3b3b3b] md:p-1 md:rounded-[10px]"
+        class="relative flex gap-2 md:gap-4 md:border md:border-solid md:border-[#8d8d8d] md:bg-[#3b3b3b] md:p-1 md:rounded-[10px] max-md:mt-5 md:mt-10"
         @submit.prevent="handlePasswordlessLogin"
       >
         <input
