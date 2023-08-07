@@ -80,8 +80,8 @@
       loading="lazy"
     />
     <img
-      class="absolute z-[-1] bottom-0 right-0 max-md:bottom-[65%] max-md:hidden"
-      src="@/assets/images/landing/footer-bg-375w.png"
+      class="absolute z-[-1] bottom-0 right-0 max-md:hidden"
+      src="@/assets/images/landing/footer-bg-902w.png"
       loading="lazy"
     />
   </footer>
