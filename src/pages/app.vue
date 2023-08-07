@@ -145,6 +145,9 @@ watch(
     if (newValue) {
       if (route.query["try-it-out"] === "1") {
         await requestFaucetFunds();
+        const query = { ...route.query };
+        delete query["try-it-out"];
+        router.push({ name: "Send", query });
       }
       if (route.query.r) {
         try {
