@@ -27,18 +27,20 @@ function viewRewards() {
             <img src="@/assets/images/arcana-orange.svg" alt="close" />
             <span class="font-[500] text-[20px] uppercase">Verify Follow</span>
             <span class="text-xs text-philippine-gray text-center">
-              Enter your handle which follows the Arcana Twitter page to verify
-              and earn XP.
+              Enter your handle which follows the Arcana Twitter/Telegram page
+              to verify and earn XP.
             </span>
           </div>
           <div class="flex flex-col space-y-4">
             <div class="flex flex-col space-y-2">
-              <label for="handle" class="text-xs">Twitter handle</label>
+              <label for="handle" class="text-xs"
+                >Twitter/Telegram handle</label
+              >
               <input
                 type="text"
                 class="input"
                 name="handle"
-                placeholder="Enter your twitter handle"
+                placeholder="Enter your twitter/telegram handle"
               />
             </div>
             <button
