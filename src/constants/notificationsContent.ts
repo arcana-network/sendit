@@ -25,20 +25,20 @@ const notificationsContent = {
     shoutout: false,
   }),
   1: ({ points }) => ({
-    title: `Invite accepted`,
-    body: `Your friend has accepted your invite and joined SendIt. You earned ${points} XP.`,
+    title: `Invite claimed`,
+    body: `Your friend has accepted your invite and joined SendIt. You have earned ${points} XP.`,
     path: "",
     shoutout: false,
   }),
   2: ({ points }) => ({
     title: "Tokens sent",
-    body: `You have sent tokens to your friend. You earned ${points} XP.`,
+    body: `You have sent tokens to your friend. You have earned ${points} XP.`,
     path: "History",
     shoutout: false,
   }),
   3: ({ points }) => ({
     title: "Tokens received",
-    body: `You have received tokens from your friend. You earned ${points} XP.`,
+    body: `You have received tokens from your friend. You have earned ${points} XP.`,
     path: "History",
     shoutout: false,
   }),
@@ -86,7 +86,7 @@ const notificationsContent = {
   },
   11: ({ points }) => ({
     title: "Tokens sent",
-    body: `You have sent tokens to your friend. You earned ${points} XP.`,
+    body: `You have sent tokens to your friend. You have earned ${points} XP.`,
     path: "History",
     shoutout: false,
   }),
@@ -131,7 +131,7 @@ Congratulations on being one of the weekly winners! You have received a ${nft_va
   274: ({ nft_value }) => ({
     title: "NFT Awarded",
     body: `	
-Congratulations on being one of the overall winners! You have received a ${nft_value} $XAR NFT!`,
+Congratulations on being one of the top 2000 users through the first few weeks of SendIt! You have received a ${nft_value} $XAR NFT`,
     path: "My Rewards",
     shoutout: false,
   }),
