@@ -58,8 +58,8 @@ async function initAuth() {
       authStore.isLoggedIn = true;
       authStore.loggedInWith = "";
       await onWalletConnect();
-      router.push({ name: "Send", query: { ...route.query } });
-    } else await router.push({ name: "Login", query: { ...route.query } });
+      router.replace({ name: "Send", query: { ...route.query } });
+    } else await router.replace({ name: "Login", query: { ...route.query } });
   } catch (error) {
     toast.error(error as string);
   } finally {
@@ -87,7 +87,7 @@ async function initSocketConnect() {
       } else {
         auth.getAuthInstance().logout();
       }
-      router.push({ name: "Login", query: { ...route.query } });
+      router.replace({ name: "Login", query: { ...route.query } });
     }
   });
 }
@@ -147,7 +147,7 @@ watch(
         await requestFaucetFunds();
         const query = { ...route.query };
         delete query["try-it-out"];
-        router.push({ name: "Send", query });
+        router.replace({ name: "Send", query });
       }
       if (route.query.r) {
         try {
@@ -183,13 +183,13 @@ watch(
   () => authStore.isLoggedIn,
   async (newValue) => {
     if (!newValue) {
-      router.push({ name: "Login", query: { ...route.query } });
+      router.replace({ name: "Login", query: { ...route.query } });
     } else if (route.name === "Login") {
       if (authStore.loggedInWith !== "") {
         await onWalletConnect();
       }
       loaderStore.hideLoader();
-      router.push({ name: "Send", query: { ...route.query } });
+      router.replace({ name: "Send", query: { ...route.query } });
     }
   }
 );
