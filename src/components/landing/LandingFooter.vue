@@ -39,8 +39,20 @@
           </ul>
           <ul class="flex flex-col gap-3 md:gap-2 text-white">
             <li class="md:hidden"><a href="#getonweb3">GetOnWeb3</a></li>
-            <li><a href="#terms">Terms of Use</a></li>
-            <li><a href="#privacy">Privacy Policy</a></li>
+            <li>
+              <a
+                href="https://github.com/arcana-network/license/blob/main/TERMS.md"
+                target="_blank"
+                >Terms of Use</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://github.com/arcana-network/license/blob/main/PRIVACY.md"
+                target="_blank"
+                >Privacy Policy</a
+              >
+            </li>
           </ul>
         </nav>
         <div class="flex flex-col gap-2 md:gap-4 max-md:w-full">

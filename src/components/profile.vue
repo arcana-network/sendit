@@ -29,9 +29,13 @@ async function handleCopy() {
   toast.success("Wallet address copied");
 }
 
+function getCurrentLocationUrl() {
+  return window.location.origin;
+}
+
 async function handleCopyRef() {
   await copyToClipboard(
-    `https://sendit.arcana.network/app/?r=${userInfo.value.address}`
+    `${getCurrentLocationUrl()}/app/?r=${userInfo.value.address}`
   );
   toast.success("Referral Link copied");
 }
@@ -82,10 +86,8 @@ function logout() {
           >Referral Link</span
         >
         <div class="flex space-x-1">
-          <span
-            class="text-sm text-left overflow-hidden"
-            @click.stop="handleCopyRef"
-            >https://sendit.arcana.network/app/?r={{ userInfo.address }}</span
+          <span class="text-sm text-left ellipsis" @click.stop="handleCopyRef"
+            >{{ getCurrentLocationUrl() }}/app/?r={{ userInfo.address }}</span
           >
           <button @click.stop="handleCopyRef">
             <img :src="CopyIcon" alt="copy" />
