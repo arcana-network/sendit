@@ -3,11 +3,12 @@ import { useRouter } from "vue-router";
 import { composeAndSendTweet } from "@/utils/tweet";
 import { EARN_XP } from "@/constants/rewards";
 import AppInvite from "@/components/AppInvite.vue";
-// import TweetVerify from "@/components/TweetVerify.vue";
 import { ref } from "vue";
+import TwitterFollowVerify from "@/components/TwitterFollowVerify.vue";
 
 const router = useRouter();
 const showInvitePopup = ref(false);
+const showTwitterFollowPopup = ref(false);
 const showTweetVerifyPopup = ref(false);
 const tweetXp = ref(0);
 
@@ -22,6 +23,7 @@ function handleAction(reward) {
     router.push({ name: "Send" });
   } else if (reward.task === "Follow") {
     window.open(reward.url, "_blank");
+    showTwitterFollowPopup.value = true;
   } else if (reward.task === "Trxn History") {
     router.push({ name: "History" });
   }
@@ -67,5 +69,9 @@ function handleAction(reward) {
       </div>
     </div>
     <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
+    <TwitterFollowVerify
+      v-if="showTwitterFollowPopup"
+      @close="showTwitterFollowPopup = false"
+    />
   </div>
 </template>
