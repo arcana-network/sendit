@@ -75,7 +75,7 @@
       </div>
     </div>
     <img
-      class="absolute z-[-1] bottom-0 right-0 max-md:bottom-[5%] md:hidden"
+      class="absolute z-[-1] right-0 bottom-[5%] md:hidden"
       src="@/assets/images/landing/footer-bg-375w.png"
       loading="lazy"
     />
