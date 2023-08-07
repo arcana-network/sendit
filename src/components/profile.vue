@@ -29,6 +29,13 @@ async function handleCopy() {
   toast.success("Wallet address copied");
 }
 
+async function handleCopyRef() {
+  await copyToClipboard(
+    `https://sendit.arcana.network/app/?r=${userInfo.value.address}`
+  );
+  toast.success("Referral Link copied");
+}
+
 function logout() {
   if (authStore.loggedInWith === "walletconnect") {
     walletConnect.disconnect();
@@ -66,6 +73,21 @@ function logout() {
             truncateAddress(userInfo.address)
           }}</span>
           <button @click.stop="handleCopy">
+            <img :src="CopyIcon" alt="copy" />
+          </button>
+        </div>
+      </div>
+      <div class="flex flex-col justify-start">
+        <span class="text-philippine-gray text-xs text-left"
+          >Referral Link</span
+        >
+        <div class="flex space-x-1">
+          <span
+            class="text-sm text-left overflow-hidden"
+            @click.stop="handleCopyRef"
+            >https://sendit.arcana.network/app/?r={{ userInfo.address }}</span
+          >
+          <button @click.stop="handleCopyRef">
             <img :src="CopyIcon" alt="copy" />
           </button>
         </div>

@@ -1,3 +1,47 @@
+<script setup lang="ts">
+import useArcanaAuth from "@/use/arcanaAuth";
+import { onMounted } from "vue";
+import { useToast } from "vue-toastification";
+import useLoaderStore from "@/stores/loader";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { isValidEmail } from "@/utils/validation";
+import { normaliseEmail } from "@/utils/normalise";
+import useAuthStore from "@/stores/auth";
+
+const auth = useArcanaAuth();
+const toast = useToast();
+const email = ref("");
+const loaderStore = useLoaderStore();
+const router = useRouter();
+const authStore = useAuthStore();
+
+onMounted(async () => {
+  await auth.init();
+  authStore.setAuthInitialized(true);
+});
+
+async function handlePasswordlessLogin() {
+  if (!isValidEmail(email.value)) {
+    toast.error("Please enter a valid email address");
+    return;
+  }
+  const normalisedEmail = normaliseEmail(email.value);
+  if (await auth.isLoggedIn()) {
+    toast.error(
+      "You are already signed in through Arcana wallet, please launch the app."
+    );
+    return;
+  }
+  loaderStore.showLoader(
+    `Please click on the verification link sent to ${email.value}`
+  );
+  await auth.getAuthInstance().loginWithLink(normalisedEmail);
+  await router.push({ name: "App", query: { "try-it-out": "1" } });
+  loaderStore.hideLoader();
+}
+</script>
+
 <template>
   <div class="relative -mt-[63px] md:-mt-[82px]">
     <div
@@ -14,11 +58,13 @@
       </p>
       <form
         class="relative flex gap-2 md:gap-4 md:border md:border-solid md:border-[#8d8d8d] md:bg-[#3b3b3b] md:p-1 md:rounded-[10px]"
+        @submit.prevent="handlePasswordlessLogin"
       >
         <input
           placeholder="someone@example.com"
           class="max-md:bg-[#3b3b3b] md:bg-transparent max-md:rounded-[5px] h-[40px] px-2 w-[160px] md:w-[300px] text-[12px] md:text-[14px] text-white placeholder:text-[#8d8d8d]"
           style="outline: none"
+          v-model.trim="email"
         />
         <div
           class="relative flex items-center justify-center w-[80px] md:w-[120px] h-[40px]"
@@ -50,7 +96,7 @@
             rgba(0, 0, 0, 0) 98.58%
           );
         "
-      />
+      ></div>
       <img
         src="@/assets/images/landing/hero-image-375w.png"
         class="md:hidden relative top-0 left-0 right-0 h-[812px] md:h-[1059px] object-cover object-center w-full z-[2]"

@@ -20,7 +20,6 @@ import {
   useConnection,
   SocketConnectionAccount,
 } from "@/stores/connection.ts";
-import { getBytes } from "ethers";
 
 const ACTION_REJECTED = "ACTION_REJECTED";
 
@@ -45,7 +44,9 @@ const tweetHash = ref("");
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
   try {
-    await auth.init();
+    if (!authStore.isAuthSDKInitialized) {
+      await auth.init();
+    }
     const arcanaAuthProvider = auth.getProvider();
     authStore.provider = arcanaAuthProvider;
     arcanaAuthProvider.on("connect", () => {
@@ -56,6 +57,8 @@ async function initAuth() {
     if (isLoggedIn) {
       authStore.isLoggedIn = true;
       authStore.loggedInWith = "";
+      await onWalletConnect();
+      router.push({ name: "Send", query: { ...route.query } });
     } else await router.push({ name: "Login", query: { ...route.query } });
   } catch (error) {
     toast.error(error as string);
@@ -69,9 +72,6 @@ async function initSocketConnect() {
     verifier: authStore.userInfo.loginType,
     verifier_id: authStore.userInfo.id,
   };
-  if (route.query.referrer) {
-    account.referrer = Buffer.from(getBytes(route.query.referrer as string));
-  }
   await conn.initialize(
     // @ts-ignore
     authStore.provider,
@@ -87,6 +87,7 @@ async function initSocketConnect() {
       } else {
         auth.getAuthInstance().logout();
       }
+      router.push({ name: "Login", query: { ...route.query } });
     }
   });
 }
@@ -97,6 +98,19 @@ async function getUserInfo() {
     const userInfo = await auth.getUser();
     authStore.setUserInfo(userInfo);
     userStore.address = userInfo.address;
+  }
+}
+
+async function requestFaucetFunds() {
+  try {
+    loaderStore.showLoader("Requesting faucet funds...");
+    await conn.connection.sendMessage(SOCKET_IDS.REQUEST_SOCKET_FUNDS);
+    toast.success("Faucet funds requested");
+  } catch (error) {
+    console.log({ error });
+    toast.error("Faucet funds already claimed for this account");
+  } finally {
+    loaderStore.hideLoader();
   }
 }
 
@@ -129,10 +143,26 @@ watch(
   () => conn.connected,
   async (newValue) => {
     if (newValue) {
+      if (route.query["try-it-out"] === "1") {
+        await requestFaucetFunds();
+      }
       if (route.query.id && route.query.id !== "-1") {
-        await conn.connection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
-          id: Number(route.query.id),
-        });
+        try {
+          await conn.connection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
+            id: Number(route.query.id),
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      if (route.query.r) {
+        try {
+          await conn.connection.sendMessage(SOCKET_IDS.VERIFY_REFERRER, {
+            referrer: route.query.r,
+          });
+        } catch (error) {
+          console.log(error);
+        }
       }
       await sendStore.fetchSupportedChains();
       rewardsStore.fetchRewards(userStore.address);
