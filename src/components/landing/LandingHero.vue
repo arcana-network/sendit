@@ -75,11 +75,11 @@ async function handlePasswordlessLogin() {
             Sign Up!
           </button>
           <img
-            class="absolute top-[120%] md:top-[125%] -left-[20%] md:left-0 h-[50px] md:h-[80px]"
+            class="absolute top-[120%] md:top-[125%] left-0 h-[50px] md:h-[80px]"
             src="@/assets/images/landing/try-it-out-vector-pointer.svg"
           />
           <span
-            class="font-caveat text-[1.25rem] md:text-[2rem] absolute w-max top-[200%] md:top-[250%] -left-[230%]"
+            class="font-caveat text-[1.25rem] md:text-[2rem] absolute w-max top-[200%] md:top-[250%] -left-[210%] md:-left-[230%]"
             >Sign-up now, get 50XP!</span
           >
         </div>
