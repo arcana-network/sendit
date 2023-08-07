@@ -1,5 +1,5 @@
 <template>
-  <div class="landing-container mt-[3rem] md:mt-[8rem]" id="earn-xp">
+  <div class="landing-container mt-[4rem] md:mt-[12rem]" id="earn-xp">
     <div class="flex justify-center">
       <h3 class="max-md:hidden flex">
         <div class="relative">

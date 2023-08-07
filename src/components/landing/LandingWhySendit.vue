@@ -1,6 +1,10 @@
 <template>
-  <div class="landing-container mt-[3rem] md:mt-[8rem]" id="why-sendit">
-    <h3 class="landing-section-title uppercase text-center">Why SendIt?</h3>
+  <div class="landing-container mt-[4rem] md:mt-[8rem]" id="why-sendit">
+    <h3
+      class="landing-section-title uppercase text-center mb-[2rem] md:mb-[3rem]"
+    >
+      Why SendIt?
+    </h3>
     <div
       class="grid gap-3 md:gap-6"
       style="
@@ -39,10 +43,12 @@
           />
       </div> -->
       <div
-        class="border border-solid border-[#363636] rounded-[5px] md:rounded-[10px] flex justify-between"
+        class="border border-solid border-[#363636] rounded-[5px] md:rounded-[10px] flex justify-between overflow-hidden"
         style="grid-area: why-sendit-2"
       >
-        <div class="flex flex-col gap-[0.3rem] md:gap-[1rem]">
+        <div
+          class="flex flex-col gap-[0.3rem] md:gap-[1rem] p-[0.75rem] md:p-[2rem]"
+        >
           <h4 class="font-[500] text-[10px] md:text-[24px]">
             People are scared they’ll make mistakes with wallet addresses
           </h4>
@@ -52,7 +58,7 @@
           </p>
         </div>
         <div
-          class="relative isolate flex justify-center items-center h-[81px] md:h-[292px]"
+          class="relative isolate flex justify-center items-center md:w-[502px]"
         >
           <img
             src="@/assets/images/landing/why-sendit-2-156w.png"
@@ -67,18 +73,18 @@
           <img
             src="@/assets/images/landing/why-sendit-bg-81w.svg"
             loading="lazy"
-            class="z-[-1] absolute top-0 md:hidden"
+            class="z-[-1] max-w-max absolute top-0 md:hidden"
           />
           <img
             src="@/assets/images/landing/why-sendit-bg-557w.svg"
             loading="lazy"
-            class="z-[-1] absolute top-0 max-md:hidden"
+            class="z-[-1] max-w-max absolute top-0 max-md:hidden"
           />
         </div>
       </div>
       <div
-        class="border border-solid border-[#363636] rounded-[5px] md:rounded-[10px] flex flex-col"
-        style="grid-area: why-sendit-3"
+        class="border border-solid border-[#363636] rounded-[5px] md:rounded-[10px] flex flex-col p-[0.75rem] md:p-[2rem] justify-between"
+        style="grid-area: why-sendit-3; padding-bottom: 0"
       >
         <div class="flex flex-col gap-[0.3rem] md:gap-[1rem]">
           <h4 class="font-[500] text-[10px] md:text-[24px]">
@@ -116,8 +122,8 @@
         </div>
       </div>
       <div
-        class="border border-solid border-[#363636] rounded-[5px] md:rounded-[10px] flex flex-col"
-        style="grid-area: why-sendit-4"
+        class="border border-solid border-[#363636] rounded-[5px] md:rounded-[10px] flex flex-col p-[0.75rem] md:p-[2rem] justify-between"
+        style="grid-area: why-sendit-4; padding-bottom: 0"
       >
         <div class="flex flex-col gap-[0.3rem] md:gap-[1rem]">
           <h4 class="font-[500] text-[10px] md:text-[24px]">

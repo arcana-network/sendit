@@ -1,7 +1,7 @@
 <template>
   <div
     id="getonweb3"
-    class="h-[234px] md:h-[571px] relative flex items-center mt-[3rem] md:mt-[8rem]"
+    class="h-[234px] md:h-[571px] relative flex items-center mt-[4rem] md:mt-[8rem]"
   >
     <div class="landing-container flex flex-col items-center gap-4">
       <h3 class="landing-section-title">#GetOnWeb</h3>

@@ -44,7 +44,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div id="how-does-it-work" class="mt-[3rem] md:mt-[8rem]">
+  <div id="how-does-it-work" class="mt-[4rem] md:mt-[8rem]">
     <div class="landing-container flex flex-col gap-4 md:gap-6">
       <div class="flex justify-center">
         <h3 class="flex">

@@ -1,5 +1,5 @@
 <template>
-  <div class="landing-container md:px-4 mt-[3rem] md:mt-[8rem]">
+  <div class="landing-container md:px-4 mt-[4rem] md:mt-[8rem]">
     <div
       class="p-[1.25rem] md:p-[3.75rem] rounded-[0.625rem] md:rounded-[1.875rem]"
       style="backdrop-filter: blur(50px); border: 1px solid #8d8d8d50"
