@@ -53,7 +53,7 @@ async function viewTransactions() {
           <span class="font-[500] text-xl uppercase text-center">{{
             isMultipleTransactions
               ? "Received Multiple Transactions"
-              : transactionDetails?.content?.body
+              : "Tokens Received"
           }}</span>
           <span
             v-if="isMultipleTransactions"
