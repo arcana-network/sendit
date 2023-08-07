@@ -128,6 +128,13 @@ Congratulations on being one of the weekly winners! You have received a ${nft_va
     path: "My Rewards",
     shoutout: false,
   }),
+  274: ({ nft_value }) => ({
+    title: "NFT Awarded",
+    body: `	
+Congratulations on being one of the overall winners! You have received a ${nft_value} $XAR NFT!`,
+    path: "My Rewards",
+    shoutout: false,
+  }),
   513: ({ points }) => ({
     title: "10 Transactions completed",
     body: `Congratulations on completing 10 transactions on #Sendit successfully! You have earned ${points} XP as a bonus`,
