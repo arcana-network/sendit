@@ -23,12 +23,8 @@
             <span class="landing-section-title">&nbsp;is&nbsp;like&nbsp;</span>
             <img
               alt="PayPal"
-              src="@/assets/images/landing/Paypal-logo-74w.png"
-              srcset="
-                @/assets/images/landing/Paypal-logo-74w.png   74w,
-                @/assets/images/landing/Paypal-logo-152w.png 152w
-              "
-              sizes="(max-width: 767px) 74px, 152px"
+              src="@/assets/images/landing/Paypal-logo.svg"
+              class="w-[74px] md:w-[152px]"
             /><span class="landing-section-title">,&nbsp;</span>
           </div>
           <div class="flex items-center">

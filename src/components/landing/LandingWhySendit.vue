@@ -92,7 +92,7 @@
               The Crypto learning curve scares people
             </h4>
             <p class="text-[#c4c4c4] text-[8px] md:text-[20px]">
-              With SendIt, a self-custodial wallet is created which can be
+              With SendIt, a non-custodial wallet is created which can be
               accessed with Web2 authentication. Users can learn crypto-specific
               ideas at their own pace.
             </p>

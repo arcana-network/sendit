@@ -5,12 +5,12 @@ const faqs = [
   {
     index: "question-1",
     question: "How can the receiver claim their crypto?",
-    answer: `When you receive crypto via SendIt, you'll get an email with a claim link. Click it and prove your ownership of the email through "Google Sign-in" or passwordless authentication. Once verified, you can access the received crypto in your self-custodial SendIt wallet at the bottom-right of the interface. Transfer the crypto tokens to any other wallet you prefer.`,
+    answer: `When you receive crypto via SendIt, you'll get an email with a claim link. Click it and prove your ownership of the email through "Google Sign-in" or passwordless authentication. Once verified, you can access the received crypto in your non-custodial SendIt wallet at the bottom-right of the interface. Transfer the crypto tokens to any other wallet you prefer.`,
   },
   {
     index: "question-2",
     question: "Who can I send crypto to using SendIt?",
-    answer: `You can send crypto to anyone with an email address. If it's their first time receiving crypto on SendIt, we'll generate a self-custodial wallet for them. Only the email owner can access the wallet. We also support sending crypto to Twitter handles and plan to add more channels in the future.`,
+    answer: `You can send crypto to anyone with an email address. If it's their first time receiving crypto on SendIt, we'll generate a non-custodial wallet for them. Only the email owner can access the wallet. We also support sending crypto to Twitter handles and plan to add more channels in the future.`,
   },
   {
     index: "question-3",
