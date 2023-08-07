@@ -1,6 +1,8 @@
 import NavigationIcon from "@/assets/images/icons/navigation.svg";
 import UserAddIcon from "@/assets/images/icons/user-add.svg";
 import UserVoiceIcon from "@/assets/images/icons/user-voice.svg";
+import TwitterGreyBgIcon from "@/assets/images/icons/twitter-grey-bg.svg";
+import TelegramGreyBgIcon from "@/assets/images/icons/telegram-grey-bg.svg";
 
 const EARN_XP_SEND_FORM = [
   {
@@ -58,29 +60,12 @@ const EARN_XP = [
     task: "Invite",
     xp: 10000,
   },
-  // {
-  //   image: UserVoiceIcon,
-  //   name: "Earn 50 XP",
-  //   description:
-  //     "Give a shoutout to sender when you receive assets to earn XP.",
-  //   task: "Tweet",
-  //   tweet:
-  //     "Just received a crypto transfer on #SendIt! No wallet, no problem. Join the revolution at https://sendit.arcana.network!",
-  //   xp: 50,
-  // },
   {
     image: NavigationIcon,
-    name: "Earn 150 XP",
+    name: "Earn 500 XP",
     description: "Send crypto for the first time and earn XP.",
     task: "Transact",
-    xp: 150,
-  },
-  {
-    image: NavigationIcon,
-    name: "Earn 25 XP",
-    description: "Send crypto to a unique address and earn XP.",
-    task: "Transact",
-    xp: 25,
+    xp: 500,
   },
   {
     image: NavigationIcon,
@@ -98,13 +83,6 @@ const EARN_XP = [
   },
   {
     image: NavigationIcon,
-    name: "Earn 500 XP",
-    description: "Send crypto for the first time and earn XP.",
-    task: "Transact",
-    xp: 500,
-  },
-  {
-    image: NavigationIcon,
     name: "Earn 250 XP",
     description:
       "Earn 100th transaction performed through SendIt in a day earns XP.",
@@ -118,20 +96,6 @@ const EARN_XP = [
       "Shout out on Twitter after a SendIt transaction for the first time and earn XP.",
     task: "Transact",
     xp: 100,
-  },
-  {
-    image: UserVoiceIcon,
-    name: "Earn 5 XP",
-    description: "Shout out on Twitter after a SendIt transaction & earn XP.",
-    task: "Trxn History",
-    xp: 5,
-  },
-  {
-    image: UserVoiceIcon,
-    name: "Earn 5 XP",
-    description: "Shoutout a SendIt receive transaction on twitter & earn XP.",
-    task: "Trxn History",
-    xp: 5,
   },
   {
     image: NavigationIcon,
@@ -188,6 +152,20 @@ const EARN_XP = [
   },
   {
     image: UserVoiceIcon,
+    name: "Earn 5 XP",
+    description: "Shout out on Twitter after a SendIt transaction & earn XP.",
+    task: "History",
+    xp: 5,
+  },
+  {
+    image: UserVoiceIcon,
+    name: "Earn 5 XP",
+    description: "Shoutout a SendIt receive transaction on twitter & earn XP.",
+    task: "History",
+    xp: 5,
+  },
+  {
+    image: TwitterGreyBgIcon,
     name: "Earn 20 XP",
     description: "Earn 20 XP for following us on Twitter.",
     task: "Follow",
@@ -195,7 +173,7 @@ const EARN_XP = [
     xp: 20,
   },
   {
-    image: UserVoiceIcon,
+    image: TelegramGreyBgIcon,
     name: "Earn 20 XP",
     description: "Earn 20 XP for following us on Telegram.",
     task: "Follow",
