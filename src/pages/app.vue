@@ -57,8 +57,10 @@ async function initAuth() {
     if (isLoggedIn) {
       authStore.isLoggedIn = true;
       authStore.loggedInWith = "";
-      await onWalletConnect();
-      router.replace({ name: "Send", query: { ...route.query } });
+      if (route.query["try-it-out"] === "1") {
+        await onWalletConnect();
+        router.replace({ name: "Send", query: { ...route.query } });
+      }
     } else await router.replace({ name: "Login", query: { ...route.query } });
   } catch (error) {
     toast.error(error as string);
