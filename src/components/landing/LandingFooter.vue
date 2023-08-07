@@ -1,12 +1,14 @@
 <template>
   <footer
-    class="rounded-t-[16px] md:rounded-t-[30px] border border-solid border-[#8d8d8d50] mt-[4rem] md:mt-[8rem]"
+    class="rounded-t-[16px] md:rounded-t-[30px] border border-solid border-[#8d8d8d50] mt-[4rem] md:mt-[8rem] py-[2rem] md:py-[4rem]"
     style="border-bottom: none; backdrop-filter: blur(50px)"
   >
     <div
-      class="landing-container flex max-md:flex-col max-md:gap-2 max-md:items-center md:justify-between max-md:text-center landing-section-description w-full"
+      class="landing-container flex max-md:flex-col max-md:gap-5 max-md:items-center md:justify-between max-md:text-center landing-section-description w-full"
     >
-      <div class="max-md:w-full flex flex-col max-md:items-center gap-2">
+      <div
+        class="max-md:w-full flex flex-col max-md:items-center gap-2 md:gap-4"
+      >
         <img
           alt="SendIt"
           src="@/assets/images/landing/sendit-logomark-30w.png"
@@ -15,14 +17,14 @@
             @/assets/images/landing/sendit-logomark-49w.png 49w
           "
           sizes="(max-width: 767px) 30px, 49px"
-          class="w-max"
+          class="w-max md:-ml-2"
         />
         <span>Made with love by Arcana Network</span>
       </div>
       <nav
         class="flex justify-evenly flex-grow max-md:w-full max-md:justify-around"
       >
-        <ul class="flex flex-col gap-2 text-white">
+        <ul class="flex flex-col gap-3 text-white">
           <li><a href="#why-sendit">Why Sendit?</a></li>
           <li><a href="#how-does-it-work">How does it work?</a></li>
           <li class="max-md:hidden">
@@ -31,13 +33,13 @@
           <li class="md:hidden"><a href="#earn-xp">Earn XP</a></li>
           <li class="max-md:hidden"><a href="#getonweb3">GetOnWeb3</a></li>
         </ul>
-        <ul class="flex flex-col gap-2 text-white">
+        <ul class="flex flex-col gap-3 md:gap-2 text-white">
           <li class="md:hidden"><a href="#getonweb3">GetOnWeb3</a></li>
           <li><a href="#terms">Terms of Use</a></li>
           <li><a href="#privacy">Privacy Policy</a></li>
         </ul>
       </nav>
-      <div class="flex flex-col gap-2 max-md:w-full">
+      <div class="flex flex-col gap-2 md:gap-4 max-md:w-full">
         <span class="uppercase font-bold text-white">Follow us on</span>
         <div class="flex gap-3 max-md:justify-center">
           <a href="https://discord.gg/6g7fQvEpdy" target="_blank"
