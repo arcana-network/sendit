@@ -2,15 +2,7 @@
   <div class="landing-container md:px-4">
     <div
       class="p-[1.25rem] md:p-[3.75rem] rounded-[0.625rem] md:rounded-[1.875rem]"
-      style="
-        backdrop-filter: blur(50px);
-        border: 1px solid #8d8d8d50;
-        background: linear-gradient(
-          0deg,
-          rgba(0, 0, 0, 0.1),
-          rgba(0, 0, 0, 0.1)
-        );
-      "
+      style="backdrop-filter: blur(50px); border: 1px solid #8d8d8d50"
     >
       <div class="flex max-md:flex-col max-md:items-center md:justify-center">
         <div class="flex items-center">

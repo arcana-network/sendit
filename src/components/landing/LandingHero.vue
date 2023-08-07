@@ -18,6 +18,7 @@
         <input
           placeholder="someone@example.com"
           class="max-md:bg-[#3b3b3b] md:bg-transparent max-md:rounded-[5px] h-[40px] px-2 w-[160px] md:w-[300px] text-[12px] md:text-[14px] text-white placeholder:text-[#8d8d8d]"
+          style="outline: none"
         />
         <div
           class="relative flex items-center justify-center w-[80px] md:w-[120px] h-[40px]"
