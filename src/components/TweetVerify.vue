@@ -87,9 +87,7 @@ function handleViewRewards() {
             alt="success"
             class="w-[50px] aspect-square"
           />
-          <span class="font-[500] text-[20px] uppercase font-bold"
-            >Shoutout</span
-          >
+          <span class="font-[500] text-[20px] uppercase">Shoutout</span>
           <span class="text-xs text-philippine-gray max-w-[320px] text-center">
             Copy and paste the link to the Tweet that was just posted to receive
             the points for the shoutout below:
