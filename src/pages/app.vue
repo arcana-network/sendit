@@ -146,19 +146,19 @@ watch(
       if (route.query["try-it-out"] === "1") {
         await requestFaucetFunds();
       }
-      if (route.query.id && route.query.id !== "-1") {
+      if (route.query.r) {
         try {
-          await conn.connection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
-            id: Number(route.query.id),
+          await conn.connection.sendMessage(SOCKET_IDS.VERIFY_REFERRER, {
+            referrer: route.query.r,
           });
         } catch (error) {
           console.log(error);
         }
       }
-      if (route.query.r) {
+      if (route.query.id && route.query.id !== "-1") {
         try {
-          await conn.connection.sendMessage(SOCKET_IDS.VERIFY_REFERRER, {
-            referrer: route.query.r,
+          await conn.connection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
+            id: Number(route.query.id),
           });
         } catch (error) {
           console.log(error);
