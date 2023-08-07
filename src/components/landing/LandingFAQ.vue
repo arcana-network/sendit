@@ -97,20 +97,24 @@ const faqs = [
           <DisclosurePanel
             class="landing-section-description pb-[1.4rem] pr-[1.4rem] max-w-[950px]"
           >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua
+            Reach out to us via
             <a
-              href="mailto:support@arcana.network"
+              href="https://discord.gg/6g7fQvEpdy"
               target="_blank"
               class="font-bold text-white"
-              >Mail</a
-            >
-            and
+              >Discord</a
+            >,
             <a
               href="https://t.me/ArcanaNetwork"
               target="_blank"
               class="font-bold text-white"
               >Telegram</a
+            >, or
+            <a
+              href="mailto:support@arcana.network"
+              target="_blank"
+              class="font-bold text-white"
+              >Mail</a
             >.
           </DisclosurePanel>
         </Disclosure>

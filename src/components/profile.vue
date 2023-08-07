@@ -86,7 +86,9 @@ function logout() {
           >Referral Link</span
         >
         <div class="flex space-x-1">
-          <span class="text-sm text-left ellipsis" @click.stop="handleCopyRef"
+          <span
+            class="text-sm text-left ellipsis w-[85%]"
+            @click.stop="handleCopyRef"
             >{{ getCurrentLocationUrl() }}/app/?r={{ userInfo.address }}</span
           >
           <button @click.stop="handleCopyRef">
