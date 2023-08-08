@@ -11,6 +11,7 @@ import AppInvite from "@/components/AppInvite.vue";
 import useUserStore from "@/stores/user";
 import generateSenditUrl from "@/utils/generateSenditUrl";
 import { normaliseTwitterHandle } from "@/utils/normalise";
+import TwitterFollowVerify from "@/components/TwitterFollowVerify.vue";
 
 const sendStore = useSendStore();
 const showSuccessMessage = ref(false);
@@ -23,6 +24,7 @@ const verifierId = ref("");
 const txHash = ref("");
 const verifierHuman = ref("");
 const showInvitePopup = ref(false);
+const showFollowVerify = ref(false);
 const userStore = useUserStore();
 const verifier = ref("");
 const amount = ref("");
@@ -92,18 +94,23 @@ function getToValue(verifier, verifier_human) {
     @close="showTweetVerificationModal = false"
   />
   <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
+  <TwitterFollowVerify
+    v-if="showFollowVerify"
+    @close="showFollowVerify = false"
+  />
   <div
     class="flex flex-col justify-center items-center p-10 max-lg:px-4 space-y-10"
   >
     <SendForm @transaction-successful="handleTxSuccess" />
   </div>
   <div
-    class="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3 max-w-[1100px] m-auto"
+    class="grid grid-cols-4 gap-4 p-2 max-[1350px]:grid-cols-2 max-[720px]:grid-cols-1 m-auto"
   >
     <RewardsCard
       v-for="item in EARN_XP_SEND_FORM"
       :reward="item"
       @invite="showInvitePopup = true"
+      @verify-follow="showFollowVerify = true"
     />
   </div>
 </template>
