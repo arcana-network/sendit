@@ -70,7 +70,7 @@ function getTweetMessage() {
       </div>
     </div>
   </div>
-  <div v-else class="form-card w-96 h-96 flex justify-center">
+  <div v-else class="form-card w-full lg:max-w-sm h-96 flex justify-center">
     <p>No Notifications</p>
   </div>
 </template>
