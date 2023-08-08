@@ -41,7 +41,7 @@ const EARN_XP = [
     image: UserAddIcon,
     name: "Earn 50 XP",
     description:
-      "Invite a friend and earn XP as soon as they log in to their wallet.",
+      "Invite a friend through email or referral link and earn XP as soon as they log in to their wallet",
     task: "Invite",
     xp: 50,
   },
@@ -122,13 +122,13 @@ const EARN_XP = [
   //   task: "Transact",
   //   xp: 250,
   // },
-  // {
-  //   image: NavigationIcon,
-  //   name: "Earn $XAR",
-  //   description: "Top 500 members on the SendIt weekly leaderboard earns XP.",
-  //   task: "Transact",
-  //   xp: 50,
-  // },
+  {
+    image: NavigationIcon,
+    name: "Earn $XAR",
+    description: "Top 500 members on the SendIt weekly leaderboard earns XAR.",
+    task: "Transact",
+    xp: 50,
+  },
   // {
   //   image: NavigationIcon,
   //   name: "Earn $XAR",
