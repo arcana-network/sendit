@@ -20,6 +20,7 @@ import {
   useConnection,
   SocketConnectionAccount,
 } from "@/stores/connection.ts";
+import AirdropSuccess from "@/components/AirdropSuccess.vue";
 
 const ACTION_REJECTED = "ACTION_REJECTED";
 
@@ -40,6 +41,7 @@ const walletConnect = useWalletConnect();
 const showReceivedCryptoMessage = ref(false);
 const showTweetVerificationModal = ref(false);
 const tweetHash = ref("");
+const faucetFundsReceived = ref(false);
 
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
@@ -107,7 +109,7 @@ async function requestFaucetFunds() {
   try {
     loaderStore.showLoader("Requesting faucet funds...");
     await conn.connection.sendMessage(SOCKET_IDS.REQUEST_SOCKET_FUNDS);
-    toast.success("Faucet funds requested");
+    faucetFundsReceived.value = true;
   } catch (error) {
     console.log({ error });
     toast.error("Faucet funds already claimed for this account");
@@ -231,8 +233,12 @@ function handleShoutout({ hash }: any) {
   <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
     <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
+    <AirdropSuccess
+      v-if="faucetFundsReceived"
+      @dismiss="faucetFundsReceived = false"
+    />
     <ReceiverMessage
-      v-if="showReceivedCryptoMessage"
+      v-if="!faucetFundsReceived && showReceivedCryptoMessage"
       @dismiss="showReceivedCryptoMessage = false"
       @tweet-shoutout="handleShoutout"
     />

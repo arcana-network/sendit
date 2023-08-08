@@ -6,6 +6,7 @@ import { useClickOutside } from "@/use/clickOutside";
 import useUserStore from "@/stores/user";
 import useRewardsStore from "@/stores/rewards";
 import useNotificationStore from "@/stores/notification";
+import AppInvite from "@/components/AppInvite.vue";
 
 const MobileMenu = defineAsyncComponent(
   () => import("@/components/mobileMenu.vue")
@@ -29,6 +30,7 @@ const notificationStore = useNotificationStore();
 const showMobileMenu = ref(false);
 const showNotifications = ref(false);
 const showProfile = ref(false);
+const showInvitePopup = ref(false);
 
 const notificationMenu = ref(null);
 const profileMenu = ref(null);
@@ -63,6 +65,11 @@ function toggleProfileMenu() {
 function toggleNotifications() {
   showNotifications.value = !showNotifications.value;
   showMobileMenu.value = false;
+  showProfile.value = false;
+}
+
+function handleInvite() {
+  showInvitePopup.value = true;
   showProfile.value = false;
 }
 
@@ -146,7 +153,7 @@ const stats = computed(() => {
                 v-if="showProfile"
                 ref="profileMenu"
               >
-                <Profile />
+                <Profile @invite="handleInvite" />
               </div>
             </button>
           </div>
@@ -187,5 +194,6 @@ const stats = computed(() => {
         </div>
       </div>
     </div>
+    <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
   </div>
 </template>
