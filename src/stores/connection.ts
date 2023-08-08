@@ -14,6 +14,11 @@ enum ConnectionState {
   AUTHORIZED,
 }
 
+enum ResponseType {
+  Response,
+  Notification,
+}
+
 type Account = {
   verifier: string;
   verifier_id: string;
@@ -138,7 +143,7 @@ class Connection {
     if (_data.length !== 3) {
       return;
     }
-    const [id, , data] = _data;
+    const [id, rtype, data] = _data;
 
     switch (this.state) {
       case ConnectionState.NOT_CONNECTED: {
@@ -182,16 +187,25 @@ class Connection {
         }
         break;
       case ConnectionState.AUTHORIZED: {
-        const cbs = this.callbackMap.get(id);
-        if (cbs == null) {
-          return;
-        }
-        this.callbackMap.delete(id);
-        const [resolve, reject] = cbs;
-        if (data.error) {
-          reject(new SocketError(data.msg, data.code));
-        } else {
-          resolve(data);
+        switch (rtype) {
+          case ResponseType.Response: {
+            const cbs = this.callbackMap.get(id);
+            if (cbs == null) {
+              console.log("Message found with no outstanding request:", cbs);
+              return;
+            }
+            this.callbackMap.delete(id);
+            const [resolve, reject] = cbs;
+            if (data.error) {
+              reject(new SocketError(data.msg, data.code));
+            } else {
+              resolve(data);
+            }
+            break;
+          }
+          case ResponseType.Notification: {
+            this.emitter.emit(Connection.ON_NOTIFICATION, data);
+          }
         }
         break;
       }
