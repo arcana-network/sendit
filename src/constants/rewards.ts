@@ -53,6 +53,30 @@ const EARN_XP = [
     xp: 500,
   },
   {
+    image: NavigationIcon,
+    name: "Earn 100 XP",
+    description:
+      "Earn 100 XP for performing a txn to a new user on mainnet. 10 XP immediately on sending and 90 XP when the recipient logs in to SendIt.",
+    task: "Transact",
+    xp: 100,
+  },
+  {
+    image: NavigationIcon,
+    name: "Earn 10 XP",
+    description:
+      "Earn 10 XP for performing a txn to an existing user on mainnet.",
+    task: "Transact",
+    xp: 10,
+  },
+  {
+    image: NavigationIcon,
+    name: "Earn 20 XP",
+    description:
+      "Earn 20 XP for performing a txn to a new user on testnet. 2 XP immediately on sending and 18 XP when the recipient logs in to SendIt.",
+    task: "Transact",
+    xp: 20,
+  },
+  {
     image: UserAddIcon,
     name: "Earn 5000 XP",
     description:
@@ -93,60 +117,28 @@ const EARN_XP = [
     image: NavigationIcon,
     name: "Earn 250 XP",
     description:
-      "Earn 100th transaction performed through SendIt in a day earns XP.",
+      "Every 100th transaction performed through SendIt in a day earns XP.",
     task: "Transact",
     xp: 250,
   },
   {
-    image: UserVoiceIcon,
-    name: "Earn 100 XP",
-    description:
-      "Shout out on Twitter after a SendIt transaction for the first time and earn XP.",
-    task: "Transact",
-    xp: 100,
-  },
-  {
     image: NavigationIcon,
-    name: "Earn 50 XP",
+    name: "Earn $XAR",
     description: "Top 500 members on the SendIt weekly leaderboard earns XP.",
     task: "Transact",
     xp: 50,
   },
   {
     image: NavigationIcon,
-    name: "Earn 30 XP",
+    name: "Earn $XAR",
     description: "Top 1000 members on the SendIt weekly leaderboard earns XP.",
     task: "Transact",
     xp: 30,
   },
   {
     image: NavigationIcon,
-    name: "Earn 20 XP",
+    name: "Earn $XAR",
     description: "Top 3000 members on the SendIt weekly leaderboard earns XP.",
-    task: "Transact",
-    xp: 20,
-  },
-  {
-    image: NavigationIcon,
-    name: "Earn 100 XP",
-    description:
-      "Earn 100 XP for performing a txn to a new user on mainnet. 10 XP immediately on sending and 90 XP when the recipient logs in to SendIt.",
-    task: "Transact",
-    xp: 100,
-  },
-  {
-    image: NavigationIcon,
-    name: "Earn 10 XP",
-    description:
-      "Earn 10 XP for performing a txn to an existing user on mainnet.",
-    task: "Transact",
-    xp: 10,
-  },
-  {
-    image: NavigationIcon,
-    name: "Earn 20 XP",
-    description:
-      "Earn 20 XP for performing a txn to a new user on testnet. 2 XP immediately on sending and 18 XP when the recipient logs in to SendIt.",
     task: "Transact",
     xp: 20,
   },
@@ -179,6 +171,7 @@ const EARN_XP = [
     task: "Follow",
     url: "https://twitter.com/ArcanaNetwork",
     xp: 20,
+    medium: "twitter",
   },
   {
     image: TelegramGreyBgIcon,
@@ -187,6 +180,7 @@ const EARN_XP = [
     task: "Follow",
     url: "https://t.me/ArcanaNetwork",
     xp: 20,
+    medium: "telegram",
   },
 ];
 
