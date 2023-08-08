@@ -77,7 +77,7 @@ async function onVerify() {
       <div class="flex flex-col space-y-4" v-else>
         <div class="flex flex-col justify-center items-center space-y-3">
           <img src="@/assets/images/blue-down-arrow.svg" alt="close" />
-          <span class="font-[500] text-[20px] uppercase">5 XP Earned</span>
+          <span class="font-[500] text-[20px] uppercase">20 XP Earned</span>
           <span class="text-xs text-philippine-gray text-center">
             Check out the Rewards section to see if you qualify for any of the
             awesome rewards available.

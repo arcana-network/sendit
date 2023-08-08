@@ -59,16 +59,14 @@ function handleAction(reward) {
         >
           <img :src="reward.image" :alt="reward.name" class="h-8 w-8" />
         </div>
-        <div class="flex justify-between gap-5 flex-grow w-full">
+        <div class="flex justify-between gap-5 flex-grow w-full items-center">
           <div class="flex flex-col px-4 py-5">
             <span class="text-base font-bold text-[#d8d8d8]">{{
               reward.name
             }}</span>
-            <span
-              class="text-sm text-philippine-gray"
-              :title="reward.description"
-              >{{ reward.description.slice(0, 60) }}...</span
-            >
+            <span class="text-sm text-philippine-gray">{{
+              reward.description
+            }}</span>
           </div>
           <div class="flex items-center justify-center">
             <button
