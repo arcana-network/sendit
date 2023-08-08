@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
 import SendForm from "@/components/send/sendForm.vue";
 import useSendStore from "@/stores/send";
 import SendSuccess from "@/components/send/success.vue";
@@ -33,6 +33,7 @@ const verifier = ref("");
 const amount = ref("");
 const token = ref("");
 const chain = ref("");
+const rewardCards = ref([]);
 
 function handleTxSuccess(data) {
   showSuccessMessage.value = true;
@@ -65,9 +66,9 @@ function handleShoutout() {
   resetUserInput();
 }
 
-function handleSuccessModalClose() {
+async function handleSuccessModalClose() {
   showSuccessMessage.value = false;
-  userStore.fetchUserPointsAndRank();
+  await userStore.fetchUserPointsAndRank();
   resetUserInput();
 }
 
@@ -82,9 +83,12 @@ function OpenVerifyFollow() {
   showFollowVerify.value.type = "twitter";
 }
 
-const rewardCards = EARN_XP_SEND_FORM.filter(
-  (item) => item.medium !== "twitter" && !userStore.followedOnTwitter
-);
+onBeforeMount(async () => {
+  await userStore.fetchUserPointsAndRank();
+  rewardCards.value = EARN_XP_SEND_FORM.filter((item) =>
+    userStore.followedOnTwitter ? item.medium !== "twitter" : true
+  );
+});
 </script>
 
 <template>

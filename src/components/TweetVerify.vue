@@ -34,7 +34,7 @@ async function handleTweetVerify() {
       };
       await conn.sendMessage(SOCKET_IDS.VERIFY_TWEET, message);
       isTweetVerified.value = true;
-      userStore.fetchUserPointsAndRank();
+      await userStore.fetchUserPointsAndRank();
     } catch (e) {
       console.error(e);
       toast.error("Error verifying tweet. Please try again.");
