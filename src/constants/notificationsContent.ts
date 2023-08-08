@@ -104,7 +104,7 @@ const notificationsContent = {
   }),
   18: ({ points }) => ({
     title: "Twitter handle verified",
-    body: `You have earned ${points} XP for following our twitter handle.`,
+    body: `You have earned ${points} XP for following our Twitter handle.`,
     path: "",
     shoutout: false,
   }),
