@@ -9,6 +9,7 @@ type User = {
   points: number;
   rank: number;
   address: string;
+  followedOnTwitter: boolean;
 };
 
 const useUserStore = defineStore("user", {
@@ -18,6 +19,7 @@ const useUserStore = defineStore("user", {
       rank: 0,
       rewards: 0,
       address: "",
+      followedOnTwitter: false,
     } as User),
   actions: {
     async fetchUserPointsAndRank() {
@@ -25,6 +27,7 @@ const useUserStore = defineStore("user", {
         SOCKET_IDS.GET_PROFILE,
         null
       )) as any;
+      this.followedOnTwitter = response.followed_on_twitter;
       this.points = response.points;
       this.rank = response.global_rank;
     },

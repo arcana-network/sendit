@@ -11,6 +11,7 @@ import AppInvite from "@/components/AppInvite.vue";
 import useUserStore from "@/stores/user";
 import generateSenditUrl from "@/utils/generateSenditUrl";
 import { normaliseTwitterHandle } from "@/utils/normalise";
+import TwitterFollowVerify from "@/components/TwitterFollowVerify.vue";
 
 const sendStore = useSendStore();
 const showSuccessMessage = ref(false);
@@ -23,6 +24,10 @@ const verifierId = ref("");
 const txHash = ref("");
 const verifierHuman = ref("");
 const showInvitePopup = ref(false);
+const showFollowVerify = ref({
+  show: false,
+  type: "",
+});
 const userStore = useUserStore();
 const verifier = ref("");
 const amount = ref("");
@@ -71,6 +76,15 @@ function getToValue(verifier, verifier_human) {
     return `${normaliseTwitterHandle(verifier_human)}`;
   } else return `an email address`;
 }
+
+function OpenVerifyFollow() {
+  showFollowVerify.value.show = true;
+  showFollowVerify.value.type = "twitter";
+}
+
+const rewardCards = EARN_XP_SEND_FORM.filter(
+  (item) => item.medium !== "twitter" && !userStore.followedOnTwitter
+);
 </script>
 
 <template>
@@ -92,18 +106,25 @@ function getToValue(verifier, verifier_human) {
     @close="showTweetVerificationModal = false"
   />
   <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
+  <TwitterFollowVerify
+    v-if="showFollowVerify.show"
+    @close="showFollowVerify.show = false"
+    :medium="showFollowVerify.type"
+  />
   <div
     class="flex flex-col justify-center items-center p-10 max-lg:px-4 space-y-10"
   >
     <SendForm @transaction-successful="handleTxSuccess" />
   </div>
   <div
-    class="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3 max-w-[1100px] m-auto"
+    class="grid gap-3 p-2 max-[1350px]:grid-cols-2 max-[720px]:grid-cols-1 m-auto"
+    :class="[rewardCards.length === 3 ? 'grid-cols-3' : 'grid-cols-4']"
   >
     <RewardsCard
-      v-for="item in EARN_XP_SEND_FORM"
+      v-for="item in rewardCards"
       :reward="item"
       @invite="showInvitePopup = true"
+      @verify-follow="OpenVerifyFollow"
     />
   </div>
 </template>

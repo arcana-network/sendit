@@ -3,13 +3,19 @@ import { useRouter } from "vue-router";
 import { composeAndSendTweet } from "@/utils/tweet";
 import { EARN_XP } from "@/constants/rewards";
 import AppInvite from "@/components/AppInvite.vue";
-// import TweetVerify from "@/components/TweetVerify.vue";
+import useUserStore from "@/stores/user";
 import { ref } from "vue";
+import TwitterFollowVerify from "@/components/TwitterFollowVerify.vue";
 
 const router = useRouter();
 const showInvitePopup = ref(false);
+const showTwitterFollowPopup = ref({
+  show: false,
+  type: "",
+});
 const showTweetVerifyPopup = ref(false);
 const tweetXp = ref(0);
+const userStore = useUserStore();
 
 function handleAction(reward) {
   if (reward.task === "Invite") {
@@ -20,8 +26,20 @@ function handleAction(reward) {
     showTweetVerifyPopup.value = true;
   } else if (reward.task === "Transact") {
     router.push({ name: "Send" });
+  } else if (reward.task === "Follow") {
+    window.open(reward.url, "_blank");
+    showTwitterFollowPopup.value.show = true;
+    showTwitterFollowPopup.value.type = reward.medium;
+  } else if (reward.task === "Trxn History") {
+    router.push({ name: "History" });
   }
 }
+
+const rewardCards = EARN_XP.filter(
+  (item) => item.medium !== "twitter" && userStore.followedOnTwitter
+);
+
+console.log({ rewardCards });
 </script>
 
 <template>
@@ -31,7 +49,7 @@ function handleAction(reward) {
     <div class="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
       <div
         class="flex rounded-[10px] overflow-hidden border border-jet pr-5 bg-[#0e0e0e]"
-        v-for="reward in EARN_XP"
+        v-for="reward in rewardCards"
         :key="JSON.stringify(reward)"
       >
         <div
@@ -44,9 +62,11 @@ function handleAction(reward) {
             <span class="text-base font-bold text-[#d8d8d8]">{{
               reward.name
             }}</span>
-            <span class="text-sm text-philippine-gray">{{
-              reward.description
-            }}</span>
+            <span
+              class="text-sm text-philippine-gray"
+              :title="reward.description"
+              >{{ reward.description.slice(0, 60) }}...</span
+            >
           </div>
           <div class="flex items-center justify-center">
             <button
@@ -61,10 +81,10 @@ function handleAction(reward) {
       </div>
     </div>
     <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
-    <!-- <TweetVerify
-      v-if="showTweetVerifyPopup"
-      :xp="tweetXp"
-      @close="showTweetVerifyPopup = false"
-    /> -->
+    <TwitterFollowVerify
+      v-if="showTwitterFollowPopup.show"
+      :medium="showTwitterFollowPopup.type"
+      @close="showTwitterFollowPopup.show = false"
+    />
   </div>
 </template>
