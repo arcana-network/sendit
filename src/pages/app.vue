@@ -21,6 +21,7 @@ import {
   SocketConnectionAccount,
 } from "@/stores/connection.ts";
 import AirdropSuccess from "@/components/AirdropSuccess.vue";
+import { getBytes } from "ethers";
 
 const ACTION_REJECTED = "ACTION_REJECTED";
 
@@ -156,7 +157,7 @@ watch(
       if (route.query.r) {
         try {
           await conn.connection.sendMessage(SOCKET_IDS.VERIFY_REFERRER, {
-            referrer: route.query.r,
+            referrer: Buffer.from(getBytes(route.query.r as string)),
           });
         } catch (error) {
           console.log(error);
