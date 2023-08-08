@@ -45,14 +45,14 @@ const EARN_XP = [
     task: "Invite",
     xp: 50,
   },
-  {
-    image: UserAddIcon,
-    name: "Earn 500 XP",
-    description:
-      "Invite 10 friends and earn XP once all of them log in to their wallet.",
-    task: "Invite",
-    xp: 500,
-  },
+  // {
+  //   image: UserAddIcon,
+  //   name: "Earn 500 XP",
+  //   description:
+  //     "Invite 10 friends and earn XP once all of them log in to their wallet.",
+  //   task: "Invite",
+  //   xp: 500,
+  // },
   {
     image: NavigationIcon,
     name: "Earn 100 XP",
@@ -77,22 +77,22 @@ const EARN_XP = [
     task: "Transact",
     xp: 20,
   },
-  {
-    image: UserAddIcon,
-    name: "Earn 5000 XP",
-    description:
-      "First 100 people to reach 25 claimed invites (invitee should have logged in) earn XP.",
-    task: "Invite",
-    xp: 5000,
-  },
-  {
-    image: UserAddIcon,
-    name: "Earn 10000 XP",
-    description:
-      "First 100 people to reach 50 claimed invites (invitee should have logged in) earn XP.",
-    task: "Invite",
-    xp: 10000,
-  },
+  // {
+  //   image: UserAddIcon,
+  //   name: "Earn 5000 XP",
+  //   description:
+  //     "First 100 people to reach 25 claimed invites (invitee should have logged in) earn XP.",
+  //   task: "Invite",
+  //   xp: 5000,
+  // },
+  // {
+  //   image: UserAddIcon,
+  //   name: "Earn 10000 XP",
+  //   description:
+  //     "First 100 people to reach 50 claimed invites (invitee should have logged in) earn XP.",
+  //   task: "Invite",
+  //   xp: 10000,
+  // },
   {
     image: NavigationIcon,
     name: "Earn 500 XP",
@@ -100,49 +100,49 @@ const EARN_XP = [
     task: "Transact",
     xp: 500,
   },
-  {
-    image: NavigationIcon,
-    name: "Earn 100 XP",
-    description: "Complete 10 transactions on SendIt and earn XP.",
-    task: "Transact",
-    xp: 100,
-  },
-  {
-    image: NavigationIcon,
-    name: "Earn 250 XP",
-    description: "Complete 25 transactions on SendIt and earn XP.",
-    task: "Transact",
-    xp: 250,
-  },
-  {
-    image: NavigationIcon,
-    name: "Earn 250 XP",
-    description:
-      "Every 100th transaction performed through SendIt in a day earns XP.",
-    task: "Transact",
-    xp: 250,
-  },
-  {
-    image: NavigationIcon,
-    name: "Earn $XAR",
-    description: "Top 500 members on the SendIt weekly leaderboard earns XP.",
-    task: "Transact",
-    xp: 50,
-  },
-  {
-    image: NavigationIcon,
-    name: "Earn $XAR",
-    description: "Top 1000 members on the SendIt weekly leaderboard earns XP.",
-    task: "Transact",
-    xp: 30,
-  },
-  {
-    image: NavigationIcon,
-    name: "Earn $XAR",
-    description: "Top 3000 members on the SendIt weekly leaderboard earns XP.",
-    task: "Transact",
-    xp: 20,
-  },
+  // {
+  //   image: NavigationIcon,
+  //   name: "Earn 100 XP",
+  //   description: "Complete 10 transactions on SendIt and earn XP.",
+  //   task: "Transact",
+  //   xp: 100,
+  // },
+  // {
+  //   image: NavigationIcon,
+  //   name: "Earn 250 XP",
+  //   description: "Complete 25 transactions on SendIt and earn XP.",
+  //   task: "Transact",
+  //   xp: 250,
+  // },
+  // {
+  //   image: NavigationIcon,
+  //   name: "Earn 250 XP",
+  //   description:
+  //     "Every 100th transaction performed through SendIt in a day earns XP.",
+  //   task: "Transact",
+  //   xp: 250,
+  // },
+  // {
+  //   image: NavigationIcon,
+  //   name: "Earn $XAR",
+  //   description: "Top 500 members on the SendIt weekly leaderboard earns XP.",
+  //   task: "Transact",
+  //   xp: 50,
+  // },
+  // {
+  //   image: NavigationIcon,
+  //   name: "Earn $XAR",
+  //   description: "Top 1000 members on the SendIt weekly leaderboard earns XP.",
+  //   task: "Transact",
+  //   xp: 30,
+  // },
+  // {
+  //   image: NavigationIcon,
+  //   name: "Earn $XAR",
+  //   description: "Top 3000 members on the SendIt weekly leaderboard earns XP.",
+  //   task: "Transact",
+  //   xp: 20,
+  // },
   {
     image: NavigationIcon,
     name: "Earn 2 XP",
