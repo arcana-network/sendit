@@ -31,7 +31,7 @@ const emits = defineEmits(["dismiss"]);
           class="flex justify-center items-center p-2 space-x-2 border-2 rounded-md"
           @click="emits('dismiss')"
         >
-          <span class="uppercase text-sm">Dismiss</span>
+          <span class="uppercase text-sm">Close</span>
         </button>
       </div>
     </div>

@@ -20,6 +20,7 @@ import {
   useConnection,
   SocketConnectionAccount,
 } from "@/stores/connection.ts";
+import AirdropSuccess from "@/components/AirdropSuccess.vue";
 
 const ACTION_REJECTED = "ACTION_REJECTED";
 
@@ -232,8 +233,12 @@ function handleShoutout({ hash }: any) {
   <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
     <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
+    <AirdropSuccess
+      v-if="faucetFundsReceived"
+      @dismiss="faucetFundsReceived = false"
+    />
     <ReceiverMessage
-      v-if="showReceivedCryptoMessage"
+      v-if="!faucetFundsReceived && showReceivedCryptoMessage"
       @dismiss="showReceivedCryptoMessage = false"
       @tweet-shoutout="handleShoutout"
     />
