@@ -24,7 +24,10 @@ const verifierId = ref("");
 const txHash = ref("");
 const verifierHuman = ref("");
 const showInvitePopup = ref(false);
-const showFollowVerify = ref(false);
+const showFollowVerify = ref({
+  show: false,
+  type: "",
+});
 const userStore = useUserStore();
 const verifier = ref("");
 const amount = ref("");
@@ -73,6 +76,11 @@ function getToValue(verifier, verifier_human) {
     return `${normaliseTwitterHandle(verifier_human)}`;
   } else return `an email address`;
 }
+
+function OpenVerifyFollow() {
+  showFollowVerify.value.show = true;
+  showFollowVerify.value.type = "twitter";
+}
 </script>
 
 <template>
@@ -95,8 +103,9 @@ function getToValue(verifier, verifier_human) {
   />
   <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
   <TwitterFollowVerify
-    v-if="showFollowVerify"
-    @close="showFollowVerify = false"
+    v-if="showFollowVerify.show"
+    @close="showFollowVerify.show = false"
+    :medium="showFollowVerify.type"
   />
   <div
     class="flex flex-col justify-center items-center p-10 max-lg:px-4 space-y-10"
@@ -110,7 +119,7 @@ function getToValue(verifier, verifier_human) {
       v-for="item in EARN_XP_SEND_FORM"
       :reward="item"
       @invite="showInvitePopup = true"
-      @verify-follow="showFollowVerify = true"
+      @verify-follow="OpenVerifyFollow"
     />
   </div>
 </template>

@@ -8,7 +8,10 @@ import TwitterFollowVerify from "@/components/TwitterFollowVerify.vue";
 
 const router = useRouter();
 const showInvitePopup = ref(false);
-const showTwitterFollowPopup = ref(false);
+const showTwitterFollowPopup = ref({
+  show: false,
+  type: "",
+});
 const showTweetVerifyPopup = ref(false);
 const tweetXp = ref(0);
 
@@ -23,7 +26,8 @@ function handleAction(reward) {
     router.push({ name: "Send" });
   } else if (reward.task === "Follow") {
     window.open(reward.url, "_blank");
-    showTwitterFollowPopup.value = true;
+    showTwitterFollowPopup.value.show = true;
+    showTwitterFollowPopup.value.type = reward.medium;
   } else if (reward.task === "Trxn History") {
     router.push({ name: "History" });
   }
@@ -70,8 +74,9 @@ function handleAction(reward) {
     </div>
     <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
     <TwitterFollowVerify
-      v-if="showTwitterFollowPopup"
-      @close="showTwitterFollowPopup = false"
+      v-if="showTwitterFollowPopup.show"
+      :medium="showTwitterFollowPopup.type"
+      @close="showTwitterFollowPopup.show = false"
     />
   </div>
 </template>
