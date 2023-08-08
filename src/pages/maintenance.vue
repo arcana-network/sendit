@@ -27,7 +27,7 @@ import AppHeader from "@/components/layout/AppHeader.vue";
               <p
                 class="text-xs lg:text-base text-philippine-gray max-w-[280px] md:text-center md:mx-auto"
               >
-                Will be back in a few hours!
+                We will be back shortly!
               </p>
             </header>
           </section>
