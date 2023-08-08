@@ -135,10 +135,10 @@ async function onLoginWalletConnected(
 
 <template>
   <div class="flex flex-col min-h-[100vh]">
-    <div class="bg-[#7fdca4] p-2 text-center text-[#212123] font-[500] text-sm">
+    <!-- <div class="bg-[#7fdca4] p-2 text-center text-[#212123] font-[500] text-sm">
       Passwordless email login is experiencing disruption. Please use Google
       login if you have a Google email.
-    </div>
+    </div> -->
     <AppHeader hide-nav hide-user-data />
     <div
       class="flex h-full justify-center items-center container flex-grow max-lg:flex-col max-lg:gap-12 p-4 max-lg:py-12"
