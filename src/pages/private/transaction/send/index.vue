@@ -33,7 +33,7 @@ const verifier = ref("");
 const amount = ref("");
 const token = ref("");
 const chain = ref("");
-const rewardCards = ref([]);
+const rewardCards = ref([] as any[]);
 
 function handleTxSuccess(data) {
   showSuccessMessage.value = true;

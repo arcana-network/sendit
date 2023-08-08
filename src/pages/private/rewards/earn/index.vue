@@ -16,7 +16,7 @@ const showTwitterFollowPopup = ref({
 const showTweetVerifyPopup = ref(false);
 const tweetXp = ref(0);
 const userStore = useUserStore();
-const rewardCards = ref([]);
+const rewardCards = ref([] as any[]);
 
 onBeforeMount(async () => {
   await userStore.fetchUserPointsAndRank();
