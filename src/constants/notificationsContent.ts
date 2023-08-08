@@ -102,6 +102,12 @@ const notificationsContent = {
     path: "",
     shoutout: false,
   }),
+  18: ({ points }) => ({
+    title: "Twitter handle verified",
+    body: `You have earned ${points} XP for following our twitter handle`,
+    path: "",
+    shoutout: false,
+  }),
   256: ({ from, wei, chain_id, tx_info }) => {
     const currency = getCurrency(chain_id, tx_info);
     const amount = formatUnits(hexlify(wei), getDecimals(tx_info));
