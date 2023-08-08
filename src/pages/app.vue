@@ -20,6 +20,7 @@ import {
   useConnection,
   SocketConnectionAccount,
 } from "@/stores/connection.ts";
+import AirdropSuccess from "@/components/AirdropSuccess.vue";
 import { getBytes } from "ethers";
 
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -41,11 +42,14 @@ const walletConnect = useWalletConnect();
 const showReceivedCryptoMessage = ref(false);
 const showTweetVerificationModal = ref(false);
 const tweetHash = ref("");
+const faucetFundsReceived = ref(false);
 
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
   try {
-    await auth.init();
+    if (!authStore.isAuthSDKInitialized) {
+      await auth.init();
+    }
     const arcanaAuthProvider = auth.getProvider();
     authStore.provider = arcanaAuthProvider;
     arcanaAuthProvider.on("connect", () => {
@@ -56,7 +60,11 @@ async function initAuth() {
     if (isLoggedIn) {
       authStore.isLoggedIn = true;
       authStore.loggedInWith = "";
-    } else await router.push({ name: "Login", query: { ...route.query } });
+      if (route.query["try-it-out"] === "1") {
+        await onWalletConnect();
+        router.replace({ name: "Send", query: { ...route.query } });
+      }
+    } else await router.replace({ name: "Login", query: { ...route.query } });
   } catch (error) {
     toast.error(error as string);
   } finally {
@@ -69,9 +77,6 @@ async function initSocketConnect() {
     verifier: authStore.userInfo.loginType,
     verifier_id: authStore.userInfo.id,
   };
-  if (route.query.referrer) {
-    account.referrer = Buffer.from(getBytes(route.query.referrer as string));
-  }
   await conn.initialize(
     // @ts-ignore
     authStore.provider,
@@ -87,6 +92,7 @@ async function initSocketConnect() {
       } else {
         auth.getAuthInstance().logout();
       }
+      router.replace({ name: "Login", query: { ...route.query } });
     }
   });
 }
@@ -97,6 +103,19 @@ async function getUserInfo() {
     const userInfo = await auth.getUser();
     authStore.setUserInfo(userInfo);
     userStore.address = userInfo.address;
+  }
+}
+
+async function requestFaucetFunds() {
+  try {
+    loaderStore.showLoader("Airdrop in progress...");
+    await conn.connection.sendMessage(SOCKET_IDS.REQUEST_SOCKET_FUNDS);
+    faucetFundsReceived.value = true;
+  } catch (error) {
+    console.log({ error });
+    toast.error("Airdrop already claimed for this account");
+  } finally {
+    loaderStore.hideLoader();
   }
 }
 
@@ -129,14 +148,33 @@ watch(
   () => conn.connected,
   async (newValue) => {
     if (newValue) {
+      if (route.query["try-it-out"] === "1") {
+        await requestFaucetFunds();
+        const query = { ...route.query };
+        delete query["try-it-out"];
+        router.replace({ name: "Send", query });
+      }
+      if (route.query.r) {
+        try {
+          await conn.connection.sendMessage(SOCKET_IDS.VERIFY_REFERRER, {
+            referrer: Buffer.from(getBytes(route.query.r as string)),
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
       if (route.query.id && route.query.id !== "-1") {
-        await conn.connection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
-          id: Number(route.query.id),
-        });
+        try {
+          await conn.connection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
+            id: Number(route.query.id),
+          });
+        } catch (error) {
+          console.log(error);
+        }
       }
       await sendStore.fetchSupportedChains();
       rewardsStore.fetchRewards(userStore.address);
-      userStore.fetchUserPointsAndRank();
+      await userStore.fetchUserPointsAndRank();
       notificationStore.getNotifications();
       if (authStore.loggedInWith !== "walletconnect") {
         authStore.provider.on("disconnect", onWalletDisconnect);
@@ -150,13 +188,13 @@ watch(
   () => authStore.isLoggedIn,
   async (newValue) => {
     if (!newValue) {
-      router.push({ name: "Login", query: { ...route.query } });
+      router.replace({ name: "Login", query: { ...route.query } });
     } else if (route.name === "Login") {
       if (authStore.loggedInWith !== "") {
         await onWalletConnect();
       }
       loaderStore.hideLoader();
-      router.push({ name: "Send", query: { ...route.query } });
+      router.replace({ name: "Send", query: { ...route.query } });
     }
   }
 );
@@ -196,8 +234,12 @@ function handleShoutout({ hash }: any) {
   <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
     <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
+    <AirdropSuccess
+      v-if="faucetFundsReceived"
+      @dismiss="faucetFundsReceived = false"
+    />
     <ReceiverMessage
-      v-if="showReceivedCryptoMessage"
+      v-if="!faucetFundsReceived && showReceivedCryptoMessage"
       @dismiss="showReceivedCryptoMessage = false"
       @tweet-shoutout="handleShoutout"
     />

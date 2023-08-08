@@ -31,7 +31,7 @@ let endOFHistory = false;
 
 onBeforeMount(async () => {
   fetchTxHistory();
-  userStore.fetchUserPointsAndRank();
+  await userStore.fetchUserPointsAndRank();
   document.onscroll = function () {
     if (
       window.innerHeight + window.scrollY >=

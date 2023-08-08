@@ -16,7 +16,7 @@ enum ConnectionState {
 
 enum ResponseType {
   Response,
-  Notification
+  Notification,
 }
 
 type Account = {
@@ -113,7 +113,6 @@ class Connection {
   public getCloseCb(socketSerial: Number) {
     return async (ev: CloseEvent | Event) => {
       if (this.socketSerial != socketSerial) {
-        console.log("Skipping reconnect", this.socketSerial, socketSerial);
         return;
       }
       this.emitter.emit(Connection.ON_DISCONNECT);
@@ -142,7 +141,6 @@ class Connection {
   public async onMessage(ev: MessageEvent) {
     const _data = msgunpack(Buffer.from(await ev.data.arrayBuffer()));
     if (_data.length !== 3) {
-      console.log("Weird/unimplemented message found:", _data);
       return;
     }
     const [id, rtype, data] = _data;
@@ -203,10 +201,10 @@ class Connection {
             } else {
               resolve(data);
             }
-            break
+            break;
           }
           case ResponseType.Notification: {
-            this.emitter.emit(Connection.ON_NOTIFICATION, data)
+            this.emitter.emit(Connection.ON_NOTIFICATION, data);
           }
         }
         break;

@@ -25,20 +25,20 @@ const notificationsContent = {
     shoutout: false,
   }),
   1: ({ points }) => ({
-    title: `Invite sent`,
-    body: `An invite has been sent to your friend. You will earn ${points} XP when they join.`,
+    title: `Invite claimed`,
+    body: `Your friend has accepted your invite and joined SendIt. You have earned ${points} XP.`,
     path: "",
     shoutout: false,
   }),
   2: ({ points }) => ({
     title: "Tokens sent",
-    body: `You have sent tokens to your friend. You earned ${points} XP.`,
+    body: `You have sent tokens to your friend. You have earned ${points} XP.`,
     path: "History",
     shoutout: false,
   }),
   3: ({ points }) => ({
     title: "Tokens received",
-    body: `You have received tokens from your friend. You earned ${points} XP.`,
+    body: `You have received tokens from your friend. You have earned ${points} XP.`,
     path: "History",
     shoutout: false,
   }),
@@ -79,26 +79,32 @@ const notificationsContent = {
   10: ({ points }) => {
     return {
       title: "Referral Claimed",
-      body: `Congratulations, your referral was claimed. You have earned ${points} XP`,
+      body: `Congratulations, your referral was claimed. You have earned ${points} XP.`,
       path: "",
       shoutout: false,
     };
   },
   11: ({ points }) => ({
     title: "Tokens sent",
-    body: `You have sent tokens to your friend. You earned ${points} XP.`,
+    body: `You have sent tokens to your friend. You have earned ${points} XP.`,
     path: "History",
     shoutout: false,
   }),
   16: ({ points }) => ({
     title: "Shoutout Verified",
-    body: `Congratulations on making a verified shoutout! You have earned ${points} XP`,
+    body: `Congratulations on making a verified shoutout! You have earned ${points} XP.`,
     path: "",
     shoutout: false,
   }),
   17: ({ points }) => ({
     title: "First Transaction",
-    body: `Congratulations on completing your first transaction! You have earned ${points} XP`,
+    body: `Congratulations on completing your first transaction! You have earned ${points} XP.`,
+    path: "",
+    shoutout: false,
+  }),
+  18: ({ points }) => ({
+    title: "Twitter handle verified",
+    body: `You have earned ${points} XP for following our Twitter handle.`,
     path: "",
     shoutout: false,
   }),
@@ -118,7 +124,7 @@ const notificationsContent = {
   },
   272: ({ nft_value, points }) => ({
     title: "NFT Claimed",
-    body: `You have converted ${points} XP into ${nft_value}`,
+    body: `You have converted ${points} XP into ${nft_value}.`,
     shoutout: false,
   }),
   273: ({ nft_value }) => ({
@@ -128,21 +134,28 @@ Congratulations on being one of the weekly winners! You have received a ${nft_va
     path: "My Rewards",
     shoutout: false,
   }),
+  274: ({ nft_value }) => ({
+    title: "NFT Awarded",
+    body: `	
+Congratulations on being one of the top 2000 users through the first few weeks of SendIt! You have received a ${nft_value} $XAR NFT!`,
+    path: "My Rewards",
+    shoutout: false,
+  }),
   513: ({ points }) => ({
     title: "10 Transactions completed",
-    body: `Congratulations on completing 10 transactions on #Sendit successfully! You have earned ${points} XP as a bonus`,
+    body: `Congratulations on completing 10 transactions on #Sendit successfully! You have earned ${points} XP as a bonus.`,
     path: "",
     shoutout: false,
   }),
   514: ({ points }) => ({
     title: "25 Transactions completed",
-    body: `Congratulations on completing 25 transactions on #Sendit successfully! You have earned ${points} XP as a bonus`,
+    body: `Congratulations on completing 25 transactions on #Sendit successfully! You have earned ${points} XP as a bonus.`,
     path: "",
     shoutout: false,
   }),
   515: ({ points }) => ({
     title: "50 Transactions completed",
-    body: `Congratulations on completing 50 transactions on #Sendit successfully! You have earned ${points} XP as a bonus`,
+    body: `Congratulations on completing 50 transactions on #Sendit successfully! You have earned ${points} XP as a bonus.`,
     path: "",
     shoutout: false,
   }),
