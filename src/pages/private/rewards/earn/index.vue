@@ -3,6 +3,7 @@ import { useRouter } from "vue-router";
 import { composeAndSendTweet } from "@/utils/tweet";
 import { EARN_XP } from "@/constants/rewards";
 import AppInvite from "@/components/AppInvite.vue";
+import useUserStore from "@/stores/user";
 import { ref } from "vue";
 import TwitterFollowVerify from "@/components/TwitterFollowVerify.vue";
 
@@ -14,6 +15,7 @@ const showTwitterFollowPopup = ref({
 });
 const showTweetVerifyPopup = ref(false);
 const tweetXp = ref(0);
+const userStore = useUserStore();
 
 function handleAction(reward) {
   if (reward.task === "Invite") {
@@ -32,6 +34,12 @@ function handleAction(reward) {
     router.push({ name: "History" });
   }
 }
+
+const rewardCards = EARN_XP.filter(
+  (item) => item.medium !== "twitter" && userStore.followedOnTwitter
+);
+
+console.log({ rewardCards });
 </script>
 
 <template>
@@ -41,7 +49,7 @@ function handleAction(reward) {
     <div class="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
       <div
         class="flex rounded-[10px] overflow-hidden border border-jet pr-5 bg-[#0e0e0e]"
-        v-for="reward in EARN_XP"
+        v-for="reward in rewardCards"
         :key="JSON.stringify(reward)"
       >
         <div

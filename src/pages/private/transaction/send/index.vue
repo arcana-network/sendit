@@ -81,6 +81,10 @@ function OpenVerifyFollow() {
   showFollowVerify.value.show = true;
   showFollowVerify.value.type = "twitter";
 }
+
+const rewardCards = EARN_XP_SEND_FORM.filter(
+  (item) => item.medium !== "twitter" && !userStore.followedOnTwitter
+);
 </script>
 
 <template>
@@ -113,10 +117,11 @@ function OpenVerifyFollow() {
     <SendForm @transaction-successful="handleTxSuccess" />
   </div>
   <div
-    class="grid grid-cols-4 gap-4 p-2 max-[1350px]:grid-cols-2 max-[720px]:grid-cols-1 m-auto"
+    class="grid gap-3 p-2 max-[1350px]:grid-cols-2 max-[720px]:grid-cols-1 m-auto"
+    :class="[rewardCards.length === 3 ? 'grid-cols-3' : 'grid-cols-4']"
   >
     <RewardsCard
-      v-for="item in EARN_XP_SEND_FORM"
+      v-for="item in rewardCards"
       :reward="item"
       @invite="showInvitePopup = true"
       @verify-follow="OpenVerifyFollow"

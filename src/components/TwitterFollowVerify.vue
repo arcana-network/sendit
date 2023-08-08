@@ -2,6 +2,8 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import Overlay from "@/components/overlay.vue";
+import { useConnection } from "@/stores/connection";
+import { SOCKET_IDS } from "@/constants/socket-ids";
 
 const props = defineProps({
   medium: String,
@@ -9,10 +11,22 @@ const props = defineProps({
 const emit = defineEmits(["close"]);
 const showVerifySuccess = ref(false);
 const router = useRouter();
+const conn = useConnection();
+const handle = ref("");
 
 function viewRewards() {
   router.push({ name: "Rewards" });
   emit("close");
+}
+
+async function onVerify() {
+  if (handle.value) {
+    const message = {
+      username: handle.value,
+    };
+    await conn.sendMessage(SOCKET_IDS.VERIFY_TWITTER_FOLLOW, message);
+    showVerifySuccess.value = true;
+  }
 }
 </script>
 
@@ -48,10 +62,12 @@ function viewRewards() {
                 class="input"
                 name="handle"
                 placeholder="Enter your handle"
+                v-model.trim="handle"
               />
             </div>
             <button
               class="uppercase w-full border-white border-1 rounded-[5px] text-xs font-bold px-8 py-3"
+              @click.stop="onVerify"
             >
               Verify Now
             </button>

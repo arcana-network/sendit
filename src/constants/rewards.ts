@@ -2,7 +2,7 @@ import NavigationIcon from "@/assets/images/icons/navigation.svg";
 import UserAddIcon from "@/assets/images/icons/user-add.svg";
 import UserVoiceIcon from "@/assets/images/icons/user-voice.svg";
 import TwitterGreyBgIcon from "@/assets/images/icons/twitter-grey-bg.svg";
-import TelegramGreyBgIcon from "@/assets/images/icons/telegram-grey-bg.svg";
+// import TelegramGreyBgIcon from "@/assets/images/icons/telegram-grey-bg.svg";
 
 const EARN_XP_SEND_FORM = [
   {
@@ -32,6 +32,7 @@ const EARN_XP_SEND_FORM = [
     task: "Follow",
     url: "https://twitter.com/ArcanaNetwork",
     xp: 20,
+    medium: "twitter",
   },
 ];
 
@@ -173,15 +174,15 @@ const EARN_XP = [
     xp: 20,
     medium: "twitter",
   },
-  {
-    image: TelegramGreyBgIcon,
-    name: "Earn 20 XP",
-    description: "Earn 20 XP for following us on Telegram.",
-    task: "Follow",
-    url: "https://t.me/ArcanaNetwork",
-    xp: 20,
-    medium: "telegram",
-  },
+  // {
+  //   image: TelegramGreyBgIcon,
+  //   name: "Earn 20 XP",
+  //   description: "Earn 20 XP for following us on Telegram.",
+  //   task: "Follow",
+  //   url: "https://t.me/ArcanaNetwork",
+  //   xp: 20,
+  //   medium: "telegram",
+  // },
 ];
 
 const REDEEM_XP = [
