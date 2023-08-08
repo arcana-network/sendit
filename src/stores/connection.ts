@@ -108,7 +108,6 @@ class Connection {
   public getCloseCb(socketSerial: Number) {
     return async (ev: CloseEvent | Event) => {
       if (this.socketSerial != socketSerial) {
-        console.log("Skipping reconnect", this.socketSerial, socketSerial);
         return;
       }
       this.emitter.emit(Connection.ON_DISCONNECT);
@@ -137,7 +136,6 @@ class Connection {
   public async onMessage(ev: MessageEvent) {
     const _data = msgunpack(Buffer.from(await ev.data.arrayBuffer()));
     if (_data.length !== 3) {
-      console.log("Weird/unimplemented message found:", _data);
       return;
     }
     const [id, , data] = _data;
@@ -186,7 +184,6 @@ class Connection {
       case ConnectionState.AUTHORIZED: {
         const cbs = this.callbackMap.get(id);
         if (cbs == null) {
-          console.log("Message found with no outstanding request:", cbs);
           return;
         }
         this.callbackMap.delete(id);

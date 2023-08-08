@@ -173,7 +173,7 @@ watch(
       }
       await sendStore.fetchSupportedChains();
       rewardsStore.fetchRewards(userStore.address);
-      userStore.fetchUserPointsAndRank();
+      await userStore.fetchUserPointsAndRank();
       notificationStore.getNotifications();
       if (authStore.loggedInWith !== "walletconnect") {
         authStore.provider.on("disconnect", onWalletDisconnect);
