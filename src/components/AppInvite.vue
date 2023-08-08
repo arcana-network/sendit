@@ -79,7 +79,7 @@ async function handleEmailInvite() {
       <span class="font-[500]">Invite</span>
       <form class="flex flex-col gap-5" @submit.prevent="handleEmailInvite">
         <div class="flex flex-col gap-1 space-y-1">
-          <label class="text-xs font-[500]" for="email-invite"
+          <label class="text-xs text-start font-[500]" for="email-invite"
             >Add Email ID</label
           >
           <input
