@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@arcana/auth": "^1.0.5",
+    "@fontsource/caveat": "^5.0.8",
+    "@fontsource/syne": "^5.0.8",
+    "@headlessui/vue": "^1.7.15",
     "@wagmi/core": "^1.3.7",
     "@web3modal/ethereum": "^2.7.0",
     "@web3modal/html": "^2.7.0",

@@ -44,10 +44,27 @@
   font-style: normal;
 }
 
+.font-caveat {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  color: #fd7132;
+}
+
+.font-syne {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+}
+
+html {
+  background-color: #0e0e0e;
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: Onest, sans-serif;
   color: #ffffff;
   min-height: 100vh;
+  background-color: #0e0e0e;
 }
 
 #app {
@@ -83,6 +100,10 @@ body {
   @apply max-w-[1440px] mx-auto;
 }
 
+.landing-container {
+  @apply mx-auto max-w-[1180px] px-5;
+}
+
 .ellipsis {
   @apply text-ellipsis whitespace-nowrap overflow-hidden;
 }
@@ -93,7 +114,7 @@ body {
 
 .Vue-Toastification__toast {
   min-height: unset !important;
-  max-height: 120px !important;
+  max-height: 360px !important;
   padding: 1rem !important;
   font-family: Onest, sans-serif !important;
   text-overflow: ellipsis !important;
@@ -111,4 +132,30 @@ body {
 
 .Vue-Toastification__progress-bar {
   height: 2px !important;
+}
+
+.landing-section-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+}
+
+.landing-section-description {
+  color: #c4c4c4;
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+  font-weight: 400;
+}
+
+@media screen and (min-width: 768px) {
+  .landing-section-title {
+    font-size: 2.5rem;
+    line-height: 3rem;
+  }
+
+  .landing-section-description {
+    font-size: 1.25rem;
+    line-height: 2rem;
+  }
 }

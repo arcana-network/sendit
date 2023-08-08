@@ -1,9 +1,11 @@
 import { createApp } from "vue";
-import { createPinia } from "pinia";
+import store from "@/stores";
 import { Buffer } from "buffer";
 import Toast from "vue-toastification";
 
 import "vue-toastification/dist/index.css";
+import "@fontsource/caveat/700.css";
+import "@fontsource/syne/700.css";
 
 import "@/style.css";
 import App from "@/App.vue";
@@ -24,10 +26,9 @@ const toastOptions = {
   rtl: false,
 };
 
-const pinia = createPinia();
 const app = createApp(App);
 
-app.use(pinia);
+app.use(store);
 app.use(router);
 app.use(Toast, toastOptions);
 app.mount("#app");

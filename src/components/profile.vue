@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import { toRefs } from "vue";
 import useAuthStore from "@/stores/auth";
-import CopyIcon from "@/assets/images/icons/copy.svg";
 import { useToast } from "vue-toastification";
 import useArcanaAuth from "@/use/arcanaAuth";
 import { truncateAddress } from "@/utils/truncateAddress";
 
 import copyToClipboard from "@/utils/copyToClipboard";
 import useWalletConnect from "@/use/walletconnect";
-import useSocketConnection from "@/use/socketConnection";
+import { useConnection } from "@/stores/connection";
 import useSendStore from "@/stores/send";
 import useRewardsStore from "@/stores/rewards";
 import useNotificationStore from "@/stores/notification";
 
+const emit = defineEmits(["invite"]);
 const authStore = useAuthStore();
 const { userInfo }: { userInfo: any } = toRefs(authStore);
 const arcanaAuth = useArcanaAuth();
 const walletConnect = useWalletConnect();
-const socketConnection = useSocketConnection();
+const conn = useConnection();
 const sendStore = useSendStore();
 const rewardsStore = useRewardsStore();
 const notificationStore = useNotificationStore();
@@ -29,11 +29,21 @@ async function handleCopy() {
   toast.success("Wallet address copied");
 }
 
+function getCurrentLocationUrl() {
+  return window.location.origin;
+}
+
+async function handleCopyRef() {
+  await copyToClipboard(
+    `${getCurrentLocationUrl()}/app/?r=${userInfo.value.address}`
+  );
+  toast.success("Referral Link copied");
+}
+
 function logout() {
   if (authStore.loggedInWith === "walletconnect") {
     walletConnect.disconnect();
-    socketConnection.disconnect();
-    authStore.setSocketLoginStatus(false);
+    conn.closeSocket();
     authStore.setLoginStatus(false);
   } else arcanaAuth.getAuthInstance().logout();
   sendStore.resetUserInput();
@@ -67,7 +77,29 @@ function logout() {
             truncateAddress(userInfo.address)
           }}</span>
           <button @click.stop="handleCopy">
-            <img :src="CopyIcon" alt="copy" />
+            <img src="@/assets/images/icons/copy.svg" alt="copy" />
+          </button>
+        </div>
+      </div>
+      <div class="flex flex-col justify-start">
+        <span class="text-philippine-gray text-xs text-left"
+          >Referral Link</span
+        >
+        <div class="flex space-x-2 items-center">
+          <span
+            class="text-sm text-left ellipsis w-[70%]"
+            @click.stop="handleCopyRef"
+            >{{ getCurrentLocationUrl() }}/app/?r={{ userInfo.address }}</span
+          >
+          <button @click.stop="handleCopyRef">
+            <img src="@/assets/images/icons/copy.svg" alt="copy" />
+          </button>
+          <button @click.stop="emit('invite')">
+            <img
+              src="@/assets/images/icons/user-add.svg"
+              class="h-[24px] w-[24px]"
+              alt="Invite"
+            />
           </button>
         </div>
       </div>

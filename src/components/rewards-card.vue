@@ -8,14 +8,23 @@ defineProps({
   },
 });
 
-const emits = defineEmits(["invite"]);
+const emits = defineEmits(["invite", "verify-follow"]);
+
+function onClick(reward) {
+  if (reward.task === "invite") {
+    emits("invite");
+  } else if (reward.task === "Follow") {
+    window.open(reward.url, "_blank");
+    emits("verify-follow");
+  }
+}
 </script>
 
 <template>
   <div
     class="flex w-80 h-28 border-1 border-jet bg-[#0e0e0e] rounded-md overflow-hidden"
     :class="{ 'cursor-pointer': reward.task }"
-    @click.stop="reward.task ? emits(reward.task) : void 0"
+    @click.stop="onClick(reward)"
   >
     <div class="bg-eerie-black p-4 flex items-center">
       <img :src="reward.image" :alt="reward.name" class="w-8 h-8" />

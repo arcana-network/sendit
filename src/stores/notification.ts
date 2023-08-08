@@ -1,11 +1,12 @@
 import { defineStore } from "pinia";
-import useSocketConnection from "@/use/socketConnection";
+import { useConnection } from "@/stores/connection";
+import activePiniaInstance from "@/stores";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import notificationsContent from "@/constants/notificationsContent";
 
-const socket = useSocketConnection();
 const COUNT = 10;
 const Notification_Type_Received_Crypto = 256;
+const conn = useConnection(activePiniaInstance);
 
 const useNotificationStore = defineStore("notification", {
   state: () => ({
@@ -37,7 +38,7 @@ const useNotificationStore = defineStore("notification", {
   },
   actions: {
     async getNotifications() {
-      const { notifications } = (await socket.sendMessage(
+      const { notifications } = (await conn.sendMessage(
         SOCKET_IDS.NOTIFICATION,
         this.getNotificationpayload
       )) as any;
@@ -50,7 +51,7 @@ const useNotificationStore = defineStore("notification", {
       const payload = {
         ids: [0],
       };
-      const response = (await socket.sendMessage(
+      const response = (await conn.sendMessage(
         SOCKET_IDS.NOTIFICATION_MARK_AS_READ,
         payload
       )) as any;
@@ -65,7 +66,7 @@ const useNotificationStore = defineStore("notification", {
       const payload = {
         ids: [notificationId],
       };
-      const response = (await socket.sendMessage(
+      const response = (await conn.sendMessage(
         SOCKET_IDS.NOTIFICATION_MARK_AS_READ,
         payload
       )) as any;
@@ -80,7 +81,7 @@ const useNotificationStore = defineStore("notification", {
       const payload = {
         ids: notificationIDs,
       };
-      const response = (await socket.sendMessage(
+      const response = (await conn.sendMessage(
         SOCKET_IDS.NOTIFICATION_MARK_AS_READ,
         payload
       )) as any;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeMount, onBeforeUnmount, ref } from "vue";
-import useSocketConnection from "@/use/socketConnection";
+import { useConnection } from "@/stores/connection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 // import dayjs from "dayjs";
 // import { ethers } from "ethers";
@@ -18,7 +18,7 @@ import chainList from "@/constants/chainList";
 import generateSenditUrl from "@/utils/generateSenditUrl";
 import { beautifyAmount } from "@/utils/beautifyAmount";
 
-const socket = useSocketConnection();
+const conn = useConnection();
 
 const history = ref([] as any[]);
 const showTweetVerificationModal = ref(false);
@@ -31,7 +31,7 @@ let endOFHistory = false;
 
 onBeforeMount(async () => {
   fetchTxHistory();
-  userStore.fetchUserPointsAndRank();
+  await userStore.fetchUserPointsAndRank();
   document.onscroll = function () {
     if (
       window.innerHeight + window.scrollY >=
@@ -74,7 +74,7 @@ async function fetchTxHistory() {
     offset: (currentPage - 1) * 20,
     count: 20,
   };
-  const txHistory = (await socket.sendMessage(
+  const txHistory = (await conn.sendMessage(
     SOCKET_IDS.GET_TX_HISTORY,
     message
   )) as { txns: any[] };

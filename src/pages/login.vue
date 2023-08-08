@@ -31,10 +31,6 @@ if (verifier === "passwordless" && verifierId) {
   passwordlessEmailId.value = verifierId;
 }
 
-const isWhitelistedLogin = computed(() => {
-  return route.query.user !== undefined;
-});
-
 const socialLoginsFiltered = computed(() => {
   if (verifier && verifierId) {
     return socialLogins.filter((login) => {
@@ -85,26 +81,6 @@ async function passwordlessLogin() {
     loaderStore.hideLoader();
   }
 }
-
-// async function loginAutomatically(verifier: string, verifierId: string) {
-//   loaderStore.showLoader("Logging in...");
-//   try {
-//     const authInstance = arcanaAuth.getAuthInstance();
-//     if (verifier === "passwordless") {
-//       loaderStore.showLoader(
-//         `Click on the verification mail sent to ${verifierId}...`
-//       );
-//       await authInstance.loginWithLink(verifierId);
-//     } else {
-//       await authInstance.loginWithSocial(verifier);
-//     }
-//     await authInstance.isLoggedIn();
-//   } catch (error) {
-//     console.error({ error });
-//   } finally {
-//     loaderStore.hideLoader();
-//   }
-// }
 
 async function onConnectToWalletConnect() {
   const accountDetails = walletConnect.getAccount();
@@ -189,7 +165,7 @@ async function onLoginWalletConnected(
             </section>
             <section
               class="space-y-3 w-full flex flex-col items-start"
-              v-if="isWhitelistedLogin && !verifier && !verifierId"
+              v-if="!verifier && !verifierId"
             >
               <span class="text-xs text-philippine-gray">Connect Wallet</span>
               <div class="flex flex-col space-y-2 w-full">
@@ -235,11 +211,6 @@ async function onLoginWalletConnected(
             </section>
           </section>
         </section>
-        <div class="mt-20 text-sm">
-          <RouterLink :to="{ name: 'Waitlist' }"
-            >Need access? Join the Waitlist</RouterLink
-          >
-        </div>
       </div>
       <LandingDescription class="flex-grow" />
     </div>

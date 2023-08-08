@@ -3,7 +3,7 @@ import Overlay from "@/components/overlay.vue";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import useLoaderStore from "@/stores/loader";
 import useUserStore from "@/stores/user";
-import useSocketConnection from "@/use/socketConnection";
+import { useConnection } from "@/stores/connection";
 import { getBytes } from "ethers";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -20,7 +20,7 @@ const isTweetVerified = ref(false);
 const router = useRouter();
 const tweetUrl = ref("");
 const loaderStore = useLoaderStore();
-const socketConnection = useSocketConnection();
+const conn = useConnection();
 const toast = useToast();
 const userStore = useUserStore();
 
@@ -32,9 +32,9 @@ async function handleTweetVerify() {
         tx_hash: Buffer.from(getBytes(props.hash)),
         url: tweetUrl.value,
       };
-      await socketConnection.sendMessage(SOCKET_IDS.VERIFY_TWEET, message);
+      await conn.sendMessage(SOCKET_IDS.VERIFY_TWEET, message);
       isTweetVerified.value = true;
-      userStore.fetchUserPointsAndRank();
+      await userStore.fetchUserPointsAndRank();
     } catch (e) {
       console.error(e);
       toast.error("Error verifying tweet. Please try again.");
@@ -87,9 +87,7 @@ function handleViewRewards() {
             alt="success"
             class="w-[50px] aspect-square"
           />
-          <span class="font-[500] text-[20px] uppercase font-bold"
-            >Shoutout</span
-          >
+          <span class="font-[500] text-[20px] uppercase">Shoutout</span>
           <span class="text-xs text-philippine-gray max-w-[320px] text-center">
             Copy and paste the link to the Tweet that was just posted to receive
             the points for the shoutout below:

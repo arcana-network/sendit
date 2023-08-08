@@ -2,7 +2,7 @@
 import Overlay from "@/components/overlay.vue";
 import { ref, computed } from "vue";
 import { isValidEmail } from "@/utils/validation";
-import useSocketConnection from "@/use/socketConnection";
+import { useConnection } from "@/stores/connection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
@@ -14,6 +14,7 @@ const email = ref("");
 const loader = useLoaderStore();
 const toast = useToast();
 const hasStartedTyping = ref(false);
+const conn = useConnection();
 
 const areEmailsValid = computed(() => {
   if (hasStartedTyping.value) {
@@ -47,7 +48,6 @@ const areEmailsValid = computed(() => {
 
 async function handleEmailInvite() {
   if (areEmailsValid.value.valid) {
-    const socket = useSocketConnection();
     const invites = email.value.split(",").map((e) => {
       return {
         verifier: "passwordless",
@@ -58,7 +58,7 @@ async function handleEmailInvite() {
       invites,
     };
     loader.showLoader("Sending invites...");
-    await socket.sendMessage(SOCKET_IDS.EMAIL_INVITE, message);
+    await conn.sendMessage(SOCKET_IDS.EMAIL_INVITE, message);
     loader.hideLoader();
     toast.success("Invites sent");
     emit("close");
@@ -79,7 +79,7 @@ async function handleEmailInvite() {
       <span class="font-[500]">Invite</span>
       <form class="flex flex-col gap-5" @submit.prevent="handleEmailInvite">
         <div class="flex flex-col gap-1 space-y-1">
-          <label class="text-xs font-[500]" for="email-invite"
+          <label class="text-xs text-start font-[500]" for="email-invite"
             >Add Email ID</label
           >
           <input

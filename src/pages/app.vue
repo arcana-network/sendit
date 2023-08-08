@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import useArcanaAuth from "@/use/arcanaAuth";
-import useSocketConnection from "@/use/socketConnection";
 import useLoaderStore from "@/stores/loader";
 import FullScreenLoader from "@/components/fullScreenLoader.vue";
 import { useRouter, useRoute } from "vue-router";
@@ -13,17 +12,25 @@ import useNotificationStore from "@/stores/notification";
 import NotWhiteListed from "@/components/not-whitelisted.vue";
 import useSendStore from "@/stores/send";
 import useWalletConnect from "@/use/walletconnect";
-import { getAccountBalance } from "@/services/ankr.service";
 import ReceiverMessage from "@/components/ReceiverMessage.vue";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import TweetVerify from "@/components/TweetVerify.vue";
+import {
+  Connection,
+  useConnection,
+  SocketConnectionAccount,
+} from "@/stores/connection.ts";
+import AirdropSuccess from "@/components/AirdropSuccess.vue";
+import { getBytes } from "ethers";
+
+const ACTION_REJECTED = "ACTION_REJECTED";
 
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 const auth = useArcanaAuth();
-const socketConnection = useSocketConnection();
+const conn = useConnection();
 const rewardsStore = useRewardsStore();
 const userStore = useUserStore();
 const notificationStore = useNotificationStore();
@@ -35,11 +42,14 @@ const walletConnect = useWalletConnect();
 const showReceivedCryptoMessage = ref(false);
 const showTweetVerificationModal = ref(false);
 const tweetHash = ref("");
+const faucetFundsReceived = ref(false);
 
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
   try {
-    await auth.init();
+    if (!authStore.isAuthSDKInitialized) {
+      await auth.init();
+    }
     const arcanaAuthProvider = auth.getProvider();
     authStore.provider = arcanaAuthProvider;
     arcanaAuthProvider.on("connect", () => {
@@ -50,7 +60,11 @@ async function initAuth() {
     if (isLoggedIn) {
       authStore.isLoggedIn = true;
       authStore.loggedInWith = "";
-    } else await router.push({ name: "Login", query: { ...route.query } });
+      if (route.query["try-it-out"] === "1") {
+        await onWalletConnect();
+        router.replace({ name: "Send", query: { ...route.query } });
+      }
+    } else await router.replace({ name: "Login", query: { ...route.query } });
   } catch (error) {
     toast.error(error as string);
   } finally {
@@ -59,41 +73,28 @@ async function initAuth() {
 }
 
 async function initSocketConnect() {
-  const account = {
+  const account: SocketConnectionAccount = {
     verifier: authStore.userInfo.loginType,
     verifier_id: authStore.userInfo.id,
   };
-  await socketConnection.init(
+  await conn.initialize(
     // @ts-ignore
     authStore.provider,
-    account,
-    () => {
-      authStore.setSocketLoginStatus(true);
-    },
-    async () => {
-      const { verifier, verifierId } = route.query;
-      if (verifier && verifierId) {
-        try {
-          const data = await getAccountBalance(userStore.address, [
-            "eth",
-            "polygon",
-            "polygon_mumbai",
-            "arbitrum",
-          ]);
-          if (data?.result?.assets?.length) {
-            hasBalance.value = true;
-          } else {
-            hasBalance.value = false;
-          }
-        } catch (error) {
-          console.log(error);
-          hasBalance.value = false;
-        }
-      }
-      isNotWhitelisted.value = true;
-      loaderStore.hideLoader();
-    }
+    account
   );
+  conn.onEvent(Connection.ON_ERROR, (error) => {
+    if (error.code === ACTION_REJECTED) {
+      loaderStore.hideLoader();
+      toast.error("Signature rejected");
+      if (authStore.loggedInWith === "walletconnect") {
+        walletConnect.disconnect();
+        onWalletDisconnect();
+      } else {
+        auth.getAuthInstance().logout();
+      }
+      router.replace({ name: "Login", query: { ...route.query } });
+    }
+  });
 }
 
 async function getUserInfo() {
@@ -105,21 +106,30 @@ async function getUserInfo() {
   }
 }
 
+async function requestFaucetFunds() {
+  try {
+    loaderStore.showLoader("Airdrop in progress...");
+    await conn.connection.sendMessage(SOCKET_IDS.REQUEST_SOCKET_FUNDS);
+    faucetFundsReceived.value = true;
+  } catch (error) {
+    console.log({ error });
+    toast.error("Airdrop already claimed for this account");
+  } finally {
+    loaderStore.hideLoader();
+  }
+}
+
 async function onWalletConnect() {
   loaderStore.showLoader("Connecting...");
   if (authStore.loggedInWith === "walletconnect") {
     authStore.provider.on("accountsChanged", async (accounts) => {
-      loaderStore.showLoader("Switching the account...");
+      await initSocketConnect();
       authStore.setUserInfo({
         address: accounts[0],
         loginType: "null",
         id: "null",
       });
       userStore.address = accounts[0];
-      socketConnection.disconnect();
-      authStore.isSocketLoggedIn = false;
-      await getUserInfo();
-      await initSocketConnect();
       loaderStore.hideLoader();
     });
   }
@@ -128,25 +138,43 @@ async function onWalletConnect() {
 }
 
 async function onWalletDisconnect() {
-  socketConnection.disconnect();
-  authStore.setSocketLoginStatus(false);
+  conn.closeSocket();
   authStore.setLoginStatus(false);
 }
 
 onMounted(initAuth);
 
 watch(
-  () => authStore.isSocketLoggedIn,
+  () => conn.connected,
   async (newValue) => {
     if (newValue) {
+      if (route.query["try-it-out"] === "1") {
+        await requestFaucetFunds();
+        const query = { ...route.query };
+        delete query["try-it-out"];
+        router.replace({ name: "Send", query });
+      }
+      if (route.query.r) {
+        try {
+          await conn.connection.sendMessage(SOCKET_IDS.VERIFY_REFERRER, {
+            referrer: Buffer.from(getBytes(route.query.r as string)),
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
       if (route.query.id && route.query.id !== "-1") {
-        await socketConnection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
-          id: Number(route.query.id),
-        });
+        try {
+          await conn.connection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
+            id: Number(route.query.id),
+          });
+        } catch (error) {
+          console.log(error);
+        }
       }
       await sendStore.fetchSupportedChains();
       rewardsStore.fetchRewards(userStore.address);
-      userStore.fetchUserPointsAndRank();
+      await userStore.fetchUserPointsAndRank();
       notificationStore.getNotifications();
       if (authStore.loggedInWith !== "walletconnect") {
         authStore.provider.on("disconnect", onWalletDisconnect);
@@ -160,13 +188,13 @@ watch(
   () => authStore.isLoggedIn,
   async (newValue) => {
     if (!newValue) {
-      router.push({ name: "Login", query: { ...route.query } });
+      router.replace({ name: "Login", query: { ...route.query } });
     } else if (route.name === "Login") {
       if (authStore.loggedInWith !== "") {
         await onWalletConnect();
       }
       loaderStore.hideLoader();
-      router.push({ name: "Send", query: { ...route.query } });
+      router.replace({ name: "Send", query: { ...route.query } });
     }
   }
 );
@@ -179,9 +207,7 @@ watch(
 );
 
 const showFullScreenLoader = computed(() => {
-  return (
-    loaderStore.show || (!authStore.isSocketLoggedIn && authStore.isLoggedIn)
-  );
+  return loaderStore.show || (!conn.connected && authStore.isLoggedIn);
 });
 
 async function handleNoAccessBack() {
@@ -208,8 +234,12 @@ function handleShoutout({ hash }: any) {
   <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
     <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
+    <AirdropSuccess
+      v-if="faucetFundsReceived"
+      @dismiss="faucetFundsReceived = false"
+    />
     <ReceiverMessage
-      v-if="showReceivedCryptoMessage"
+      v-if="!faucetFundsReceived && showReceivedCryptoMessage"
       @dismiss="showReceivedCryptoMessage = false"
       @tweet-shoutout="handleShoutout"
     />
