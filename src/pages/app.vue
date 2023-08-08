@@ -107,12 +107,12 @@ async function getUserInfo() {
 
 async function requestFaucetFunds() {
   try {
-    loaderStore.showLoader("Requesting faucet funds...");
+    loaderStore.showLoader("Airdrop in progress...");
     await conn.connection.sendMessage(SOCKET_IDS.REQUEST_SOCKET_FUNDS);
     faucetFundsReceived.value = true;
   } catch (error) {
     console.log({ error });
-    toast.error("Faucet funds already claimed for this account");
+    toast.error("Airdrop already claimed for this account");
   } finally {
     loaderStore.hideLoader();
   }
