@@ -40,6 +40,7 @@ const walletConnect = useWalletConnect();
 const showReceivedCryptoMessage = ref(false);
 const showTweetVerificationModal = ref(false);
 const tweetHash = ref("");
+const faucetFundsReceived = ref(false);
 
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
@@ -107,7 +108,7 @@ async function requestFaucetFunds() {
   try {
     loaderStore.showLoader("Requesting faucet funds...");
     await conn.connection.sendMessage(SOCKET_IDS.REQUEST_SOCKET_FUNDS);
-    toast.success("Faucet funds requested");
+    faucetFundsReceived.value = true;
   } catch (error) {
     console.log({ error });
     toast.error("Faucet funds already claimed for this account");
