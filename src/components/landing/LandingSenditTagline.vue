@@ -15,21 +15,14 @@
               src="@/assets/images/landing/apostrophe-open-filled.svg"
               class="h-2 md:h-4 -mt-2 md:-mt-4 mr-1 md:mr-2"
             />
+            <span class="landing-section-title max-md:text-[0.875rem]"
+              >Email + Crypto =&nbsp;</span
+            >
             <img
               src="@/assets/images/landing/SendIt-text.svg"
-              class="h-3 md:h-8"
+              class="h-2 md:h-7"
               alt="SendIt"
             />
-            <span class="landing-section-title">&nbsp;is&nbsp;like&nbsp;</span>
-            <img
-              alt="PayPal"
-              src="@/assets/images/landing/Paypal-logo.svg"
-              class="w-[74px] md:w-[152px]"
-            /><span class="landing-section-title">,&nbsp;</span>
-          </div>
-          <div class="flex items-center">
-            <span class="landing-section-title">but for Web</span
-            ><span class="landing-section-title -mt-2">3</span>
             <img
               src="@/assets/images/landing/apostrophe-close-filled.svg"
               class="h-2 md:h-4 -mt-2 md:-mt-4 ml-1 md:ml-2"
