@@ -31,6 +31,8 @@ async function fetchRewards(walletAddress: string) {
     params: {
       blockchain: ["polygon"],
       walletAddress,
+      pageSize: 50,
+      pageToken: null,
     },
     id: 1,
   };
