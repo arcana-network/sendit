@@ -12,3 +12,11 @@
       script-src 'self' 'unsafe-inline' *.google-analytics.com *.googletagmanager.com;
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     '''
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "max-age=31536000, immutable"
+[[headers]]
+  for = "/xars/*"
+  [headers.values]
+    Cache-Control = "max-age=31536000, immutable"
