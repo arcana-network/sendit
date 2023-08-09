@@ -5,7 +5,11 @@
   >
     <div
       class="relative rounded-t-[16px] md:rounded-t-[30px] h-full w-full z-[1] py-[2rem] md:py-[4rem]"
-      style="backdrop-filter: blur(50px); background-color: #0000001a"
+      style="
+        -webkit-backdrop-filter: blur(50px);
+        backdrop-filter: blur(50px);
+        background-color: #0000001a;
+      "
     >
       <div
         class="landing-container flex max-md:flex-col max-md:gap-5 max-md:items-center md:justify-between max-md:text-center landing-section-description w-full"
