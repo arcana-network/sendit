@@ -121,7 +121,7 @@ onBeforeMount(async () => {
     <SendForm @transaction-successful="handleTxSuccess" />
   </div>
   <div
-    class="grid gap-3 p-2 max-[1350px]:grid-cols-2 max-[720px]:grid-cols-1 m-auto"
+    class="grid gap-3 p-2 max-[1350px]:grid-cols-2 max-[1350px]:mt-10 max-[720px]:grid-cols-1 m-auto"
     :class="[rewardCards.length === 3 ? 'grid-cols-3' : 'grid-cols-4']"
   >
     <RewardsCard
