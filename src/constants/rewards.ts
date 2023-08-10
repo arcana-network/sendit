@@ -6,6 +6,15 @@ import TwitterGreyBgIcon from "@/assets/images/icons/twitter-grey-bg.svg";
 
 const EARN_XP_SEND_FORM = [
   {
+    image: TwitterGreyBgIcon,
+    name: "Earn 20 XP",
+    description: "Earn 20 XP for following us on Twitter.",
+    task: "Follow",
+    url: "https://twitter.com/ArcanaNetwork",
+    xp: 20,
+    medium: "twitter",
+  },
+  {
     image: NavigationIcon,
     name: "Earn 150 XP",
     description: "Send crypto for the first time and earn XP.",
@@ -24,15 +33,6 @@ const EARN_XP_SEND_FORM = [
     description:
       "Invite a friend and earn XP as soon as they log in to their wallet.",
     task: "invite",
-  },
-  {
-    image: TwitterGreyBgIcon,
-    name: "Earn 20 XP",
-    description: "Earn 20 XP for following us on Twitter.",
-    task: "Follow",
-    url: "https://twitter.com/ArcanaNetwork",
-    xp: 20,
-    medium: "twitter",
   },
 ];
 
