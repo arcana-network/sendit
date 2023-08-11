@@ -110,7 +110,7 @@ const restRankers = computed(() => rankers.value.slice(3));
       >
         <div class="leaderboard-table-header-item">Rank</div>
         <div class="leaderboard-table-header-item">Wallet Address</div>
-        <div class="leaderboard-table-header-item">Transactions</div>
+        <div class="leaderboard-table-header-item">Tasks Completed</div>
         <div class="leaderboard-table-header-item">XP</div>
         <div class="leaderboard-table-header-item">Join Date</div>
       </div>
@@ -238,7 +238,7 @@ const restRankers = computed(() => rankers.value.slice(3));
                 {{ truncateAddress(ranker.walletAddress) }}
               </div>
               <div class="text-xs">
-                {{ ranker.xp }} XP & {{ ranker.transactions }} Txn
+                {{ ranker.xp }} XP & {{ ranker.transactions }} Tasks completed
               </div>
               <div class="text-[10px] text-philippine-gray">
                 {{ ranker.joinDate }}
