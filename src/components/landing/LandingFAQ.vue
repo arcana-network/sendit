@@ -34,18 +34,14 @@ const faqs = [
   <div class="mt-[6rem] md:mt-[12rem]">
     <div class="landing-container">
       <h3 class="flex">
+        <span class="landing-section-title">Frequently Asked&nbsp;</span>
         <div class="relative">
-          <span
-            class="font-caveat absolute -top-[100%] left-1/2 transform transform -translate-x-1/2 text-[1.25rem] md:text-[2rem]"
-            >Constantly</span
-          >
+          <span class="landing-section-title relative">Questions</span>
           <img
-            class="absolute top-[35%]"
-            src="@/assets/images/landing/faq-vector-strikethrough.svg"
+            src="@/assets/images/landing/how-does-it-work-vector-underline.svg"
+            class="max-md:w-[96px]"
           />
-          <span class="landing-section-title">Frequently</span>
         </div>
-        <span class="landing-section-title">&nbsp;Asked Questions</span>
       </h3>
       <div class="flex flex-col">
         <Disclosure
