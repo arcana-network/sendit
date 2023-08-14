@@ -246,7 +246,7 @@ const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
       <div
         class="flex justify-center items-center h-[36px] bg-[#16AD65] text-[14px] font-[500] px-4 text-center"
       >
-        <div class="flex items-baseline">
+        <div class="flex items-baseline flex-wrap justify-center">
           SendIT weekly rewards have been sent out.&nbsp;
           <a
             href="https://www.arcana.network/blog/sendit-weekly-reward-announcements"
