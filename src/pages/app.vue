@@ -243,6 +243,19 @@ const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
       <AppMaintenance />
     </div>
     <div v-else>
+      <div
+        class="flex justify-center items-center h-[36px] bg-[#16AD65] text-[14px] font-[500] px-4 text-center"
+      >
+        <div class="flex items-baseline">
+          SendIT weekly rewards have been sent out.&nbsp;
+          <a
+            href="https://www.arcana.network/blog/sendit-weekly-reward-announcements"
+            target="_blank"
+            class="text-[12px] font-[800] uppercase"
+            >Learn more</a
+          >
+        </div>
+      </div>
       <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
     </div>
     <AirdropSuccess
