@@ -2,6 +2,7 @@
 import { defineAsyncComponent } from "vue";
 import useLoaderStore from "@/stores/loader";
 import { useRoute } from "vue-router";
+import UnderMaintenance from "./pages/under-maintenance.vue";
 
 const FullScreenLoader = defineAsyncComponent(
   () => import("@/components/fullScreenLoader.vue")
@@ -17,7 +18,7 @@ const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
 
 <template>
   <main class="bg-[#0e0e0e] text-white h-full min-h-screen relative">
-    <img
+    <!-- <img
       v-if="route.name !== 'Landing'"
       src="@/assets/images/bg-top-right.png"
       class="absolute top-[72px] right-0 z-0 filter grayscale w-[33vw]"
@@ -33,6 +34,7 @@ const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
     <div v-else>
       <FullScreenLoader v-if="loaderStore.show" />
       <RouterView class="relative z-10"> </RouterView>
-    </div>
+    </div> -->
+    <UnderMaintenance />
   </main>
 </template>
