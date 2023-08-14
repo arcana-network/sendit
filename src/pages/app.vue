@@ -238,7 +238,10 @@ function handleShoutout({ hash }: any) {
     >
       <div class="flex items-baseline">
         SendIT weekly rewards have been sent out.&nbsp;
-        <a href="" target="_blank" class="text-[12px] font-[800] uppercase"
+        <a
+          href="https://www.arcana.network/blog/sendit-weekly-reward-announcements"
+          target="_blank"
+          class="text-[12px] font-[800] uppercase"
           >Learn more</a
         >
       </div>
