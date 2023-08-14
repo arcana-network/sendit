@@ -236,10 +236,12 @@ function handleShoutout({ hash }: any) {
     <div
       class="flex justify-center items-center h-[36px] bg-[#16AD65] text-[14px] font-[500] px-4 text-center"
     >
-      SendIT weekly rewards have been sent out.&nbsp;
-      <a href="" target="_blank" class="text-[12px] font-[800] uppercase"
-        >Learn more</a
-      >
+      <div class="flex items-baseline">
+        SendIT weekly rewards have been sent out.&nbsp;
+        <a href="" target="_blank" class="text-[12px] font-[800] uppercase"
+          >Learn more</a
+        >
+      </div>
     </div>
     <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
     <AirdropSuccess
