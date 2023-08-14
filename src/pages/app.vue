@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch, defineAsyncComponent } from "vue";
 import useArcanaAuth from "@/use/arcanaAuth";
 import useLoaderStore from "@/stores/loader";
 import FullScreenLoader from "@/components/fullScreenLoader.vue";
@@ -22,6 +22,10 @@ import {
 } from "@/stores/connection.ts";
 import AirdropSuccess from "@/components/AirdropSuccess.vue";
 import { getBytes } from "ethers";
+
+const AppMaintenance = defineAsyncComponent(
+  () => import("@/pages/maintenance.vue")
+);
 
 const ACTION_REJECTED = "ACTION_REJECTED";
 
@@ -228,6 +232,8 @@ function handleShoutout({ hash }: any) {
   tweetHash.value = hash;
   showReceivedCryptoMessage.value = false;
 }
+
+const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
 </script>
 
 <template>
@@ -247,6 +253,12 @@ function handleShoutout({ hash }: any) {
       </div>
     </div>
     <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
+    <div v-if="isAppDown">
+      <AppMaintenance />
+    </div>
+    <div v-else>
+      <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
+    </div>
     <AirdropSuccess
       v-if="faucetFundsReceived"
       @dismiss="faucetFundsReceived = false"
