@@ -234,9 +234,9 @@ function handleShoutout({ hash }: any) {
   <main class="text-white h-full min-h-screen">
     <FullScreenLoader v-if="showFullScreenLoader" />
     <div
-      class="flex justify-center items-center h-[36px] bg-[#16AD65] text-[14px] font-[500] px-4 text-center"
+      class="flex justify-center items-baseline h-[36px] bg-[#16AD65] text-[14px] font-[500] px-4 text-center"
     >
-      SendIT weekly rewards have been sent out.
+      SendIT weekly rewards have been sent out.&nbsp;
       <a href="" target="_blank" class="text-[12px] font-[800] uppercase"
         >Learn more</a
       >
