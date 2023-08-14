@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from "vue";
-import useLoaderStore from "@/stores/loader";
-import { useRoute } from "vue-router";
+// import { defineAsyncComponent } from "vue";
+// import useLoaderStore from "@/stores/loader";
+// import { useRoute } from "vue-router";
 import UnderMaintenance from "./pages/under-maintenance.vue";
 
-const FullScreenLoader = defineAsyncComponent(
-  () => import("@/components/fullScreenLoader.vue")
-);
-const AppMaintenance = defineAsyncComponent(
-  () => import("@/pages/maintenance.vue")
-);
+// const FullScreenLoader = defineAsyncComponent(
+//   () => import("@/components/fullScreenLoader.vue")
+// );
+// const AppMaintenance = defineAsyncComponent(
+//   () => import("@/pages/maintenance.vue")
+// );
 
-const loaderStore = useLoaderStore();
-const route = useRoute();
-const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
+// const loaderStore = useLoaderStore();
+// const route = useRoute();
+// const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
 </script>
 
 <template>
