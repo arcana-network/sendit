@@ -231,10 +231,10 @@ function handleEmailRemove(index: number) {
               type="submit"
               class="uppercase bg-white rounded-[5px] text-black text-sm font-[500] px-8 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
               :disabled="
-                !areEmailsValid.valid ||
-                bogusEmails.length > 0 ||
-                !hasStartedTyping ||
-                !emailsArr.length
+                areEmailsValid.valid &&
+                bogusEmails.length === 0 &&
+                hasStartedTyping &&
+                emailsArr.length > 0
               "
               ref="inviteBtn"
             >
