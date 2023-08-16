@@ -29,67 +29,63 @@ const areEmailsValid: ComputedRef<{
   valid: boolean;
   message?: string;
   type?: string;
-  invalidEmails: string[];
-  repeatedEmails: string[];
+  invalidEmails?: string[];
+  repeatedEmails?: string[];
 }> = computed(() => {
+  invalidEmails = invalidEmails.filter((e) => emailsArr.value.includes(e));
+  repeatedEmails = repeatedEmails.filter((e) => emailsArr.value.includes(e));
   if (hasStartedTyping.value && email.value.includes(",")) {
     invalidEmails = [];
     repeatedEmails = [];
-    if (!email.value.trim())
-      return {
-        valid: true,
-        repeatedEmails,
-        invalidEmails,
-      };
-    const emails = email.value.split(",");
-    emailsArr.value = [...emailsArr.value, ...emails.filter((e) => e.trim())];
-    if (emailInput.value) {
-      emailInput.value.focus();
-    } else {
-      inviteBtn.value?.focus();
-    }
-    email.value = "";
-    if (emailsArr.value.length > 10) {
-      return {
-        valid: false,
-        message: "You can invite a maximum of 10 people at a time",
-        type: "max",
-        invalidEmails,
-        repeatedEmails,
-      };
-    }
-    for (let i = 0; i < emailsArr.value.length; i++) {
-      if (!emailsArr.value[i].trim()) continue;
-      if (!isValidEmail(emailsArr.value[i].trim())) {
-        invalidEmails.push(emailsArr.value[i]);
+    if (email.value.trim()) {
+      const emails = email.value.split(",");
+      emailsArr.value = [...emailsArr.value, ...emails.filter((e) => e.trim())];
+      if (emailInput.value) {
+        emailInput.value.focus();
+      } else {
+        inviteBtn.value?.focus();
       }
-      if (emailsArr.value.indexOf(emailsArr.value[i]) !== i) {
-        repeatedEmails.push(emailsArr.value[i]);
+      email.value = "";
+      if (emailsArr.value.length > 10) {
+        return {
+          valid: false,
+          message: "You can invite a maximum of 10 people at a time",
+          type: "max",
+          invalidEmails,
+          repeatedEmails,
+        };
+      }
+      for (let i = 0; i < emailsArr.value.length; i++) {
+        if (!emailsArr.value[i].trim()) continue;
+        if (!isValidEmail(emailsArr.value[i].trim())) {
+          invalidEmails.push(emailsArr.value[i]);
+        }
+        if (emailsArr.value.indexOf(emailsArr.value[i]) !== i) {
+          repeatedEmails.push(emailsArr.value[i]);
+        }
       }
     }
-    if (invalidEmails.length) {
-      return {
-        valid: false,
-        message: "One or more emails are not valid",
-        type: "invalid",
-        invalidEmails,
-        repeatedEmails,
-      };
-    }
-    if (repeatedEmails.length) {
-      return {
-        valid: false,
-        message: "Emails cannot be repeated",
-        type: "repeated",
-        repeatedEmails,
-        invalidEmails,
-      };
-    }
+  }
+  if (invalidEmails.length) {
+    return {
+      valid: false,
+      message: "One or more emails are not valid",
+      type: "invalid",
+      invalidEmails,
+      repeatedEmails,
+    };
+  }
+  if (repeatedEmails.length) {
+    return {
+      valid: false,
+      message: "Emails cannot be repeated",
+      type: "repeated",
+      repeatedEmails,
+      invalidEmails,
+    };
   }
   return {
     valid: true,
-    repeatedEmails,
-    invalidEmails,
   };
 });
 
@@ -149,6 +145,15 @@ watch(emailsArr, async (arr) => {
 function handleEmailRemove(index: number) {
   emailsArr.value = emailsArr.value.filter((_, i) => i !== index);
 }
+
+const isButtonDisabled = computed(() => {
+  return (
+    !areEmailsValid.value.valid ||
+    bogusEmails.value.length !== 0 ||
+    !hasStartedTyping.value ||
+    emailsArr.value.length === 0
+  );
+});
 </script>
 
 <template>
@@ -230,12 +235,7 @@ function handleEmailRemove(index: number) {
             <button
               type="submit"
               class="uppercase bg-white rounded-[5px] text-black text-sm font-[500] px-8 py-2 disabled:opacity-60 disabled:cursor-not-allowed"
-              :disabled="
-                !areEmailsValid.valid ||
-                bogusEmails.length === 0 ||
-                !hasStartedTyping ||
-                emailsArr.length === 0
-              "
+              :disabled="isButtonDisabled"
               ref="inviteBtn"
             >
               Send
