@@ -57,6 +57,7 @@ const conn = useConnection();
 const toast = useToast();
 const twitterId = ref("");
 const hasTwitterError = ref(false);
+const isEmailDisposable = ref(false);
 const hasStartedTyping = ref(false);
 const allAssets: Ref<any[]> = ref([]);
 
@@ -406,16 +407,18 @@ const disableSubmit = computed(() => {
     hasTwitterError.value ||
     !isTwitterValid.value ||
     !isEmailValid.value ||
+    isEmailDisposable.value ||
     Number(tokenBalance.value) < Number(userInput.value.amount)
   );
 });
 
-async function handleTwitterUsername() {
+async function handleServerSideFieldValidation() {
   if (
     userInput.value.medium === "twitter" &&
     userInput.value.recipientId &&
     isTwitterValid.value
   ) {
+    isEmailDisposable.value = false;
     const message = {
       username: userInput.value.recipientId.replace("@", ""),
     };
@@ -428,12 +431,24 @@ async function handleTwitterUsername() {
     } catch (error) {
       hasTwitterError.value = true;
     }
+  } else if (
+    userInput.value.medium === "mail" &&
+    userInput.value.recipientId &&
+    isEmailValid.value
+  ) {
+    twitterId.value = "";
+    hasTwitterError.value = false;
+    const message = {
+      email_address: userInput.value.recipientId,
+    };
+    const res = await conn.sendMessage(SOCKET_IDS.CHECK_EMAIL, message);
+    isEmailDisposable.value = res.disposable;
   }
 }
 
 function handleMediumChange(medium) {
   userInput.value.medium = medium;
-  handleTwitterUsername();
+  handleServerSideFieldValidation();
 }
 
 function getTokenModelValue(tokenAddress) {
@@ -478,7 +493,7 @@ function getTokenModelValue(tokenAddress) {
             twitterId = '';
           "
           autocomplete="off"
-          @blur="handleTwitterUsername"
+          @blur="handleServerSideFieldValidation"
           :placeholder="
             userInput.medium === 'twitter'
               ? 'Enter twitter username eg @mytwitterhandle'
@@ -502,6 +517,12 @@ function getTokenModelValue(tokenAddress) {
           v-else-if="hasStartedTyping && !isEmailValid"
         >
           Invalid email
+        </div>
+        <div
+          class="text-[#ff4264] text-[10px]"
+          v-else-if="hasStartedTyping && isEmailDisposable"
+        >
+          Email address is problematic. Please enter a different email address
         </div>
       </div>
       <div class="flex flex-col space-y-1">
