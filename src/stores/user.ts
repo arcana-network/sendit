@@ -29,7 +29,7 @@ const useUserStore = defineStore("user", {
       )) as any;
       this.followedOnTwitter = response.followed_on_twitter;
       this.points = response.points;
-      this.rank = response.global_rank;
+      this.rank = response.weekly_rank;
     },
   },
 });
