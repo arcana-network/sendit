@@ -15,7 +15,7 @@ const rankers = ref([] as any[]);
 let currentPage = 1;
 
 onBeforeMount(() => {
-  if (route.query.duration === "weekly") fetchLeaderboard("weekly");
+  if (route.query.duration === "global") fetchLeaderboard("global");
   else fetchLeaderboard();
 });
 
@@ -27,12 +27,12 @@ const headerHeight = computed(() => {
   return document.querySelector("#header")?.clientHeight as number;
 });
 
-async function fetchLeaderboard(duration: "global" | "weekly" = "global") {
+async function fetchLeaderboard(duration: "global" | "weekly" = "weekly") {
   const message = {
     ltype:
-      duration === "weekly"
-        ? LEADERBOARD_TYPES.WEEKLY
-        : LEADERBOARD_TYPES.GLOBAL,
+      duration === "global"
+        ? LEADERBOARD_TYPES.GLOBAL
+        : LEADERBOARD_TYPES.WEEKLY,
     offset: (currentPage - 1) * 100,
     count: 100,
     limit: 100,
@@ -61,7 +61,7 @@ watch(
   () => route.query.duration,
   async () => {
     currentPage = 1;
-    if (route.query.duration === "weekly") fetchLeaderboard("weekly");
+    if (route.query.duration === "global") fetchLeaderboard("global");
     else fetchLeaderboard();
   }
 );
@@ -88,18 +88,18 @@ const restRankers = computed(() => rankers.value.slice(3));
       <router-link
         class="px-2 py-1 cursor-pointer rounded-[5px]"
         :class="{
-          'bg-[#141414] text-white': route.query.duration !== 'weekly',
+          'bg-[#141414] text-white': route.query.duration !== 'global',
         }"
         :to="{ name: 'Leaderboard', query: {} }"
-        >Overall</router-link
+        >Weekly</router-link
       >
       <router-link
         class="px-2 py-1 cursor-pointer rounded-[5px]"
         :class="{
-          'bg-[#141414] text-white': route.query.duration === 'weekly',
+          'bg-[#141414] text-white': route.query.duration === 'global',
         }"
-        :to="{ name: 'Leaderboard', query: { duration: 'weekly' } }"
-        >Weekly</router-link
+        :to="{ name: 'Leaderboard', query: { duration: 'global' } }"
+        >Overall</router-link
       >
     </div>
     <div
