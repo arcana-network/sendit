@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import useArcanaAuth from "@/use/arcanaAuth";
 import { onMounted } from "vue";
-import { useToast } from "vue-toastification";
-import useLoaderStore from "@/stores/loader";
-import { ref } from "vue";
+// import { useToast } from "vue-toastification";
+// import useLoaderStore from "@/stores/loader";
+// import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { isValidEmail } from "@/utils/validation";
-import { normaliseEmail } from "@/utils/normalise";
+// import { isValidEmail } from "@/utils/validation";
+// import { normaliseEmail } from "@/utils/normalise";
 import useAuthStore from "@/stores/auth";
 
 const auth = useArcanaAuth();
-const toast = useToast();
-const email = ref("");
-const loaderStore = useLoaderStore();
+// const toast = useToast();
+// const email = ref("");
+// const loaderStore = useLoaderStore();
 const router = useRouter();
 const authStore = useAuthStore();
 
@@ -21,25 +21,25 @@ onMounted(async () => {
   authStore.setAuthInitialized(true);
 });
 
-async function handlePasswordlessLogin() {
-  if (!isValidEmail(email.value)) {
-    toast.error("Please enter a valid email address");
-    return;
-  }
-  const normalisedEmail = normaliseEmail(email.value);
-  if (await auth.isLoggedIn()) {
-    toast.error(
-      "You are already signed in through Arcana wallet, please launch the app."
-    );
-    return;
-  }
-  loaderStore.showLoader(
-    `Please click on the verification link sent to ${email.value}`
-  );
-  await auth.getAuthInstance().loginWithLink(normalisedEmail);
-  await router.push({ name: "App", query: { "try-it-out": "1" } });
-  loaderStore.hideLoader();
-}
+// async function handlePasswordlessLogin() {
+//   if (!isValidEmail(email.value)) {
+//     toast.error("Please enter a valid email address");
+//     return;
+//   }
+//   const normalisedEmail = normaliseEmail(email.value);
+//   if (await auth.isLoggedIn()) {
+//     toast.error(
+//       "You are already signed in through Arcana wallet, please launch the app."
+//     );
+//     return;
+//   }
+//   loaderStore.showLoader(
+//     `Please click on the verification link sent to ${email.value}`
+//   );
+//   await auth.getAuthInstance().loginWithLink(normalisedEmail);
+//   await router.push({ name: "App", query: { "try-it-out": "1" } });
+//   loaderStore.hideLoader();
+// }
 </script>
 
 <template>
@@ -58,7 +58,13 @@ async function handlePasswordlessLogin() {
         This is the simplest way to send crypto to anyone even if they don’t
         have a wallet. Don’t believe us? Try it for yourself for free!
       </p>
-      <form
+      <button
+        class="font-[600] text-[14px] uppercase w-[160px] md:w-[240px] flex items-center justify-center h-[40px] bg-white rounded-[5px] md:rounded-[10px] text-[#3b3b3b] max-md:mt-5 md:mt-10"
+        @click.stop="router.push({ name: 'App' })"
+      >
+        Launch App
+      </button>
+      <!-- <form
         class="relative flex gap-2 md:gap-4 md:border md:border-solid md:border-[#8d8d8d] md:bg-[#3b3b3b] md:p-1 md:rounded-[10px] max-md:mt-5 md:mt-10"
         @submit.prevent="handlePasswordlessLogin"
       >
@@ -85,7 +91,7 @@ async function handlePasswordlessLogin() {
             >Sign-up now, get 50XP!</span
           >
         </div>
-      </form>
+      </form> -->
     </div>
     <div class="relative -z-[1]">
       <div
