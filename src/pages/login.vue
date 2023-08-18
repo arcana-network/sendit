@@ -7,12 +7,12 @@ import AppHeader from "@/components/layout/AppHeader.vue";
 import LandingDescription from "@/components/LandingDescription.vue";
 import { socialLogins } from "@/constants/logins";
 import { useToast } from "vue-toastification";
-// import { isValidEmail } from "@/utils/validation";
+import { isValidEmail } from "@/utils/validation";
 import useAuthStore from "@/stores/auth";
 import useUserStore from "@/stores/user";
 import useWalletConnect from "@/use/walletconnect";
 import type { GetAccountResult, PublicClient } from "@wagmi/core";
-// import { normaliseEmail } from "@/utils/normalise";
+import { normaliseEmail } from "@/utils/normalise";
 
 const arcanaAuth = useArcanaAuth();
 const authStore = useAuthStore();
@@ -43,12 +43,12 @@ const socialLoginsFiltered = computed(() => {
   return socialLogins;
 });
 
-// const isValidPasswordlessEmail = computed(() => {
-//   return (
-//     passwordlessEmailId.value.length > 0 &&
-//     isValidEmail(passwordlessEmailId.value)
-//   );
-// });
+const isValidPasswordlessEmail = computed(() => {
+  return (
+    passwordlessEmailId.value.length > 0 &&
+    isValidEmail(passwordlessEmailId.value)
+  );
+});
 
 async function socialLogin(type: string) {
   try {
@@ -64,23 +64,23 @@ async function socialLogin(type: string) {
   }
 }
 
-// async function passwordlessLogin() {
-//   try {
-//     loaderStore.showLoader(
-//       `Click on the verification mail sent to ${passwordlessEmailId.value}...`
-//     );
-//     await arcanaAuth
-//       .getAuthInstance()
-//       .loginWithLink(normaliseEmail(passwordlessEmailId.value));
-//     authStore.provider = arcanaAuth.getProvider();
-//     authStore.isLoggedIn = true;
-//     authStore.loggedInWith = "";
-//   } catch (e: any) {
-//     toast.error(e);
-//   } finally {
-//     loaderStore.hideLoader();
-//   }
-// }
+async function passwordlessLogin() {
+  try {
+    loaderStore.showLoader(
+      `Click on the verification mail sent to ${passwordlessEmailId.value}...`
+    );
+    await arcanaAuth
+      .getAuthInstance()
+      .loginWithLink(normaliseEmail(passwordlessEmailId.value));
+    authStore.provider = arcanaAuth.getProvider();
+    authStore.isLoggedIn = true;
+    authStore.loggedInWith = "";
+  } catch (e: any) {
+    toast.error(e);
+  } finally {
+    loaderStore.hideLoader();
+  }
+}
 
 async function onConnectToWalletConnect() {
   const accountDetails = walletConnect.getAccount();
@@ -184,7 +184,7 @@ async function onLoginWalletConnected(
                 </button>
               </div>
             </section>
-            <!-- <section
+            <section
               v-if="!verifier || verifier === 'passwordless'"
               class="space-y-3 w-full flex flex-col items-start"
             >
@@ -208,7 +208,7 @@ async function onLoginWalletConnected(
                   />
                 </button>
               </form>
-            </section> -->
+            </section>
           </section>
         </section>
       </div>
