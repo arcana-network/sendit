@@ -58,6 +58,12 @@ async function handlePasswordlessLogin() {
         This is the simplest way to send crypto to anyone even if they don’t
         have a wallet. Don’t believe us? Try it for yourself for free!
       </p>
+      <!-- <button
+        class="font-[600] text-[14px] uppercase w-[160px] md:w-[240px] flex items-center justify-center h-[40px] bg-white rounded-[5px] md:rounded-[10px] text-[#3b3b3b] max-md:mt-5 md:mt-10"
+        @click.stop="router.push({ name: 'App' })"
+      >
+        Launch App
+      </button> -->
       <form
         class="relative flex gap-2 md:gap-4 md:border md:border-solid md:border-[#8d8d8d] md:bg-[#3b3b3b] md:p-1 md:rounded-[10px] max-md:mt-5 md:mt-10"
         @submit.prevent="handlePasswordlessLogin"
