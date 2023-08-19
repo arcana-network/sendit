@@ -228,8 +228,8 @@ const isButtonDisabled = computed(() => {
               invites
             </span>
             <span v-else class="text-[10px]"
-              >Enter comma to add email address</span
-            >
+              >Note: Sending invites are no longer rewarded with XP points
+            </span>
           </div>
           <div class="flex justify-end">
             <button
