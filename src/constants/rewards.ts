@@ -1,5 +1,5 @@
 import NavigationIcon from "@/assets/images/icons/navigation.svg";
-import UserAddIcon from "@/assets/images/icons/user-add.svg";
+// import UserAddIcon from "@/assets/images/icons/user-add.svg";
 import UserVoiceIcon from "@/assets/images/icons/user-voice.svg";
 import TwitterGreyBgIcon from "@/assets/images/icons/twitter-grey-bg.svg";
 // import TelegramGreyBgIcon from "@/assets/images/icons/telegram-grey-bg.svg";
