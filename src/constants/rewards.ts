@@ -27,24 +27,31 @@ const EARN_XP_SEND_FORM = [
       "Shout out on Twitter after a SendIt transaction for the first time and earn XP.",
     task: "",
   },
+  // {
+  //   image: UserAddIcon,
+  //   name: "Earn 50 XP",
+  //   description:
+  //     "Invite a friend and earn XP as soon as they log in to their wallet.",
+  //   task: "invite",
+  // },
   {
-    image: UserAddIcon,
-    name: "Earn 50 XP",
-    description:
-      "Invite a friend and earn XP as soon as they log in to their wallet.",
-    task: "invite",
+    image: NavigationIcon,
+    name: "Earn $XAR",
+    description: "Top 500 members on the SendIt weekly leaderboard earns XAR.",
+    task: "Transact",
+    xp: 50,
   },
 ];
 
 const EARN_XP = [
-  {
-    image: UserAddIcon,
-    name: "Earn 50 XP",
-    description:
-      "Invite a friend through email or referral link and earn XP as soon as they log in to their wallet",
-    task: "Invite",
-    xp: 50,
-  },
+  // {
+  //   image: UserAddIcon,
+  //   name: "Earn 50 XP",
+  //   description:
+  //     "Invite a friend through email or referral link and earn XP as soon as they log in to their wallet",
+  //   task: "Invite",
+  //   xp: 50,
+  // },
   // {
   //   image: UserAddIcon,
   //   name: "Earn 500 XP",
