@@ -38,7 +38,7 @@ const EARN_XP_SEND_FORM = [
     image: NavigationIcon,
     name: "Earn $XAR",
     description: "Top 500 members on the SendIt weekly leaderboard earns XAR.",
-    task: "Transact",
+    task: "",
     xp: 50,
   },
 ];
