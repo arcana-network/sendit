@@ -88,7 +88,7 @@ async function getNativeTokenBalances(walletAddress: string) {
       tokenType: "NATIVE",
       tokenSymbol: "MATIC",
       blockchain: "polygon",
-      balance: new Decimal(eth.data.result)
+      balance: new Decimal(polygon.data.result)
         .mul(Decimal.pow(10, -18))
         .toString(),
     },
@@ -96,7 +96,7 @@ async function getNativeTokenBalances(walletAddress: string) {
       tokenType: "NATIVE",
       tokenSymbol: "MATIC",
       blockchain: "polygon_mumbai",
-      balance: new Decimal(eth.data.result)
+      balance: new Decimal(polygon_mumbai.data.result)
         .mul(Decimal.pow(10, -18))
         .toString(),
     },
@@ -104,7 +104,7 @@ async function getNativeTokenBalances(walletAddress: string) {
       tokenType: "NATIVE",
       tokenSymbol: "ETH",
       blockchain: "arbitrum",
-      balance: new Decimal(eth.data.result)
+      balance: new Decimal(arbitrum.data.result)
         .mul(Decimal.pow(10, -18))
         .toString(),
     },
