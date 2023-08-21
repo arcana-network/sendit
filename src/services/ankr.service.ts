@@ -1,4 +1,5 @@
 import axios from "axios";
+import Decimal from "decimal.js";
 
 const URL = import.meta.env.VITE_ANKR_PREMIUM_URL;
 const FETCH_TOKENS_AFTER = import.meta.env.VITE_FETCH_TOKENS_AFTER || "0";
@@ -79,25 +80,33 @@ async function getNativeTokenBalances(walletAddress: string) {
       tokenType: "NATIVE",
       tokenSymbol: "ETH",
       blockchain: "eth",
-      balance: Number(eth.data.result),
+      balance: new Decimal(eth.data.result)
+        .mul(Decimal.pow(10, -18))
+        .toString(),
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "MATIC",
       blockchain: "polygon",
-      balance: Number(polygon.data.result),
+      balance: new Decimal(eth.data.result)
+        .mul(Decimal.pow(10, -18))
+        .toString(),
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "MATIC",
       blockchain: "polygon_mumbai",
-      balance: Number(polygon_mumbai.data.result),
+      balance: new Decimal(eth.data.result)
+        .mul(Decimal.pow(10, -18))
+        .toString(),
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "ETH",
       blockchain: "arbitrum",
-      balance: Number(arbitrum.data.result),
+      balance: new Decimal(eth.data.result)
+        .mul(Decimal.pow(10, -18))
+        .toString(),
     },
   ];
 }
