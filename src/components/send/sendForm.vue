@@ -12,7 +12,10 @@ import sendVia from "@/constants/sendVia";
 import useSendStore from "@/stores/send";
 import useAuthStore from "@/stores/auth";
 import useLoaderStore from "@/stores/loader";
-import { getAccountBalance } from "@/services/ankr.service.ts";
+import {
+  getAccountBalance,
+  getNativeTokenBalances,
+} from "@/services/ankr.service.ts";
 import useArcanaAuth from "@/use/arcanaAuth";
 import {
   nativeTokenTransfer,
@@ -123,7 +126,19 @@ async function fetchAssets() {
         };
       });
     } else {
-      allAssets.value = [];
+      const nativeData = await getNativeTokenBalances(walletAddress);
+      if (nativeData?.length) {
+        allAssets.value = nativeData?.map((asset) => {
+          const address = "NATIVE";
+          return {
+            ...asset,
+            contractAddress: address,
+            name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
+          };
+        });
+      } else {
+        allAssets.value = [];
+      }
     }
   } catch (error) {
     console.error(error);
