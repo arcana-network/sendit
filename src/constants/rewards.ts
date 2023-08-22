@@ -1,5 +1,5 @@
 import NavigationIcon from "@/assets/images/icons/navigation.svg";
-// import UserAddIcon from "@/assets/images/icons/user-add.svg";
+import UserAddIcon from "@/assets/images/icons/user-add.svg";
 import UserVoiceIcon from "@/assets/images/icons/user-voice.svg";
 import TwitterGreyBgIcon from "@/assets/images/icons/twitter-grey-bg.svg";
 // import TelegramGreyBgIcon from "@/assets/images/icons/telegram-grey-bg.svg";
@@ -27,39 +27,31 @@ const EARN_XP_SEND_FORM = [
       "Shout out on Twitter after a SendIt transaction for the first time and earn XP.",
     task: "",
   },
-  // {
-  //   image: UserAddIcon,
-  //   name: "Earn 50 XP",
-  //   description:
-  //     "Invite a friend and earn XP as soon as they log in to their wallet.",
-  //   task: "invite",
-  // },
   {
-    image: NavigationIcon,
-    name: "Earn $XAR",
-    description: "Top 500 members on the SendIt weekly leaderboard earns XAR.",
-    task: "",
-    xp: 50,
+    image: UserAddIcon,
+    name: "Earn 10% XP",
+    description:
+      "Invite/refer a user and earn 10% XP of all XP they earn from performing transactions.",
+    task: "invite",
   },
+  // {
+  //   image: NavigationIcon,
+  //   name: "Earn $XAR",
+  //   description: "Top 500 members on the SendIt weekly leaderboard earns XAR.",
+  //   task: "",
+  //   xp: 50,
+  // },
 ];
 
 const EARN_XP = [
-  // {
-  //   image: UserAddIcon,
-  //   name: "Earn 50 XP",
-  //   description:
-  //     "Invite a friend through email or referral link and earn XP as soon as they log in to their wallet",
-  //   task: "Invite",
-  //   xp: 50,
-  // },
-  // {
-  //   image: UserAddIcon,
-  //   name: "Earn 500 XP",
-  //   description:
-  //     "Invite 10 friends and earn XP once all of them log in to their wallet.",
-  //   task: "Invite",
-  //   xp: 500,
-  // },
+  {
+    image: UserAddIcon,
+    name: "Earn 10% XP",
+    description:
+      "Invite/refer a user and earn 10% XP of all XP they earn from performing transactions.",
+    task: "Invite",
+    xp: 50,
+  },
   {
     image: NavigationIcon,
     name: "Earn 100 XP",
@@ -84,22 +76,6 @@ const EARN_XP = [
     task: "Transact",
     xp: 20,
   },
-  // {
-  //   image: UserAddIcon,
-  //   name: "Earn 5000 XP",
-  //   description:
-  //     "First 100 people to reach 25 claimed invites (invitee should have logged in) earn XP.",
-  //   task: "Invite",
-  //   xp: 5000,
-  // },
-  // {
-  //   image: UserAddIcon,
-  //   name: "Earn 10000 XP",
-  //   description:
-  //     "First 100 people to reach 50 claimed invites (invitee should have logged in) earn XP.",
-  //   task: "Invite",
-  //   xp: 10000,
-  // },
   {
     image: NavigationIcon,
     name: "Earn 500 XP",
@@ -109,46 +85,10 @@ const EARN_XP = [
   },
   // {
   //   image: NavigationIcon,
-  //   name: "Earn 100 XP",
-  //   description: "Complete 10 transactions on SendIt and earn XP.",
-  //   task: "Transact",
-  //   xp: 100,
-  // },
-  // {
-  //   image: NavigationIcon,
-  //   name: "Earn 250 XP",
-  //   description: "Complete 25 transactions on SendIt and earn XP.",
-  //   task: "Transact",
-  //   xp: 250,
-  // },
-  // {
-  //   image: NavigationIcon,
-  //   name: "Earn 250 XP",
-  //   description:
-  //     "Every 100th transaction performed through SendIt in a day earns XP.",
-  //   task: "Transact",
-  //   xp: 250,
-  // },
-  {
-    image: NavigationIcon,
-    name: "Earn $XAR",
-    description: "Top 500 members on the SendIt weekly leaderboard earns XAR.",
-    task: "Transact",
-    xp: 50,
-  },
-  // {
-  //   image: NavigationIcon,
   //   name: "Earn $XAR",
-  //   description: "Top 1000 members on the SendIt weekly leaderboard earns XP.",
+  //   description: "Top 500 members on the SendIt weekly leaderboard earns XAR.",
   //   task: "Transact",
-  //   xp: 30,
-  // },
-  // {
-  //   image: NavigationIcon,
-  //   name: "Earn $XAR",
-  //   description: "Top 3000 members on the SendIt weekly leaderboard earns XP.",
-  //   task: "Transact",
-  //   xp: 20,
+  //   xp: 50,
   // },
   {
     image: NavigationIcon,
@@ -160,15 +100,9 @@ const EARN_XP = [
   },
   {
     image: UserVoiceIcon,
-    name: "Earn 5 XP",
-    description: "Shout out on Twitter after a SendIt transaction & earn XP.",
-    task: "History",
-    xp: 5,
-  },
-  {
-    image: UserVoiceIcon,
-    name: "Earn 5 XP",
-    description: "Shoutout a SendIt receive transaction on twitter & earn XP.",
+    name: "Earn 2 XP",
+    description:
+      "Shout out on Twitter after a send/receive transaction & earn XP.",
     task: "History",
     xp: 5,
   },
