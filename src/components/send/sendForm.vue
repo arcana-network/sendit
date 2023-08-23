@@ -367,6 +367,9 @@ watch(
       const chainId = await authStore.provider.request({
         method: "eth_chainId",
       });
+      if (selectedChainId !== oldChain) {
+        userInput.value.token = "";
+      }
       if (Number(chainId) !== Number(selectedChainId)) {
         try {
           loadStore.showLoader(
@@ -376,7 +379,6 @@ watch(
             } chain. Please approve the transaction on your wallet to switch the chain.`
           );
           await switchChain(selectedChainId as string);
-          userInput.value.token = "";
         } catch (e) {
           console.error({ e });
           userInput.value.chain = oldChain;
