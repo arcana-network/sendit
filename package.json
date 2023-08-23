@@ -24,6 +24,7 @@
     "msgpackr": "^1.9.5",
     "pinia": "^2.1.4",
     "punycode": "^2.3.0",
+    "recaptcha-v3": "^1.10.0",
     "viem": "^1.2.14",
     "vue": "^3.2.47",
     "vue-router": "^4.2.2",

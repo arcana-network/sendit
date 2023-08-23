@@ -7,6 +7,7 @@ import { BrowserProvider, getBytes, randomBytes, hashMessage } from "ethers";
 import type { Eip1193Provider, JsonRpcSigner } from "ethers";
 import { pack as msgpack, unpack as msgunpack } from "msgpackr";
 import { Mutex } from "async-mutex";
+import { load } from "recaptcha-v3";
 
 enum ConnectionState {
   NOT_CONNECTED,
@@ -102,10 +103,17 @@ class Connection {
   }
 
   public async onOpen() {
+    const recaptcha = await load(import.meta.env.VITE_RECAPTCHA_SITE_KEY, {
+      useRecaptchaNet: true,
+      autoHideBadge: true,
+    });
+    const token = await recaptcha.execute("login");
+    console.log({ token });
     this.socket.send(
       msgpack({
         addr: getBytes(await this.signer.getAddress()),
         ...this.account,
+        token,
       })
     );
   }
