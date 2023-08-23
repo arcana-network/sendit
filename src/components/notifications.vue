@@ -62,7 +62,7 @@ function getTweetMessage() {
               />
               <span
                 class="text-cornflower-blue w-full text-xs font-light bg-feep-koamaru p-1 rounded-md"
-                >Earn 40 XP</span
+                >Earn 5 XP</span
               >
             </button>
           </div>

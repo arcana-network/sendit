@@ -44,6 +44,15 @@ const EARN_XP_SEND_FORM = [
 
 const EARN_XP = [
   {
+    image: TwitterGreyBgIcon,
+    name: "Follow Arcana on Twitter",
+    description: "Earn 20XP by following Arcana Network on Twitter.",
+    task: "Follow",
+    xp: 20,
+    url: "https://twitter.com/ArcanaNetwork",
+    medium: "twitter",
+  },
+  {
     image: NavigationIcon,
     name: "SendIT to a new user on Mainnet",
     description: "Earn 50XP by sending to a new user.",
@@ -85,15 +94,6 @@ const EARN_XP = [
     task: "Shoutout",
     xp: 5,
     dailyLimit: 50,
-  },
-  {
-    image: TwitterGreyBgIcon,
-    name: "Follow Arcana on Twitter",
-    description: "Earn 20XP by following Arcana Network on Twitter.",
-    task: "Follow",
-    xp: 20,
-    url: "https://twitter.com/ArcanaNetwork",
-    medium: "twitter",
   },
 ];
 
