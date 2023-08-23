@@ -1,8 +1,7 @@
 import NavigationIcon from "@/assets/images/icons/navigation.svg";
 import UserAddIcon from "@/assets/images/icons/user-add.svg";
 import UserVoiceIcon from "@/assets/images/icons/user-voice.svg";
-import TwitterGreyBgIcon from "@/assets/images/icons/twitter-grey-bg.svg";
-// import TelegramGreyBgIcon from "@/assets/images/icons/telegram-grey-bg.svg";
+import TwitterGreyBgIcon from "@/assets/images/icons/twitter-white.svg";
 
 const EARN_XP_SEND_FORM = [
   {
@@ -45,85 +44,57 @@ const EARN_XP_SEND_FORM = [
 
 const EARN_XP = [
   {
-    image: UserAddIcon,
-    name: "Earn 10% XP",
-    description:
-      "Invite/refer a user and earn 10% XP of all XP they earn from performing transactions.",
-    task: "Invite",
-    xp: 50,
-  },
-  {
     image: NavigationIcon,
-    name: "Earn 100 XP",
-    description:
-      "Earn 100 XP for performing a txn to a new user on mainnet. 10 XP immediately on sending and 90 XP when the recipient logs in to SendIt.",
+    name: "SendIT to a new user on Mainnet",
+    description: "Earn 50XP by sending to a new user.",
     task: "Transact",
-    xp: 100,
+    xp: 50,
+    dailyLimit: 500,
+    bonus: "Get 10% of all XP earned by the new user.",
   },
   {
     image: NavigationIcon,
-    name: "Earn 10 XP",
-    description:
-      "Earn 10 XP for performing a txn to an existing user on mainnet.",
+    name: "SendIT to an existing user on Mainnet",
+    description: "Earn 50XP by sending to an existing user.",
+    task: "Transact",
+    xp: 50,
+    dailyLimit: 500,
+  },
+  {
+    image: NavigationIcon,
+    name: "SendIT to a new user on Testnet",
+    description: "Earn 10XP by sending to a new user.",
     task: "Transact",
     xp: 10,
+    dailyLimit: 100,
+    bonus: "Get 10% of all XP earned by the new user.",
   },
   {
     image: NavigationIcon,
-    name: "Earn 20 XP",
-    description:
-      "Earn 20 XP for performing a txn to a new user on testnet. 2 XP immediately on sending and 18 XP when the recipient logs in to SendIt.",
+    name: "SendIT to an existing user on Testnet",
+    description: "Earn 10XP by sending to an existing user.",
     task: "Transact",
-    xp: 20,
-  },
-  {
-    image: NavigationIcon,
-    name: "Earn 500 XP",
-    description: "Send crypto for the first time and earn XP.",
-    task: "Transact",
-    xp: 500,
-  },
-  // {
-  //   image: NavigationIcon,
-  //   name: "Earn $XAR",
-  //   description: "Top 500 members on the SendIt weekly leaderboard earns XAR.",
-  //   task: "Transact",
-  //   xp: 50,
-  // },
-  {
-    image: NavigationIcon,
-    name: "Earn 2 XP",
-    description:
-      "Earn 2 XP for performing a txn to an existing user on testnet.",
-    task: "Transact",
-    xp: 2,
-  },
-  {
-    image: UserVoiceIcon,
-    name: "Earn 2 XP",
-    description:
-      "Shout out on Twitter after a send/receive transaction & earn XP.",
-    task: "History",
-    xp: 5,
+    xp: 10,
+    dailyLimit: 100,
   },
   {
     image: TwitterGreyBgIcon,
-    name: "Earn 20 XP",
-    description: "Earn 20 XP for following us on Twitter.",
+    name: "Shoutout on Twitter",
+    description:
+      "Earn 5XP by doing a shoutout on Twitter after every transaction.",
+    task: "Shoutout",
+    xp: 5,
+    dailyLimit: 50,
+  },
+  {
+    image: TwitterGreyBgIcon,
+    name: "Follow Arcana on Twitter",
+    description: "Earn 20XP by following Arcana Network on Twitter.",
     task: "Follow",
-    url: "https://twitter.com/ArcanaNetwork",
     xp: 20,
+    url: "https://twitter.com/ArcanaNetwork",
     medium: "twitter",
   },
-  // {
-  //   image: TelegramGreyBgIcon,
-  //   name: "Earn 20 XP",
-  //   description: "Earn 20 XP for following us on Telegram.",
-  //   task: "Follow",
-  //   url: "https://t.me/ArcanaNetwork",
-  //   xp: 20,
-  //   medium: "telegram",
-  // },
 ];
 
 const REDEEM_XP = [
