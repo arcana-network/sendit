@@ -5,7 +5,7 @@ import useSendStore from "@/stores/send";
 import SendSuccess from "@/components/send/success.vue";
 import TweetVerify from "@/components/TweetVerify.vue";
 import { composeAndSendTweet } from "@/utils/tweet";
-import { EARN_XP_SEND_FORM } from "@/constants/rewards";
+import { EARN_XP } from "@/constants/rewards";
 import RewardsCard from "@/components/rewards-card.vue";
 import AppInvite from "@/components/AppInvite.vue";
 import useUserStore from "@/stores/user";
@@ -85,7 +85,7 @@ function OpenVerifyFollow() {
 
 onBeforeMount(async () => {
   await userStore.fetchUserPointsAndRank();
-  rewardCards.value = EARN_XP_SEND_FORM.filter((item) =>
+  rewardCards.value = EARN_XP.filter((item) =>
     userStore.followedOnTwitter ? item.medium !== "twitter" : true
   );
 });
@@ -121,8 +121,7 @@ onBeforeMount(async () => {
     <SendForm @transaction-successful="handleTxSuccess" />
   </div>
   <div
-    class="grid gap-3 p-2 max-[1350px]:grid-cols-2 max-[1350px]:mt-10 max-[720px]:grid-cols-1 m-auto"
-    :class="[rewardCards.length === 3 ? 'grid-cols-3' : 'grid-cols-4']"
+    class="flex gap-3 p-2 mb-5 pb-3 m-auto w-full max-w-[1280px] overflow-x-scroll"
   >
     <RewardsCard
       v-for="item in rewardCards"

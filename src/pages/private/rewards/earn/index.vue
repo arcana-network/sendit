@@ -38,7 +38,7 @@ function handleAction(reward) {
     window.open(reward.url, "_blank");
     showTwitterFollowPopup.value.show = true;
     showTwitterFollowPopup.value.type = reward.medium;
-  } else if (reward.task === "Trxn History") {
+  } else if (reward.task === "Shoutout") {
     router.push({ name: "History" });
   }
 }
@@ -67,6 +67,12 @@ function handleAction(reward) {
             <span class="text-sm text-philippine-gray">{{
               reward.description
             }}</span>
+            <span v-if="reward.dailyLimit" class="text-sm text-philippine-gray"
+              ><strong>Daily Limit:</strong> {{ reward.dailyLimit }}XP</span
+            >
+            <span v-if="reward.bonus" class="text-sm text-philippine-gray mt-4"
+              ><strong>Bonus:</strong> {{ reward.bonus }}</span
+            >
           </div>
           <div class="flex items-center justify-center">
             <button

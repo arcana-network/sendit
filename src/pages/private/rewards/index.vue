@@ -10,8 +10,7 @@ const route = useRoute();
       <span class="text-3.5xl">Rewards</span>
       <span class="text-sm text-philippine-gray max-w-[720px]"
         >Find all your rewards below. Earn more XP to increase your leaderboard
-        rank. Values of XP shown are for mainnet transactions only. Testnet
-        transactions are worth 1/5 XP of mainnet transactions.</span
+        rank. Testnet transactions are worth ⅕ XP of mainnet transactions.</span
       >
     </div>
     <div
