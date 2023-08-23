@@ -1,5 +1,5 @@
 import NavigationIcon from "@/assets/images/icons/navigation.svg";
-import UserAddIcon from "@/assets/images/icons/user-add.svg";
+// import UserAddIcon from "@/assets/images/icons/user-add.svg";
 import UserVoiceIcon from "@/assets/images/icons/user-voice.svg";
 import TwitterGreyBgIcon from "@/assets/images/icons/twitter-grey-bg.svg";
 // import TelegramGreyBgIcon from "@/assets/images/icons/telegram-grey-bg.svg";
@@ -27,24 +27,31 @@ const EARN_XP_SEND_FORM = [
       "Shout out on Twitter after a SendIt transaction for the first time and earn XP.",
     task: "",
   },
+  // {
+  //   image: UserAddIcon,
+  //   name: "Earn 50 XP",
+  //   description:
+  //     "Invite a friend and earn XP as soon as they log in to their wallet.",
+  //   task: "invite",
+  // },
   {
-    image: UserAddIcon,
-    name: "Earn 50 XP",
-    description:
-      "Invite a friend and earn XP as soon as they log in to their wallet.",
-    task: "invite",
+    image: NavigationIcon,
+    name: "Earn $XAR",
+    description: "Top 500 members on the SendIt weekly leaderboard earns XAR.",
+    task: "",
+    xp: 50,
   },
 ];
 
 const EARN_XP = [
-  {
-    image: UserAddIcon,
-    name: "Earn 50 XP",
-    description:
-      "Invite a friend through email or referral link and earn XP as soon as they log in to their wallet",
-    task: "Invite",
-    xp: 50,
-  },
+  // {
+  //   image: UserAddIcon,
+  //   name: "Earn 50 XP",
+  //   description:
+  //     "Invite a friend through email or referral link and earn XP as soon as they log in to their wallet",
+  //   task: "Invite",
+  //   xp: 50,
+  // },
   // {
   //   image: UserAddIcon,
   //   name: "Earn 500 XP",

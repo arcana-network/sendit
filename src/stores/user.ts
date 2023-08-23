@@ -27,9 +27,10 @@ const useUserStore = defineStore("user", {
         SOCKET_IDS.GET_PROFILE,
         null
       )) as any;
+      console.log(response);
       this.followedOnTwitter = response.followed_on_twitter;
       this.points = response.points;
-      this.rank = response.global_rank;
+      this.rank = response.weekly_rank || response.global_rank;
     },
   },
 });
