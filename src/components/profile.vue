@@ -29,16 +29,16 @@ async function handleCopy() {
   toast.success("Wallet address copied");
 }
 
-function getCurrentLocationUrl() {
-  return window.location.origin;
-}
+// function getCurrentLocationUrl() {
+//   return window.location.origin;
+// }
 
-async function handleCopyRef() {
-  await copyToClipboard(
-    `${getCurrentLocationUrl()}/app/?r=${userInfo.value.address}`
-  );
-  toast.success("Referral Link copied");
-}
+// async function handleCopyRef() {
+//   await copyToClipboard(
+//     `${getCurrentLocationUrl()}/app/?r=${userInfo.value.address}`
+//   );
+//   toast.success("Referral Link copied");
+// }
 
 function logout() {
   if (authStore.loggedInWith === "walletconnect") {
@@ -81,7 +81,7 @@ function logout() {
           </button>
         </div>
       </div>
-      <div class="flex flex-col justify-start">
+      <!-- <div class="flex flex-col justify-start">
         <span class="text-philippine-gray text-xs text-left"
           >Referral Link</span
         >
@@ -94,6 +94,24 @@ function logout() {
           <button @click.stop="handleCopyRef">
             <img src="@/assets/images/icons/copy.svg" alt="copy" />
           </button>
+          <button @click.stop="emit('invite')">
+            <img
+              src="@/assets/images/icons/user-add.svg"
+              class="h-[24px] w-[24px]"
+              alt="Invite"
+            />
+          </button>
+        </div>
+      </div> -->
+      <div class="flex flex-col justify-start">
+        <span class="text-philippine-gray text-xs text-left">Invite</span>
+        <div class="flex space-x-2 items-center">
+          <span class="text-sm text-left" @click.stop="emit('invite')"
+            >Invite friends</span
+          >
+          <!-- <button @click.stop="handleCopyRef">
+            <img src="@/assets/images/icons/copy.svg" alt="copy" />
+          </button> -->
           <button @click.stop="emit('invite')">
             <img
               src="@/assets/images/icons/user-add.svg"
