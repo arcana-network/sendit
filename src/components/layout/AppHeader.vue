@@ -4,7 +4,7 @@ import { computed, ref, defineAsyncComponent } from "vue";
 import navMenu from "@/constants/navMenu.ts";
 import { useClickOutside } from "@/use/clickOutside";
 import useUserStore from "@/stores/user";
-import useRewardsStore from "@/stores/rewards";
+// import useRewardsStore from "@/stores/rewards";
 import useNotificationStore from "@/stores/notification";
 import AppInvite from "@/components/AppInvite.vue";
 
@@ -24,7 +24,7 @@ type HeaderProps = {
 const props = defineProps<HeaderProps>();
 
 const userStore = useUserStore();
-const rewardsStore = useRewardsStore();
+// const rewardsStore = useRewardsStore();
 const notificationStore = useNotificationStore();
 
 const showMobileMenu = ref(false);
@@ -84,9 +84,13 @@ const stats = computed(() => {
       value: userStore.points,
     },
     {
-      label: "My Rewards",
-      value: rewardsStore.rewards.length,
+      label: "Referral XP",
+      value: userStore.xpBreakdown?.referreePoints || 0,
     },
+    // {
+    //   label: "My Rewards",
+    //   value: rewardsStore.rewards.length,
+    // },
   ];
 });
 </script>
