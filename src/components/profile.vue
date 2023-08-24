@@ -12,7 +12,7 @@ import useSendStore from "@/stores/send";
 import useRewardsStore from "@/stores/rewards";
 import useNotificationStore from "@/stores/notification";
 
-const emit = defineEmits(["invite"]);
+// const emit = defineEmits(["invite"]);
 const authStore = useAuthStore();
 const { userInfo }: { userInfo: any } = toRefs(authStore);
 const arcanaAuth = useArcanaAuth();
