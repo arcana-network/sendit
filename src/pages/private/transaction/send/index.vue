@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import "vue3-carousel/dist/carousel.css";
 import { ref, onBeforeMount } from "vue";
 import SendForm from "@/components/send/sendForm.vue";
 import useSendStore from "@/stores/send";
@@ -12,6 +13,7 @@ import useUserStore from "@/stores/user";
 import generateSenditUrl from "@/utils/generateSenditUrl";
 import { normaliseTwitterHandle } from "@/utils/normalise";
 import TwitterFollowVerify from "@/components/TwitterFollowVerify.vue";
+import { Carousel, Slide, Navigation } from "vue3-carousel";
 
 const sendStore = useSendStore();
 const showSuccessMessage = ref(false);
@@ -33,7 +35,7 @@ const verifier = ref("");
 const amount = ref("");
 const token = ref("");
 const chain = ref("");
-const rewardCards = ref([] as any[]);
+const rewardCards = ref([] as typeof EARN_XP);
 
 function handleTxSuccess(data) {
   showSuccessMessage.value = true;
@@ -120,14 +122,35 @@ onBeforeMount(async () => {
   >
     <SendForm @transaction-successful="handleTxSuccess" />
   </div>
-  <div
+  <!-- <div
     class="flex gap-3 p-2 mb-5 pb-3 m-auto w-full max-w-[1280px] overflow-x-scroll"
+  > -->
+  <Carousel
+    wrap-around
+    pause-autoplay-on-hover
+    :autoplay="3000"
+    :transition="500"
+    class="w-full max-w-[600px] m-auto mb-5"
   >
-    <RewardsCard
-      v-for="item in rewardCards"
-      :reward="item"
-      @invite="showInvitePopup = true"
-      @verify-follow="OpenVerifyFollow"
-    />
-  </div>
+    <Slide v-for="item in rewardCards" :key="item.name">
+      <RewardsCard
+        class="carousel__item"
+        :reward="item"
+        @invite="showInvitePopup = true"
+        @verify-follow="OpenVerifyFollow"
+      />
+    </Slide>
+    <template #addons>
+      <Navigation />
+      <!-- <Pagination /> -->
+    </template>
+  </Carousel>
+  <!-- </div> -->
 </template>
+
+<style>
+.carousel__next,
+.carousel__prev {
+  color: #f7f7f7 !important;
+}
+</style>

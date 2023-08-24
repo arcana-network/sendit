@@ -80,7 +80,7 @@ const stats = computed(() => {
       value: userStore.rank,
     },
     {
-      label: "My XP",
+      label: "Total XP",
       value: userStore.points,
     },
     {
