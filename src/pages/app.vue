@@ -21,7 +21,7 @@ import {
   SocketConnectionAccount,
 } from "@/stores/connection.ts";
 import AirdropSuccess from "@/components/AirdropSuccess.vue";
-import { getBytes } from "ethers";
+// import { getBytes } from "ethers";
 
 const AppMaintenance = defineAsyncComponent(
   () => import("@/pages/maintenance.vue")
@@ -158,15 +158,15 @@ watch(
         delete query["try-it-out"];
         router.replace({ name: "Send", query });
       }
-      if (route.query.r) {
-        try {
-          await conn.connection.sendMessage(SOCKET_IDS.VERIFY_REFERRER, {
-            referrer: Buffer.from(getBytes(route.query.r as string)),
-          });
-        } catch (error) {
-          console.log(error);
-        }
-      }
+      // if (route.query.r) {
+      //   try {
+      //     await conn.connection.sendMessage(SOCKET_IDS.VERIFY_REFERRER, {
+      //       referrer: Buffer.from(getBytes(route.query.r as string)),
+      //     });
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
+      // }
       if (route.query.id && route.query.id !== "-1") {
         try {
           await conn.connection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
