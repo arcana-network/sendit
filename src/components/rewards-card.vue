@@ -27,7 +27,7 @@ function onClick(reward) {
 
 <template>
   <button
-    class="flex min-w-[360px] max-w-[360px] w-[360px] rounded-[10px] overflow-hidden border border-jet pr-5 bg-[#0e0e0e]"
+    class="flex h-full max-w-[500px] w-[80%] rounded-[10px] overflow-hidden border border-jet pr-5 bg-[#0e0e0e]"
     :class="{ 'cursor-pointer': reward.task }"
     @click.stop="onClick(reward)"
   >
@@ -36,7 +36,9 @@ function onClick(reward) {
     >
       <img :src="reward.image" :alt="reward.name" class="w-8 h-8" />
     </div>
-    <div class="flex justify-between gap-5 flex-grow w-full items-center">
+    <div
+      class="flex justify-between gap-5 flex-grow w-full h-full items-center"
+    >
       <div class="flex flex-col text-start px-4 py-5">
         <span class="text-base font-bold text-[#d8d8d8]">{{
           reward.name
@@ -44,10 +46,10 @@ function onClick(reward) {
         <span class="text-sm text-philippine-gray">{{
           reward.description
         }}</span>
-        <span v-if="reward.dailyLimit" class="text-sm text-philippine-gray"
+        <!-- <span v-if="reward.dailyLimit" class="text-sm text-philippine-gray"
           ><strong>Daily Limit:</strong> {{ reward.dailyLimit }}XP</span
-        >
-        <span v-if="reward.bonus" class="text-sm text-philippine-gray mt-4"
+        > -->
+        <span v-if="reward.bonus" class="text-sm text-philippine-gray mt-2"
           ><strong>Bonus:</strong> {{ reward.bonus }}</span
         >
       </div>

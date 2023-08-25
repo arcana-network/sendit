@@ -52,11 +52,11 @@ const routes: RouteRecordRaw[] = [
             name: "Rewards",
             path: "rewards",
             component: () => import("@/pages/private/rewards/index.vue"),
-            redirect: { name: "My Rewards" },
+            redirect: { name: "Earn XP" },
             children: [
               {
                 name: "My Rewards",
-                path: "",
+                path: "owned",
                 component: () =>
                   import("@/pages/private/rewards/my-rewards/index.vue"),
               },

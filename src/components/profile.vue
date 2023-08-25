@@ -12,7 +12,7 @@ import useSendStore from "@/stores/send";
 import useRewardsStore from "@/stores/rewards";
 import useNotificationStore from "@/stores/notification";
 
-const emit = defineEmits(["invite"]);
+// const emit = defineEmits(["invite"]);
 const authStore = useAuthStore();
 const { userInfo }: { userInfo: any } = toRefs(authStore);
 const arcanaAuth = useArcanaAuth();
@@ -103,24 +103,6 @@ function logout() {
           </button>
         </div>
       </div> -->
-      <div class="flex flex-col justify-start">
-        <span class="text-philippine-gray text-xs text-left">Invite</span>
-        <div class="flex space-x-2 items-center">
-          <span class="text-sm text-left" @click.stop="emit('invite')"
-            >Invite friends</span
-          >
-          <!-- <button @click.stop="handleCopyRef">
-            <img src="@/assets/images/icons/copy.svg" alt="copy" />
-          </button> -->
-          <button @click.stop="emit('invite')">
-            <img
-              src="@/assets/images/icons/user-add.svg"
-              class="h-[24px] w-[24px]"
-              alt="Invite"
-            />
-          </button>
-        </div>
-      </div>
       <div class="w-full" @click="logout">
         <button class="btn btn-submit-secondary text-sm w-full">Logout</button>
       </div>

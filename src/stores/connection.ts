@@ -23,6 +23,7 @@ type Account = {
   verifier: string;
   verifier_id: string;
   referrer?: Buffer;
+  invite_id?: number;
 };
 
 export class SocketError extends Error {
