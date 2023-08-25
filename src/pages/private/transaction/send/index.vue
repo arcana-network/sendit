@@ -130,7 +130,7 @@ onBeforeMount(async () => {
     pause-autoplay-on-hover
     :autoplay="3000"
     :transition="500"
-    class="w-full max-w-[600px] m-auto mb-5"
+    class="w-full max-w-[600px] m-auto mb-3"
   >
     <Slide v-for="item in rewardCards" :key="item.name">
       <RewardsCard
@@ -145,6 +145,10 @@ onBeforeMount(async () => {
       <!-- <Pagination /> -->
     </template>
   </Carousel>
+  <span class="text-xs max-w-[720px] mb-5 px-4 mx-auto"
+    >* Note: Gain Send XP for upto 50 transactions per day. No limit on 10%
+    bonus XP.</span
+  >
   <!-- </div> -->
 </template>
 
