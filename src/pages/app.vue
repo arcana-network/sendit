@@ -21,7 +21,7 @@ import {
   SocketConnectionAccount,
 } from "@/stores/connection.ts";
 import AirdropSuccess from "@/components/AirdropSuccess.vue";
-import { getBytes } from "ethers";
+// import { getBytes } from "ethers";
 
 const AppMaintenance = defineAsyncComponent(
   () => import("@/pages/maintenance.vue")
@@ -80,7 +80,11 @@ async function initSocketConnect() {
   const account: SocketConnectionAccount = {
     verifier: authStore.userInfo.loginType,
     verifier_id: authStore.userInfo.id,
+    invite_id: 0,
   };
+  if (route.query.id && route.query.id !== "-1") {
+    account.invite_id = Number(route.query.id);
+  }
   await conn.initialize(
     // @ts-ignore
     authStore.provider,
@@ -157,24 +161,6 @@ watch(
         const query = { ...route.query };
         delete query["try-it-out"];
         router.replace({ name: "Send", query });
-      }
-      if (route.query.r) {
-        try {
-          await conn.connection.sendMessage(SOCKET_IDS.VERIFY_REFERRER, {
-            referrer: Buffer.from(getBytes(route.query.r as string)),
-          });
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      if (route.query.id && route.query.id !== "-1") {
-        try {
-          await conn.connection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
-            id: Number(route.query.id),
-          });
-        } catch (error) {
-          console.log(error);
-        }
       }
       await sendStore.fetchSupportedChains();
       rewardsStore.fetchRewards(userStore.address);

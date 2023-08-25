@@ -227,9 +227,9 @@ const isButtonDisabled = computed(() => {
               Email addresses highlighted are problematic and won’t be sent
               invites
             </span>
-            <span v-else class="text-[10px]"
+            <!-- <span v-else class="text-[10px]"
               >Note: Sending invites are no longer rewarded with XP points
-            </span>
+            </span> -->
           </div>
           <div class="flex justify-end">
             <button

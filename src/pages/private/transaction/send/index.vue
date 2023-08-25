@@ -1,17 +1,19 @@
 <script setup lang="ts">
+import "vue3-carousel/dist/carousel.css";
 import { ref, onBeforeMount } from "vue";
 import SendForm from "@/components/send/sendForm.vue";
 import useSendStore from "@/stores/send";
 import SendSuccess from "@/components/send/success.vue";
 import TweetVerify from "@/components/TweetVerify.vue";
 import { composeAndSendTweet } from "@/utils/tweet";
-import { EARN_XP_SEND_FORM } from "@/constants/rewards";
+import { EARN_XP } from "@/constants/rewards";
 import RewardsCard from "@/components/rewards-card.vue";
 import AppInvite from "@/components/AppInvite.vue";
 import useUserStore from "@/stores/user";
 import generateSenditUrl from "@/utils/generateSenditUrl";
 import { normaliseTwitterHandle } from "@/utils/normalise";
 import TwitterFollowVerify from "@/components/TwitterFollowVerify.vue";
+import { Carousel, Slide, Navigation } from "vue3-carousel";
 
 const sendStore = useSendStore();
 const showSuccessMessage = ref(false);
@@ -33,7 +35,7 @@ const verifier = ref("");
 const amount = ref("");
 const token = ref("");
 const chain = ref("");
-const rewardCards = ref([] as any[]);
+const rewardCards = ref([] as typeof EARN_XP);
 
 function handleTxSuccess(data) {
   showSuccessMessage.value = true;
@@ -85,7 +87,7 @@ function OpenVerifyFollow() {
 
 onBeforeMount(async () => {
   await userStore.fetchUserPointsAndRank();
-  rewardCards.value = EARN_XP_SEND_FORM.filter((item) =>
+  rewardCards.value = EARN_XP.filter((item) =>
     userStore.followedOnTwitter ? item.medium !== "twitter" : true
   );
 });
@@ -120,15 +122,39 @@ onBeforeMount(async () => {
   >
     <SendForm @transaction-successful="handleTxSuccess" />
   </div>
-  <div
-    class="grid gap-3 p-2 max-[1350px]:grid-cols-2 max-[1350px]:mt-10 max-[720px]:grid-cols-1 m-auto"
-    :class="[rewardCards.length === 3 ? 'grid-cols-3' : 'grid-cols-4']"
+  <!-- <div
+    class="flex gap-3 p-2 mb-5 pb-3 m-auto w-full max-w-[1280px] overflow-x-scroll"
+  > -->
+  <Carousel
+    wrap-around
+    pause-autoplay-on-hover
+    :autoplay="3000"
+    :transition="500"
+    class="w-full max-w-[600px] m-auto mb-3"
   >
-    <RewardsCard
-      v-for="item in rewardCards"
-      :reward="item"
-      @invite="showInvitePopup = true"
-      @verify-follow="OpenVerifyFollow"
-    />
-  </div>
+    <Slide v-for="item in rewardCards" :key="item.name">
+      <RewardsCard
+        class="carousel__item"
+        :reward="item"
+        @invite="showInvitePopup = true"
+        @verify-follow="OpenVerifyFollow"
+      />
+    </Slide>
+    <template #addons>
+      <Navigation />
+      <!-- <Pagination /> -->
+    </template>
+  </Carousel>
+  <span class="text-xs text-philippine-gray max-w-[720px] mb-5 px-4 mx-auto"
+    >* Note: Earn Send XP for up to 50 transactions daily; no limits on 10%
+    bonus XP.</span
+  >
+  <!-- </div> -->
 </template>
+
+<style>
+.carousel__next,
+.carousel__prev {
+  color: #f7f7f7 !important;
+}
+</style>
