@@ -145,7 +145,7 @@ onBeforeMount(async () => {
       <!-- <Pagination /> -->
     </template>
   </Carousel>
-  <span class="text-xs max-w-[720px] mb-5 px-4 mx-auto"
+  <span class="text-xs text-philippine-gray max-w-[720px] mb-5 px-4 mx-auto"
     >* Note: Gain Send XP for upto 50 transactions per day. No limit on 10%
     bonus XP.</span
   >
