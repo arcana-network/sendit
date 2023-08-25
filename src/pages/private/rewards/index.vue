@@ -14,7 +14,7 @@ const route = useRoute();
       >
       <span class="text-sm text-philippine-gray max-w-[720px] mt-4"
         ><strong
-          >* Note: Gain Send XP for upto 50 transactions per day. No limit on
+          >* Note: Earn Send XP for up to 50 transactions daily; no limits on
           10% bonus XP.</strong
         ></span
       >
