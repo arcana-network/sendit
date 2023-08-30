@@ -57,11 +57,15 @@ async function initAuth() {
     const arcanaAuthProvider = auth.getProvider();
     authStore.provider = arcanaAuthProvider;
     arcanaAuthProvider.on("connect", () => {
+      authStore.provider = arcanaAuthProvider;
+      authStore.isLoggedIn = true;
+      authStore.loggedInWith = "";
       onWalletConnect();
     });
     authStore.setAuthInitialized(true);
     const isLoggedIn = await auth.isLoggedIn();
     if (isLoggedIn) {
+      authStore.provider = arcanaAuthProvider;
       authStore.isLoggedIn = true;
       authStore.loggedInWith = "";
       if (route.query["try-it-out"] === "1") {
@@ -84,6 +88,9 @@ async function initSocketConnect() {
   };
   if (route.query.id && route.query.id !== "-1") {
     account.invite_id = Number(route.query.id);
+  }
+  if (conn.connected) {
+    conn.connection.closeSocket();
   }
   await conn.initialize(
     // @ts-ignore
@@ -131,14 +138,17 @@ async function onWalletConnect() {
   loaderStore.showLoader("Connecting...");
   if (authStore.loggedInWith === "walletconnect") {
     authStore.provider.on("accountsChanged", async (accounts) => {
+      loaderStore.showLoader(
+        "Switching account...",
+        "Accounts switched by the wallet. Please approve the new signature request to continue."
+      );
       await initSocketConnect();
       authStore.setUserInfo({
         address: accounts[0],
         loginType: "null",
-        id: "null",
+        id: accounts[0],
       });
       userStore.address = accounts[0];
-      loaderStore.hideLoader();
     });
   }
   await getUserInfo();
