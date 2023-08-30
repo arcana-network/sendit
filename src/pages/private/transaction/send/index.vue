@@ -122,9 +122,6 @@ onBeforeMount(async () => {
   >
     <SendForm @transaction-successful="handleTxSuccess" />
   </div>
-  <!-- <div
-    class="flex gap-3 p-2 mb-5 pb-3 m-auto w-full max-w-[1280px] overflow-x-scroll"
-  > -->
   <Carousel
     wrap-around
     pause-autoplay-on-hover
@@ -142,14 +139,12 @@ onBeforeMount(async () => {
     </Slide>
     <template #addons>
       <Navigation />
-      <!-- <Pagination /> -->
     </template>
   </Carousel>
   <span class="text-xs text-philippine-gray max-w-[720px] mb-5 px-4 mx-auto"
     >* Note: Earn Send XP for up to 50 transactions daily; no limits on 10%
     bonus XP.</span
   >
-  <!-- </div> -->
 </template>
 
 <style>
