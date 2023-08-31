@@ -107,13 +107,12 @@ class Connection {
       useRecaptchaNet: true,
       autoHideBadge: true,
     });
-    const token = await recaptcha.execute("login");
-    console.log({ token });
+    const recaptchaToken = await recaptcha.execute("login");
     this.socket.send(
       msgpack({
         addr: getBytes(await this.signer.getAddress()),
         ...this.account,
-        token,
+        recaptcha_token: recaptchaToken,
       })
     );
   }
