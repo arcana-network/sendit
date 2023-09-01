@@ -27,7 +27,9 @@
             sizes="(max-width: 767px) 30px, 49px"
             class="w-max md:-ml-2"
           />
-          <span>Made with love by Arcana Network</span>
+          <a href="https://arcana.network" target="_blank"
+            >Made with love by Arcana Network</a
+          >
         </div>
         <nav
           class="flex justify-evenly flex-grow max-md:w-full max-md:justify-around"
@@ -62,10 +64,10 @@
         <div class="flex flex-col gap-2 md:gap-4 max-md:w-full">
           <span class="uppercase font-bold text-white">Follow us on</span>
           <div class="flex gap-3 max-md:justify-center">
-            <a href="https://discord.gg/6g7fQvEpdy" target="_blank"
+            <a href="https://twitter.com/arcananetwork" target="_blank"
               ><img
-                src="@/assets/images/landing/icons/discord.svg"
-                alt="Join Arcana Network on Discord"
+                src="@/assets/images/landing/icons/twitter.svg"
+                alt="Follow Arcana Network on Twitter"
                 loading="lazy"
             /></a>
             <a href="https://t.me/ArcanaNetwork" target="_blank"
@@ -74,16 +76,16 @@
                 alt="Join Arcana Network on Telegram"
                 loading="lazy"
             /></a>
+            <a href="https://discord.gg/6g7fQvEpdy" target="_blank"
+              ><img
+                src="@/assets/images/landing/icons/discord.svg"
+                alt="Join Arcana Network on Discord"
+                loading="lazy"
+            /></a>
             <a href="https://www.youtube.com/@ArcanaNetwork" target="_blank"
               ><img
                 src="@/assets/images/landing/icons/youtube.svg"
                 alt="Subscribe to Arcana Network on YouTube"
-                loading="lazy"
-            /></a>
-            <a href="https://twitter.com/arcananetwork" target="_blank"
-              ><img
-                src="@/assets/images/landing/icons/twitter.svg"
-                alt="Follow Arcana Network on Twitter"
                 loading="lazy"
             /></a>
           </div>

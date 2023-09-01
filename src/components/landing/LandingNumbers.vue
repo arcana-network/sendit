@@ -10,7 +10,7 @@
     >
       <div class="flex flex-col items-center">
         <span class="font-syne text-[20px] md:text-[48px] leading-[1.5]"
-          >100,000+</span
+          >250K+</span
         >
         <span class="text-[#c4c4c4] uppercase text-[8px] md:text-[14px]"
           >Users signed up</span
@@ -18,10 +18,20 @@
       </div>
       <div class="flex flex-col items-center">
         <span class="font-syne text-[20px] md:text-[48px] leading-[1.5]"
-          >200,000+</span
+          >1M+</span
         >
-        <span class="text-[#c4c4c4] uppercase text-[8px] md:text-[14px]"
+        <span
+          class="text-[#c4c4c4] uppercase text-[8px] md:text-[14px] text-center"
           >Transactions Sent</span
+        >
+      </div>
+      <div class="flex flex-col items-center">
+        <span class="font-syne text-[20px] md:text-[48px] leading-[1.5]"
+          >75K</span
+        >
+        <span
+          class="text-[#c4c4c4] uppercase text-[8px] md:text-[14px] text-center"
+          >Onboarded to Web3</span
         >
       </div>
     </div>
