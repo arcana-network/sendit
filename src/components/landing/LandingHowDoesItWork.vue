@@ -60,7 +60,7 @@ onBeforeUnmount(() => {
       </div>
       <div class="flex gap-[2.88rem] max-md:justify-center">
         <img
-          src="@/assets/images/landing/how-does-it-work-1.svg"
+          src="@/assets/images/landing/how-does-it-work-1.png"
           loading="lazy"
           class="max-md:transition-all max-md:duration-500 max-md:ease-in-out"
           :class="{
@@ -72,7 +72,7 @@ onBeforeUnmount(() => {
           alt="Step 1 - Login with email or connect your wallet."
         />
         <img
-          src="@/assets/images/landing/how-does-it-work-2.svg"
+          src="@/assets/images/landing/how-does-it-work-2.png"
           loading="lazy"
           class="max-md:transition-all max-md:duration-500 max-md:ease-in-out"
           :class="{
@@ -84,7 +84,7 @@ onBeforeUnmount(() => {
           alt="Step 2 - Enter an amount and add the receiver’s email or Twitter handle to generate a link."
         />
         <img
-          src="@/assets/images/landing/how-does-it-work-3.svg"
+          src="@/assets/images/landing/how-does-it-work-3.png"
           loading="lazy"
           :class="{
             'max-md:hidden max-md:opacity-0': currentSlide !== 3,
@@ -95,7 +95,7 @@ onBeforeUnmount(() => {
           alt="Step 3 - Share the SendIt link on the recipient’s email ID."
         />
         <img
-          src="@/assets/images/landing/how-does-it-work-4.svg"
+          src="@/assets/images/landing/how-does-it-work-4.png"
           loading="lazy"
           :class="{
             'max-md:hidden max-md:opacity-0': currentSlide !== 4,
