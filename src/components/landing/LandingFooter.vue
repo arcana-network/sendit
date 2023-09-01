@@ -14,19 +14,19 @@
       <div
         class="landing-container flex max-md:flex-col max-md:gap-5 max-md:items-center md:justify-between max-md:text-center landing-section-description w-full"
       >
-        <div
-          class="max-md:w-full flex flex-col max-md:items-center gap-2 md:gap-4"
-        >
-          <img
-            alt="SendIt"
-            src="@/assets/images/landing/sendit-logomark-30w.png"
-            srcset="
-              @/assets/images/landing/sendit-logomark-30w.png 30w,
-              @/assets/images/landing/sendit-logomark-49w.png 49w
-            "
-            sizes="(max-width: 767px) 30px, 49px"
-            class="w-max md:-ml-2"
-          />
+        <div class="max-md:w-full flex flex-col max-md:items-center">
+          <a href="/" class="flex">
+            <img
+              alt="SendIt"
+              src="@/assets/images/landing/sendit-logomark-30w.png"
+              srcset="
+                @/assets/images/landing/sendit-logomark-30w.png 30w,
+                @/assets/images/landing/sendit-logomark-49w.png 49w
+              "
+              sizes="(max-width: 767px) 30px, 49px"
+            />
+            <img src="@/assets/images/landing/SendIt-text.svg" alt="SendIt" />
+          </a>
           <a href="https://arcana.network" target="_blank"
             >Made with love by Arcana Network</a
           >

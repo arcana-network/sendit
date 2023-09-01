@@ -25,7 +25,7 @@
           >Transactions Sent</span
         >
       </div>
-      <div class="flex flex-col items-center">
+      <!-- <div class="flex flex-col items-center">
         <span class="font-syne text-[20px] md:text-[48px] leading-[1.5]"
           >75K</span
         >
@@ -33,7 +33,7 @@
           class="text-[#c4c4c4] uppercase text-[8px] md:text-[14px] text-center"
           >Onboarded to Web3</span
         >
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
