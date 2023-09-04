@@ -9,8 +9,9 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Content-Security-Policy = '''
-      script-src 'self' 'unsafe-inline' *.google-analytics.com *.googletagmanager.com;
+      script-src 'self' 'unsafe-inline' *.google-analytics.com *.googletagmanager.com recaptcha.net *.gstatic.com;
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      frame-src wallet.arcana.network wallet.dev.arcana.network wallet.beta.arcana.network *.recaptcha.net *.google.com *.gstatic.com;
     '''
 [[headers]]
   for = "/assets/*"
