@@ -10,12 +10,15 @@ declare global {
       render: (
         id: string,
         args: {
-          siteKey: string;
-          size: "invisible";
+          sitekey: string;
+          size?: "invisible";
+          badge?: "bottomright" | "bottomleft" | "inline";
           callback: (token: string) => void;
-        }
+        },
+        inherit?: Record<string, unknown>
       ) => void;
       execute: () => void;
+      reset: () => void;
     };
   }
 }

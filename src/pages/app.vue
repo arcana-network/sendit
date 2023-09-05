@@ -47,20 +47,45 @@ const showReceivedCryptoMessage = ref(false);
 const showTweetVerificationModal = ref(false);
 const tweetHash = ref("");
 const faucetFundsReceived = ref(false);
+const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
 onMounted(() => {
   loaderStore.showLoader("Initializing...");
-  grecaptcha.render("recaptcha-v2", {
-    sitekey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+  initAuth();
+  window.grecaptcha.render("recaptcha-v2", {
+    sitekey: recaptchaSiteKey,
     size: "invisible",
-    callback: async function (response: string) {
-      conn.recaptchaToken = response;
-      console.log(response);
-      initAuth();
-    },
+    callback: recaptchaCallback,
   });
-  grecaptcha.execute();
 });
+
+async function recaptchaCallback(response: string) {
+  conn.recaptchaToken = response;
+  console.log(response);
+  window.grecaptcha.reset();
+  const account: SocketConnectionAccount = {
+    verifier: authStore.userInfo.loginType,
+    verifier_id: authStore.userInfo.id,
+  };
+  await conn.initialize(
+    // @ts-ignore
+    authStore.provider,
+    account
+  );
+  conn.onEvent(Connection.ON_ERROR, (error) => {
+    if (error.code === ACTION_REJECTED) {
+      loaderStore.hideLoader();
+      toast.error("Signature rejected");
+      if (authStore.loggedInWith === "walletconnect") {
+        walletConnect.disconnect();
+        onWalletDisconnect();
+      } else {
+        auth.getAuthInstance().logout();
+      }
+      router.replace({ name: "Login", query: { ...route.query } });
+    }
+  });
+}
 
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
@@ -91,28 +116,7 @@ async function initAuth() {
 }
 
 async function initSocketConnect() {
-  const account: SocketConnectionAccount = {
-    verifier: authStore.userInfo.loginType,
-    verifier_id: authStore.userInfo.id,
-  };
-  await conn.initialize(
-    // @ts-ignore
-    authStore.provider,
-    account
-  );
-  conn.onEvent(Connection.ON_ERROR, (error) => {
-    if (error.code === ACTION_REJECTED) {
-      loaderStore.hideLoader();
-      toast.error("Signature rejected");
-      if (authStore.loggedInWith === "walletconnect") {
-        walletConnect.disconnect();
-        onWalletDisconnect();
-      } else {
-        auth.getAuthInstance().logout();
-      }
-      router.replace({ name: "Login", query: { ...route.query } });
-    }
-  });
+  window.grecaptcha.execute();
 }
 
 async function getUserInfo() {
@@ -290,5 +294,6 @@ const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
       @go-back="handleNoAccessBack"
       @join-waitlist="router.push({ name: 'Waitlist' })"
     />
+    <div id="recaptcha-v2" data-size="invisible" style="display: none"></div>
   </main>
 </template>

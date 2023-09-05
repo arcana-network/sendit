@@ -25,6 +25,5 @@ const route = useRoute();
     />
     <FullScreenLoader v-if="loaderStore.show" />
     <RouterView class="relative z-10"> </RouterView>
-    <div id="recaptcha-v2"></div>
   </main>
 </template>
