@@ -72,7 +72,7 @@ async function recaptchaCallback(response: string) {
     authStore.provider,
     account
   );
-  conn.onEvent(Connection.ON_ERROR, (error) => {
+  conn.onceEvent(Connection.ON_ERROR, (error) => {
     if (error.code === ACTION_REJECTED) {
       loaderStore.hideLoader();
       toast.error("Signature rejected");

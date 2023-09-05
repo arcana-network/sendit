@@ -243,6 +243,9 @@ export const useConnection = defineStore("connection", {
     onEvent(state) {
       return state.connection.emitter.on.bind(state.connection.emitter);
     },
+    onceEvent(state) {
+      return state.connection.emitter.once.bind(state.connection.emitter);
+    },
   },
   actions: {
     onConnect() {
