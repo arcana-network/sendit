@@ -7,7 +7,6 @@ import { BrowserProvider, getBytes, randomBytes, hashMessage } from "ethers";
 import type { Eip1193Provider, JsonRpcSigner } from "ethers";
 import { pack as msgpack, unpack as msgunpack } from "msgpackr";
 import { Mutex } from "async-mutex";
-import { load } from "recaptcha-v3";
 
 enum ConnectionState {
   NOT_CONNECTED,
@@ -103,16 +102,17 @@ class Connection {
   }
 
   public async onOpen() {
-    const recaptcha = await load(import.meta.env.VITE_RECAPTCHA_SITE_KEY, {
-      useRecaptchaNet: true,
-      autoHideBadge: true,
+    const conn = useConnection();
+    console.log({
+      addr: getBytes(await this.signer.getAddress()),
+      ...this.account,
+      recaptcha_token: conn.recaptchaToken,
     });
-    const recaptchaToken = await recaptcha.execute("login");
     this.socket.send(
       msgpack({
         addr: getBytes(await this.signer.getAddress()),
         ...this.account,
-        recaptcha_token: recaptchaToken,
+        recaptcha_token: conn.recaptchaToken,
       })
     );
   }
@@ -223,6 +223,7 @@ class Connection {
 type ConnectionStoreState = {
   connected: boolean;
   connection: ShallowRef<Connection>;
+  recaptchaToken: string;
 };
 
 export const useConnection = defineStore("connection", {
@@ -230,6 +231,7 @@ export const useConnection = defineStore("connection", {
     <ConnectionStoreState>{
       connected: false,
       connection: shallowRef<Connection>(),
+      recaptchaToken: "",
     },
   getters: {
     sendMessage(state) {

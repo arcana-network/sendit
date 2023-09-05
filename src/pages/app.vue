@@ -48,6 +48,20 @@ const showTweetVerificationModal = ref(false);
 const tweetHash = ref("");
 const faucetFundsReceived = ref(false);
 
+onMounted(() => {
+  loaderStore.showLoader("Initializing...");
+  grecaptcha.render("recaptcha-v2", {
+    sitekey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+    size: "invisible",
+    callback: async function (response: string) {
+      conn.recaptchaToken = response;
+      console.log(response);
+      initAuth();
+    },
+  });
+  grecaptcha.execute();
+});
+
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
   try {
@@ -145,8 +159,6 @@ async function onWalletDisconnect() {
   conn.closeSocket();
   authStore.setLoginStatus(false);
 }
-
-onMounted(initAuth);
 
 watch(
   () => conn.connected,
