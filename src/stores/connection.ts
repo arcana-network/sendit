@@ -104,11 +104,6 @@ class Connection {
 
   public async onOpen() {
     const conn = useConnection();
-    console.log({
-      addr: getBytes(await this.signer.getAddress()),
-      ...this.account,
-      recaptcha_token: conn.recaptchaToken,
-    });
     this.socket.send(
       msgpack({
         addr: getBytes(await this.signer.getAddress()),

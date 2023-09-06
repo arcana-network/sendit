@@ -8,7 +8,6 @@ const useLoaderStore = defineStore("loader", {
   }),
   actions: {
     showLoader(message: string, submessage?: string): void {
-      console.log("showing loader");
       this.show = true;
       this.message = message;
       if (!submessage) {
@@ -18,7 +17,6 @@ const useLoaderStore = defineStore("loader", {
       }
     },
     hideLoader(): void {
-      console.log("hiding loader");
       this.show = false;
       this.message = "";
       this.submessage = "";
