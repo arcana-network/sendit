@@ -6,6 +6,20 @@ declare global {
       isMetaMask: boolean;
       request: (args: { method: string }) => Promise<string[]>;
     };
+    grecaptcha: {
+      render: (
+        id: string,
+        args: {
+          sitekey: string;
+          size?: "invisible";
+          badge?: "bottomright" | "bottomleft" | "inline";
+          callback: (token: string) => void;
+        },
+        inherit?: Record<string, unknown>
+      ) => void;
+      execute: () => void;
+      reset: () => void;
+    };
   }
 }
 

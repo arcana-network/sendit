@@ -47,6 +47,44 @@ const showReceivedCryptoMessage = ref(false);
 const showTweetVerificationModal = ref(false);
 const tweetHash = ref("");
 const faucetFundsReceived = ref(false);
+const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+
+onMounted(() => {
+  loaderStore.showLoader("Initializing...");
+  initAuth();
+  window.grecaptcha.render("recaptcha-v2", {
+    sitekey: recaptchaSiteKey,
+    size: "invisible",
+    callback: recaptchaCallback,
+  });
+});
+
+async function recaptchaCallback(response: string) {
+  conn.recaptchaToken = response;
+  window.grecaptcha.reset();
+  const account: SocketConnectionAccount = {
+    verifier: authStore.userInfo.loginType,
+    verifier_id: authStore.userInfo.id,
+  };
+  await conn.initialize(
+    // @ts-ignore
+    authStore.provider,
+    account
+  );
+  conn.onceEvent(Connection.ON_ERROR, (error) => {
+    if (error.code === ACTION_REJECTED) {
+      loaderStore.hideLoader();
+      toast.error("Signature rejected");
+      if (authStore.loggedInWith === "walletconnect") {
+        walletConnect.disconnect();
+        onWalletDisconnect();
+      } else {
+        auth.getAuthInstance().logout();
+      }
+      router.replace({ name: "Login", query: { ...route.query } });
+    }
+  });
+}
 
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
@@ -81,35 +119,7 @@ async function initAuth() {
 }
 
 async function initSocketConnect() {
-  const account: SocketConnectionAccount = {
-    verifier: authStore.userInfo.loginType,
-    verifier_id: authStore.userInfo.id,
-    invite_id: 0,
-  };
-  if (route.query.id && route.query.id !== "-1") {
-    account.invite_id = Number(route.query.id);
-  }
-  if (conn.connected) {
-    conn.connection.closeSocket();
-  }
-  await conn.initialize(
-    // @ts-ignore
-    authStore.provider,
-    account
-  );
-  conn.onEvent(Connection.ON_ERROR, (error) => {
-    if (error.code === ACTION_REJECTED) {
-      loaderStore.hideLoader();
-      toast.error("Signature rejected");
-      if (authStore.loggedInWith === "walletconnect") {
-        walletConnect.disconnect();
-        onWalletDisconnect();
-      } else {
-        auth.getAuthInstance().logout();
-      }
-      router.replace({ name: "Login", query: { ...route.query } });
-    }
-  });
+  window.grecaptcha.execute();
 }
 
 async function getUserInfo() {
@@ -159,8 +169,6 @@ async function onWalletDisconnect() {
   conn.closeSocket();
   authStore.setLoginStatus(false);
 }
-
-onMounted(initAuth);
 
 watch(
   () => conn.connected,
@@ -274,5 +282,6 @@ const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
       @go-back="handleNoAccessBack"
       @join-waitlist="router.push({ name: 'Waitlist' })"
     />
+    <div id="recaptcha-v2" data-size="invisible" style="display: none"></div>
   </main>
 </template>

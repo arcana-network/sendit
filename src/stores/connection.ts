@@ -103,10 +103,12 @@ class Connection {
   }
 
   public async onOpen() {
+    const conn = useConnection();
     this.socket.send(
       msgpack({
         addr: getBytes(await this.signer.getAddress()),
         ...this.account,
+        recaptcha_token: conn.recaptchaToken,
       })
     );
   }
@@ -217,6 +219,7 @@ class Connection {
 type ConnectionStoreState = {
   connected: boolean;
   connection: ShallowRef<Connection>;
+  recaptchaToken: string;
 };
 
 export const useConnection = defineStore("connection", {
@@ -224,6 +227,7 @@ export const useConnection = defineStore("connection", {
     <ConnectionStoreState>{
       connected: false,
       connection: shallowRef<Connection>(),
+      recaptchaToken: "",
     },
   getters: {
     sendMessage(state) {
@@ -234,6 +238,9 @@ export const useConnection = defineStore("connection", {
     },
     onEvent(state) {
       return state.connection.emitter.on.bind(state.connection.emitter);
+    },
+    onceEvent(state) {
+      return state.connection.emitter.once.bind(state.connection.emitter);
     },
   },
   actions: {
