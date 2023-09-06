@@ -61,7 +61,7 @@ onMounted(() => {
 
 async function recaptchaCallback(response: string) {
   conn.recaptchaToken = response;
-  window.grecaptcha.reset();
+  console.log("Recaptcha token: ", response);
   const account: SocketConnectionAccount = {
     verifier: authStore.userInfo.loginType,
     verifier_id: authStore.userInfo.id,
