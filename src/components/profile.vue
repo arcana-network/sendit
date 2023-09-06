@@ -12,7 +12,7 @@ import useSendStore from "@/stores/send";
 import useRewardsStore from "@/stores/rewards";
 import useNotificationStore from "@/stores/notification";
 
-const emit = defineEmits(["invite"]);
+// const emit = defineEmits(["invite"]);
 const authStore = useAuthStore();
 const { userInfo }: { userInfo: any } = toRefs(authStore);
 const arcanaAuth = useArcanaAuth();
@@ -29,16 +29,16 @@ async function handleCopy() {
   toast.success("Wallet address copied");
 }
 
-function getCurrentLocationUrl() {
-  return window.location.origin;
-}
+// function getCurrentLocationUrl() {
+//   return window.location.origin;
+// }
 
-async function handleCopyRef() {
-  await copyToClipboard(
-    `${getCurrentLocationUrl()}/app/?r=${userInfo.value.address}`
-  );
-  toast.success("Referral Link copied");
-}
+// async function handleCopyRef() {
+//   await copyToClipboard(
+//     `${getCurrentLocationUrl()}/app/?r=${userInfo.value.address}`
+//   );
+//   toast.success("Referral Link copied");
+// }
 
 function logout() {
   if (authStore.loggedInWith === "walletconnect") {
@@ -81,7 +81,7 @@ function logout() {
           </button>
         </div>
       </div>
-      <div class="flex flex-col justify-start">
+      <!-- <div class="flex flex-col justify-start">
         <span class="text-philippine-gray text-xs text-left"
           >Referral Link</span
         >
@@ -102,7 +102,7 @@ function logout() {
             />
           </button>
         </div>
-      </div>
+      </div> -->
       <div class="w-full" @click="logout">
         <button class="btn btn-submit-secondary text-sm w-full">Logout</button>
       </div>

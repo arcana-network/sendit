@@ -28,7 +28,8 @@
     "viem": "^1.2.14",
     "vue": "^3.2.47",
     "vue-router": "^4.2.2",
-    "vue-toastification": "^2.0.0-rc.5"
+    "vue-toastification": "^2.0.0-rc.5",
+    "vue3-carousel": "^0.3.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.1.0",

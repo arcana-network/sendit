@@ -21,7 +21,7 @@ import {
   SocketConnectionAccount,
 } from "@/stores/connection.ts";
 import AirdropSuccess from "@/components/AirdropSuccess.vue";
-import { getBytes } from "ethers";
+// import { getBytes } from "ethers";
 
 const AppMaintenance = defineAsyncComponent(
   () => import("@/pages/maintenance.vue")
@@ -61,7 +61,6 @@ onMounted(() => {
 
 async function recaptchaCallback(response: string) {
   conn.recaptchaToken = response;
-  console.log(response);
   window.grecaptcha.reset();
   const account: SocketConnectionAccount = {
     verifier: authStore.userInfo.loginType,
@@ -96,11 +95,15 @@ async function initAuth() {
     const arcanaAuthProvider = auth.getProvider();
     authStore.provider = arcanaAuthProvider;
     arcanaAuthProvider.on("connect", () => {
+      authStore.provider = arcanaAuthProvider;
+      authStore.isLoggedIn = true;
+      authStore.loggedInWith = "";
       onWalletConnect();
     });
     authStore.setAuthInitialized(true);
     const isLoggedIn = await auth.isLoggedIn();
     if (isLoggedIn) {
+      authStore.provider = arcanaAuthProvider;
       authStore.isLoggedIn = true;
       authStore.loggedInWith = "";
       if (route.query["try-it-out"] === "1") {
@@ -145,14 +148,17 @@ async function onWalletConnect() {
   loaderStore.showLoader("Connecting...");
   if (authStore.loggedInWith === "walletconnect") {
     authStore.provider.on("accountsChanged", async (accounts) => {
+      loaderStore.showLoader(
+        "Switching account...",
+        "Accounts switched by the wallet. Please approve the new signature request to continue."
+      );
       await initSocketConnect();
       authStore.setUserInfo({
         address: accounts[0],
         loginType: "null",
-        id: "null",
+        id: accounts[0],
       });
       userStore.address = accounts[0];
-      loaderStore.hideLoader();
     });
   }
   await getUserInfo();
@@ -173,24 +179,6 @@ watch(
         const query = { ...route.query };
         delete query["try-it-out"];
         router.replace({ name: "Send", query });
-      }
-      if (route.query.r) {
-        try {
-          await conn.connection.sendMessage(SOCKET_IDS.VERIFY_REFERRER, {
-            referrer: Buffer.from(getBytes(route.query.r as string)),
-          });
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      if (route.query.id && route.query.id !== "-1") {
-        try {
-          await conn.connection.sendMessage(SOCKET_IDS.VERIFY_INVITE, {
-            id: Number(route.query.id),
-          });
-        } catch (error) {
-          console.log(error);
-        }
       }
       await sendStore.fetchSupportedChains();
       rewardsStore.fetchRewards(userStore.address);
