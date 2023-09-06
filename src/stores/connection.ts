@@ -104,6 +104,12 @@ class Connection {
 
   public async onOpen() {
     const conn = useConnection();
+    console.log("Connection opened");
+    console.log("initial message", {
+      addr: getBytes(await this.signer.getAddress()),
+      ...this.account,
+      recaptcha_token: conn.recaptchaToken,
+    });
     this.socket.send(
       msgpack({
         addr: getBytes(await this.signer.getAddress()),
@@ -143,6 +149,8 @@ class Connection {
 
   public async onMessage(ev: MessageEvent) {
     const _data = msgunpack(Buffer.from(await ev.data.arrayBuffer()));
+    console.log("Message received:", ev);
+    console.log("Data unpacked:", _data);
     if (_data.length !== 3) {
       return;
     }
