@@ -79,6 +79,7 @@ async function handlePasswordlessLogin() {
         >
           <button
             class="font-[500] text-[12px] uppercase w-[80px] md:w-[120px] flex items-center justify-center h-[40px] bg-white rounded-[5px] md:rounded-[10px] text-[#3b3b3b]"
+            :disabled="loaderStore.show"
           >
             Sign Up!
           </button>
