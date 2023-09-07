@@ -108,7 +108,7 @@ function handleViewRewards() {
           </div>
           <div class="flex justify-end">
             <button
-              :disabled="!tweetUrl"
+              :disabled="!tweetUrl || loaderStore.show"
               class="uppercase w-full border-white border-1 rounded-[5px] text-xs font-bold px-8 py-3"
             >
               Verify Now

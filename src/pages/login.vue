@@ -200,7 +200,7 @@ async function onLoginWalletConnected(
                 />
                 <button
                   class="flex items-center justify-center"
-                  :disabled="!isValidPasswordlessEmail"
+                  :disabled="!isValidPasswordlessEmail || loaderStore.show"
                 >
                   <img
                     src="@/assets/images/icons/arrow-right.svg"
