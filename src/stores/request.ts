@@ -71,7 +71,8 @@ const useRequestStore = defineStore("request", {
         request
       );
       const signature = await signTypedData(authStore.provider, dataToSign);
-      console.log(signature);
+      console.log({ signature });
+      console.log({ amount });
       console.log({
         target: this.userInput.address
           ? Buffer.from(ethers.getBytes(this.userInput.address))
@@ -91,7 +92,7 @@ const useRequestStore = defineStore("request", {
         chain_id: this.userInput.chain,
         data: {
           nonce: requestNonce,
-          value: Buffer.from(ethers.getBytes(amount)),
+          value: Buffer.from(amount.slice(2), "hex"),
           token_address:
             this.userInput.token === "NATIVE"
               ? Buffer.from(ethers.getBytes(ethers.ZeroAddress))
@@ -116,7 +117,7 @@ const useRequestStore = defineStore("request", {
         chain_id: this.userInput.chain,
         data: {
           nonce: requestNonce,
-          value: Buffer.from(ethers.getBytes(amount)),
+          value: Buffer.from(amount.slice(2), "hex"),
           token_address:
             this.userInput.token === "NATIVE"
               ? Buffer.from(ethers.getBytes(ethers.ZeroAddress))
