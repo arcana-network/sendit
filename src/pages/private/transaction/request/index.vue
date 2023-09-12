@@ -1,23 +1,18 @@
 <script setup lang="ts">
 import "vue3-carousel/dist/carousel.css";
 import { ref, onBeforeMount } from "vue";
-import SendForm from "@/components/send/sendForm.vue";
-import useSendStore from "@/stores/send";
-import SendSuccess from "@/components/send/success.vue";
-import TweetVerify from "@/components/TweetVerify.vue";
-import { composeAndSendTweet } from "@/utils/tweet";
+import RequestForm from "@/components/request/requestForm.vue";
+import useRequestStore from "@/stores/request";
+import RequestSuccess from "@/components/request/success.vue";
 import { EARN_XP } from "@/constants/rewards";
 import RewardsCard from "@/components/rewards-card.vue";
 import AppInvite from "@/components/AppInvite.vue";
 import useUserStore from "@/stores/user";
-import generateSenditUrl from "@/utils/generateSenditUrl";
-import { normaliseTwitterHandle } from "@/utils/normalise";
 import TwitterFollowVerify from "@/components/TwitterFollowVerify.vue";
 import { Carousel, Slide, Navigation } from "vue3-carousel";
 
-const sendStore = useSendStore();
+const requestStore = useRequestStore();
 const showSuccessMessage = ref(false);
-const showTweetVerificationModal = ref(false);
 const shareDetails = ref({
   isShareRequired: false,
   shareLink: "",
@@ -53,31 +48,13 @@ function handleTxSuccess(data) {
 }
 
 function resetUserInput() {
-  sendStore.resetUserInput();
-}
-
-function handleShoutout() {
-  showSuccessMessage.value = false;
-  composeAndSendTweet(
-    `Whoosh! I just sent crypto to ${getToValue(
-      verifier.value,
-      verifierHuman.value
-    )} using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
-  );
-  showTweetVerificationModal.value = true;
-  resetUserInput();
+  requestStore.resetUserInput();
 }
 
 async function handleSuccessModalClose() {
   showSuccessMessage.value = false;
   await userStore.fetchUserPointsAndRank();
   resetUserInput();
-}
-
-function getToValue(verifier, verifier_human) {
-  if (verifier === "twitter") {
-    return `${normaliseTwitterHandle(verifier_human)}`;
-  } else return `an email address`;
 }
 
 function OpenVerifyFollow() {
@@ -94,22 +71,15 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <SendSuccess
+  <RequestSuccess
     v-if="showSuccessMessage"
-    :medium="sendStore.userInput.medium"
+    :medium="requestStore.userInput.medium"
     :share-details="shareDetails"
     :verifier-id="verifierId"
     :amount="amount"
     :currency="token"
     :chain="chain"
-    @shoutout="handleShoutout"
     @close="handleSuccessModalClose"
-  />
-  <TweetVerify
-    v-if="showTweetVerificationModal"
-    :xp="5"
-    :hash="txHash"
-    @close="showTweetVerificationModal = false"
   />
   <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
   <TwitterFollowVerify
@@ -120,7 +90,7 @@ onBeforeMount(async () => {
   <div
     class="flex flex-col justify-center items-center p-10 max-lg:px-4 space-y-10"
   >
-    <SendForm @transaction-successful="handleTxSuccess" />
+    <RequestForm @transaction-successful="handleTxSuccess" />
   </div>
   <Carousel
     wrap-around

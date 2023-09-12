@@ -188,7 +188,7 @@ async function onLoginWalletConnected(
               v-if="!verifier || verifier === 'passwordless'"
               class="space-y-3 w-full flex flex-col items-start"
             >
-              <span class="text-xs text-philippine-gray">Email ID</span>
+              <span class="text-xs text-philippine-gray">Email Address</span>
               <form
                 class="flex justify-center items-center w-full bg-dark-charcoal px-2.5 rounded-md"
                 @submit.prevent="passwordlessLogin"

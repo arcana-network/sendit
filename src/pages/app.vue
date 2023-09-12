@@ -285,3 +285,10 @@ const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
     <div id="recaptcha-v2" data-size="invisible" style="display: none"></div>
   </main>
 </template>
+
+<style>
+.carousel__next,
+.carousel__prev {
+  color: #f7f7f7 !important;
+}
+</style>

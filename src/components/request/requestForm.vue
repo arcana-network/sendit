@@ -1,70 +1,41 @@
 <script setup lang="ts">
-import {
-  toRefs,
-  watch,
-  ref,
-  computed,
-  type Ref,
-  onBeforeMount,
-  onBeforeUnmount,
-} from "vue";
-import sendVia from "@/constants/sendVia";
-import useSendStore from "@/stores/send";
+import { toRefs, watch, ref, computed, type Ref } from "vue";
+import requestVia from "@/constants/requestVia";
 import useAuthStore from "@/stores/auth";
 import useLoaderStore from "@/stores/loader";
-import {
-  getAccountBalance,
-  getNativeTokenBalances,
-} from "@/services/ankr.service.ts";
-import useArcanaAuth from "@/use/arcanaAuth";
-import {
-  nativeTokenTransfer,
-  erc20TokenTransfer,
-  type FeeData,
-} from "@/services/send.service.ts";
-import { getBytes } from "ethers";
+// import useArcanaAuth from "@/use/arcanaAuth";
 import { useConnection } from "@/stores/connection";
 import { useToast } from "vue-toastification";
-import { SOCKET_IDS, TOKEN_TYPES } from "@/constants/socket-ids";
+import { SOCKET_IDS } from "@/constants/socket-ids";
 import { isValidEmail, isValidTwitterHandle } from "@/utils/validation";
-import { normaliseEmail, normaliseTwitterHandle } from "@/utils/normalise";
 import Dropdown from "@/components/lib/dropdown.vue";
 import chains from "@/constants/chainList";
-import { hexlify } from "ethers";
-import { GAS_SUPPORTED_CHAINS } from "@/constants/socket-ids";
 import { Decimal } from "decimal.js";
+import { requestableTokens } from "@/constants/requestableTokens";
+import useRequestStore from "@/stores/request";
+import useSendStore from "@/stores/send";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
 const INSUFFICIENT_FUNDS = "INSUFFICIENT_FUNDS";
 const SELF_TX_ERROR = "self-transactions are not permitted";
-let assetInterval: NodeJS.Timer;
 
-onBeforeMount(async () => {
-  await fetchAssets();
-});
-
-onBeforeUnmount(() => {
-  clearInterval(assetInterval);
-});
-
+const requestStore = useRequestStore();
 const sendStore = useSendStore();
+const { userInput } = toRefs(requestStore);
+const { supportedChains } = toRefs(sendStore);
 const authStore = useAuthStore();
 const loadStore = useLoaderStore();
 const chainAssets: Ref<any[]> = computed(() => {
-  return getChainAssets(userInput.value.chain);
+  return requestableTokens[userInput.value.chain] || [];
 });
 const tokenBalance = ref(0);
-const arcanaAuth = useArcanaAuth();
 const conn = useConnection();
 const toast = useToast();
 const twitterId = ref("");
 const hasTwitterError = ref(false);
 const isEmailDisposable = ref(false);
 const hasStartedTyping = ref(false);
-const allAssets: Ref<any[]> = ref([]);
-
-const { userInput, supportedChains } = toRefs(sendStore);
 
 const isEmailValid = computed(() => {
   if (userInput.value.medium === "mail") {
@@ -86,102 +57,6 @@ function getSelectedChainInfo(chainId) {
   return supportedChains.value.find(
     (chain) => Number(chain.chain_id) === Number(chainId)
   );
-}
-
-function getSelectedAssets(contractAddress: string) {
-  return chainAssets.value.find(
-    (asset) =>
-      //@ts-ignore
-      asset.contractAddress === contractAddress
-  );
-}
-
-function getChainAssets(chainId) {
-  const chain = getSelectedChainInfo(chainId);
-  if (chain) {
-    return allAssets.value.filter(
-      (asset) => asset.blockchain === chain.blockchain
-    );
-  }
-  return [];
-}
-
-async function fetchAssets() {
-  try {
-    const walletAddress = authStore.walletAddress;
-    const data = await getAccountBalance(walletAddress, [
-      "eth",
-      "polygon",
-      "polygon_mumbai",
-      "arbitrum",
-    ]);
-    if (data?.result?.assets?.length) {
-      allAssets.value = data?.result?.assets.map((asset) => {
-        const address =
-          asset.tokenType === "NATIVE" ? "NATIVE" : asset.contractAddress;
-        return {
-          ...asset,
-          contractAddress: address,
-          name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
-        };
-      });
-    } else {
-      const nativeData = await getNativeTokenBalances(walletAddress);
-      if (nativeData?.length) {
-        allAssets.value = nativeData?.map((asset) => {
-          const address = "NATIVE";
-          return {
-            ...asset,
-            contractAddress: address,
-            name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
-          };
-        });
-      } else {
-        allAssets.value = [];
-      }
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-function messageArcana(
-  hash: string,
-  to: string,
-  fromEmail: string,
-  toEmail: string,
-  chainId: number,
-  from_verifier: "passwordless" | "twitter" | "null",
-  to_verifier: "passwordless" | "twitter" | "null",
-  type: number
-) {
-  const message = {
-    hash: Buffer.from(getBytes(hash)),
-    chain_id: chainId,
-    to: Buffer.from(getBytes(to)),
-    from_id: fromEmail,
-    from_verifier,
-    to_id: toEmail,
-    to_verifier,
-    type,
-  };
-  return conn.sendMessage(SOCKET_IDS.SEND_TX, message);
-}
-
-function getVerifier(verifier: string) {
-  if (verifier === "twitter") {
-    return "twitter";
-  }
-  if (verifier === "null") {
-    return "null";
-  }
-  return "passwordless";
-}
-
-function getCurrency(chainId: string | number) {
-  return userInput.value.token === "NATIVE"
-    ? chains[Number(chainId)].currency
-    : getTokenModelValue(userInput.value.token)?.tokenSymbol || "Unnamed Token";
 }
 
 async function proceed() {
@@ -207,98 +82,15 @@ async function proceed() {
   }
   if (!hasUserRejectedChainSwitching) {
     loadStore.showLoader(
-      "Sending tokens...",
-      `Sending ${new Decimal(
-        userInput.value.amount as number
-      ).toString()} ${getCurrency(userInput.value.chain)} to ${
-        userInput.value.recipientId
-      } on ${
-        chains[Number(userInput.value.chain)].name
-      } chain. Please approve the transaction on your wallet and wait until it is completed.`
+      "Requesting signature for request tokens...",
+      `Please sign the message on your wallet.`
     );
     try {
-      const normalisedEmail =
-        userInput.value.medium === "mail"
-          ? normaliseEmail(userInput.value.recipientId)
-          : null;
-      const normalisedTwitterId =
-        userInput.value.medium === "twitter"
-          ? normaliseTwitterHandle(userInput.value.recipientId)
-          : null;
-      const recipientId = twitterId.value || normalisedEmail;
-      if (!recipientId || recipientId === null) {
-        throw new Error("Invalid recipient id");
-      }
-      const senderPublicKey = await arcanaAuth
-        .getAuthInstance()
-        .getPublicKey(recipientId);
-      const arcanaProvider = authStore.provider;
-      const amount = userInput.value.amount as number;
-      const chainId = userInput.value.chain;
-      let feeData: FeeData | null = null;
-      if (GAS_SUPPORTED_CHAINS.includes(Number(chainId))) {
-        const gasStation: any = await conn.sendMessage(
-          SOCKET_IDS.GET_GAS_STATION,
-          {
-            chain_id: chainId,
-          }
-        );
-        feeData = {
-          maxFeePerGas: hexlify(gasStation.max_fee),
-          maxPriorityFeePerGas: hexlify(gasStation.max_priority_fee),
-        };
-      }
-      const tx =
-        userInput.value.token === "NATIVE"
-          ? await nativeTokenTransfer(
-              senderPublicKey,
-              arcanaProvider,
-              amount,
-              feeData
-            )
-          : await erc20TokenTransfer(
-              senderPublicKey,
-              arcanaProvider,
-              amount,
-              //@ts-ignore
-              userInput.value.token,
-              feeData
-            );
-      loadStore.showLoader("Generating SendIt link...");
-      const { hash, to } = tx;
-      if (to == null) {
-        throw new Error("Invalid transaction");
-      }
-      const toEmail = recipientId;
+      emits("transaction-successful");
+      loadStore.showLoader("Generating link...");
       //@ts-ignore
-      const fromEmail = authStore.userInfo.email || authStore.userInfo.id;
-      const fromVerifier = getVerifier(authStore.userInfo.loginType);
-      const toVerifier =
-        userInput.value.medium === "twitter" ? "twitter" : "passwordless";
-      //@ts-ignore
-      const sendRes = (await messageArcana(
-        hash,
-        to,
-        fromEmail,
-        toEmail,
-        Number(chainId),
-        fromVerifier,
-        toVerifier,
-        userInput.value.token === "NATIVE"
-          ? TOKEN_TYPES.NATIVE
-          : TOKEN_TYPES.ERC20
-      )) as any;
-      sendRes.verifier_id = recipientId;
-      sendRes.hash = hash;
-      sendRes.verifier_human =
-        normalisedTwitterId || normalisedEmail || userInput.value.recipientId;
-      sendRes.verifier = toVerifier;
-      sendRes.amount = amount;
-      sendRes.chain = chains[Number(chainId)].name;
-      sendRes.token = getCurrency(chainId);
-      fetchAssets();
       resetAll();
-      emits("transaction-successful", sendRes);
+      // emits("transaction-successful", sendRes);
     } catch (error: any) {
       if (error === SELF_TX_ERROR || error.message === SELF_TX_ERROR) {
         toast.error("You cannot send tokens to yourself");
@@ -385,28 +177,15 @@ watch(
           toast.error("Switching chain rejected by user");
         }
       }
-      await fetchAssets();
       loadStore.hideLoader();
     }
   }
 );
 
 watch(
-  () => userInput.value.token,
-  async (selectedToken) => {
-    if (selectedToken) {
-      await fetchAssets();
-      //@ts-ignore
-      tokenBalance.value = getSelectedAssets(selectedToken)?.balance || 0;
-    } else tokenBalance.value = 0;
-  }
-);
-
-watch(
   () => authStore.userInfo.address,
   () => {
-    sendStore.resetUserInput();
-    fetchAssets();
+    requestStore.resetUserInput();
   }
 );
 
@@ -424,8 +203,7 @@ const disableSubmit = computed(() => {
     hasTwitterError.value ||
     !isTwitterValid.value ||
     !isEmailValid.value ||
-    isEmailDisposable.value ||
-    Number(tokenBalance.value) < Number(userInput.value.amount)
+    isEmailDisposable.value
   );
 });
 
@@ -470,8 +248,7 @@ function handleMediumChange(medium) {
 
 function getTokenModelValue(tokenAddress) {
   return (
-    chainAssets.value.find((asset) => asset.contractAddress === tokenAddress) ||
-    {}
+    chainAssets.value.find((asset) => asset.address === tokenAddress) || {}
   );
 }
 </script>
@@ -480,13 +257,13 @@ function getTokenModelValue(tokenAddress) {
   <div
     class="w-full max-w-[450px] space-y-4 border-1 border-jet p-4 rounded-md bg-eerie-black"
   >
-    <h1 class="uppercase font-bold">Send</h1>
+    <h1 class="uppercase font-bold">Request</h1>
     <hr class="border-0 border-b border-solid border-[#363636] -mx-4" />
     <div class="space-y-1">
-      <h2 class="text-xs">Send Via</h2>
+      <h2 class="text-xs">Request Tokens from</h2>
       <div class="flex items-center space-x-2">
         <div
-          v-for="medium in sendVia"
+          v-for="medium in requestVia"
           :key="medium.value"
           @click="handleMediumChange(medium.value)"
           class="border-1 p-1.5 rounded-full transition-all hover:bg-[#313131] cursor-pointer h-[44px] w-[44px] flex items-center justify-center"
@@ -515,7 +292,9 @@ function getTokenModelValue(tokenAddress) {
           :placeholder="
             userInput.medium === 'twitter'
               ? 'Enter twitter username eg @mytwitterhandle'
-              : 'Enter email. eg abc@example.com'
+              : userInput.medium === 'mail'
+              ? 'Enter email. eg abc@example.com'
+              : 'Enter wallet address. eg 0x1234...'
           "
         />
         <div
@@ -556,29 +335,17 @@ function getTokenModelValue(tokenAddress) {
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Token</label>
         <Dropdown
-          @update:model-value="
-            (value) => (userInput.token = value.contractAddress)
-          "
+          @update:model-value="(value) => (userInput.token = value.address)"
           :options="chainAssets"
-          display-field="name"
+          display-field="symbol"
           :model-value="getTokenModelValue(userInput.token)"
           placeholder="Select Token"
           :disabled="disableTokenInput"
         />
-        <div
-          class="text-[#ff4264] text-[10px]"
-          v-if="userInput.chain && !chainAssets.length"
-        >
-          You don't own any tokens on this chain. Please switch the chain or
-          load some tokens to continue
-        </div>
       </div>
       <div class="flex flex-col space-y-1">
         <div class="flex justify-between">
           <label class="text-xs">Amount</label>
-          <span v-if="userInput.token" class="text-xs"
-            >Balance: {{ tokenBalance }}</span
-          >
         </div>
         <input
           class="input disabled:opacity-60"
@@ -586,12 +353,6 @@ function getTokenModelValue(tokenAddress) {
           v-model="userInput.amount"
           :disabled="!userInput.chain || !userInput.token"
         />
-        <div
-          class="text-[#ff4264] text-[10px]"
-          v-if="Number(tokenBalance) < Number(userInput.amount)"
-        >
-          Entered amount is greater than your wallet balance.
-        </div>
       </div>
       <div class="flex justify-center pt-4">
         <button
@@ -601,7 +362,7 @@ function getTokenModelValue(tokenAddress) {
           :disabled="disableSubmit"
           :class="{ 'opacity-50': disableSubmit }"
         >
-          Request
+          Send it
         </button>
       </div>
     </form>

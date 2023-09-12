@@ -38,6 +38,12 @@ const routes: RouteRecordRaw[] = [
               import("@/pages/private/transaction/send/index.vue"),
           },
           {
+            name: "Request",
+            path: "transaction/request",
+            component: () =>
+              import("@/pages/private/transaction/request/index.vue"),
+          },
+          {
             name: "History",
             path: "transaction/history",
             component: () =>
