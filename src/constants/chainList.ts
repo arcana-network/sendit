@@ -27,6 +27,20 @@ const chains = {
     rpc_url: "https://arb1.arbitrum.io/rpc",
     currency: "ETH",
   },
+  56: {
+    name: "BNB Smart Chain",
+    blockchain: "bsc",
+    chain_id: 56,
+    rpc_url: "https://rpc.ankr.com/bsc",
+    currency: "BNB",
+  },
+  97: {
+    name: "BNB Smart Chain Testnet",
+    blockchain: "bsc_testnet_chapel",
+    chain_id: 97,
+    rpc_url: "https://rpc.ankr.com/bsc_testnet_chapel",
+    currency: "BNB",
+  },
 };
 
 export default chains;

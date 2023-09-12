@@ -3,7 +3,6 @@ import { toRefs, watch, ref, computed, type Ref } from "vue";
 import requestVia from "@/constants/requestVia";
 import useAuthStore from "@/stores/auth";
 import useLoaderStore from "@/stores/loader";
-// import useArcanaAuth from "@/use/arcanaAuth";
 import { useConnection } from "@/stores/connection";
 import { useToast } from "vue-toastification";
 import { SOCKET_IDS } from "@/constants/socket-ids";
@@ -14,6 +13,9 @@ import { Decimal } from "decimal.js";
 import { requestableTokens } from "@/constants/requestableTokens";
 import useRequestStore from "@/stores/request";
 import useSendStore from "@/stores/send";
+import useArcanaAuth from "@/use/arcanaAuth";
+import { normaliseEmail } from "@/utils/normalise";
+import { computeAddress } from "ethers";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -22,6 +24,7 @@ const SELF_TX_ERROR = "self-transactions are not permitted";
 
 const requestStore = useRequestStore();
 const sendStore = useSendStore();
+const arcanaAuth = useArcanaAuth();
 const { userInput } = toRefs(requestStore);
 const { supportedChains } = toRefs(sendStore);
 const authStore = useAuthStore();
@@ -41,6 +44,14 @@ const isEmailValid = computed(() => {
   if (userInput.value.medium === "mail") {
     hasTwitterError.value = false;
     return isValidEmail(userInput.value.recipientId);
+  }
+  return true;
+});
+
+const isWalletValid = computed(() => {
+  if (userInput.value.medium === "wallet") {
+    hasTwitterError.value = false;
+    return userInput.value.recipientId.length === 42;
   }
   return true;
 });
@@ -79,6 +90,9 @@ async function proceed() {
         hasUserRejectedChainSwitching = true;
       }
     }
+  } else {
+    toast.error("Please select a chain to continue");
+    return;
   }
   if (!hasUserRejectedChainSwitching) {
     loadStore.showLoader(
@@ -86,12 +100,26 @@ async function proceed() {
       `Please sign the message on your wallet.`
     );
     try {
+      if (userInput.value.medium === "wallet") {
+        userInput.value.address = userInput.value.recipientId;
+      } else {
+        const publicKey = await arcanaAuth
+          .getAuthInstance()
+          .getPublicKey(
+            twitterId.value || normaliseEmail(userInput.value.recipientId)
+          );
+        userInput.value.address = computeAddress(`0x${publicKey}`);
+      }
+      const amount = new Decimal(userInput.value.amount || 0)
+        .mul(Decimal.pow(10, 18))
+        .toHexadecimal();
+      await requestStore.sendRequest({ amount });
       emits("transaction-successful");
       loadStore.showLoader("Generating link...");
       //@ts-ignore
       resetAll();
-      // emits("transaction-successful", sendRes);
     } catch (error: any) {
+      console.error(error);
       if (error === SELF_TX_ERROR || error.message === SELF_TX_ERROR) {
         toast.error("You cannot send tokens to yourself");
       } else if (error.code === ACTION_REJECTED) {
@@ -197,13 +225,14 @@ const disableSubmit = computed(() => {
   return (
     !userInput.value.amount ||
     !userInput.value.chain ||
-    !userInput.value.medium ||
-    !userInput.value.recipientId ||
     !userInput.value.token ||
     hasTwitterError.value ||
     !isTwitterValid.value ||
     !isEmailValid.value ||
-    isEmailDisposable.value
+    isEmailDisposable.value ||
+    !isWalletValid.value ||
+    !userInput.value.medium ||
+    !userInput.value.recipientId
   );
 });
 
@@ -321,6 +350,12 @@ function getTokenModelValue(tokenAddress) {
         >
           Email address is problematic. Please enter a different email address
         </div>
+        <div
+          class="text-[#ff4264] text-[10px]"
+          v-else-if="hasStartedTyping && !isWalletValid"
+        >
+          Invalid wallet address
+        </div>
       </div>
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Chain</label>
@@ -362,7 +397,7 @@ function getTokenModelValue(tokenAddress) {
           :disabled="disableSubmit"
           :class="{ 'opacity-50': disableSubmit }"
         >
-          Send it
+          Request
         </button>
       </div>
     </form>

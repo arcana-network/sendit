@@ -204,6 +204,9 @@ async function proceed() {
         hasUserRejectedChainSwitching = true;
       }
     }
+  } else {
+    toast.error("Please select a chain to continue");
+    return;
   }
   if (!hasUserRejectedChainSwitching) {
     loadStore.showLoader(
