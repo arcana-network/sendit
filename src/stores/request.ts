@@ -71,18 +71,16 @@ const useRequestStore = defineStore("request", {
         request
       );
       const signature = await signTypedData(authStore.provider, dataToSign);
-      console.log({ signature });
-      console.log({ amount });
-      console.log({
+      const data = {
         target: this.userInput.address
           ? Buffer.from(ethers.getBytes(this.userInput.address))
-          : undefined,
+          : "null",
         target_verifier:
           this.userInput.medium === "mail"
             ? "passwordless"
             : this.userInput.medium === "twitter"
             ? "twitter"
-            : undefined,
+            : "null",
         target_verifier_id:
           this.userInput.medium === "wallet"
             ? undefined
@@ -99,32 +97,11 @@ const useRequestStore = defineStore("request", {
               : Buffer.from(ethers.getBytes(this.userInput.token)),
         },
         signature: Buffer.from(ethers.getBytes(signature)),
-      });
-      await conn.sendMessage(SOCKET_IDS.CREATE_REQUEST, {
-        target: this.userInput.address
-          ? Buffer.from(ethers.getBytes(this.userInput.address))
-          : undefined,
-        target_verifier:
-          this.userInput.medium === "mail"
-            ? "passwordless"
-            : this.userInput.medium === "twitter"
-            ? "twitter"
-            : undefined,
-        target_verifier_id:
-          this.userInput.medium === "wallet"
-            ? undefined
-            : this.userInput.recipientId,
-        chain_id: this.userInput.chain,
-        data: {
-          nonce: requestNonce,
-          value: Buffer.from(amount.slice(2), "hex"),
-          token_address:
-            this.userInput.token === "NATIVE"
-              ? Buffer.from(ethers.getBytes(ethers.ZeroAddress))
-              : Buffer.from(ethers.getBytes(this.userInput.token)),
-        },
-        signature: Buffer.from(ethers.getBytes(signature)),
-      });
+      };
+      console.log({ signature });
+      console.log({ amount });
+      console.log(data);
+      await conn.sendMessage(SOCKET_IDS.CREATE_REQUEST, data);
     },
   },
 });
