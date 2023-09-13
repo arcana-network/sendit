@@ -34,7 +34,6 @@ function handleTxSuccess(data) {
     requestId: hexlify(data.request_id),
   };
   recipientId.value = data.recipientId;
-  console.log(shareDetails.value);
 }
 
 function resetUserInput() {

@@ -15,7 +15,7 @@ import useRequestStore from "@/stores/request";
 import useSendStore from "@/stores/send";
 import useArcanaAuth from "@/use/arcanaAuth";
 import { normaliseEmail } from "@/utils/normalise";
-import { computeAddress } from "ethers";
+import { computeAddress, ethers } from "ethers";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -39,6 +39,12 @@ const twitterId = ref("");
 const hasTwitterError = ref(false);
 const isEmailDisposable = ref(false);
 const hasStartedTyping = ref(false);
+
+const requestSupportedChains = computed(() => {
+  return supportedChains.value.filter(
+    (chain) => chain.sendit_contract !== ethers.ZeroAddress
+  );
+});
 
 const isEmailValid = computed(() => {
   if (userInput.value.medium === "mail") {
@@ -65,7 +71,7 @@ const isTwitterValid = computed(() => {
 
 function getSelectedChainInfo(chainId) {
   //@ts-ignore
-  return supportedChains.value.find(
+  return requestSupportedChains.value.find(
     (chain) => Number(chain.chain_id) === Number(chainId)
   );
 }
@@ -119,7 +125,11 @@ async function proceed() {
       const amount = serializeDecimal(
         new Decimal(userInput.value.amount || 0).mul(Decimal.pow(10, 18))
       );
-      const response = await requestStore.sendRequest({ amount });
+      const selectedChain = getSelectedChainInfo(userInput.value.chain);
+      const response = await requestStore.sendRequest({
+        amount,
+        senditContractAddress: selectedChain?.sendit_contract,
+      });
       response.recipientId =
         twitterId.value || normaliseEmail(userInput.value.recipientId);
       emits("transaction-successful", response);
@@ -368,7 +378,7 @@ function getTokenModelValue(tokenAddress) {
         <label class="text-xs">Chain</label>
         <Dropdown
           @update:model-value="(value) => (userInput.chain = value.chain_id)"
-          :options="supportedChains"
+          :options="requestSupportedChains"
           :model-value="getSelectedChainInfo(userInput.chain)"
           display-field="name"
           placeholder="Select Chain"

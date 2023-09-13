@@ -46,11 +46,11 @@ const useRequestStore = defineStore("request", {
         amount: null,
       };
     },
-    async sendRequest({ amount }) {
+    async sendRequest({ amount, senditContractAddress }) {
       const web3Provider = new ethers.BrowserProvider(authStore.provider);
       const wallet = await web3Provider.getSigner();
       const senditContract = new ethers.Contract(
-        "0xfDB2aA382866bb31704558a0c439dA91353651a9",
+        senditContractAddress,
         SenditRequestABI,
         wallet
       );
@@ -100,9 +100,6 @@ const useRequestStore = defineStore("request", {
         },
         signature: ethers.getBytes(signature),
       };
-      console.log({ signature });
-      console.log({ amount });
-      console.log(data);
       return await conn.sendMessage(SOCKET_IDS.CREATE_REQUEST, data);
     },
   },
