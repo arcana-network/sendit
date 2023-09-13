@@ -3,26 +3,25 @@ import Overlay from "@/components/overlay.vue";
 import copyToClipboard from "@/utils/copyToClipboard";
 import { composeAndSendDM } from "@/utils/tweet";
 import { useToast } from "vue-toastification";
+import useRequestStore from "@/stores/request";
+import { normaliseEmail } from "@/utils/normalise";
 
 type RequestSuccessProps = {
-  medium: string;
-  verifierId: string;
   shareDetails: {
-    isShareRequired: boolean;
+    requestId: string;
     shareLink: string;
   };
-  amount: string | number;
-  currency: string;
-  chain: string;
+  recipientId: string;
 };
 
 const props = defineProps<RequestSuccessProps>();
+const requestStore = useRequestStore();
 const emit = defineEmits(["close", "shoutout"]);
 const toast = useToast();
 const message = `Hello!
 \r\n
-I have sent you ${props.amount} ${props.currency} on ${props.chain} through SendIt!
-Login here using this email to claim (please ensure the URL is of the format "sendit.arcana.network") - ${props.shareDetails.shareLink}
+I have requested some funds from you through SendIt!
+Login here to send - ${props.shareDetails.shareLink}
 \r\n
 SendIt is a product made by Arcana Network to allow users to send crypto to anyone even if they don't have a wallet yet.
 Find out more about Arcana here - https://arcana.network`;
@@ -33,14 +32,14 @@ async function handleLinkCopy() {
 }
 
 function handleTwitterDM() {
-  composeAndSendDM(props.verifierId, message);
+  composeAndSendDM(props.recipientId, message);
 }
 
 function handleMail() {
   window.open(
-    `mailto:${
-      props.verifierId
-    }?subject=SendIt%20-%20Claim%20your%20tokens&body=${encodeURIComponent(
+    `mailto:${normaliseEmail(
+      props.recipientId
+    )}?subject=SendIt%20-%20Claim%20your%20tokens&body=${encodeURIComponent(
       message
     )}`
   );
@@ -73,7 +72,7 @@ function handleMail() {
       <div class="flex flex-col space-y-3 w-full">
         <button
           class="btn btn-submit text-sm w-full font-bold"
-          v-if="props.medium === 'twitter'"
+          v-if="requestStore.userInput.medium === 'twitter'"
           @click.stop="handleTwitterDM"
         >
           Send via twitter DM

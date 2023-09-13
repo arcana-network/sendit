@@ -70,6 +70,12 @@ function getSelectedChainInfo(chainId) {
   );
 }
 
+function serializeDecimal(dec: Decimal): string {
+  const weird = dec.toHexadecimal().slice(2);
+  const len = Math.ceil(weird.length / 2) * 2;
+  return "0x" + weird.padStart(len, "0");
+}
+
 async function proceed() {
   loadStore.showLoader("Sending tokens...");
   let hasUserRejectedChainSwitching = false;
@@ -96,7 +102,7 @@ async function proceed() {
   }
   if (!hasUserRejectedChainSwitching) {
     loadStore.showLoader(
-      "Requesting signature for request tokens...",
+      "Requesting signature to request tokens...",
       `Please sign the message on your wallet.`
     );
     try {
@@ -110,12 +116,13 @@ async function proceed() {
           );
         userInput.value.address = computeAddress(`0x${publicKey}`);
       }
-      const amount = new Decimal(userInput.value.amount || 0)
-        .mul(Decimal.pow(10, 18))
-        .toHexadecimal();
-      await requestStore.sendRequest({ amount });
-      emits("transaction-successful");
-      loadStore.showLoader("Generating link...");
+      const amount = serializeDecimal(
+        new Decimal(userInput.value.amount || 0).mul(Decimal.pow(10, 18))
+      );
+      const response = await requestStore.sendRequest({ amount });
+      response.recipientId =
+        twitterId.value || normaliseEmail(userInput.value.recipientId);
+      emits("transaction-successful", response);
       //@ts-ignore
       resetAll();
     } catch (error: any) {

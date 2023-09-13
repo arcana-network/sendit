@@ -10,41 +10,31 @@ import AppInvite from "@/components/AppInvite.vue";
 import useUserStore from "@/stores/user";
 import TwitterFollowVerify from "@/components/TwitterFollowVerify.vue";
 import { Carousel, Slide, Navigation } from "vue3-carousel";
+import { hexlify } from "ethers";
 
 const requestStore = useRequestStore();
 const showSuccessMessage = ref(false);
 const shareDetails = ref({
-  isShareRequired: false,
   shareLink: "",
+  requestId: "",
 });
-const verifierId = ref("");
-const txHash = ref("");
-const verifierHuman = ref("");
+const recipientId = ref("");
 const showInvitePopup = ref(false);
 const showFollowVerify = ref({
   show: false,
   type: "",
 });
 const userStore = useUserStore();
-const verifier = ref("");
-const amount = ref("");
-const token = ref("");
-const chain = ref("");
 const rewardCards = ref([] as typeof EARN_XP);
 
 function handleTxSuccess(data) {
   showSuccessMessage.value = true;
   shareDetails.value = {
-    shareLink: data.share_url,
-    isShareRequired: data.share_reqd,
+    shareLink: `${window.location.origin}/app/login/${data.share_url}`,
+    requestId: hexlify(data.request_id),
   };
-  amount.value = data.amount;
-  token.value = data.token;
-  chain.value = data.chain;
-  verifierId.value = data.verifier_id;
-  txHash.value = data.hash;
-  verifierHuman.value = data.verifier_human;
-  verifier.value = data.verifier;
+  recipientId.value = data.recipientId;
+  console.log(shareDetails.value);
 }
 
 function resetUserInput() {
@@ -73,12 +63,8 @@ onBeforeMount(async () => {
 <template>
   <RequestSuccess
     v-if="showSuccessMessage"
-    :medium="requestStore.userInput.medium"
     :share-details="shareDetails"
-    :verifier-id="verifierId"
-    :amount="amount"
-    :currency="token"
-    :chain="chain"
+    :recipient-id="recipientId"
     @close="handleSuccessModalClose"
   />
   <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />

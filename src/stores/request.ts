@@ -50,11 +50,12 @@ const useRequestStore = defineStore("request", {
       const web3Provider = new ethers.BrowserProvider(authStore.provider);
       const wallet = await web3Provider.getSigner();
       const senditContract = new ethers.Contract(
-        "0x56ce7Fd7e2ee6d117623Ea1e53f94c14067067B0",
+        "0xfDB2aA382866bb31704558a0c439dA91353651a9",
         SenditRequestABI,
         wallet
       );
       const requestNonce = ethers.randomBytes(32);
+      const expiry = Date.now() + 1000 * 60 * 60 * 24 * 30;
       const request = {
         nonce: BigInt(ethers.hexlify(requestNonce)),
         recipient: userStore.address,
@@ -63,7 +64,7 @@ const useRequestStore = defineStore("request", {
           this.userInput.token === "NATIVE"
             ? ethers.ZeroAddress
             : this.userInput.token,
-        expiry: Date.now() + 1000 * 60 * 60 * 24 * 30,
+        expiry,
       };
       const dataToSign = await buildTypedData(
         Number(this.userInput.chain),
@@ -73,7 +74,7 @@ const useRequestStore = defineStore("request", {
       const signature = await signTypedData(authStore.provider, dataToSign);
       const data = {
         target: this.userInput.address
-          ? Buffer.from(ethers.getBytes(this.userInput.address))
+          ? ethers.getBytes(this.userInput.address)
           : "null",
         target_verifier:
           this.userInput.medium === "mail"
@@ -93,15 +94,16 @@ const useRequestStore = defineStore("request", {
           value: Buffer.from(amount.slice(2), "hex"),
           token_address:
             this.userInput.token === "NATIVE"
-              ? Buffer.from(ethers.getBytes(ethers.ZeroAddress))
-              : Buffer.from(ethers.getBytes(this.userInput.token)),
+              ? ethers.getBytes(ethers.ZeroAddress)
+              : ethers.getBytes(this.userInput.token),
+          expiry: BigInt(expiry),
         },
-        signature: Buffer.from(ethers.getBytes(signature)),
+        signature: ethers.getBytes(signature),
       };
       console.log({ signature });
       console.log({ amount });
       console.log(data);
-      await conn.sendMessage(SOCKET_IDS.CREATE_REQUEST, data);
+      return await conn.sendMessage(SOCKET_IDS.CREATE_REQUEST, data);
     },
   },
 });
