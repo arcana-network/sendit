@@ -21,7 +21,7 @@ import {
   SocketConnectionAccount,
 } from "@/stores/connection.ts";
 import AirdropSuccess from "@/components/AirdropSuccess.vue";
-// import { getBytes } from "ethers";
+import { getBytes } from "ethers";
 
 const AppMaintenance = defineAsyncComponent(
   () => import("@/pages/maintenance.vue")
@@ -181,6 +181,17 @@ watch(
         router.replace({ name: "Send", query });
       }
       await sendStore.fetchSupportedChains();
+      if (route.query.requestId) {
+        try {
+          console.log("Bytes", getBytes(route.query.requestId as string));
+          const request = await conn.sendMessage(SOCKET_IDS.GET_REQUEST, {
+            requestId: getBytes(route.query.requestId as string),
+          });
+          console.log({ request });
+        } catch (e) {
+          console.log(e);
+        }
+      }
       rewardsStore.fetchRewards(userStore.address);
       await userStore.fetchUserPointsAndRank();
       notificationStore.getNotifications();

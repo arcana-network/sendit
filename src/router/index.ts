@@ -1,5 +1,4 @@
 import { createWebHistory, createRouter, RouteRecordRaw } from "vue-router";
-import Invite from "@/pages/invite.vue";
 import App from "@/pages/app.vue";
 import Landing from "@/pages/landing.vue";
 
@@ -12,7 +11,12 @@ const routes: RouteRecordRaw[] = [
   {
     name: "Invite",
     path: "/invite",
-    component: Invite,
+    component: () => import("@/pages/invite.vue"),
+  },
+  {
+    name: "Payment Request",
+    path: "/payment-request",
+    component: () => import("@/pages/payment-request.vue"),
   },
   {
     name: "App",
