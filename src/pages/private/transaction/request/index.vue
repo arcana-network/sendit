@@ -30,7 +30,7 @@ const rewardCards = ref([] as typeof EARN_XP);
 function handleTxSuccess(data) {
   showSuccessMessage.value = true;
   shareDetails.value = {
-    shareLink: `${window.location.origin}/app/login/${data.share_url}`,
+    shareLink: `${window.location.origin}/app/${data.share_url}`,
     requestId: hexlify(data.request_id),
   };
   recipientId.value = data.recipientId;
