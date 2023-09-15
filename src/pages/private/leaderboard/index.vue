@@ -91,7 +91,7 @@ const restRankers = computed(() => rankers.value.slice(3));
           'bg-[#141414] text-white': route.query.duration !== 'global',
         }"
         :to="{ name: 'Leaderboard', query: {} }"
-        >Weekly</router-link
+        >Fortnight</router-link
       >
       <router-link
         class="px-2 py-1 cursor-pointer rounded-[5px]"

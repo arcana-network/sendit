@@ -76,7 +76,7 @@ function handleInvite() {
 const stats = computed(() => {
   return [
     {
-      label: "Weekly Rank",
+      label: "Fortnight Rank",
       value: userStore.rank,
     },
     {

@@ -24,8 +24,8 @@
           Your ultimate solution for hassle-free crypto transfers. Earn points
           with every transaction while contributing to crypto's mainstream
           adoption. Share SendIt with friends on socials for even more points.
-          Win weekly leaderboard challenges for a big airdrops! Also, tune into
-          our socials for updates on rewards that will melt faces! 🤑🤑🤑
+          Win fortnightly leaderboard challenges for a big airdrops! Also, tune
+          into our socials for updates on rewards that will melt faces! 🤑🤑🤑
         </p>
         <div class="flex gap-4 max-md:justify-center">
           <a href="https://twitter.com/arcananetwork" target="_blank"

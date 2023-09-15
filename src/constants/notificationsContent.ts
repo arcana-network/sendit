@@ -130,7 +130,7 @@ const notificationsContent = {
   273: ({ nft_value }) => ({
     title: "NFT Awarded",
     body: `	
-Congratulations on being one of the weekly winners! You have received a ${nft_value} $XAR NFT!`,
+Congratulations on being one of the fornightly winners! You have received a ${nft_value} $XAR NFT!`,
     path: "My Rewards",
     shoutout: false,
   }),

@@ -25,7 +25,7 @@ const faqs = [
   {
     index: "question-5",
     question: "What are some other things that I can do with SendIt?",
-    answer: `We believe in a decentralized internet. SendIt simplifies using technologies like blockchains and crypto wallets. Earn experience points (XP) by spreading the word about SendIt and helping us reach more users and bring them to Web3. XP can lead to weekly and monthly prizes and even future airdrops. So get involved, spread the word, and get rewarded!`,
+    answer: `We believe in a decentralized internet. SendIt simplifies using technologies like blockchains and crypto wallets. Earn experience points (XP) by spreading the word about SendIt and helping us reach more users and bring them to Web3. XP can lead to fortnightly and monthly prizes and even future airdrops. So get involved, spread the word, and get rewarded!`,
   },
 ];
 </script>
