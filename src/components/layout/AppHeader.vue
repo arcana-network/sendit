@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, defineAsyncComponent, watch } from "vue";
+import { computed, ref, defineAsyncComponent } from "vue";
 
 import navMenu from "@/constants/navMenu.ts";
 import { useClickOutside } from "@/use/clickOutside";
