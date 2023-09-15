@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, defineAsyncComponent } from "vue";
+import { computed, ref, defineAsyncComponent, watch } from "vue";
 
 import navMenu from "@/constants/navMenu.ts";
 import { useClickOutside } from "@/use/clickOutside";
@@ -7,6 +7,7 @@ import useUserStore from "@/stores/user";
 // import useRewardsStore from "@/stores/rewards";
 import useNotificationStore from "@/stores/notification";
 import AppInvite from "@/components/AppInvite.vue";
+import { useRoute } from "vue-router";
 
 const MobileMenu = defineAsyncComponent(
   () => import("@/components/mobileMenu.vue")
@@ -22,6 +23,7 @@ type HeaderProps = {
 };
 
 const props = defineProps<HeaderProps>();
+const route = useRoute();
 
 const userStore = useUserStore();
 // const rewardsStore = useRewardsStore();
@@ -109,6 +111,18 @@ const stats = computed(() => {
               v-for="menu in navMenu"
               :key="menu.label"
               :to="{ name: menu.routeName }"
+              :class="{
+                'font-bold':
+                  route.name === menu.routeName ||
+                  route.matched.some(
+                    (record) => record.name === menu.routeName
+                  ),
+                'font-[300]':
+                  route.name !== menu.routeName &&
+                  !route.matched.some(
+                    (record) => record.name === menu.routeName
+                  ),
+              }"
             >
               {{ menu.label }}
             </router-link>

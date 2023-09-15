@@ -4,6 +4,7 @@ import { ref, onBeforeMount } from "vue";
 import SendForm from "@/components/send/sendForm.vue";
 import useSendStore from "@/stores/send";
 import SendSuccess from "@/components/send/success.vue";
+import RequestSendSuccess from "@/components/send/requestSuccess.vue";
 import TweetVerify from "@/components/TweetVerify.vue";
 import { composeAndSendTweet } from "@/utils/tweet";
 import { EARN_XP } from "@/constants/rewards";
@@ -14,6 +15,8 @@ import generateSenditUrl from "@/utils/generateSenditUrl";
 import { normaliseTwitterHandle } from "@/utils/normalise";
 import TwitterFollowVerify from "@/components/TwitterFollowVerify.vue";
 import { Carousel, Slide, Navigation } from "vue3-carousel";
+import { useRoute } from "vue-router";
+import RequestSendForm from "@/components/send/requestForm.vue";
 
 const sendStore = useSendStore();
 const showSuccessMessage = ref(false);
@@ -36,6 +39,7 @@ const amount = ref("");
 const token = ref("");
 const chain = ref("");
 const rewardCards = ref([] as typeof EARN_XP);
+const route = useRoute();
 
 function handleTxSuccess(data) {
   showSuccessMessage.value = true;
@@ -54,6 +58,7 @@ function handleTxSuccess(data) {
 
 function resetUserInput() {
   sendStore.resetUserInput();
+  sendStore.resetRequestInput();
 }
 
 function handleShoutout() {
@@ -63,6 +68,15 @@ function handleShoutout() {
       verifier.value,
       verifierHuman.value
     )} using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
+  );
+  showTweetVerificationModal.value = true;
+  resetUserInput();
+}
+
+function handleRequestShoutout() {
+  showSuccessMessage.value = false;
+  composeAndSendTweet(
+    `Whoosh! I just sent crypto using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
   );
   showTweetVerificationModal.value = true;
   resetUserInput();
@@ -94,8 +108,21 @@ onBeforeMount(async () => {
 </script>
 
 <template>
+  <RequestSendSuccess
+    v-if="
+      showSuccessMessage &&
+      route.query.requestId &&
+      sendStore.requestInput.signature
+    "
+    @shoutout="handleRequestShoutout"
+    @close="handleSuccessModalClose"
+  />
   <SendSuccess
-    v-if="showSuccessMessage"
+    v-if="
+      showSuccessMessage &&
+      !route.query.requestId &&
+      !sendStore.requestInput.signature
+    "
     :medium="sendStore.userInput.medium"
     :share-details="shareDetails"
     :verifier-id="verifierId"
@@ -120,7 +147,11 @@ onBeforeMount(async () => {
   <div
     class="flex flex-col justify-center items-center p-10 max-lg:px-4 space-y-10"
   >
-    <SendForm @transaction-successful="handleTxSuccess" />
+    <RequestSendForm
+      v-if="route.query.requestId && sendStore.requestInput.signature"
+      @transaction-successful="handleTxSuccess"
+    />
+    <SendForm v-else @transaction-successful="handleTxSuccess" />
   </div>
   <Carousel
     wrap-around
@@ -146,10 +177,3 @@ onBeforeMount(async () => {
     bonus XP.</span
   >
 </template>
-
-<style>
-.carousel__next,
-.carousel__prev {
-  color: #f7f7f7 !important;
-}
-</style>

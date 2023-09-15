@@ -13,6 +13,7 @@ import NotWhiteListed from "@/components/not-whitelisted.vue";
 import useSendStore from "@/stores/send";
 import useWalletConnect from "@/use/walletconnect";
 import ReceiverMessage from "@/components/ReceiverMessage.vue";
+import RequestTokensMessage from "@/components/RequestTokensMessage.vue";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import TweetVerify from "@/components/TweetVerify.vue";
 import {
@@ -21,7 +22,8 @@ import {
   SocketConnectionAccount,
 } from "@/stores/connection.ts";
 import AirdropSuccess from "@/components/AirdropSuccess.vue";
-// import { getBytes } from "ethers";
+import { getBytes, hexlify } from "ethers";
+import Decimal from "decimal.js";
 
 const AppMaintenance = defineAsyncComponent(
   () => import("@/pages/maintenance.vue")
@@ -48,6 +50,8 @@ const showTweetVerificationModal = ref(false);
 const tweetHash = ref("");
 const faucetFundsReceived = ref(false);
 const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+const showRequestPopup = ref(false);
+const requestPopupData = ref({} as any);
 
 onMounted(() => {
   loaderStore.showLoader("Initializing...");
@@ -181,6 +185,21 @@ watch(
         router.replace({ name: "Send", query });
       }
       await sendStore.fetchSupportedChains();
+      if (route.query.requestId) {
+        try {
+          const request = await conn.sendMessage(SOCKET_IDS.GET_REQUEST, {
+            request_id: getBytes(route.query.requestId as string),
+          });
+          if (request && request.state === 0) {
+            showRequestPopup.value = true;
+            requestPopupData.value = request;
+          } else {
+            router.push({ name: "Send" });
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
       rewardsStore.fetchRewards(userStore.address);
       await userStore.fetchUserPointsAndRank();
       notificationStore.getNotifications();
@@ -238,6 +257,41 @@ function handleShoutout({ hash }: any) {
 }
 
 const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
+
+function handleRequestDoLater() {
+  showRequestPopup.value = false;
+  sendStore.resetRequestInput();
+  router.replace({ name: "Send" });
+}
+
+function handleRequestAccept() {
+  sendStore.requestInput.amount = new Decimal(
+    hexlify(requestPopupData.value.data.value)
+  ).toNumber();
+  sendStore.requestInput.recipientAddress = hexlify(
+    requestPopupData.value.data.requester
+  );
+  sendStore.requestInput.requestId = route.query.requestId as string;
+  sendStore.requestInput.chain = requestPopupData.value.chain_id;
+  sendStore.requestInput.token = hexlify(
+    requestPopupData.value.data.token_address
+  );
+  sendStore.requestInput.nonce = hexlify(requestPopupData.value.data.nonce);
+  sendStore.requestInput.signature = hexlify(requestPopupData.value.signature);
+  sendStore.requestInput.expiry = requestPopupData.value.data.expiry;
+  router.replace({ name: "Send", query: { ...route.query } });
+  showRequestPopup.value = false;
+}
+
+async function handleRequestReject() {
+  loaderStore.showLoader("Rejecting request...");
+  showRequestPopup.value = false;
+  await conn.sendMessage(SOCKET_IDS.REJECT_REQUEST, {
+    request_id: getBytes(route.query.requestId as string),
+  });
+  router.replace({ name: "Send" });
+  loaderStore.hideLoader();
+}
 </script>
 
 <template>
@@ -282,6 +336,21 @@ const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
       @go-back="handleNoAccessBack"
       @join-waitlist="router.push({ name: 'Waitlist' })"
     />
+    <RequestTokensMessage
+      v-if="showRequestPopup"
+      :data="requestPopupData"
+      @do-later="handleRequestDoLater"
+      @accept="handleRequestAccept"
+      @reject="handleRequestReject"
+      @dismiss="showRequestPopup = false"
+    />
     <div id="recaptcha-v2" data-size="invisible" style="display: none"></div>
   </main>
 </template>
+
+<style>
+.carousel__next,
+.carousel__prev {
+  color: #f7f7f7 !important;
+}
+</style>

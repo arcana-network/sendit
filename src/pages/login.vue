@@ -26,13 +26,14 @@ const walletConnect = useWalletConnect();
 const query = route.query;
 const verifier = query.verifier as string;
 const verifierId = query.verifierId as string;
+const requestId = query.requestId as string;
 
 if (verifier === "passwordless" && verifierId) {
   passwordlessEmailId.value = verifierId;
 }
 
 const socialLoginsFiltered = computed(() => {
-  if (verifier && verifierId) {
+  if (verifier && verifierId && !requestId) {
     return socialLogins.filter((login) => {
       return (
         login.value === verifier ||
@@ -131,7 +132,7 @@ async function onLoginWalletConnected(
                 Welcome to SendIt
               </h1>
               <p
-                v-if="verifier && verifierId"
+                v-if="verifier && verifierId && !requestId"
                 class="text-xs lg:text-base text-philippine-gray max-w-[280px] md:text-center md:mx-auto"
               >
                 Sign-in using the below method to get started
@@ -144,7 +145,9 @@ async function onLoginWalletConnected(
               </p>
             </header>
             <section class="space-y-3 w-full flex flex-col items-start">
-              <span v-if="!verifier" class="text-xs text-philippine-gray"
+              <span
+                v-if="!verifier || requestId"
+                class="text-xs text-philippine-gray"
                 >Social Login</span
               >
               <div
@@ -165,7 +168,7 @@ async function onLoginWalletConnected(
             </section>
             <section
               class="space-y-3 w-full flex flex-col items-start"
-              v-if="!verifier && !verifierId"
+              v-if="(!verifier && !verifierId) || requestId"
             >
               <span class="text-xs text-philippine-gray">Connect Wallet</span>
               <div class="flex flex-col space-y-2 w-full">
@@ -188,7 +191,7 @@ async function onLoginWalletConnected(
               v-if="!verifier || verifier === 'passwordless'"
               class="space-y-3 w-full flex flex-col items-start"
             >
-              <span class="text-xs text-philippine-gray">Email ID</span>
+              <span class="text-xs text-philippine-gray">Email Address</span>
               <form
                 class="flex justify-center items-center w-full bg-dark-charcoal px-2.5 rounded-md"
                 @submit.prevent="passwordlessLogin"
