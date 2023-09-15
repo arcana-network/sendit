@@ -286,10 +286,9 @@ function handleRequestAccept() {
 async function handleRequestReject() {
   loaderStore.showLoader("Rejecting request...");
   showRequestPopup.value = false;
-  const res = await conn.sendMessage(SOCKET_IDS.REJECT_REQUEST, {
+  await conn.sendMessage(SOCKET_IDS.REJECT_REQUEST, {
     request_id: getBytes(route.query.requestId as string),
   });
-  console.log(res);
   router.replace({ name: "Send" });
   loaderStore.hideLoader();
 }

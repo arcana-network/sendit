@@ -2,13 +2,12 @@
 import { onBeforeMount, onBeforeUnmount, ref } from "vue";
 import { useConnection } from "@/stores/connection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
-// import dayjs from "dayjs";
-// import { ethers } from "ethers";
+import dayjs from "dayjs";
+import { ethers } from "ethers";
 import { composeAndSendTweet } from "@/utils/tweet";
 import TweetVerify from "@/components/TweetVerify.vue";
 import { hexlify, formatUnits } from "ethers";
 import { nativeUnitMapping } from "@/constants/unitMapping.ts";
-import dayjs from "dayjs";
 import useUserStore from "@/stores/user";
 import { normaliseTwitterHandle } from "@/utils/normalise";
 import useLoaderStore from "@/stores/loader";
@@ -17,8 +16,13 @@ import { useToast } from "vue-toastification";
 import chainList from "@/constants/chainList";
 import generateSenditUrl from "@/utils/generateSenditUrl";
 import { beautifyAmount } from "@/utils/beautifyAmount";
+import { requestableTokens } from "@/constants/requestableTokens";
+import Decimal from "decimal.js";
+import { router } from "@/router";
+import useSendStore from "@/stores/send";
 
 const conn = useConnection();
+const sendStore = useSendStore();
 
 const history = ref([] as any[]);
 const showTweetVerificationModal = ref(false);
@@ -78,6 +82,56 @@ async function fetchTxHistory() {
     SOCKET_IDS.GET_TX_HISTORY,
     message
   )) as { txns: any[] };
+  const pendingTxns = (await conn.sendMessage(
+    SOCKET_IDS.LIST_REQUESTS,
+    message
+  )) as any;
+  const pendingRequests = pendingTxns.data?.length ? pendingTxns.data : [];
+  const pendingTxnsData = pendingRequests.map((record) => {
+    const tokenAddress = hexlify(record.data.token_address);
+    const token = requestableTokens[record.chain_id].find(
+      (token) =>
+        (tokenAddress === ethers.ZeroAddress && token.address === "NATIVE") ||
+        token.address === tokenAddress
+    );
+    const txState = record.state;
+    const isRequester =
+      userStore.address.toLowerCase() === hexlify(record.data.requester);
+    return {
+      requestId: hexlify(record.request_id),
+      amount: {
+        value: new Decimal(hexlify(record.data.value))
+          .div(Decimal.pow(10, token.decimals || 18))
+          .toString(),
+        currency: token.symbol,
+      },
+      chain: chainList[Number(record.chain_id)]?.name || "N/A",
+      txStatus:
+        txState === 0x0
+          ? "pending"
+          : txState === 0x10
+          ? "cancelled"
+          : txState === 0x20
+          ? "rejected"
+          : "fulfilled",
+      socialId: record.target_verifier_id || hexlify(record.target),
+      verifier: record.target_verifier,
+      walletAddress: hexlify(record.target),
+      link: record.share_url,
+      points: "",
+      isRequester,
+      isPendingRequest: true,
+      data: {
+        rawAmount: new Decimal(hexlify(record.data.value)).toString(),
+        requester: hexlify(record.data.requester),
+        chainId: record.chain_id,
+        token: tokenAddress,
+        signature: hexlify(record.signature),
+        nonce: hexlify(record.data.nonce),
+        expiry: record.data.expiry,
+      },
+    };
+  });
   const txns = txHistory.txns.map((record) => {
     let points;
     if (!record.sent) {
@@ -111,8 +165,8 @@ async function fetchTxHistory() {
     };
   });
   if (txns.length < 20) endOFHistory = true;
-  if (currentPage === 1) history.value = txns;
-  else history.value = [...history.value, ...txns];
+  if (currentPage === 1) history.value = [...pendingTxnsData, ...txns];
+  else history.value = [...pendingTxnsData, ...history.value, ...txns];
   loaderStore.hideLoader();
 }
 
@@ -148,6 +202,36 @@ function getToValue(verifier, verifier_human) {
     return `${normaliseTwitterHandle(verifier_human)}`;
   } else return `an email address`;
 }
+
+function sendTokens(record) {
+  sendStore.requestInput.amount = record.data.rawAmount;
+  sendStore.requestInput.recipientAddress = record.data.requester;
+  sendStore.requestInput.requestId = record.requestId;
+  sendStore.requestInput.chain = record.data.chainId;
+  sendStore.requestInput.token = record.data.token;
+  sendStore.requestInput.nonce = record.data.nonce;
+  sendStore.requestInput.signature = record.data.signature;
+  sendStore.requestInput.expiry = Number(record.data.expiry);
+  router.push({
+    name: "Send",
+    query: {
+      requestId: record.requestId,
+      verifier: record.verifier,
+      verifierId: record.socialId,
+    },
+  });
+}
+
+async function rejectRequest(record, index) {
+  await conn.sendMessage(SOCKET_IDS.REJECT_REQUEST, {
+    request_id: ethers.getBytes(record.requestId),
+  });
+  if (record.isRequester) {
+    history.value[index].txStatus = "cancelled";
+  } else {
+    history.value[index].txStatus = "rejected";
+  }
+}
 </script>
 
 <template>
@@ -174,8 +258,7 @@ function getToValue(verifier, verifier_human) {
         <div class="leaderboard-table-header-item">Sendit Link</div>
         <div class="leaderboard-table-header-item">Tx Status</div>
         <div class="leaderboard-table-header-item">Points</div>
-        <div class="leaderboard-table-header-item">Share</div>
-        <div class="leaderboard-table-header-item"></div>
+        <div class="leaderboard-table-header-item">Action</div>
       </div>
       <div class="grid md:hidden py-4 px-6 uppercase font-bold text-xs">
         Transactions
@@ -186,10 +269,12 @@ function getToValue(verifier, verifier_human) {
           <div class="px-1 py-3">
             <div
               class="grid leaderboard-table-row px-3 py-2 text-sm rounded-[5px] hover:bg-[#464646]"
-              v-for="record in history"
+              v-for="(record, index) in history"
               :key="record.txHash"
             >
-              <div class="leaderboard-table-row-item">{{ record.date }}</div>
+              <div class="leaderboard-table-row-item">
+                <span v-if="record.date">{{ record.date }}</span>
+              </div>
               <div
                 class="leaderboard-table-row-item"
                 :title="`${record.amount.value} ${record.amount.currency}`"
@@ -223,6 +308,7 @@ function getToValue(verifier, verifier_human) {
               </div>
               <div
                 class="leaderboard-table-row-item flex justify-between w-[6rem] capitalize"
+                :class="record.txStatus"
               >
                 {{ record.txStatus }}
               </div>
@@ -230,7 +316,30 @@ function getToValue(verifier, verifier_human) {
                 {{ record.points }}
               </div>
               <div v-else class="leaderboard-table-row-item">-</div>
-              <div class="leaderboard-table-row-item">
+              <div
+                v-if="record.isPendingRequest"
+                class="leaderboard-table-row-item flex items-start gap-2"
+              >
+                <button
+                  class="underline cursor-pointer"
+                  v-if="!record.isRequester && record.txStatus === 'pending'"
+                  @click.stop="sendTokens(record)"
+                >
+                  Send Tokens
+                </button>
+                <button
+                  v-if="record.txStatus === 'pending'"
+                  class="underline cursor-pointer"
+                  @click.stop="rejectRequest(record, index)"
+                >
+                  <span v-if="record.isRequester">Cancel Request</span>
+                  <span v-else>Reject Request</span>
+                </button>
+              </div>
+              <div
+                v-else
+                class="leaderboard-table-row-item flex items-start gap-4"
+              >
                 <button
                   class="underline cursor-pointer"
                   v-if="!record.isSharedOnTwitter"
@@ -241,14 +350,14 @@ function getToValue(verifier, verifier_human) {
                 <div v-else class="text-philippine-gray lg-max:text-center">
                   Shared on Twitter
                 </div>
+                <div
+                  v-if="!record.isSharedOnTwitter"
+                  class="leaderboard-table-row-item text-center text-[#659CFF] text-[10px] bg-[#293C5F] px-1 rounded-[5px] grid self-start content-center"
+                >
+                  Earn 5 XP
+                </div>
+                <div v-else></div>
               </div>
-              <div
-                v-if="!record.isSharedOnTwitter"
-                class="leaderboard-table-row-item text-center text-[#659CFF] text-[10px] bg-[#293C5F] px-1 rounded-[5px] grid content-center"
-              >
-                Earn 5 XP
-              </div>
-              <div v-else></div>
             </div>
           </div>
         </div>
@@ -261,7 +370,9 @@ function getToValue(verifier, verifier_human) {
           >
             <div class="px-2 flex flex-col gap-1 w-[60%]">
               <div class="text-sm font-bold text-[14px]">
-                <span class="capitalize">{{ record.txStatus }}</span
+                <span class="capitalize" :class="record.txStatus">{{
+                  record.txStatus
+                }}</span
                 >&nbsp;
                 <span
                   >{{ record.amount.value }} {{ record.amount.currency }}</span
@@ -305,14 +416,16 @@ function getToValue(verifier, verifier_human) {
                 <span class="font-bold">{{ record.points }}</span>
               </div>
               <div class="text-xs ellipsis">
-                <span class="text-philippine-gray">{{ record.date }}</span>
+                <span class="text-philippine-gray"
+                  ><span v-if="record.date">{{ record.date }}</span></span
+                >
               </div>
               <div class="text-[10px] text-philippine-gray">
                 {{ record.joinDate }}
               </div>
             </div>
             <button
-              v-if="!record.isSharedOnTwitter"
+              v-if="!record.isPendingRequest && !record.isSharedOnTwitter"
               class="flex flex-col p-3 rounded-[5px] bg-[#1a1a1a] justify-center items-center ml-auto cursor-pointer"
               @click.stop="shareTweet(record)"
             >
@@ -323,6 +436,26 @@ function getToValue(verifier, verifier_human) {
                 Earn 5 XP
               </div>
             </button>
+            <div
+              v-if="record.isPendingRequest"
+              class="flex flex-col gap-4 ml-auto text-[12px]"
+            >
+              <button
+                class="underline cursor-pointer p-2"
+                v-if="!record.isRequester && record.txStatus === 'pending'"
+                @click.stop="sendTokens(record)"
+              >
+                Send Tokens
+              </button>
+              <button
+                v-if="record.txStatus === 'pending'"
+                class="underline cursor-pointer p-2"
+                @click.stop="rejectRequest(record, index)"
+              >
+                <span v-if="record.isRequester">Cancel Request</span>
+                <span v-else>Reject Request</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -347,7 +480,7 @@ function getToValue(verifier, verifier_human) {
 .leaderboard-table-row {
   grid-template-columns:
     calc(10% - 0.5rem) 8% 10% calc(12% - 0.5rem) calc(13% - 0.5rem)
-    calc(18% - 0.5rem) 6% 4% 10% 5%;
+    calc(18% - 0.5rem) 6% 4% 15%;
   grid-gap: 0.5rem;
 }
 
@@ -356,5 +489,14 @@ function getToValue(verifier, verifier_human) {
   content: "";
   inset: -4px;
   border-radius: 50%;
+}
+
+.pending {
+  color: #eeb113;
+}
+
+.rejected,
+.cancelled {
+  color: #ff4264;
 }
 </style>

@@ -128,9 +128,7 @@ async function proceed() {
   if (!hasUserRejectedChainSwitching) {
     loadStore.showLoader(
       "Sending tokens...",
-      `Sending ${new Decimal(
-        requestInput.value.amount as number
-      ).toString()} ${tokenSymbol} to ${
+      `Sending ${displayAmount.value} ${tokenSymbol.value} to ${
         requestInput.value.recipientAddress
       } on ${
         chains[Number(requestInput.value.chain)].name
@@ -177,13 +175,13 @@ async function proceed() {
         )?.sendit_contract as string,
       };
       const { hash } = await requestedTokenTransfer(data, feeData);
-      const res = await conn.sendMessage(SOCKET_IDS.FULFILL_REQUEST, {
+      await conn.sendMessage(SOCKET_IDS.FULFILL_REQUEST, {
         tx_hash: ethers.getBytes(hash),
         request_id: ethers.getBytes(requestInput.value.requestId),
       });
-      console.log(res);
       emits("transaction-successful", {});
     } catch (error: any) {
+      console.log(error);
       if (error === SELF_TX_ERROR || error.message === SELF_TX_ERROR) {
         toast.error("You cannot send tokens to yourself");
       } else if (error.code === ACTION_REJECTED) {

@@ -100,28 +100,13 @@ async function requestedTokenTransfer(
   data: RequestedNativeTokenTransferData,
   feeData: FeeData | null
 ) {
-  console.log(data.signature);
   const { v, r, s } = ethers.Signature.from(data.signature);
-  console.log({ v, r, s });
   const web3Provider = new BrowserProvider(data.provider);
   const wallet = await web3Provider.getSigner();
   const senditContract = new Contract(
     data.senditContract,
     senditRequestAbi,
     wallet
-  );
-  console.log({ wallet, senditContract });
-  console.log(
-    "Values passed to populateTransaction",
-    data.nonce,
-    data.recipientAddress,
-    data.value,
-    data.tokenAddress,
-    data.expiry,
-    v,
-    r,
-    s,
-    { value: data.isNative ? 0 : data.value }
   );
   const ptx = await senditContract.send.populateTransaction(
     data.nonce,
@@ -134,16 +119,13 @@ async function requestedTokenTransfer(
     s,
     { value: data.isNative ? data.value : 0 }
   );
-  console.log({ ptx });
   ptx.from = await wallet.getAddress();
   ptx.gasLimit = await web3Provider.estimateGas(ptx);
   if (feeData) {
     ptx.maxFeePerGas = BigInt(feeData.maxFeePerGas);
     ptx.maxPriorityFeePerGas = BigInt(feeData.maxPriorityFeePerGas);
   }
-  console.log({ ptx });
   const tx = await wallet.sendTransaction(ptx);
-  console.log({ tx });
   const confirmed = await tx.wait(4);
 
   if (confirmed == null) {
@@ -169,8 +151,7 @@ async function getERC20Approval(
   ptx.from = await wallet.getAddress();
   ptx.gasLimit = await web3Provider.estimateGas(ptx);
   const tx = await wallet.sendTransaction(ptx);
-  const confirmed = await tx.wait(4);
-  console.log(tx, confirmed);
+  await tx.wait(4);
 }
 
 export {
