@@ -77,6 +77,18 @@ const useSendStore = defineStore("send", {
         amount: null,
       };
     },
+    resetRequestInput() {
+      this.requestInput = {
+        requestId: "",
+        recipientAddress: "",
+        chain: "",
+        token: "",
+        amount: null,
+        nonce: "",
+        signature: "",
+        expiry: 0,
+      };
+    },
   },
 });
 

@@ -4,6 +4,7 @@ import { ref, onBeforeMount } from "vue";
 import SendForm from "@/components/send/sendForm.vue";
 import useSendStore from "@/stores/send";
 import SendSuccess from "@/components/send/success.vue";
+import RequestSendSuccess from "@/components/send/requestSuccess.vue";
 import TweetVerify from "@/components/TweetVerify.vue";
 import { composeAndSendTweet } from "@/utils/tweet";
 import { EARN_XP } from "@/constants/rewards";
@@ -57,6 +58,7 @@ function handleTxSuccess(data) {
 
 function resetUserInput() {
   sendStore.resetUserInput();
+  sendStore.resetRequestInput();
 }
 
 function handleShoutout() {
@@ -66,6 +68,15 @@ function handleShoutout() {
       verifier.value,
       verifierHuman.value
     )} using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
+  );
+  showTweetVerificationModal.value = true;
+  resetUserInput();
+}
+
+function handleRequestShoutout() {
+  showSuccessMessage.value = false;
+  composeAndSendTweet(
+    `Whoosh! I just sent crypto using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
   );
   showTweetVerificationModal.value = true;
   resetUserInput();
@@ -97,8 +108,21 @@ onBeforeMount(async () => {
 </script>
 
 <template>
+  <RequestSendSuccess
+    v-if="
+      showSuccessMessage &&
+      route.query.requestId &&
+      sendStore.requestInput.signature
+    "
+    @shoutout="handleRequestShoutout"
+    @close="handleSuccessModalClose"
+  />
   <SendSuccess
-    v-if="showSuccessMessage"
+    v-if="
+      showSuccessMessage &&
+      !route.query.requestId &&
+      !sendStore.requestInput.signature
+    "
     :medium="sendStore.userInput.medium"
     :share-details="shareDetails"
     :verifier-id="verifierId"

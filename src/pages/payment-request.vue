@@ -11,16 +11,7 @@ onMounted(() => {
     const [verifier, verifierId, requestId] = decode(
       Buffer.from(route.query.x as string, "base64")
     );
-    console.log({
-      name: "App",
-      query: {
-        verifier,
-        verifierId,
-        requestId: hexlify(requestId),
-      },
-      requestId,
-    });
-    router.push({
+    router.replace({
       name: "App",
       query: {
         verifier,

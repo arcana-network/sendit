@@ -190,11 +190,12 @@ watch(
           const request = await conn.sendMessage(SOCKET_IDS.GET_REQUEST, {
             request_id: getBytes(route.query.requestId as string),
           });
-          if (request) {
+          if (request && request.state === 0) {
             showRequestPopup.value = true;
             requestPopupData.value = request;
+          } else {
+            router.push({ name: "Send" });
           }
-          console.log({ request });
         } catch (e) {
           console.log(e);
         }
@@ -259,6 +260,8 @@ const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
 
 function handleRequestDoLater() {
   showRequestPopup.value = false;
+  sendStore.resetRequestInput();
+  router.replace({ name: "Send" });
 }
 
 function handleRequestAccept() {
@@ -276,12 +279,19 @@ function handleRequestAccept() {
   sendStore.requestInput.nonce = hexlify(requestPopupData.value.data.nonce);
   sendStore.requestInput.signature = hexlify(requestPopupData.value.signature);
   sendStore.requestInput.expiry = requestPopupData.value.data.expiry;
-  router.push({ name: "Send", query: { ...route.query } });
+  router.replace({ name: "Send", query: { ...route.query } });
   showRequestPopup.value = false;
 }
 
-function handleRequestReject() {
+async function handleRequestReject() {
+  loaderStore.showLoader("Rejecting request...");
   showRequestPopup.value = false;
+  const res = await conn.sendMessage(SOCKET_IDS.REJECT_REQUEST, {
+    request_id: getBytes(route.query.requestId as string),
+  });
+  console.log(res);
+  router.replace({ name: "Send" });
+  loaderStore.hideLoader();
 }
 </script>
 
