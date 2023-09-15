@@ -14,6 +14,8 @@ import generateSenditUrl from "@/utils/generateSenditUrl";
 import { normaliseTwitterHandle } from "@/utils/normalise";
 import TwitterFollowVerify from "@/components/TwitterFollowVerify.vue";
 import { Carousel, Slide, Navigation } from "vue3-carousel";
+import { useRoute } from "vue-router";
+import RequestSendForm from "@/components/send/requestForm.vue";
 
 const sendStore = useSendStore();
 const showSuccessMessage = ref(false);
@@ -36,6 +38,7 @@ const amount = ref("");
 const token = ref("");
 const chain = ref("");
 const rewardCards = ref([] as typeof EARN_XP);
+const route = useRoute();
 
 function handleTxSuccess(data) {
   showSuccessMessage.value = true;
@@ -120,7 +123,11 @@ onBeforeMount(async () => {
   <div
     class="flex flex-col justify-center items-center p-10 max-lg:px-4 space-y-10"
   >
-    <SendForm @transaction-successful="handleTxSuccess" />
+    <RequestSendForm
+      v-if="route.query.requestId && sendStore.requestInput.signature"
+      @transaction-successful="handleTxSuccess"
+    />
+    <SendForm v-else @transaction-successful="handleTxSuccess" />
   </div>
   <Carousel
     wrap-around

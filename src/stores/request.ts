@@ -71,7 +71,9 @@ const useRequestStore = defineStore("request", {
         senditContract,
         request
       );
+      console.log({ dataToSign });
       const signature = await signTypedData(authStore.provider, dataToSign);
+      console.log({ signature });
       const data = {
         target: this.userInput.address
           ? ethers.getBytes(this.userInput.address)

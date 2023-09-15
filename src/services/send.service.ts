@@ -1,6 +1,8 @@
 import { EthereumProvider } from "@arcana/auth";
-import { BrowserProvider, computeAddress, Contract } from "ethers";
+import { BrowserProvider, computeAddress, Contract, ethers } from "ethers";
 import { Decimal } from "decimal.js";
+import senditRequestAbi from "@/abis/sendit-request.abi.json";
+import erc20ABI from "@/abis/erc20.abi.json";
 
 const SELF_TX_ERROR = "self-transactions are not permitted";
 
@@ -66,7 +68,7 @@ async function erc20TokenTransfer(
     receiverWalletAddress,
     decimalAmount.mul(Decimal.pow(10, tokenDecimals)).toString()
   );
-  ptx.from = await wallet.getAddress()
+  ptx.from = await wallet.getAddress();
   ptx.gasLimit = await web3Provider.estimateGas(ptx);
   if (feeData) {
     ptx.maxFeePerGas = BigInt(feeData.maxFeePerGas);
@@ -82,5 +84,99 @@ async function erc20TokenTransfer(
   return { hash: confirmed.hash, to: receiverWalletAddress };
 }
 
-export { nativeTokenTransfer, erc20TokenTransfer };
+type RequestedNativeTokenTransferData = {
+  signature: string;
+  nonce: string;
+  value: string;
+  recipientAddress: string;
+  tokenAddress: string;
+  expiry: number;
+  isNative: boolean;
+  provider: any;
+  senditContract: string;
+};
+
+async function requestedTokenTransfer(
+  data: RequestedNativeTokenTransferData,
+  feeData: FeeData | null
+) {
+  console.log(data.signature);
+  const { v, r, s } = ethers.Signature.from(data.signature);
+  console.log({ v, r, s });
+  const web3Provider = new BrowserProvider(data.provider);
+  const wallet = await web3Provider.getSigner();
+  const senditContract = new Contract(
+    data.senditContract,
+    senditRequestAbi,
+    wallet
+  );
+  console.log({ wallet, senditContract });
+  console.log(
+    "Values passed to populateTransaction",
+    data.nonce,
+    data.recipientAddress,
+    data.value,
+    data.tokenAddress,
+    data.expiry,
+    v,
+    r,
+    s,
+    { value: data.isNative ? 0 : data.value }
+  );
+  const ptx = await senditContract.send.populateTransaction(
+    data.nonce,
+    data.recipientAddress,
+    data.value,
+    data.tokenAddress,
+    data.expiry,
+    v,
+    r,
+    s,
+    { value: data.isNative ? data.value : 0 }
+  );
+  console.log({ ptx });
+  ptx.from = await wallet.getAddress();
+  ptx.gasLimit = await web3Provider.estimateGas(ptx);
+  if (feeData) {
+    ptx.maxFeePerGas = BigInt(feeData.maxFeePerGas);
+    ptx.maxPriorityFeePerGas = BigInt(feeData.maxPriorityFeePerGas);
+  }
+  console.log({ ptx });
+  const tx = await wallet.sendTransaction(ptx);
+  console.log({ tx });
+  const confirmed = await tx.wait(4);
+
+  if (confirmed == null) {
+    throw new Error("Invalid transaction");
+  }
+
+  return { hash: confirmed.hash };
+}
+
+async function getERC20Approval(
+  tokenContract: string,
+  senditContract: string,
+  value: string,
+  provider: any
+) {
+  const web3Provider = new BrowserProvider(provider);
+  const wallet = await web3Provider.getSigner();
+  const erc20Contract = new Contract(tokenContract, erc20ABI, wallet);
+  const ptx = await erc20Contract.approve.populateTransaction(
+    senditContract,
+    value
+  );
+  ptx.from = await wallet.getAddress();
+  ptx.gasLimit = await web3Provider.estimateGas(ptx);
+  const tx = await wallet.sendTransaction(ptx);
+  const confirmed = await tx.wait(4);
+  console.log(tx, confirmed);
+}
+
+export {
+  nativeTokenTransfer,
+  erc20TokenTransfer,
+  requestedTokenTransfer,
+  getERC20Approval,
+};
 export type { FeeData };

@@ -21,6 +21,16 @@ type SendStoreKind = {
     blockchain: string;
     sendit_contract: string;
   }[];
+  requestInput: {
+    requestId: string;
+    recipientAddress: string;
+    chain: string | number;
+    token: string;
+    amount: number | null;
+    nonce: string;
+    signature: string;
+    expiry: number;
+  };
 };
 
 const useSendStore = defineStore("send", {
@@ -34,6 +44,16 @@ const useSendStore = defineStore("send", {
         amount: null,
       },
       supportedChains: [],
+      requestInput: {
+        requestId: "",
+        recipientAddress: "",
+        chain: "",
+        token: "",
+        amount: null,
+        nonce: "",
+        signature: "",
+        expiry: 0,
+      },
     } as SendStoreKind),
   actions: {
     async fetchSupportedChains() {

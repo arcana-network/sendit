@@ -604,7 +604,7 @@ function getTokenModelValue(tokenAddress) {
           :disabled="disableSubmit"
           :class="{ 'opacity-50': disableSubmit }"
         >
-          Request
+          Send It
         </button>
       </div>
     </form>
