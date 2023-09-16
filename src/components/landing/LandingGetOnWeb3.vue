@@ -4,7 +4,7 @@
     class="h-[234px] md:h-[571px] relative flex items-center mt-[4rem] md:mt-[8rem]"
   >
     <div class="landing-container flex flex-col items-center gap-4">
-      <h3 class="landing-section-title">#GetOnWeb</h3>
+      <h3 class="landing-section-title">#GetOnWeb3</h3>
       <p class="landing-section-description max-w-[688px] text-center">
         There's no better way to inspire others to embrace crypto than by
         getting them to experience it firsthand. With SendIt, you can
