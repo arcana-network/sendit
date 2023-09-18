@@ -324,7 +324,7 @@ function getTokenModelValue(tokenAddress) {
     </div>
     <form class="space-y-3">
       <div class="flex flex-col space-y-1">
-        <label class="text-xs">Recipient's ID</label>
+        <label class="text-xs">Sender's ID</label>
         <input
           class="input"
           v-model.trim="userInput.recipientId"
@@ -347,7 +347,7 @@ function getTokenModelValue(tokenAddress) {
           class="text-[#ff4264] text-[10px]"
           v-if="!userInput.recipientId.trim() && userInput.chain"
         >
-          Please enter the recipient's ID
+          Please enter the sender's ID
         </div>
         <div
           class="text-[#ff4264] text-[10px]"
