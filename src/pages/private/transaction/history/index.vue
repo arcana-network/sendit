@@ -113,7 +113,9 @@ async function fetchTxHistory() {
           ? "cancelled"
           : txState === 0x20
           ? "rejected"
-          : "fulfilled",
+          : userStore.address.toLowerCase() === hexlify(record.data.requester)
+          ? "received"
+          : "sent",
       socialId: record.target_verifier_id || hexlify(record.target),
       verifier: record.target_verifier,
       walletAddress: hexlify(record.target),
@@ -130,6 +132,8 @@ async function fetchTxHistory() {
         nonce: hexlify(record.data.nonce),
         expiry: record.data.expiry,
       },
+      date: dayjs.unix(record.updated_at).format("DD MMM YYYY"),
+      actualDate: record.updated_at,
     };
   });
   const txns = txHistory.txns.map((record) => {
@@ -162,11 +166,13 @@ async function fetchTxHistory() {
       points,
       isSharedOnTwitter: record.shared || false,
       date: dayjs.unix(record.tx_date).format("DD MMM YYYY"),
+      actualDate: record.tx_date,
     };
   });
   if (txns.length < 20) endOFHistory = true;
   if (currentPage === 1) history.value = [...pendingTxnsData, ...txns];
   else history.value = [...pendingTxnsData, ...history.value, ...txns];
+  history.value.sort((a, b) => b.actualDate - a.actualDate);
   loaderStore.hideLoader();
 }
 

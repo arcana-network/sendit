@@ -53,15 +53,19 @@ const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 const showRequestPopup = ref(false);
 const requestPopupData = ref({} as any);
 
+loaderStore.showLoader("Initializing...");
+
 onMounted(() => {
-  loaderStore.showLoader("Initializing...");
   initAuth();
+});
+
+function renderGrecaptcha() {
   window.grecaptcha.render("recaptcha-v2", {
     sitekey: recaptchaSiteKey,
     size: "invisible",
     callback: recaptchaCallback,
   });
-});
+}
 
 async function recaptchaCallback(response: string) {
   conn.recaptchaToken = response;
@@ -119,6 +123,7 @@ async function initAuth() {
     toast.error(error as string);
   } finally {
     loaderStore.hideLoader();
+    renderGrecaptcha();
   }
 }
 

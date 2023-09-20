@@ -84,7 +84,7 @@ const useRequestStore = defineStore("request", {
             : "null",
         target_verifier_id:
           this.userInput.medium === "wallet"
-            ? undefined
+            ? "null"
             : this.userInput.medium === "mail"
             ? normaliseEmail(this.userInput.recipientId)
             : this.userInput.recipientId,
