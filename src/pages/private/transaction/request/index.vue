@@ -26,6 +26,8 @@ const showFollowVerify = ref({
 });
 const userStore = useUserStore();
 const rewardCards = ref([] as typeof EARN_XP);
+const requestSymbol = ref("");
+const requestAmount = ref("");
 
 function handleTxSuccess(data) {
   showSuccessMessage.value = true;
@@ -34,6 +36,8 @@ function handleTxSuccess(data) {
     requestId: hexlify(data.request_id),
   };
   recipientId.value = data.recipientId;
+  requestSymbol.value = data.symbol;
+  requestAmount.value = data.amount;
 }
 
 function resetUserInput() {
@@ -64,6 +68,8 @@ onBeforeMount(async () => {
     v-if="showSuccessMessage"
     :share-details="shareDetails"
     :recipient-id="recipientId"
+    :symbol="requestSymbol"
+    :amount="requestAmount"
     @close="handleSuccessModalClose"
   />
   <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />

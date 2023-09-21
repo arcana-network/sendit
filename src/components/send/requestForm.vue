@@ -260,7 +260,7 @@ function isSelectedVerifier(verifier, v) {
           <div
             v-for="medium in requestVia"
             :key="medium.value"
-            class="border-1 p-1.5 rounded-full transition-all hover:bg-[#313131] cursor-pointer h-[44px] w-[44px] flex items-center justify-center"
+            class="border-1 p-1.5 rounded-full transition-all cursor-default h-[44px] w-[44px] flex items-center justify-center"
             :class="{
               'border-[#4D4D4D]': !isSelectedVerifier(
                 requestInput.recipientVerifier,
