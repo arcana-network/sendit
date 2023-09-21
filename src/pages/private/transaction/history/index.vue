@@ -113,10 +113,12 @@ async function fetchTxHistory() {
           ? "cancelled"
           : txState === 0x20
           ? "rejected"
-          : userStore.address.toLowerCase() === hexlify(record.data.requester)
+          : isRequester
           ? "received"
           : "sent",
-      socialId: record.target_verifier_id || hexlify(record.target),
+      socialId: isRequester
+        ? record.target_verifier_human
+        : record.requester_verifier_human,
       verifier: record.target_verifier,
       walletAddress: hexlify(record.target),
       link: record.share_url,
