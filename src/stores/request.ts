@@ -47,7 +47,7 @@ const useRequestStore = defineStore("request", {
         amount: null,
       };
     },
-    async sendRequest({ amount, senditContractAddress }) {
+    async sendRequest({ amount, senditContractAddress, twitterId }) {
       const web3Provider = new ethers.BrowserProvider(authStore.provider);
       const wallet = await web3Provider.getSigner();
       const senditContract = new ethers.Contract(
@@ -88,7 +88,7 @@ const useRequestStore = defineStore("request", {
             ? "null"
             : this.userInput.medium === "mail"
             ? normaliseEmail(this.userInput.recipientId)
-            : this.userInput.recipientId,
+            : twitterId,
         chain_id: this.userInput.chain,
         data: {
           nonce: requestNonce,

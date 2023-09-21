@@ -16,11 +16,10 @@ const emit = defineEmits(["close", "shoutout"]);
       <div class="space-y-2 flex flex-col items-center">
         <h1 class="uppercase font-bold text-[20px]">Tokens Sent</h1>
         <p class="text-philippine-gray text-[10px] w-3/4 text-center">
-          Wow that was easy. Shoutout on twitter to let your friends know about
-          SendIt!
+          Tokens sent successfully.
         </p>
       </div>
-      <div class="flex flex-col space-y-3 w-full">
+      <!-- <div class="flex flex-col space-y-3 w-full">
         <button
           class="btn btn-submit-secondary flex justify-center gap-2 items-center w-full text-center"
           @click.stop="emit('shoutout')"
@@ -31,7 +30,7 @@ const emit = defineEmits(["close", "shoutout"]);
             >Earn 5 XP</span
           >
         </button>
-      </div>
+      </div> -->
     </div>
   </Overlay>
 </template>
