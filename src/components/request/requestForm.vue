@@ -134,7 +134,7 @@ async function proceed() {
       response.recipientId =
         twitterId.value || normaliseEmail(userInput.value.recipientId);
       response.amount = userInput.value.amount;
-      response.token = getTokenModelValue(userInput.value.token).symbol;
+      response.symbol = getTokenModelValue(userInput.value.token).symbol;
       emits("transaction-successful", response);
       //@ts-ignore
       resetAll();
