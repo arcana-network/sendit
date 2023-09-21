@@ -129,6 +129,7 @@ async function proceed() {
       const response = await requestStore.sendRequest({
         amount,
         senditContractAddress: selectedChain?.sendit_contract,
+        twitterId: twitterId.value,
       });
       response.recipientId =
         twitterId.value || normaliseEmail(userInput.value.recipientId);
