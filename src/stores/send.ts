@@ -24,6 +24,8 @@ type SendStoreKind = {
   requestInput: {
     requestId: string;
     recipientAddress: string;
+    recipientVerifier: string;
+    recipientVerifierHuman: string;
     chain: string | number;
     token: string;
     amount: number | null;
@@ -53,6 +55,8 @@ const useSendStore = defineStore("send", {
         nonce: "",
         signature: "",
         expiry: 0,
+        recipientVerifier: "",
+        recipientVerifierHuman: "",
       },
     } as SendStoreKind),
   actions: {
@@ -87,6 +91,8 @@ const useSendStore = defineStore("send", {
         nonce: "",
         signature: "",
         expiry: 0,
+        recipientVerifier: "",
+        recipientVerifierHuman: "",
       };
     },
   },

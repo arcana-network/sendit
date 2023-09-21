@@ -133,6 +133,8 @@ async function fetchTxHistory() {
         signature: hexlify(record.signature),
         nonce: hexlify(record.data.nonce),
         expiry: record.data.expiry,
+        requesterVerifier: record.requester_verifier,
+        requesterVerifierHuman: record.requester_verifier_human,
       },
       date: dayjs.unix(record.updated_at).format("DD MMM YYYY"),
       actualDate: record.updated_at,
@@ -220,6 +222,9 @@ function sendTokens(record) {
   sendStore.requestInput.nonce = record.data.nonce;
   sendStore.requestInput.signature = record.data.signature;
   sendStore.requestInput.expiry = Number(record.data.expiry);
+  sendStore.requestInput.recipientVerifier = record.data.requesterVerifier;
+  sendStore.requestInput.recipientVerifierHuman =
+    record.data.requesterVerifierHuman;
   router.push({
     name: "Send",
     query: {

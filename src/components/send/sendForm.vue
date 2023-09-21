@@ -483,7 +483,7 @@ function getTokenModelValue(tokenAddress) {
   <div
     class="w-full max-w-[450px] space-y-4 border-1 border-jet p-4 rounded-md bg-eerie-black"
   >
-    <h1 class="uppercase font-bold">Send</h1>
+    <h1 class="uppercase font-bold">Send Tokens</h1>
     <hr class="border-0 border-b border-solid border-[#363636] -mx-4" />
     <div class="space-y-1">
       <h2 class="text-xs">Send Via</h2>
@@ -504,7 +504,7 @@ function getTokenModelValue(tokenAddress) {
     </div>
     <form class="space-y-3">
       <div class="flex flex-col space-y-1">
-        <label class="text-xs">Recipient's ID</label>
+        <label class="text-xs">Recipient ID</label>
         <input
           class="input"
           v-model.trim="userInput.recipientId"

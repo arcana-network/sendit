@@ -18,6 +18,7 @@ import {
   requestedTokenTransfer,
   getERC20Approval,
 } from "@/services/send.service";
+import requestVia from "@/constants/requestVia";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -129,7 +130,7 @@ async function proceed() {
     loadStore.showLoader(
       "Sending tokens...",
       `Sending ${displayAmount.value} ${tokenSymbol.value} to ${
-        requestInput.value.recipientAddress
+        requestInput.value.recipientVerifierHuman
       } on ${
         chains[Number(requestInput.value.chain)].name
       } chain. Please approve the transaction on your wallet and wait until it is completed.`
@@ -233,18 +234,55 @@ async function switchChain(chainId: string) {
     ],
   });
 }
+
+function isSelectedVerifier(verifier, v) {
+  if (verifier === "null" && v === "wallet") {
+    return true;
+  } else if (verifier === "passwordless" && v === "mail") {
+    return true;
+  } else if (verifier === "twitter" && v === "twitter") {
+    return true;
+  }
+  return false;
+}
 </script>
 
 <template>
   <div
     class="w-full max-w-[450px] space-y-4 border-1 border-jet p-4 rounded-md bg-eerie-black"
   >
-    <h1 class="uppercase font-bold">Send</h1>
+    <h1 class="uppercase font-bold">Send Tokens</h1>
     <hr class="border-0 border-b border-solid border-[#363636] -mx-4" />
     <form class="space-y-3">
+      <div class="space-y-1">
+        <h2 class="text-xs">Send Via</h2>
+        <div class="flex items-center space-x-2">
+          <div
+            v-for="medium in requestVia"
+            :key="medium.value"
+            class="border-1 p-1.5 rounded-full transition-all hover:bg-[#313131] cursor-pointer h-[44px] w-[44px] flex items-center justify-center"
+            :class="{
+              'border-[#4D4D4D]': !isSelectedVerifier(
+                requestInput.recipientVerifier,
+                medium.value
+              ),
+              'border-white bg-[#313131]': isSelectedVerifier(
+                requestInput.recipientVerifier,
+                medium.value
+              ),
+            }"
+          >
+            <img :src="medium.icon" :alt="medium.value" />
+          </div>
+        </div>
+      </div>
       <div class="flex flex-col space-y-1">
-        <label class="text-xs">Recipient's Wallet Address</label>
-        <input class="input" :value="requestInput.recipientAddress" disabled />
+        <label class="text-xs">Recipient ID</label>
+        <input
+          class="input"
+          :value="requestInput.recipientVerifierHuman"
+          disabled
+        />
       </div>
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Chain</label>
