@@ -1,5 +1,33 @@
 <script setup lang="ts">
 import Overlay from "@/components/overlay.vue";
+import { onBeforeMount, reactive } from "vue";
+import { ethers, hexlify } from "ethers";
+import { requestableTokens } from "@/constants/requestableTokens";
+import Decimal from "decimal.js";
+
+const props = defineProps<{
+  data: any;
+}>();
+
+const reactiveData = reactive({
+  symbol: "",
+  decimals: "",
+  amount: "",
+});
+
+onBeforeMount(() => {
+  const tokenAddr = hexlify(props.data.data.token_address);
+  const r = requestableTokens[props.data.chain_id].find((token) =>
+    tokenAddr === ethers.ZeroAddress
+      ? token.address === "NATIVE"
+      : token.address === tokenAddr
+  );
+  reactiveData.symbol = r.symbol;
+  reactiveData.decimals = r.decimals;
+  reactiveData.amount = new Decimal(hexlify(props.data.data.value))
+    .div(Decimal.pow(10, r.decimals))
+    .toString();
+});
 
 const emits = defineEmits(["dismiss", "reject", "accept", "do-later"]);
 </script>
@@ -23,8 +51,10 @@ const emits = defineEmits(["dismiss", "reject", "accept", "do-later"]);
             >TOKENS REQUESTED</span
           >
           <span class="text-xs text-philippine-gray text-center max-w-[320px]">
-            You have a request to send 0.15 ETH to karthiknathan@gmail.com.
-            Would you like to do so now?
+            You have a request to send {{ reactiveData.amount }}
+            {{ reactiveData.symbol }} to
+            {{ props.data.requester_verifier_human }}. Would you like to do so
+            now?
           </span>
         </div>
         <div class="flex flex-col gap-3">

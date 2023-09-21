@@ -12,6 +12,7 @@ import { normaliseEmail } from "@/utils/normalise";
 const conn = useConnection(activePiniaInstance);
 const authStore = useAuthStore(activePiniaInstance);
 const userStore = useUserStore(activePiniaInstance);
+const REQUEST_EXPIRY = 1000 * 60 * 15; // 15 minutes
 
 type RequestStoreKind = {
   userInput: {
@@ -55,7 +56,7 @@ const useRequestStore = defineStore("request", {
         wallet
       );
       const requestNonce = ethers.randomBytes(32);
-      const expiry = Date.now() + 1000 * 60 * 60 * 24 * 30;
+      const expiry = Date.now() + REQUEST_EXPIRY;
       const request = {
         nonce: BigInt(ethers.hexlify(requestNonce)),
         recipient: userStore.address,
@@ -84,7 +85,7 @@ const useRequestStore = defineStore("request", {
             : "null",
         target_verifier_id:
           this.userInput.medium === "wallet"
-            ? undefined
+            ? "null"
             : this.userInput.medium === "mail"
             ? normaliseEmail(this.userInput.recipientId)
             : this.userInput.recipientId,

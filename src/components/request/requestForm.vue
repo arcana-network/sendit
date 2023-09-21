@@ -132,6 +132,8 @@ async function proceed() {
       });
       response.recipientId =
         twitterId.value || normaliseEmail(userInput.value.recipientId);
+      response.amount = userInput.value.amount;
+      response.token = getTokenModelValue(userInput.value.token).symbol;
       emits("transaction-successful", response);
       //@ts-ignore
       resetAll();
@@ -306,7 +308,7 @@ function getTokenModelValue(tokenAddress) {
     <h1 class="uppercase font-bold">Request</h1>
     <hr class="border-0 border-b border-solid border-[#363636] -mx-4" />
     <div class="space-y-1">
-      <h2 class="text-xs">Request Tokens from</h2>
+      <h2 class="text-xs">Request Via</h2>
       <div class="flex items-center space-x-2">
         <div
           v-for="medium in requestVia"
@@ -324,7 +326,7 @@ function getTokenModelValue(tokenAddress) {
     </div>
     <form class="space-y-3">
       <div class="flex flex-col space-y-1">
-        <label class="text-xs">Recipient's ID</label>
+        <label class="text-xs">Request From</label>
         <input
           class="input"
           v-model.trim="userInput.recipientId"

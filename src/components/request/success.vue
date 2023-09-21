@@ -12,6 +12,8 @@ type RequestSuccessProps = {
     shareLink: string;
   };
   recipientId: string;
+  amount: string;
+  symbol: string;
 };
 
 const props = defineProps<RequestSuccessProps>();
@@ -20,7 +22,7 @@ const emit = defineEmits(["close", "shoutout"]);
 const toast = useToast();
 const message = `Hello!
 \r\n
-I have requested some funds from you through SendIt!
+I have requested ${props.amount} ${props.symbol} from you through SendIt!
 Login here to send - ${props.shareDetails.shareLink}
 \r\n
 SendIt is a product made by Arcana Network to allow users to send crypto to anyone even if they don't have a wallet yet.
@@ -39,7 +41,7 @@ function handleMail() {
   window.open(
     `mailto:${normaliseEmail(
       props.recipientId
-    )}?subject=SendIt%20-%20Claim%20your%20tokens&body=${encodeURIComponent(
+    )}?subject=SendIt%20-%20Requested%20some%20tokens&body=${encodeURIComponent(
       message
     )}`
   );

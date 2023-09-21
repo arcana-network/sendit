@@ -24,6 +24,14 @@ import {
 import AirdropSuccess from "@/components/AirdropSuccess.vue";
 import { getBytes, hexlify } from "ethers";
 import Decimal from "decimal.js";
+import TokenRequestInvalid from "@/components/TokenRequestInvalid.vue";
+
+const REQUEST_STATE = {
+  UNFULFILLED: 0x0,
+  CANCELLED: 0x10,
+  REJECTED: 0x20,
+  FULFILLED: 0xf0,
+};
 
 const AppMaintenance = defineAsyncComponent(
   () => import("@/pages/maintenance.vue")
@@ -52,16 +60,22 @@ const faucetFundsReceived = ref(false);
 const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 const showRequestPopup = ref(false);
 const requestPopupData = ref({} as any);
+const showRequestInvalidPopup = ref(false);
+const requestInvalidPopupType = ref("");
+
+loaderStore.showLoader("Initializing...");
 
 onMounted(() => {
-  loaderStore.showLoader("Initializing...");
   initAuth();
+});
+
+function renderGrecaptcha() {
   window.grecaptcha.render("recaptcha-v2", {
     sitekey: recaptchaSiteKey,
     size: "invisible",
     callback: recaptchaCallback,
   });
-});
+}
 
 async function recaptchaCallback(response: string) {
   conn.recaptchaToken = response;
@@ -119,6 +133,7 @@ async function initAuth() {
     toast.error(error as string);
   } finally {
     loaderStore.hideLoader();
+    renderGrecaptcha();
   }
 }
 
@@ -190,11 +205,29 @@ watch(
           const request = await conn.sendMessage(SOCKET_IDS.GET_REQUEST, {
             request_id: getBytes(route.query.requestId as string),
           });
-          if (request && request.state === 0) {
-            showRequestPopup.value = true;
-            requestPopupData.value = request;
+          if (request) {
+            if (Number(request.data.expiry) < Date.now()) {
+              showRequestInvalidPopup.value = true;
+              requestInvalidPopupType.value = "expired";
+            } else if (
+              request.state === REQUEST_STATE.CANCELLED ||
+              request.state === REQUEST_STATE.REJECTED ||
+              request.state === REQUEST_STATE.FULFILLED
+            ) {
+              showRequestInvalidPopup.value = true;
+              requestInvalidPopupType.value = REQUEST_STATE.CANCELLED
+                ? "cancelled"
+                : REQUEST_STATE.REJECTED
+                ? "rejected"
+                : "fulfilled";
+            } else if (request.state === REQUEST_STATE.UNFULFILLED) {
+              showRequestPopup.value = true;
+              requestPopupData.value = request;
+            } else {
+              router.replace({ name: "Send" });
+            }
           } else {
-            router.push({ name: "Send" });
+            router.replace({ name: "Send" });
           }
         } catch (e) {
           console.log(e);
@@ -265,6 +298,7 @@ function handleRequestDoLater() {
 }
 
 function handleRequestAccept() {
+  showReceivedCryptoMessage.value = false;
   sendStore.requestInput.amount = new Decimal(
     hexlify(requestPopupData.value.data.value)
   ).toNumber();
@@ -279,6 +313,10 @@ function handleRequestAccept() {
   sendStore.requestInput.nonce = hexlify(requestPopupData.value.data.nonce);
   sendStore.requestInput.signature = hexlify(requestPopupData.value.signature);
   sendStore.requestInput.expiry = requestPopupData.value.data.expiry;
+  sendStore.requestInput.recipientVerifier =
+    requestPopupData.value.requester_verifier;
+  sendStore.requestInput.recipientVerifierHuman =
+    requestPopupData.value.requester_verifier_human;
   router.replace({ name: "Send", query: { ...route.query } });
   showRequestPopup.value = false;
 }
@@ -291,6 +329,12 @@ async function handleRequestReject() {
   });
   router.replace({ name: "Send" });
   loaderStore.hideLoader();
+}
+
+function handleExpiryDismiss() {
+  showRequestInvalidPopup.value = false;
+  requestInvalidPopupType.value = "";
+  router.replace({ name: "Send" });
 }
 </script>
 
@@ -335,6 +379,11 @@ async function handleRequestReject() {
       v-if="isNotWhitelisted && !hasBalance"
       @go-back="handleNoAccessBack"
       @join-waitlist="router.push({ name: 'Waitlist' })"
+    />
+    <TokenRequestInvalid
+      v-if="showRequestInvalidPopup"
+      :type="requestInvalidPopupType"
+      @dismiss="handleExpiryDismiss"
     />
     <RequestTokensMessage
       v-if="showRequestPopup"
