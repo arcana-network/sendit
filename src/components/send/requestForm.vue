@@ -180,6 +180,9 @@ async function proceed() {
         tx_hash: ethers.getBytes(hash),
         request_id: ethers.getBytes(requestInput.value.requestId),
       });
+      await sendStore.removePendingTxForPaymentRequest(
+        requestInput.value.requestId
+      );
       emits("transaction-successful", {});
     } catch (error: any) {
       console.log(error);
