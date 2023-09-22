@@ -75,8 +75,8 @@ async function fetchTxHistory() {
     loaderStore.showLoader("Loading more transactions...");
   }
   const message = {
-    offset: (currentPage - 1) * 20,
-    count: 20,
+    offset: (currentPage - 1) * 30,
+    count: 30,
   };
   const txHistory = (await conn.sendMessage(
     SOCKET_IDS.GET_TX_HISTORY,
@@ -87,7 +87,7 @@ async function fetchTxHistory() {
     message
   )) as any;
   const pendingRequests = pendingTxns.data?.length ? pendingTxns.data : [];
-  const pendingTxnsData = pendingRequests.map((record) => {
+  const pendingRequestTxnsData = pendingRequests.map((record) => {
     const tokenAddress = hexlify(record.data.token_address);
     const token = requestableTokens[record.chain_id].find(
       (token) =>
@@ -174,8 +174,8 @@ async function fetchTxHistory() {
     };
   });
   if (txns.length < 20) endOFHistory = true;
-  if (currentPage === 1) history.value = [...pendingTxnsData, ...txns];
-  else history.value = [...pendingTxnsData, ...history.value, ...txns];
+  if (currentPage === 1) history.value = [...pendingRequestTxnsData, ...txns];
+  else history.value = [...pendingRequestTxnsData, ...history.value, ...txns];
   history.value.sort((a, b) => b.actualDate - a.actualDate);
   loaderStore.hideLoader();
 }
