@@ -206,10 +206,7 @@ watch(
             request_id: getBytes(route.query.requestId as string),
           });
           if (request) {
-            if (Number(request.data.expiry) < Date.now()) {
-              showRequestInvalidPopup.value = true;
-              requestInvalidPopupType.value = "expired";
-            } else if (
+            if (
               request.state === REQUEST_STATE.CANCELLED ||
               request.state === REQUEST_STATE.REJECTED ||
               request.state === REQUEST_STATE.FULFILLED
@@ -220,6 +217,9 @@ watch(
                 : REQUEST_STATE.REJECTED
                 ? "rejected"
                 : "fulfilled";
+            } else if (Number(request.data.expiry) < Date.now()) {
+              showRequestInvalidPopup.value = true;
+              requestInvalidPopupType.value = "expired";
             } else if (request.state === REQUEST_STATE.UNFULFILLED) {
               showRequestPopup.value = true;
               requestPopupData.value = request;
@@ -295,6 +295,10 @@ function handleRequestDoLater() {
   showRequestPopup.value = false;
   sendStore.resetRequestInput();
   router.replace({ name: "Send" });
+  conn.sendMessage(SOCKET_IDS.ADD_PENDING_TX, {
+    type: "request",
+    ...requestPopupData.value,
+  });
 }
 
 function handleRequestAccept() {
@@ -319,11 +323,18 @@ function handleRequestAccept() {
     requestPopupData.value.requester_verifier_human;
   router.replace({ name: "Send", query: { ...route.query } });
   showRequestPopup.value = false;
+  conn.sendMessage(SOCKET_IDS.ADD_PENDING_TX, {
+    type: "request",
+    ...requestPopupData.value,
+  });
 }
 
 async function handleRequestReject() {
   loaderStore.showLoader("Rejecting request...");
   showRequestPopup.value = false;
+  await sendStore.removePendingTxForPaymentRequest(
+    route.query.requestId as string
+  );
   await conn.sendMessage(SOCKET_IDS.REJECT_REQUEST, {
     request_id: getBytes(route.query.requestId as string),
   });

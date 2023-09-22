@@ -150,6 +150,9 @@ async function proceed() {
           maxPriorityFeePerGas: hexlify(gasStation.max_priority_fee),
         };
       }
+      if (requestInput.value.recipientAddress === userStore.address) {
+        throw SELF_TX_ERROR;
+      }
       const isNative = requestInput.value.token === ethers.ZeroAddress;
       if (!isNative) {
         await getERC20Approval(
@@ -180,6 +183,9 @@ async function proceed() {
         tx_hash: ethers.getBytes(hash),
         request_id: ethers.getBytes(requestInput.value.requestId),
       });
+      await sendStore.removePendingTxForPaymentRequest(
+        requestInput.value.requestId
+      );
       emits("transaction-successful", {});
     } catch (error: any) {
       console.log(error);

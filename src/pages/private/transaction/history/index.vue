@@ -63,6 +63,97 @@ function getCurrency(chainId: string | number, info: any) {
   return nativeUnitMapping[Number(chainId)];
 }
 
+function sanitizePaymentRequestRecord(record) {
+  const tokenAddress = hexlify(record.data.token_address);
+  const token = requestableTokens[record.chain_id].find(
+    (token) =>
+      (tokenAddress === ethers.ZeroAddress && token.address === "NATIVE") ||
+      token.address === tokenAddress
+  );
+  const txState = record.state;
+  const isRequester =
+    userStore.address.toLowerCase() === hexlify(record.data.requester);
+  return {
+    requestId: hexlify(record.request_id),
+    amount: {
+      value: new Decimal(hexlify(record.data.value))
+        .div(Decimal.pow(10, token.decimals || 18))
+        .toString(),
+      currency: token.symbol,
+    },
+    chain: chainList[Number(record.chain_id)]?.name || "N/A",
+    txStatus:
+      txState === 0x0 && Number(record.data.expiry) < Date.now()
+        ? "expired"
+        : txState === 0x0
+        ? "pending"
+        : txState === 0x10
+        ? "cancelled"
+        : txState === 0x20
+        ? "rejected"
+        : isRequester
+        ? "received"
+        : "sent",
+    socialId: isRequester
+      ? record.target_verifier_human
+      : record.requester_verifier_human,
+    verifier: record.target_verifier,
+    walletAddress: hexlify(record.target),
+    link: record.share_url,
+    points: "",
+    isRequester,
+    isPendingRequest: true,
+    data: {
+      rawAmount: new Decimal(hexlify(record.data.value)).toString(),
+      requester: hexlify(record.data.requester),
+      chainId: record.chain_id,
+      token: tokenAddress,
+      signature: hexlify(record.signature),
+      nonce: hexlify(record.data.nonce),
+      expiry: record.data.expiry,
+      requesterVerifier: record.requester_verifier,
+      requesterVerifierHuman: record.requester_verifier_human,
+    },
+    rawData: record,
+    date: dayjs.unix(record.updated_at).format("DD MMM YYYY"),
+    actualDate: record.updated_at,
+  };
+}
+
+function sanitizeTokenTransferRecord(record) {
+  let points;
+  if (!record.sent) {
+    if (record.shared) {
+      points = "5";
+    } else {
+      points = "";
+    }
+  } else {
+    if (record.shared) {
+      points = record.points + 5;
+    } else {
+      points = record.points;
+    }
+  }
+  return {
+    amount: {
+      value: formatUnits(hexlify(record.amount), getDecimals(record.info)),
+      currency: getCurrency(record.chainId, record.info),
+    },
+    chain: chainList[Number(record.chainId)]?.name || "N/A",
+    txHash: hexlify(record.hash),
+    txStatus: record.sent ? "sent" : "received",
+    socialId: record.user.verifier_human || hexlify(record.user_address),
+    verifier: record.user?.verifier,
+    walletAddress: hexlify(record.user_address),
+    link: record.share_url,
+    points,
+    isSharedOnTwitter: record.shared || false,
+    date: dayjs.unix(record.tx_date).format("DD MMM YYYY"),
+    actualDate: record.tx_date,
+  };
+}
+
 onBeforeUnmount(() => {
   document.onscroll = null;
   currentPage = 1;
@@ -75,107 +166,44 @@ async function fetchTxHistory() {
     loaderStore.showLoader("Loading more transactions...");
   }
   const message = {
-    offset: (currentPage - 1) * 20,
-    count: 20,
+    offset: (currentPage - 1) * 30,
+    count: 30,
   };
   const txHistory = (await conn.sendMessage(
     SOCKET_IDS.GET_TX_HISTORY,
     message
   )) as { txns: any[] };
-  const pendingTxns = (await conn.sendMessage(
+  const paymentRequestTxns = (await conn.sendMessage(
     SOCKET_IDS.LIST_REQUESTS,
     message
   )) as any;
-  const pendingRequests = pendingTxns.data?.length ? pendingTxns.data : [];
-  const pendingTxnsData = pendingRequests.map((record) => {
-    const tokenAddress = hexlify(record.data.token_address);
-    const token = requestableTokens[record.chain_id].find(
-      (token) =>
-        (tokenAddress === ethers.ZeroAddress && token.address === "NATIVE") ||
-        token.address === tokenAddress
-    );
-    const txState = record.state;
-    const isRequester =
-      userStore.address.toLowerCase() === hexlify(record.data.requester);
-    return {
-      requestId: hexlify(record.request_id),
-      amount: {
-        value: new Decimal(hexlify(record.data.value))
-          .div(Decimal.pow(10, token.decimals || 18))
-          .toString(),
-        currency: token.symbol,
-      },
-      chain: chainList[Number(record.chain_id)]?.name || "N/A",
-      txStatus:
-        txState === 0x0
-          ? "pending"
-          : txState === 0x10
-          ? "cancelled"
-          : txState === 0x20
-          ? "rejected"
-          : isRequester
-          ? "received"
-          : "sent",
-      socialId: isRequester
-        ? record.target_verifier_human
-        : record.requester_verifier_human,
-      verifier: record.target_verifier,
-      walletAddress: hexlify(record.target),
-      link: record.share_url,
-      points: "",
-      isRequester,
-      isPendingRequest: true,
-      data: {
-        rawAmount: new Decimal(hexlify(record.data.value)).toString(),
-        requester: hexlify(record.data.requester),
-        chainId: record.chain_id,
-        token: tokenAddress,
-        signature: hexlify(record.signature),
-        nonce: hexlify(record.data.nonce),
-        expiry: record.data.expiry,
-        requesterVerifier: record.requester_verifier,
-        requesterVerifierHuman: record.requester_verifier_human,
-      },
-      date: dayjs.unix(record.updated_at).format("DD MMM YYYY"),
-      actualDate: record.updated_at,
-    };
+  const paymentRequests = paymentRequestTxns.data?.length
+    ? paymentRequestTxns.data
+    : [];
+  const paymentRequestTxnsData = paymentRequests.map((record) => {
+    return sanitizePaymentRequestRecord(record);
   });
   const txns = txHistory.txns.map((record) => {
-    let points;
-    if (!record.sent) {
-      if (record.shared) {
-        points = "5";
-      } else {
-        points = "";
-      }
-    } else {
-      if (record.shared) {
-        points = record.points + 5;
-      } else {
-        points = record.points;
-      }
-    }
-    return {
-      amount: {
-        value: formatUnits(hexlify(record.amount), getDecimals(record.info)),
-        currency: getCurrency(record.chainId, record.info),
-      },
-      chain: chainList[Number(record.chainId)]?.name || "N/A",
-      txHash: hexlify(record.hash),
-      txStatus: record.sent ? "sent" : "received",
-      socialId: record.user.verifier_human || hexlify(record.user_address),
-      verifier: record.user?.verifier,
-      walletAddress: hexlify(record.user_address),
-      link: record.share_url,
-      points,
-      isSharedOnTwitter: record.shared || false,
-      date: dayjs.unix(record.tx_date).format("DD MMM YYYY"),
-      actualDate: record.tx_date,
-    };
+    return sanitizeTokenTransferRecord(record);
   });
   if (txns.length < 20) endOFHistory = true;
-  if (currentPage === 1) history.value = [...pendingTxnsData, ...txns];
-  else history.value = [...pendingTxnsData, ...history.value, ...txns];
+  if (currentPage === 1) {
+    const pendingTx = (await conn.sendMessage(
+      SOCKET_IDS.LIST_PENDING_TXS
+    )) as any;
+    const pendingTxns = pendingTx?.length ? pendingTx : [];
+    const pendingTxnsData = pendingTxns.map((record) => {
+      let sanitizedRecord: any;
+      if (record.data.type === "request") {
+        sanitizedRecord = sanitizePaymentRequestRecord(record.data) as any;
+      } else {
+        sanitizedRecord = sanitizeTokenTransferRecord(record.data) as any;
+      }
+      sanitizedRecord.pendingTxId = record.id;
+      return sanitizedRecord;
+    });
+    history.value = [...pendingTxnsData, ...paymentRequestTxnsData, ...txns];
+  } else history.value = [...paymentRequestTxnsData, ...txns, ...history.value];
   history.value.sort((a, b) => b.actualDate - a.actualDate);
   loaderStore.hideLoader();
 }
@@ -233,6 +261,10 @@ function sendTokens(record) {
       verifierId: record.socialId,
     },
   });
+  conn.sendMessage(SOCKET_IDS.ADD_PENDING_TX, {
+    type: "request",
+    ...record.rawData,
+  });
 }
 
 async function rejectRequest(record, index) {
@@ -244,6 +276,7 @@ async function rejectRequest(record, index) {
   } else {
     history.value[index].txStatus = "rejected";
   }
+  await sendStore.removePendingTxForPaymentRequest(record.requestId);
 }
 </script>
 
@@ -509,7 +542,8 @@ async function rejectRequest(record, index) {
 }
 
 .rejected,
-.cancelled {
+.cancelled,
+.expired {
   color: #ff4264;
 }
 </style>

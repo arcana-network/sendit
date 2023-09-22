@@ -95,6 +95,21 @@ const useSendStore = defineStore("send", {
         recipientVerifierHuman: "",
       };
     },
+    async removePendingTxForPaymentRequest(requestId: string) {
+      const pendingTxns = await conn.sendMessage(SOCKET_IDS.LIST_PENDING_TXS);
+      if (pendingTxns.length) {
+        const pendingRequest = pendingTxns.find(
+          (txn) =>
+            txn.data.type === "request" &&
+            hexlify(txn.data.request_id) === requestId
+        );
+        if (pendingRequest) {
+          await conn.sendMessage(SOCKET_IDS.REMOVE_PENDING_TX, {
+            id: pendingRequest.id,
+          });
+        }
+      }
+    },
   },
 });
 

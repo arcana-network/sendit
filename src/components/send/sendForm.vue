@@ -114,32 +114,35 @@ async function fetchAssets() {
       "polygon",
       "polygon_mumbai",
       "arbitrum",
+      "bsc",
     ]);
+    let erc20Assets = [] as any[];
     if (data?.result?.assets?.length) {
-      allAssets.value = data?.result?.assets.map((asset) => {
-        const address =
-          asset.tokenType === "NATIVE" ? "NATIVE" : asset.contractAddress;
+      erc20Assets = data?.result?.assets
+        .map((asset) => {
+          const address =
+            asset.tokenType === "NATIVE" ? "NATIVE" : asset.contractAddress;
+          return {
+            ...asset,
+            contractAddress: address,
+            name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
+          };
+        })
+        .filter((asset) => asset.tokenType !== "NATIVE");
+    }
+    let nativeAssets = [] as any[];
+    const nativeData = await getNativeTokenBalances(walletAddress);
+    if (nativeData?.length) {
+      nativeAssets = nativeData?.map((asset) => {
+        const address = "NATIVE";
         return {
           ...asset,
           contractAddress: address,
           name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
         };
       });
-    } else {
-      const nativeData = await getNativeTokenBalances(walletAddress);
-      if (nativeData?.length) {
-        allAssets.value = nativeData?.map((asset) => {
-          const address = "NATIVE";
-          return {
-            ...asset,
-            contractAddress: address,
-            name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
-          };
-        });
-      } else {
-        allAssets.value = [];
-      }
     }
+    allAssets.value = [...nativeAssets, ...erc20Assets];
   } catch (error) {
     console.error(error);
   }
