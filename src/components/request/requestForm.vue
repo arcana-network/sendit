@@ -122,6 +122,9 @@ async function proceed() {
           );
         userInput.value.address = computeAddress(`0x${publicKey}`);
       }
+      if (userInput.value.address === authStore.userInfo.address) {
+        throw SELF_TX_ERROR;
+      }
       const amount = serializeDecimal(
         new Decimal(userInput.value.amount || 0).mul(Decimal.pow(10, 18))
       );
@@ -141,7 +144,7 @@ async function proceed() {
     } catch (error: any) {
       console.error(error);
       if (error === SELF_TX_ERROR || error.message === SELF_TX_ERROR) {
-        toast.error("You cannot send tokens to yourself");
+        toast.error("You cannot request tokens from yourself");
       } else if (error.code === ACTION_REJECTED) {
         toast.error(
           "Signature request rejected. Please retry sending, approve the transaction on your wallet and wait until it is completed."

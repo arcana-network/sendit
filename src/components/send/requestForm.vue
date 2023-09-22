@@ -150,6 +150,9 @@ async function proceed() {
           maxPriorityFeePerGas: hexlify(gasStation.max_priority_fee),
         };
       }
+      if (requestInput.value.recipientAddress === userStore.address) {
+        throw SELF_TX_ERROR;
+      }
       const isNative = requestInput.value.token === ethers.ZeroAddress;
       if (!isNative) {
         await getERC20Approval(

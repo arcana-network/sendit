@@ -83,7 +83,9 @@ function sanitizePaymentRequestRecord(record) {
     },
     chain: chainList[Number(record.chain_id)]?.name || "N/A",
     txStatus:
-      txState === 0x0
+      txState === 0x0 && Number(record.data.expiry) < Date.now()
+        ? "expired"
+        : txState === 0x0
         ? "pending"
         : txState === 0x10
         ? "cancelled"
@@ -540,7 +542,8 @@ async function rejectRequest(record, index) {
 }
 
 .rejected,
-.cancelled {
+.cancelled,
+.expired {
   color: #ff4264;
 }
 </style>
