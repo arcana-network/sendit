@@ -261,10 +261,6 @@ function sendTokens(record) {
       verifierId: record.socialId,
     },
   });
-  conn.sendMessage(SOCKET_IDS.ADD_PENDING_TX, {
-    type: "request",
-    ...record.rawData,
-  });
 }
 
 async function rejectRequest(record, index) {
