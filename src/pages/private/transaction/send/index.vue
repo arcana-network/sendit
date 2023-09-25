@@ -114,6 +114,8 @@ onBeforeMount(async () => {
       route.query.requestId &&
       sendStore.requestInput.signature
     "
+    :hash="txHash"
+    :chainId="chain"
     @shoutout="handleRequestShoutout"
     @close="handleSuccessModalClose"
   />
