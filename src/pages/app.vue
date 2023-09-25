@@ -57,7 +57,6 @@ const showReceivedCryptoMessage = ref(false);
 const showTweetVerificationModal = ref(false);
 const tweetHash = ref("");
 const faucetFundsReceived = ref(false);
-const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 const showRequestPopup = ref(false);
 const requestPopupData = ref({} as any);
 const showRequestInvalidPopup = ref(false);
@@ -69,17 +68,7 @@ onMounted(() => {
   initAuth();
 });
 
-function renderGrecaptcha() {
-  window.grecaptcha.render("recaptcha-v2", {
-    sitekey: recaptchaSiteKey,
-    size: "invisible",
-    callback: recaptchaCallback,
-  });
-}
-
-async function recaptchaCallback(response: string) {
-  conn.recaptchaToken = response;
-  console.log("Recaptcha token: ", response);
+async function connectSocket() {
   const account: SocketConnectionAccount = {
     verifier: authStore.userInfo.loginType,
     verifier_id: authStore.userInfo.id,
@@ -133,12 +122,16 @@ async function initAuth() {
     toast.error(error as string);
   } finally {
     loaderStore.hideLoader();
-    renderGrecaptcha();
   }
 }
 
 async function initSocketConnect() {
-  window.grecaptcha.execute();
+  try {
+    await connectSocket();
+  } catch (error) {
+    console.log({ error });
+    toast.error("Error connecting to socket");
+  }
 }
 
 async function getUserInfo() {
@@ -404,7 +397,6 @@ function handleExpiryDismiss() {
       @reject="handleRequestReject"
       @dismiss="showRequestPopup = false"
     />
-    <div id="recaptcha-v2" data-size="invisible" style="display: none"></div>
   </main>
 </template>
 
