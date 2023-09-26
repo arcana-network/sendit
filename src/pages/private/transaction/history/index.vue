@@ -115,11 +115,12 @@ function sanitizePaymentRequestRecord(record) {
       requesterVerifier: record.requester_meta.verifier,
       requesterVerifierHuman: record.requester_meta.verifier_human,
     },
+    state: txState,
     rawData: record,
     date: dayjs.unix(record.updated_at).format("DD MMM YYYY"),
     actualDate: record.updated_at,
     fulfilledBy:
-      record.txState === 0xf0
+      txState === 0xf0
         ? record.final_fulfiller_meta.verifier_human ||
           hexlify(record.final_fulfiller)
         : "",
@@ -350,12 +351,12 @@ async function rejectRequest(record, index) {
                 {{ truncateAddress(record.walletAddress) }}
               </div>
               <div
-                v-if="record.fulfilledBy && record.txStatus === 'fulfilled'"
-                class="leaderboard-table-row-item cursor-pointer"
+                v-if="record.fulfilledBy && record.state === 0xf0"
+                class="leaderboard-table-row-item ellipsis cursor-pointer"
                 :title="record.fulfilledBy"
                 @click.stop="copy(record.fulfilledBy, 'Wallet address copied')"
               >
-                {{ truncateAddress(record.fulfilledBy) }}
+                {{ record.fulfilledBy }}
               </div>
               <div
                 v-else
@@ -467,10 +468,7 @@ async function rejectRequest(record, index) {
               </div>
               <div
                 class="text-xs ellipsis"
-                v-if="
-                  record.fulfilledBy &&
-                  record.fulfilledBy !== ethers.ZeroAddress
-                "
+                v-if="record.fulfilledBy && record.state === 0xf0"
               >
                 <span class="text-philippine-gray">Fulfilled By:</span>&nbsp;
                 <span
