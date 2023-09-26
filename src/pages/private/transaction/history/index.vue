@@ -20,6 +20,7 @@ import { requestableTokens } from "@/constants/requestableTokens";
 import Decimal from "decimal.js";
 import { router } from "@/router";
 import useSendStore from "@/stores/send";
+import { truncateAddress } from "@/utils/truncateAddress";
 
 const conn = useConnection();
 const sendStore = useSendStore();
@@ -95,8 +96,8 @@ function sanitizePaymentRequestRecord(record) {
         ? "received"
         : "sent",
     socialId: isRequester
-      ? record.target_verifier_human
-      : record.requester_verifier_human,
+      ? record.target_meta.verifier_human
+      : record.requester_meta.verifier_human,
     verifier: record.target_verifier,
     walletAddress: hexlify(record.target),
     link: record.share_url,
@@ -111,12 +112,18 @@ function sanitizePaymentRequestRecord(record) {
       signature: hexlify(record.signature),
       nonce: hexlify(record.data.nonce),
       expiry: record.data.expiry,
-      requesterVerifier: record.requester_verifier,
-      requesterVerifierHuman: record.requester_verifier_human,
+      requesterVerifier: record.requester_meta.verifier,
+      requesterVerifierHuman: record.requester_meta.verifier_human,
     },
+    state: txState,
     rawData: record,
-    date: dayjs.unix(record.updated_at).format("DD MMM YYYY"),
+    date: dayjs(record.updated_at).format("DD MMM YYYY"),
     actualDate: record.updated_at,
+    fulfilledBy:
+      txState === 0xf0
+        ? record.final_fulfiller_meta.verifier_human ||
+          hexlify(record.final_fulfiller)
+        : "",
   };
 }
 
@@ -149,8 +156,9 @@ function sanitizeTokenTransferRecord(record) {
     link: record.share_url,
     points,
     isSharedOnTwitter: record.shared || false,
-    date: dayjs.unix(record.tx_date).format("DD MMM YYYY"),
+    date: dayjs(record.tx_date).format("DD MMM YYYY"),
     actualDate: record.tx_date,
+    fulfilledBy: "",
   };
 }
 
@@ -287,7 +295,7 @@ async function rejectRequest(record, index) {
       >
     </div>
     <div
-      class="flex-col bg-eerie-black rounded-[10px] border border-jet mx-8 max-lg:mx-4 my-5 overflow-hidden"
+      class="flex-col bg-eerie-black rounded-[10px] border border-jet mx-8 max-lg:mx-4 my-5 overflow-auto relative"
     >
       <div
         class="hidden md:grid leaderboard-table-header text-[12px] text-philippine-gray py-4 px-6"
@@ -297,6 +305,7 @@ async function rejectRequest(record, index) {
         <div class="leaderboard-table-header-item">Chain</div>
         <div class="leaderboard-table-header-item">Social ID</div>
         <div class="leaderboard-table-header-item">Wallet Address</div>
+        <div class="leaderboard-table-header-item">Fulfilled By</div>
         <div class="leaderboard-table-header-item">Sendit Link</div>
         <div class="leaderboard-table-header-item">Tx Status</div>
         <div class="leaderboard-table-header-item">Points</div>
@@ -333,14 +342,26 @@ async function rejectRequest(record, index) {
                 {{ getSocialId(record.socialId, record.verifier) }}
               </div>
               <div
-                class="leaderboard-table-row-item ellipsis cursor-pointer"
+                class="leaderboard-table-row-item cursor-pointer"
                 :title="record.walletAddress"
                 @click.stop="
                   copy(record.walletAddress, 'Wallet address copied')
                 "
               >
-                {{ record.walletAddress }}
+                {{ truncateAddress(record.walletAddress) }}
               </div>
+              <div
+                v-if="record.fulfilledBy && record.state === 0xf0"
+                class="leaderboard-table-row-item ellipsis cursor-pointer"
+                :title="record.fulfilledBy"
+                @click.stop="copy(record.fulfilledBy, 'Wallet address copied')"
+              >
+                {{ record.fulfilledBy }}
+              </div>
+              <div
+                v-else
+                class="leaderboard-table-row-item cursor-pointer"
+              ></div>
               <div
                 class="leaderboard-table-row-item ellipsis cursor-pointer"
                 :title="record.link"
@@ -445,6 +466,20 @@ async function rejectRequest(record, index) {
                   >{{ record.walletAddress }}</span
                 >
               </div>
+              <div
+                class="text-xs ellipsis"
+                v-if="record.fulfilledBy && record.state === 0xf0"
+              >
+                <span class="text-philippine-gray">Fulfilled By:</span>&nbsp;
+                <span
+                  :title="record.fulfilledBy"
+                  @click.stop="
+                    copy(record.fulfilledBy, 'Wallet address copied')
+                  "
+                  class="cursor-pointer"
+                  >{{ record.fulfilledBy }}</span
+                >
+              </div>
               <div class="text-xs ellipsis" v-if="record.link">
                 <span class="text-philippine-gray">SendIt Link:</span>&nbsp;
                 <span
@@ -521,9 +556,15 @@ async function rejectRequest(record, index) {
 .leaderboard-table-header,
 .leaderboard-table-row {
   grid-template-columns:
-    calc(10% - 0.5rem) 8% 10% calc(12% - 0.5rem) calc(13% - 0.5rem)
-    calc(18% - 0.5rem) 6% 4% 15%;
-  grid-gap: 0.5rem;
+    minmax(80px, calc(8% - 1rem)) minmax(80px, 8%) minmax(96px, 8%) minmax(
+      160px,
+      10%
+    )
+    minmax(120px, calc(10% - 1rem))
+    minmax(120px, calc(10% - 1rem))
+    minmax(160px, calc(15% - 1rem))
+    minmax(80px, 6%) minmax(40px, 4%) minmax(200px, calc(18% - 1rem));
+  grid-gap: 1rem;
 }
 
 .star-icon::before {

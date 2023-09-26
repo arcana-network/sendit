@@ -40,6 +40,8 @@ function handleAction(reward) {
     showTwitterFollowPopup.value.type = reward.medium;
   } else if (reward.task === "Shoutout") {
     router.push({ name: "History" });
+  } else if (reward.task === "Request") {
+    router.push({ name: "Request" });
   }
 }
 </script>
@@ -74,6 +76,17 @@ function handleAction(reward) {
             <span v-if="reward.bonus" class="text-sm text-philippine-gray mt-4"
               ><strong>Bonus:</strong> {{ reward.bonus }}</span
             >
+            <div v-if="reward.tags?.length" class="mt-4 flex gap-2">
+              <span
+                v-for="tag in reward.tags"
+                class="text-[12px] rounded-[5px] px-2 py-[1px]"
+                :style="{
+                  background: tag.color.bg,
+                  color: tag.color.text,
+                }"
+                >{{ tag.name }}</span
+              >
+            </div>
           </div>
           <div class="flex items-center justify-center">
             <button

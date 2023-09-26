@@ -142,8 +142,6 @@ class Connection {
 
   public async onMessage(ev: MessageEvent) {
     const _data = msgunpack(Buffer.from(ev.data));
-    console.log("Message received:", ev);
-    console.log("Data unpacked:", _data);
     if (_data.length !== 3) {
       return;
     }
