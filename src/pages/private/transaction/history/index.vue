@@ -20,6 +20,7 @@ import { requestableTokens } from "@/constants/requestableTokens";
 import Decimal from "decimal.js";
 import { router } from "@/router";
 import useSendStore from "@/stores/send";
+import { truncateAddress } from "@/utils/truncateAddress";
 
 const conn = useConnection();
 const sendStore = useSendStore();
@@ -117,6 +118,7 @@ function sanitizePaymentRequestRecord(record) {
     rawData: record,
     date: dayjs.unix(record.updated_at).format("DD MMM YYYY"),
     actualDate: record.updated_at,
+    fulfilledBy: record.final_fulfiller ? hexlify(record.final_fulfiller) : "",
   };
 }
 
@@ -151,6 +153,7 @@ function sanitizeTokenTransferRecord(record) {
     isSharedOnTwitter: record.shared || false,
     date: dayjs.unix(record.tx_date).format("DD MMM YYYY"),
     actualDate: record.tx_date,
+    fulfilledBy: "",
   };
 }
 
@@ -297,6 +300,7 @@ async function rejectRequest(record, index) {
         <div class="leaderboard-table-header-item">Chain</div>
         <div class="leaderboard-table-header-item">Social ID</div>
         <div class="leaderboard-table-header-item">Wallet Address</div>
+        <div class="leaderboard-table-header-item">Fulfilled By</div>
         <div class="leaderboard-table-header-item">Sendit Link</div>
         <div class="leaderboard-table-header-item">Tx Status</div>
         <div class="leaderboard-table-header-item">Points</div>
@@ -333,14 +337,29 @@ async function rejectRequest(record, index) {
                 {{ getSocialId(record.socialId, record.verifier) }}
               </div>
               <div
-                class="leaderboard-table-row-item ellipsis cursor-pointer"
+                class="leaderboard-table-row-item cursor-pointer"
                 :title="record.walletAddress"
                 @click.stop="
                   copy(record.walletAddress, 'Wallet address copied')
                 "
               >
-                {{ record.walletAddress }}
+                {{ truncateAddress(record.walletAddress) }}
               </div>
+              <div
+                v-if="
+                  record.fulfilledBy &&
+                  record.fulfilledBy !== ethers.ZeroAddress
+                "
+                class="leaderboard-table-row-item cursor-pointer"
+                :title="record.fulfilledBy"
+                @click.stop="copy(record.fulfilledBy, 'Wallet address copied')"
+              >
+                {{ truncateAddress(record.fulfilledBy) }}
+              </div>
+              <div
+                v-else
+                class="leaderboard-table-row-item cursor-pointer"
+              ></div>
               <div
                 class="leaderboard-table-row-item ellipsis cursor-pointer"
                 :title="record.link"
@@ -445,6 +464,23 @@ async function rejectRequest(record, index) {
                   >{{ record.walletAddress }}</span
                 >
               </div>
+              <div
+                class="text-xs ellipsis"
+                v-if="
+                  record.fulfilledBy &&
+                  record.fulfilledBy !== ethers.ZeroAddress
+                "
+              >
+                <span class="text-philippine-gray">Fulfilled By:</span>&nbsp;
+                <span
+                  :title="record.fulfilledBy"
+                  @click.stop="
+                    copy(record.fulfilledBy, 'Wallet address copied')
+                  "
+                  class="cursor-pointer"
+                  >{{ record.fulfilledBy }}</span
+                >
+              </div>
               <div class="text-xs ellipsis" v-if="record.link">
                 <span class="text-philippine-gray">SendIt Link:</span>&nbsp;
                 <span
@@ -521,9 +557,9 @@ async function rejectRequest(record, index) {
 .leaderboard-table-header,
 .leaderboard-table-row {
   grid-template-columns:
-    calc(10% - 0.5rem) 8% 10% calc(12% - 0.5rem) calc(13% - 0.5rem)
-    calc(18% - 0.5rem) 6% 4% 15%;
-  grid-gap: 0.5rem;
+    calc(8% - 1rem) 8% 10% calc(10% - 1rem) calc(10% - 1rem) calc(10% - 1rem)
+    calc(15% - 1rem) 6% 4% 15%;
+  grid-gap: 1rem;
 }
 
 .star-icon::before {

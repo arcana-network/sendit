@@ -141,6 +141,12 @@ Congratulations on being one of the top 2000 users through the first few weeks o
     path: "My Rewards",
     shoutout: false,
   }),
+  512: ({ final_fulfiller }) => ({
+    path: "History",
+    title: `Your request has been fulfilled by ${truncateAddress(
+      hexlify(final_fulfiller)
+    )}.`,
+  }),
   513: ({ points }) => ({
     title: "10 Transactions completed",
     body: `Congratulations on completing 10 transactions on #Sendit successfully! You have earned ${points} XP as a bonus.`,
