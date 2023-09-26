@@ -43,4 +43,11 @@ const chains = {
   },
 };
 
+export const testnetChains = [80001, 97];
+
+export const testnetChainFaucets = {
+  97: "https://testnet.binance.org/faucet-smart",
+  80001: "https://mumbaifaucet.com",
+};
+
 export default chains;

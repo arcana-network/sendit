@@ -29,10 +29,14 @@ import { SOCKET_IDS, TOKEN_TYPES } from "@/constants/socket-ids";
 import { isValidEmail, isValidTwitterHandle } from "@/utils/validation";
 import { normaliseEmail, normaliseTwitterHandle } from "@/utils/normalise";
 import Dropdown from "@/components/lib/dropdown.vue";
-import chains from "@/constants/chainList";
+import chains, {
+  testnetChainFaucets,
+  testnetChains,
+} from "@/constants/chainList";
 import { hexlify } from "ethers";
 import { GAS_SUPPORTED_CHAINS } from "@/constants/socket-ids";
 import { Decimal } from "decimal.js";
+import copyToClipboard from "@/utils/copyToClipboard";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -63,6 +67,7 @@ const hasTwitterError = ref(false);
 const isEmailDisposable = ref(false);
 const hasStartedTyping = ref(false);
 const allAssets: Ref<any[]> = ref([]);
+const isBalanceFetching = ref(false);
 
 const { userInput, supportedChains } = toRefs(sendStore);
 
@@ -108,6 +113,7 @@ function getChainAssets(chainId) {
 
 async function fetchAssets() {
   try {
+    isBalanceFetching.value = true;
     const walletAddress = authStore.walletAddress;
     const data = await getAccountBalance(walletAddress, [
       "eth",
@@ -145,6 +151,8 @@ async function fetchAssets() {
     allAssets.value = [...nativeAssets, ...erc20Assets];
   } catch (error) {
     console.error(error);
+  } finally {
+    isBalanceFetching.value = false;
   }
 }
 
@@ -480,6 +488,11 @@ function getTokenModelValue(tokenAddress) {
     {}
   );
 }
+
+async function copyWalletAddress() {
+  await copyToClipboard(authStore.walletAddress);
+  toast.success("Wallet address copied");
+}
 </script>
 
 <template>
@@ -593,8 +606,50 @@ function getTokenModelValue(tokenAddress) {
           :disabled="!userInput.chain || !userInput.token"
         />
         <div
+          v-if="
+            testnetChains.includes(Number(userInput.chain)) &&
+            userInput.token &&
+            !isBalanceFetching &&
+            Number(tokenBalance) === 0
+          "
+          class="flex flex-col gap-2 text-[10px]"
+        >
+          <div class="flex gap-2 mt-2">
+            <span
+              >Your wallet address is:
+              <span class="text-[12px]">{{
+                authStore.walletAddress
+              }}</span></span
+            >
+            <button
+              type="button"
+              @click.stop="copyWalletAddress"
+              title="Copy Wallet Address"
+            >
+              <img src="@/assets/images/icons/copy.svg" />
+            </button>
+            <!-- <button
+              type="button"
+              @click.stop="copyWalletAddress"
+              title="Refresh Balance"
+            >
+              <img src="@/assets/images/icons/refresh.svg" />
+            </button> -->
+          </div>
+          <a
+            class="text-[#ff4264] text-[10px] underline"
+            :href="testnetChainFaucets[userInput.chain]"
+            target="_blank"
+          >
+            Balance too low. Click here to get testnet tokens from faucet
+          </a>
+        </div>
+        <div
           class="text-[#ff4264] text-[10px]"
-          v-if="Number(tokenBalance) < Number(userInput.amount)"
+          v-else-if="
+            !isBalanceFetching &&
+            Number(tokenBalance) < Number(userInput.amount)
+          "
         >
           Entered amount is greater than your wallet balance.
         </div>
