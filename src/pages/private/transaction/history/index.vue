@@ -117,7 +117,7 @@ function sanitizePaymentRequestRecord(record) {
     },
     state: txState,
     rawData: record,
-    date: dayjs.unix(record.updated_at).format("DD MMM YYYY"),
+    date: dayjs(record.updated_at).format("DD MMM YYYY"),
     actualDate: record.updated_at,
     fulfilledBy:
       txState === 0xf0
@@ -156,7 +156,7 @@ function sanitizeTokenTransferRecord(record) {
     link: record.share_url,
     points,
     isSharedOnTwitter: record.shared || false,
-    date: dayjs.unix(record.tx_date).format("DD MMM YYYY"),
+    date: dayjs(record.tx_date).format("DD MMM YYYY"),
     actualDate: record.tx_date,
     fulfilledBy: "",
   };

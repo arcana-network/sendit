@@ -54,7 +54,7 @@ async function fetchLeaderboard(duration: "global" | "weekly" = "weekly") {
       walletAddress: ethers.hexlify(ranking.address),
       xp: ranking.points,
       transactions: ranking.no_of_transactions,
-      joinDate: dayjs.unix(ranking.join_time).format("DD MMM YYYY"),
+      joinDate: dayjs(ranking.join_time).format("DD MMM YYYY"),
     };
   });
   if (currentPage === 1) {
