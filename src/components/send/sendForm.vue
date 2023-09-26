@@ -29,10 +29,7 @@ import { SOCKET_IDS, TOKEN_TYPES } from "@/constants/socket-ids";
 import { isValidEmail, isValidTwitterHandle } from "@/utils/validation";
 import { normaliseEmail, normaliseTwitterHandle } from "@/utils/normalise";
 import Dropdown from "@/components/lib/dropdown.vue";
-import chains, {
-  testnetChainFaucets,
-  testnetChains,
-} from "@/constants/chainList";
+import chains, { testnetChains } from "@/constants/chainList";
 import { hexlify } from "ethers";
 import { GAS_SUPPORTED_CHAINS } from "@/constants/socket-ids";
 import { Decimal } from "decimal.js";
@@ -638,7 +635,7 @@ async function copyWalletAddress() {
           </div>
           <a
             class="text-[#ff4264] text-[10px] underline"
-            :href="testnetChainFaucets[userInput.chain]"
+            href="https://arcananetwork.notion.site/arcananetwork/SendIT-Get-testnet-tokens-from-the-faucet-61901bdecd82476bb19fce3c3059d65d"
             target="_blank"
           >
             Balance too low. Click here to get testnet tokens from faucet
