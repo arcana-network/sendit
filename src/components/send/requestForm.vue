@@ -186,7 +186,7 @@ async function proceed() {
       await sendStore.removePendingTxForPaymentRequest(
         requestInput.value.requestId
       );
-      emits("transaction-successful", {});
+      emits("transaction-successful", { hash, chain: chainId });
     } catch (error: any) {
       console.log(error);
       if (error === SELF_TX_ERROR || error.message === SELF_TX_ERROR) {
