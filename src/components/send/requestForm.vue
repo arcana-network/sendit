@@ -6,7 +6,10 @@ import useLoaderStore from "@/stores/loader";
 import { useConnection } from "@/stores/connection";
 import { useToast } from "vue-toastification";
 import { SOCKET_IDS } from "@/constants/socket-ids";
-import chains from "@/constants/chainList";
+import chains, {
+  testnetChainFaucets,
+  testnetChains,
+} from "@/constants/chainList";
 import { ethers, hexlify } from "ethers";
 import { GAS_SUPPORTED_CHAINS } from "@/constants/socket-ids";
 import { Decimal } from "decimal.js";
@@ -19,6 +22,7 @@ import {
   getERC20Approval,
 } from "@/services/send.service";
 import requestVia from "@/constants/requestVia";
+import copyToClipboard from "@/utils/copyToClipboard";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -311,8 +315,28 @@ function isSelectedVerifier(verifier, v) {
         </div>
         <input class="input" type="number" :value="displayAmount" disabled />
         <div
+          v-if="
+            testnetChains.includes(Number(requestInput.chain)) &&
+            requestInput.token &&
+            Number(tokenBalance) === 0
+          "
+          class="flex flex-col gap-2"
+        >
+          <span>Your wallet address is: {{ userStore.address }}</span>
+          <button @click.stop="copyToClipboard(userStore.address)">
+            Click to copy your wallet address
+          </button>
+          <a
+            class="text-[#ff4264] text-[10px] underline"
+            :href="testnetChainFaucets[requestInput.chain]"
+            target="_blank"
+          >
+            Balance too low. Click here to get testnet tokens from faucet
+          </a>
+        </div>
+        <div
           class="text-[#ff4264] text-[10px]"
-          v-if="Number(tokenBalanceInUnits) < Number(requestInput.amount)"
+          v-else-if="Number(tokenBalanceInUnits) < Number(requestInput.amount)"
         >
           Entered amount is greater than your wallet balance.
         </div>
