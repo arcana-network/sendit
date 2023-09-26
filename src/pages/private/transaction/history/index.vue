@@ -167,6 +167,40 @@ onBeforeUnmount(() => {
   currentPage = 1;
 });
 
+function isBNBChain(chainId) {
+  return chainId == 56 || chainId == 97;
+}
+
+function calculateRewards(requests) {
+  const dailyFulfilledRequests = requests
+    .filter(
+      (req) =>
+        req.state === 0xf0 &&
+        req.data.requester === userStore.address.toLowerCase() &&
+        isBNBChain(req.data?.chainId)
+    )
+    .reduce((acc, request) => {
+      if (!acc[request.data.chainId]) {
+        acc[request.data.chainId] = {};
+      }
+      if (!acc[request.data.chainId][request.date]) {
+        acc[request.data.chainId][request.date] = 0;
+      }
+      return acc;
+    }, {});
+  requests.forEach((req) => {
+    if (
+      req.state === 0xf0 &&
+      req.data.requester === userStore.address.toLowerCase() &&
+      dailyFulfilledRequests[req.data.chainId][req.date] < 50
+    ) {
+      dailyFulfilledRequests[req.data.chainId][req.date] += 1;
+      req.points = req.data.chainId === 56 ? 50 : 10;
+    }
+  });
+  return requests;
+}
+
 async function fetchTxHistory() {
   if (currentPage === 1) {
     loaderStore.showLoader("Loading transaction history...");
@@ -188,9 +222,10 @@ async function fetchTxHistory() {
   const paymentRequests = paymentRequestTxns.data?.length
     ? paymentRequestTxns.data
     : [];
-  const paymentRequestTxnsData = paymentRequests.map((record) => {
+  const sanitizePaymentRequestTxns = paymentRequests.map((record) => {
     return sanitizePaymentRequestRecord(record);
   });
+  const paymentRequestTxnsData = calculateRewards(sanitizePaymentRequestTxns);
   const txns = txHistory.txns.map((record) => {
     return sanitizeTokenTransferRecord(record);
   });
