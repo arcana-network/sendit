@@ -67,6 +67,7 @@ const hasTwitterError = ref(false);
 const isEmailDisposable = ref(false);
 const hasStartedTyping = ref(false);
 const allAssets: Ref<any[]> = ref([]);
+const isBalanceFetching = ref(false);
 
 const { userInput, supportedChains } = toRefs(sendStore);
 
@@ -112,6 +113,7 @@ function getChainAssets(chainId) {
 
 async function fetchAssets() {
   try {
+    isBalanceFetching.value = true;
     const walletAddress = authStore.walletAddress;
     const data = await getAccountBalance(walletAddress, [
       "eth",
@@ -149,6 +151,8 @@ async function fetchAssets() {
     allAssets.value = [...nativeAssets, ...erc20Assets];
   } catch (error) {
     console.error(error);
+  } finally {
+    isBalanceFetching.value = false;
   }
 }
 
@@ -605,6 +609,7 @@ async function copyWalletAddress() {
           v-if="
             testnetChains.includes(Number(userInput.chain)) &&
             userInput.token &&
+            !isBalanceFetching &&
             Number(tokenBalance) === 0
           "
           class="flex flex-col gap-2 text-[10px]"
@@ -641,7 +646,10 @@ async function copyWalletAddress() {
         </div>
         <div
           class="text-[#ff4264] text-[10px]"
-          v-else-if="Number(tokenBalance) < Number(userInput.amount)"
+          v-else-if="
+            !isBalanceFetching &&
+            Number(tokenBalance) < Number(userInput.amount)
+          "
         >
           Entered amount is greater than your wallet balance.
         </div>
