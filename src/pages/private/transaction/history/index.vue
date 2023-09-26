@@ -96,8 +96,8 @@ function sanitizePaymentRequestRecord(record) {
         ? "received"
         : "sent",
     socialId: isRequester
-      ? record.target_verifier_human
-      : record.requester_verifier_human,
+      ? record.target_meta.verifier_human
+      : record.requester_meta.verifier_human,
     verifier: record.target_verifier,
     walletAddress: hexlify(record.target),
     link: record.share_url,
@@ -112,13 +112,17 @@ function sanitizePaymentRequestRecord(record) {
       signature: hexlify(record.signature),
       nonce: hexlify(record.data.nonce),
       expiry: record.data.expiry,
-      requesterVerifier: record.requester_verifier,
-      requesterVerifierHuman: record.requester_verifier_human,
+      requesterVerifier: record.requester_meta.verifier,
+      requesterVerifierHuman: record.requester_meta.verifier_human,
     },
     rawData: record,
     date: dayjs.unix(record.updated_at).format("DD MMM YYYY"),
     actualDate: record.updated_at,
-    fulfilledBy: record.final_fulfiller ? hexlify(record.final_fulfiller) : "",
+    fulfilledBy:
+      record.txState === 0xf0
+        ? record.final_fulfiller_meta.verifier_human ||
+          hexlify(record.final_fulfiller)
+        : "",
   };
 }
 
@@ -346,10 +350,7 @@ async function rejectRequest(record, index) {
                 {{ truncateAddress(record.walletAddress) }}
               </div>
               <div
-                v-if="
-                  record.fulfilledBy &&
-                  record.fulfilledBy !== ethers.ZeroAddress
-                "
+                v-if="record.fulfilledBy && record.txStatus === 'fulfilled'"
                 class="leaderboard-table-row-item cursor-pointer"
                 :title="record.fulfilledBy"
                 @click.stop="copy(record.fulfilledBy, 'Wallet address copied')"

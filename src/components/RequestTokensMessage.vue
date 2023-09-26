@@ -53,8 +53,8 @@ const emits = defineEmits(["dismiss", "reject", "accept", "do-later"]);
           <span class="text-xs text-philippine-gray text-center max-w-[320px]">
             You have a request to send {{ reactiveData.amount }}
             {{ reactiveData.symbol }} to
-            {{ props.data.requester_verifier_human }}. Would you like to do so
-            now?
+            {{ props.data.requester_meta.verifier_human }}. Would you like to do
+            so now?
           </span>
         </div>
         <div class="flex flex-col gap-3">

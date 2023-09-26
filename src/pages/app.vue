@@ -311,9 +311,9 @@ function handleRequestAccept() {
   sendStore.requestInput.signature = hexlify(requestPopupData.value.signature);
   sendStore.requestInput.expiry = requestPopupData.value.data.expiry;
   sendStore.requestInput.recipientVerifier =
-    requestPopupData.value.requester_verifier;
+    requestPopupData.value.requester_meta.verifier;
   sendStore.requestInput.recipientVerifierHuman =
-    requestPopupData.value.requester_verifier_human;
+    requestPopupData.value.requester_meta.verifier_human;
   router.replace({ name: "Send", query: { ...route.query } });
   showRequestPopup.value = false;
   conn.sendMessage(SOCKET_IDS.ADD_PENDING_TX, {
