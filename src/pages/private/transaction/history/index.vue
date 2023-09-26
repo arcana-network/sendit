@@ -290,7 +290,7 @@ async function rejectRequest(record, index) {
       >
     </div>
     <div
-      class="flex-col bg-eerie-black rounded-[10px] border border-jet mx-8 max-lg:mx-4 my-5 overflow-hidden"
+      class="flex-col bg-eerie-black rounded-[10px] border border-jet mx-8 max-lg:mx-4 my-5 overflow-auto relative"
     >
       <div
         class="hidden md:grid leaderboard-table-header text-[12px] text-philippine-gray py-4 px-6"
@@ -557,8 +557,14 @@ async function rejectRequest(record, index) {
 .leaderboard-table-header,
 .leaderboard-table-row {
   grid-template-columns:
-    calc(8% - 1rem) 8% 10% calc(10% - 1rem) calc(10% - 1rem) calc(10% - 1rem)
-    calc(15% - 1rem) 6% 4% 15%;
+    minmax(80px, calc(8% - 1rem)) minmax(80px, 8%) minmax(96px, 8%) minmax(
+      160px,
+      10%
+    )
+    minmax(120px, calc(10% - 1rem))
+    minmax(120px, calc(10% - 1rem))
+    minmax(160px, calc(15% - 1rem))
+    minmax(80px, 6%) minmax(40px, 4%) minmax(200px, calc(18% - 1rem));
   grid-gap: 1rem;
 }
 
