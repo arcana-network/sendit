@@ -436,7 +436,8 @@ const disableSubmit = computed(() => {
     !isTwitterValid.value ||
     !isEmailValid.value ||
     isEmailDisposable.value ||
-    Number(tokenBalance.value) < Number(userInput.value.amount)
+    Number(tokenBalance.value) < Number(userInput.value.amount) ||
+    loadStore.show
   );
 });
 
