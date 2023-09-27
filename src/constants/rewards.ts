@@ -47,7 +47,7 @@ const EARN_XP_SEND_FORM = [
     name: "Earn 10 XP",
     xp: 10,
     description:
-      "Request BNB tokens on mainnet to new or existing user. Max 50 requests per day.",
+      "Request BNB tokens on testnet to new or existing user. Max 50 requests per day.",
     task: "Request",
     tags: [
       {
@@ -120,7 +120,7 @@ const EARN_XP = [
     name: "Earn 10 XP",
     xp: 10,
     description:
-      "Request BNB tokens on mainnet to new or existing user. Max 50 requests per day.",
+      "Request BNB tokens on testnet to new or existing user. Max 50 requests per day.",
     task: "Request",
     tags: [
       {
