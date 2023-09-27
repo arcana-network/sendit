@@ -19,7 +19,7 @@ const EARN_XP_SEND_FORM = [
     image: NavigationIcon,
     name: "Earn 500 XP",
     xp: 50,
-    description: "Complete your first request flow.",
+    description: "Complete your first request transaction.",
     task: "Request",
     tags: [
       {
@@ -37,10 +37,6 @@ const EARN_XP_SEND_FORM = [
     task: "Request",
     tags: [
       {
-        name: "Daily",
-        color: tagColors.orange,
-      },
-      {
         name: "BNB Chain",
         color: tagColors.yellow,
       },
@@ -51,13 +47,9 @@ const EARN_XP_SEND_FORM = [
     name: "Earn 10 XP",
     xp: 10,
     description:
-      "Request BNB tokens on mainnet to new or existing user. Max 50 requests per day.",
+      "Request BNB tokens on testnet to new or existing user. Max 50 requests per day.",
     task: "Request",
     tags: [
-      {
-        name: "Daily",
-        color: tagColors.orange,
-      },
       {
         name: "BNB Chain",
         color: tagColors.yellow,
@@ -92,12 +84,6 @@ const EARN_XP_SEND_FORM = [
     description:
       "Invite/refer a user and earn 10% XP of all XP they earn from performing transactions.",
     task: "invite",
-    tags: [
-      {
-        name: "Daily",
-        color: tagColors.orange,
-      },
-    ],
   },
 ];
 
@@ -106,7 +92,7 @@ const EARN_XP = [
     image: NavigationIcon,
     name: "Earn 500 XP",
     xp: 50,
-    description: "Complete your first request flow.",
+    description: "Complete your first request transaction.",
     task: "Request",
     tags: [
       {
@@ -124,10 +110,6 @@ const EARN_XP = [
     task: "Request",
     tags: [
       {
-        name: "Daily",
-        color: tagColors.orange,
-      },
-      {
         name: "BNB Chain",
         color: tagColors.yellow,
       },
@@ -138,13 +120,9 @@ const EARN_XP = [
     name: "Earn 10 XP",
     xp: 10,
     description:
-      "Request BNB tokens on mainnet to new or existing user. Max 50 requests per day.",
+      "Request BNB tokens on testnet to new or existing user. Max 50 requests per day.",
     task: "Request",
     tags: [
-      {
-        name: "Daily",
-        color: tagColors.orange,
-      },
       {
         name: "BNB Chain",
         color: tagColors.yellow,
@@ -168,12 +146,6 @@ const EARN_XP = [
     xp: 50,
     dailyLimit: 500,
     bonus: "Get 10% of all XP earned by the new user.",
-    tags: [
-      {
-        name: "Daily",
-        color: tagColors.orange,
-      },
-    ],
   },
   {
     image: NavigationIcon,
@@ -182,12 +154,6 @@ const EARN_XP = [
     task: "Transact",
     xp: 50,
     dailyLimit: 500,
-    tags: [
-      {
-        name: "Daily",
-        color: tagColors.orange,
-      },
-    ],
   },
   {
     image: NavigationIcon,
@@ -197,12 +163,6 @@ const EARN_XP = [
     xp: 10,
     dailyLimit: 100,
     bonus: "Get 10% of all XP earned by the new user.",
-    tags: [
-      {
-        name: "Daily",
-        color: tagColors.orange,
-      },
-    ],
   },
   {
     image: NavigationIcon,
@@ -211,12 +171,6 @@ const EARN_XP = [
     task: "Transact",
     xp: 10,
     dailyLimit: 100,
-    tags: [
-      {
-        name: "Daily",
-        color: tagColors.orange,
-      },
-    ],
   },
   {
     image: TwitterGreyBgIcon,
@@ -226,12 +180,6 @@ const EARN_XP = [
     task: "Shoutout",
     xp: 5,
     dailyLimit: 50,
-    tags: [
-      {
-        name: "Daily",
-        color: tagColors.orange,
-      },
-    ],
   },
 ];
 
