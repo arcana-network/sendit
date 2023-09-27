@@ -361,11 +361,11 @@ async function rejectRequest(record, index) {
               </div>
               <div
                 v-if="record.fulfilledBy && record.state === 0xf0"
-                class="leaderboard-table-row-item cursor-pointer"
+                class="leaderboard-table-row-item ellipsis cursor-pointer"
                 :title="record.fulfilledBy"
                 @click.stop="copy(record.fulfilledBy, 'Social ID copied')"
               >
-                <span class="ellipsis">{{ record.fulfilledBy }}</span>
+                {{ record.fulfilledBy }}
               </div>
               <div
                 v-else
