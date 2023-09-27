@@ -188,6 +188,7 @@ function calculateRewards(requests) {
       }
       return acc;
     }, {});
+  let isFirstFulfilledRequest = false;
   requests.forEach((req) => {
     if (
       req.state === 0xf0 &&
@@ -195,7 +196,12 @@ function calculateRewards(requests) {
       dailyFulfilledRequests[req.data.chainId][req.date] < 50
     ) {
       dailyFulfilledRequests[req.data.chainId][req.date] += 1;
-      req.points = req.data.chainId === 56 ? 50 : 10;
+      if (!isFirstFulfilledRequest) {
+        isFirstFulfilledRequest = true;
+        req.points = 500;
+      } else {
+        req.points = req.data.chainId === 56 ? 50 : 10;
+      }
     }
   });
   return requests;
