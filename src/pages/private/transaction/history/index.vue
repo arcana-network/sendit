@@ -319,7 +319,7 @@ async function rejectRequest(record, index) {
         <div class="hidden md:block px-2 py-4">
           <div class="px-1 py-3">
             <div
-              class="grid leaderboard-table-row px-3 py-2 text-sm rounded-[5px] hover:bg-[#464646]"
+              class="grid leaderboard-table-row px-3 py-2 text-sm rounded-[5px] hover:bg-[#464646] group"
               v-for="(record, index) in history"
               :key="record.txHash"
             >
@@ -342,32 +342,50 @@ async function rejectRequest(record, index) {
                 {{ getSocialId(record.socialId, record.verifier) }}
               </div>
               <div
-                class="leaderboard-table-row-item cursor-pointer"
+                class="leaderboard-table-row-item flex items-start gap-1 cursor-pointer"
                 :title="record.walletAddress"
                 @click.stop="
                   copy(record.walletAddress, 'Wallet address copied')
                 "
               >
-                {{ truncateAddress(record.walletAddress) }}
+                <span>{{ truncateAddress(record.walletAddress, 4) }}</span>
+                <button
+                  title="Click to copy"
+                  @click.stop="
+                    copy(record.walletAddress, 'Wallet address copied')
+                  "
+                  class="cursor-pointer opacity-0 transition-all duration-[150ms] group-hover:opacity-100"
+                >
+                  <img src="@/assets/images/icons/copy.svg" />
+                </button>
               </div>
               <div
                 v-if="record.fulfilledBy && record.state === 0xf0"
-                class="leaderboard-table-row-item ellipsis cursor-pointer"
+                class="leaderboard-table-row-item cursor-pointer"
                 :title="record.fulfilledBy"
-                @click.stop="copy(record.fulfilledBy, 'Wallet address copied')"
+                @click.stop="copy(record.fulfilledBy, 'Social ID copied')"
               >
-                {{ record.fulfilledBy }}
+                <span class="ellipsis">{{ record.fulfilledBy }}</span>
               </div>
               <div
                 v-else
                 class="leaderboard-table-row-item cursor-pointer"
               ></div>
               <div
-                class="leaderboard-table-row-item ellipsis cursor-pointer"
+                class="leaderboard-table-row-item flex items-start gap-1 cursor-pointer"
                 :title="record.link"
                 @click.stop="copy(record.link, 'SendIt link copied')"
               >
-                {{ record.link }}
+                <span class="ellipsis inline-flex w-[150px]"
+                  ><span class="ellipsis">{{ record.link }}</span></span
+                >
+                <button
+                  title="Click to copy"
+                  @click.stop="copy(record.link, 'SendIt link copied')"
+                  class="cursor-pointer opacity-0 transition-all duration-[150ms] group-hover:opacity-100"
+                >
+                  <img src="@/assets/images/icons/copy.svg" />
+                </button>
               </div>
               <div
                 class="leaderboard-table-row-item flex justify-between w-[6rem] capitalize"
@@ -455,16 +473,27 @@ async function rejectRequest(record, index) {
                   >{{ record.socialId }}</span
                 >
               </div>
-              <div class="text-xs ellipsis">
+              <div class="text-xs">
                 <span class="text-philippine-gray">Wallet Address:</span>&nbsp;
                 <span
                   :title="record.walletAddress"
                   @click.stop="
                     copy(record.walletAddress, 'Wallet address copied')
                   "
-                  class="cursor-pointer"
-                  >{{ record.walletAddress }}</span
+                  class="inline-flex cursor-pointer w-[240px]"
                 >
+                  <span class="ellipsis">
+                    {{ record.walletAddress }}</span
+                  ></span
+                >
+                <button
+                  @click.stop="
+                    copy(record.walletAddress, 'Wallet address copied')
+                  "
+                  class="cursor-pointer ml-4"
+                >
+                  <img src="@/assets/images/icons/copy.svg" />
+                </button>
               </div>
               <div
                 class="text-xs ellipsis"
@@ -473,20 +502,24 @@ async function rejectRequest(record, index) {
                 <span class="text-philippine-gray">Fulfilled By:</span>&nbsp;
                 <span
                   :title="record.fulfilledBy"
-                  @click.stop="
-                    copy(record.fulfilledBy, 'Wallet address copied')
-                  "
+                  @click.stop="copy(record.fulfilledBy, 'Social ID copied')"
                   class="cursor-pointer"
                   >{{ record.fulfilledBy }}</span
                 >
               </div>
-              <div class="text-xs ellipsis" v-if="record.link">
+              <div class="text-xs" v-if="record.link">
                 <span class="text-philippine-gray">SendIt Link:</span>&nbsp;
                 <span
                   @click.stop="copy(record.link, 'SendIt link copied')"
-                  class="cursor-pointer"
-                  >{{ record.link }}</span
+                  class="inline-flex cursor-pointer ellipsis w-[280px]"
+                  ><span class="ellipsis">{{ record.link }}</span></span
                 >
+                <button
+                  @click.stop="copy(record.link, 'SendIt link copied')"
+                  class="cursor-pointer ml-4"
+                >
+                  <img src="@/assets/images/icons/copy.svg" />
+                </button>
               </div>
               <div v-if="record.points" class="text-xs ellipsis">
                 <span class="text-philippine-gray">Points Earned:</span>&nbsp;
