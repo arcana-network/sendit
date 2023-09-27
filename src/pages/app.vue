@@ -61,6 +61,7 @@ const showRequestPopup = ref(false);
 const requestPopupData = ref({} as any);
 const showRequestInvalidPopup = ref(false);
 const requestInvalidPopupType = ref("");
+const isBannerClosed = ref(false);
 
 loaderStore.showLoader("Initializing...");
 
@@ -350,17 +351,15 @@ function handleExpiryDismiss() {
     </div>
     <div v-else>
       <div
-        class="flex justify-center items-center h-[36px] bg-[#16AD65] text-[14px] font-[500] px-4 text-center"
+        class="relative flex justify-center items-center h-[36px] bg-[#16AD65] text-[14px] font-[500] px-4 text-center"
+        v-if="!isBannerClosed"
       >
         <div class="flex items-baseline flex-wrap justify-center">
-          SendIT weekly rewards have been sent out.&nbsp;
-          <a
-            href="https://www.arcana.network/blog/sendit-weekly-reward-announcements"
-            target="_blank"
-            class="text-[12px] font-[800] uppercase"
-            >Learn more</a
-          >
+          The next batch of SendIT rewards will be distributed on 24 Sep 2023.
         </div>
+        <button class="absolute right-4" @click.stop="isBannerClosed = true">
+          <img src="@/assets/images/icons/close.svg" alt="close" />
+        </button>
       </div>
       <RouterView v-if="authStore.isAuthSDKInitialized"> </RouterView>
     </div>

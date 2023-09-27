@@ -39,7 +39,7 @@ onBeforeUnmount(() => {
     }"
   >
     <div class="landing-container relative">
-      <div class="flex md:justify-center">
+      <div class="flex">
         <a href="/" class="flex">
           <img
             alt="SendIt"
@@ -54,7 +54,7 @@ onBeforeUnmount(() => {
         </a>
       </div>
       <div
-        class="absolute z-[10] right-[1.25rem] top-0 bottom-0 flex items-center"
+        class="absolute z-[10] right-[1.25rem] top-0 bottom-0 flex items-center gap-4"
       >
         <button
           class="text-[0.75rem] leading-[1.125rem] uppercase font-500 border-[#363636] border border-solid rounded-[5px] md:rounded-[10px] px-4 py-2 md:px-6 md:py-3 cursor-pointer hover:bg-[#363636] hover:text-white transition-colors duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
@@ -63,6 +63,16 @@ onBeforeUnmount(() => {
         >
           Launch App
         </button>
+        <a
+          href="https://www.producthunt.com/posts/sendit-3?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-sendit&#0045;3"
+          target="_blank"
+          ><img
+            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=411941&theme=dark"
+            alt="SendIT - Send&#0032;crypto&#0032;using&#0032;email&#0032;or&#0032;social&#0032;handles | Product Hunt"
+            style="width: 200px; height: 54px"
+            width="200"
+            height="54"
+        /></a>
       </div>
     </div>
   </header>

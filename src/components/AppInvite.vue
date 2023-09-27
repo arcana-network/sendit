@@ -151,7 +151,8 @@ const isButtonDisabled = computed(() => {
     !areEmailsValid.value.valid ||
     bogusEmails.value.length !== 0 ||
     !hasStartedTyping.value ||
-    emailsArr.value.length === 0
+    emailsArr.value.length === 0 ||
+    loader.show
   );
 });
 </script>
