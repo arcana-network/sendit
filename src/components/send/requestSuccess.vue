@@ -21,7 +21,7 @@ function getChainSpecificExplorer() {
 <template>
   <Overlay>
     <div
-      class="w-screen max-w-[450px] flex flex-col items-center border-1 border-jet p-4 rounded-md bg-eerie-black space-y-5 relative"
+      class="w-screen max-w-[450px] flex flex-col items-center border-1 border-jet p-4 pb-8 rounded-md bg-eerie-black space-y-5 relative"
     >
       <button class="absolute right-4 top-4" @click.stop="emit('close')">
         <img src="@/assets/images/icons/close.svg" alt="close" />
@@ -42,18 +42,6 @@ function getChainSpecificExplorer() {
           >
         </p>
       </div>
-      <!-- <div class="flex flex-col space-y-3 w-full">
-        <button
-          class="btn btn-submit-secondary flex justify-center gap-2 items-center w-full text-center"
-          @click.stop="emit('shoutout')"
-        >
-          <span class="font-bold text-xs">Shoutout on twitter</span>
-          <span
-            class="text-cornflower-blue text-xs font-light bg-feep-koamaru p-1 rounded-md"
-            >Earn 5 XP</span
-          >
-        </button>
-      </div> -->
     </div>
   </Overlay>
 </template>

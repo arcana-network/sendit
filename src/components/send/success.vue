@@ -64,10 +64,17 @@ function handleMail() {
         </p>
       </div>
       <div
-        class="p-4 bg-chinese-black w-full rounded-md cursor-pointer break-all"
+        class="p-4 bg-chinese-black w-full rounded-md cursor-pointer break-all flex gap-4 items-center"
         @click.stop="handleLinkCopy"
       >
-        {{ props.shareDetails.shareLink }}
+        <span>{{ props.shareDetails.shareLink }}</span>
+        <button @click.stop="handleLinkCopy" title="Click to copy">
+          <img
+            src="@/assets/images/icons/copy.svg"
+            alt="copy"
+            class="w-12 h-12"
+          />
+        </button>
       </div>
       <div class="flex flex-col space-y-3 w-full">
         <button
