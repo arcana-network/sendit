@@ -29,10 +29,11 @@ import { SOCKET_IDS, TOKEN_TYPES } from "@/constants/socket-ids";
 import { isValidEmail, isValidTwitterHandle } from "@/utils/validation";
 import { normaliseEmail, normaliseTwitterHandle } from "@/utils/normalise";
 import Dropdown from "@/components/lib/dropdown.vue";
-import chains from "@/constants/chainList";
+import chains, { testnetChains } from "@/constants/chainList";
 import { hexlify } from "ethers";
 import { GAS_SUPPORTED_CHAINS } from "@/constants/socket-ids";
 import { Decimal } from "decimal.js";
+import copyToClipboard from "@/utils/copyToClipboard";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -63,6 +64,7 @@ const hasTwitterError = ref(false);
 const isEmailDisposable = ref(false);
 const hasStartedTyping = ref(false);
 const allAssets: Ref<any[]> = ref([]);
+const isBalanceFetching = ref(false);
 
 const { userInput, supportedChains } = toRefs(sendStore);
 
@@ -108,40 +110,46 @@ function getChainAssets(chainId) {
 
 async function fetchAssets() {
   try {
+    isBalanceFetching.value = true;
     const walletAddress = authStore.walletAddress;
     const data = await getAccountBalance(walletAddress, [
       "eth",
       "polygon",
       "polygon_mumbai",
       "arbitrum",
+      "bsc",
     ]);
+    let erc20Assets = [] as any[];
     if (data?.result?.assets?.length) {
-      allAssets.value = data?.result?.assets.map((asset) => {
-        const address =
-          asset.tokenType === "NATIVE" ? "NATIVE" : asset.contractAddress;
+      erc20Assets = data?.result?.assets
+        .map((asset) => {
+          const address =
+            asset.tokenType === "NATIVE" ? "NATIVE" : asset.contractAddress;
+          return {
+            ...asset,
+            contractAddress: address,
+            name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
+          };
+        })
+        .filter((asset) => asset.tokenType !== "NATIVE");
+    }
+    let nativeAssets = [] as any[];
+    const nativeData = await getNativeTokenBalances(walletAddress);
+    if (nativeData?.length) {
+      nativeAssets = nativeData?.map((asset) => {
+        const address = "NATIVE";
         return {
           ...asset,
           contractAddress: address,
           name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
         };
       });
-    } else {
-      const nativeData = await getNativeTokenBalances(walletAddress);
-      if (nativeData?.length) {
-        allAssets.value = nativeData?.map((asset) => {
-          const address = "NATIVE";
-          return {
-            ...asset,
-            contractAddress: address,
-            name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
-          };
-        });
-      } else {
-        allAssets.value = [];
-      }
     }
+    allAssets.value = [...nativeAssets, ...erc20Assets];
   } catch (error) {
     console.error(error);
+  } finally {
+    isBalanceFetching.value = false;
   }
 }
 
@@ -204,6 +212,9 @@ async function proceed() {
         hasUserRejectedChainSwitching = true;
       }
     }
+  } else {
+    toast.error("Please select a chain to continue");
+    return;
   }
   if (!hasUserRejectedChainSwitching) {
     loadStore.showLoader(
@@ -475,21 +486,27 @@ function getTokenModelValue(tokenAddress) {
     {}
   );
 }
+
+async function copyWalletAddress() {
+  await copyToClipboard(authStore.walletAddress);
+  toast.success("Wallet address copied");
+}
 </script>
 
 <template>
   <div
     class="w-full max-w-[450px] space-y-4 border-1 border-jet p-4 rounded-md bg-eerie-black"
   >
-    <h1 class="uppercase font-bold">Transaction Details</h1>
+    <h1 class="uppercase font-bold">Send Tokens</h1>
+    <hr class="border-0 border-b border-solid border-[#363636] -mx-4" />
     <div class="space-y-1">
-      <h2 class="text-xs font-medium">Send Via</h2>
+      <h2 class="text-xs">Send Via</h2>
       <div class="flex items-center space-x-2">
         <div
           v-for="medium in sendVia"
           :key="medium.value"
           @click="handleMediumChange(medium.value)"
-          class="border-1 p-1.5 rounded-full transition-all hover:bg-[#313131] cursor-pointer"
+          class="border-1 p-1.5 rounded-full transition-all hover:bg-[#313131] cursor-pointer h-[44px] w-[44px] flex items-center justify-center"
           :class="{
             'border-[#4D4D4D]': userInput.medium !== medium.value,
             'border-white bg-[#313131]': userInput.medium === medium.value,
@@ -501,7 +518,7 @@ function getTokenModelValue(tokenAddress) {
     </div>
     <form class="space-y-3">
       <div class="flex flex-col space-y-1">
-        <label class="text-xs">Recipient's ID</label>
+        <label class="text-xs">Recipient ID</label>
         <input
           class="input"
           v-model.trim="userInput.recipientId"
@@ -587,8 +604,50 @@ function getTokenModelValue(tokenAddress) {
           :disabled="!userInput.chain || !userInput.token"
         />
         <div
+          v-if="
+            testnetChains.includes(Number(userInput.chain)) &&
+            userInput.token &&
+            !isBalanceFetching &&
+            Number(tokenBalance) === 0
+          "
+          class="flex flex-col gap-2 text-[10px]"
+        >
+          <div class="flex gap-2 mt-2">
+            <span
+              >Your wallet address is:
+              <span class="text-[12px]">{{
+                authStore.walletAddress
+              }}</span></span
+            >
+            <button
+              type="button"
+              @click.stop="copyWalletAddress"
+              title="Copy Wallet Address"
+            >
+              <img src="@/assets/images/icons/copy.svg" />
+            </button>
+            <!-- <button
+              type="button"
+              @click.stop="copyWalletAddress"
+              title="Refresh Balance"
+            >
+              <img src="@/assets/images/icons/refresh.svg" />
+            </button> -->
+          </div>
+          <a
+            class="text-[#ff4264] text-[10px] underline"
+            href="https://arcananetwork.notion.site/arcananetwork/SendIT-Get-testnet-tokens-from-the-faucet-61901bdecd82476bb19fce3c3059d65d"
+            target="_blank"
+          >
+            Balance too low. Click here to get testnet tokens from faucet
+          </a>
+        </div>
+        <div
           class="text-[#ff4264] text-[10px]"
-          v-if="Number(tokenBalance) < Number(userInput.amount)"
+          v-else-if="
+            !isBalanceFetching &&
+            Number(tokenBalance) < Number(userInput.amount)
+          "
         >
           Entered amount is greater than your wallet balance.
         </div>
@@ -601,7 +660,7 @@ function getTokenModelValue(tokenAddress) {
           :disabled="disableSubmit"
           :class="{ 'opacity-50': disableSubmit }"
         >
-          Send it
+          Send It
         </button>
       </div>
     </form>

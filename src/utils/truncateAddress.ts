@@ -1,3 +1,3 @@
-export function truncateAddress(str: string) {
-  return `${str.slice(0, 6)}......${str.slice(-6)}`;
+export function truncateAddress(str: string, len = 6) {
+  return `${str.slice(0, len)}......${str.slice(-len)}`;
 }

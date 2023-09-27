@@ -3,26 +3,27 @@ import Overlay from "@/components/overlay.vue";
 import copyToClipboard from "@/utils/copyToClipboard";
 import { composeAndSendDM } from "@/utils/tweet";
 import { useToast } from "vue-toastification";
+import useRequestStore from "@/stores/request";
+import { normaliseEmail } from "@/utils/normalise";
 
-type SendSuccessProps = {
-  medium: string;
-  verifierId: string;
+type RequestSuccessProps = {
   shareDetails: {
-    isShareRequired: boolean;
+    requestId: string;
     shareLink: string;
   };
-  amount: string | number;
-  currency: string;
-  chain: string;
+  recipientId: string;
+  amount: string;
+  symbol: string;
 };
 
-const props = defineProps<SendSuccessProps>();
+const props = defineProps<RequestSuccessProps>();
+const requestStore = useRequestStore();
 const emit = defineEmits(["close", "shoutout"]);
 const toast = useToast();
 const message = `Hello!
 \r\n
-I have sent you ${props.amount} ${props.currency} on ${props.chain} through SendIt!
-Login here using this email to claim (please ensure the URL is of the format "sendit.arcana.network") - ${props.shareDetails.shareLink}
+I have requested ${props.amount} ${props.symbol} from you through SendIt!
+Login here to send - ${props.shareDetails.shareLink}
 \r\n
 SendIt is a product made by Arcana Network to allow users to send crypto to anyone even if they don't have a wallet yet.
 Find out more about Arcana here - https://arcana.network`;
@@ -33,14 +34,14 @@ async function handleLinkCopy() {
 }
 
 function handleTwitterDM() {
-  composeAndSendDM(props.verifierId, message);
+  composeAndSendDM(props.recipientId, message);
 }
 
 function handleMail() {
   window.open(
-    `mailto:${
-      props.verifierId
-    }?subject=SendIt%20-%20Claim%20your%20tokens&body=${encodeURIComponent(
+    `mailto:${normaliseEmail(
+      props.recipientId
+    )}?subject=SendIt%20-%20Requested%20some%20tokens&body=${encodeURIComponent(
       message
     )}`
   );
@@ -57,10 +58,11 @@ function handleMail() {
       </button>
       <img src="@/assets/images/icons/success-tick.svg" alt="success" />
       <div class="space-y-2 flex flex-col items-center">
-        <h1 class="uppercase font-bold text-[20px]">Link Created</h1>
+        <h1 class="uppercase font-bold text-[20px]">Request Created</h1>
         <p class="text-philippine-gray text-[10px] w-3/4 text-center">
-          Copy the link to send it to your recipient or click the button below
-          to share it using the sharing methods supported by your OS.
+          The link below will let the person you share it with to send you the
+          tokens you’ve requested. Send it through an email by clicking the
+          button below or copy and share it some other way.
         </p>
       </div>
       <div
@@ -79,29 +81,17 @@ function handleMail() {
       <div class="flex flex-col space-y-3 w-full">
         <button
           class="btn btn-submit text-sm w-full font-bold"
-          v-if="
-            props.shareDetails.isShareRequired && props.medium === 'twitter'
-          "
+          v-if="requestStore.userInput.medium === 'twitter'"
           @click.stop="handleTwitterDM"
         >
           Send via twitter DM
         </button>
         <button
           class="btn btn-submit text-sm w-full font-bold"
-          v-if="props.shareDetails.isShareRequired && props.medium === 'mail'"
+          v-else
           @click.stop="handleMail"
         >
           Send Email
-        </button>
-        <button
-          class="btn btn-submit-secondary flex justify-center gap-2 items-center w-full text-center"
-          @click.stop="emit('shoutout')"
-        >
-          <span class="font-bold text-xs">Shoutout on twitter</span>
-          <span
-            class="text-cornflower-blue text-xs font-light bg-feep-koamaru p-1 rounded-md"
-            >Earn 5 XP</span
-          >
         </button>
       </div>
     </div>

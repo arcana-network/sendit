@@ -71,10 +71,11 @@ async function getNativeTokenBalances(walletAddress: string) {
     axios.post("https://rpc.ankr.com/polygon", payload),
     axios.post("https://rpc.ankr.com/polygon_mumbai", payload),
     axios.post("https://rpc.ankr.com/arbitrum", payload),
+    axios.post("https://rpc.ankr.com/bsc", payload),
+    axios.post("https://rpc.ankr.com/bsc_testnet_chapel", payload),
   ];
-  const [eth, polygon, polygon_mumbai, arbitrum] = await Promise.all(
-    ankrPromises
-  );
+  const [eth, polygon, polygon_mumbai, arbitrum, bsc, bsc_testnet_chapel] =
+    await Promise.all(ankrPromises);
   return [
     {
       tokenType: "NATIVE",
@@ -105,6 +106,22 @@ async function getNativeTokenBalances(walletAddress: string) {
       tokenSymbol: "ETH",
       blockchain: "arbitrum",
       balance: new Decimal(arbitrum.data.result)
+        .mul(Decimal.pow(10, -18))
+        .toString(),
+    },
+    {
+      tokenType: "NATIVE",
+      tokenSymbol: "BNB",
+      blockchain: "bsc",
+      balance: new Decimal(bsc.data.result)
+        .mul(Decimal.pow(10, -18))
+        .toString(),
+    },
+    {
+      tokenType: "NATIVE",
+      tokenSymbol: "tBNB",
+      blockchain: "bsc_testnet_chapel",
+      balance: new Decimal(bsc_testnet_chapel.data.result)
         .mul(Decimal.pow(10, -18))
         .toString(),
     },

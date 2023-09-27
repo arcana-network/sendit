@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@arcana/auth": "^1.0.5",
+    "@arcana/auth": "^1.0.8",
     "@fontsource/caveat": "^5.0.8",
     "@fontsource/syne": "^5.0.8",
     "@headlessui/vue": "^1.7.15",
@@ -24,6 +24,7 @@
     "msgpackr": "^1.9.5",
     "pinia": "^2.1.4",
     "punycode": "^2.3.0",
+    "recaptcha-v3": "^1.10.0",
     "viem": "^1.2.14",
     "vue": "^3.2.47",
     "vue-router": "^4.2.2",

@@ -92,7 +92,7 @@ onBeforeUnmount(() => {
           }"
           width="250"
           height="326"
-          alt="Step 3 - Share the SendIt link on the recipient’s email ID."
+          alt="Step 3 - Share the SendIt link on the recipient’s email address."
         />
         <img
           src="@/assets/images/landing/how-does-it-work-4.png"

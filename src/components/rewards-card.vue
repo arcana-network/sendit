@@ -21,6 +21,10 @@ function onClick(reward) {
     emits("verify-follow");
   } else if (reward.task === "Shoutout") {
     router.push({ name: "History" });
+  } else if (reward.task === "Request") {
+    router.push({ name: "Request" });
+  } else if (reward.task === "Transact") {
+    router.push({ name: "Send" });
   }
 }
 </script>
@@ -46,12 +50,20 @@ function onClick(reward) {
         <span class="text-sm text-philippine-gray">{{
           reward.description
         }}</span>
-        <!-- <span v-if="reward.dailyLimit" class="text-sm text-philippine-gray"
-          ><strong>Daily Limit:</strong> {{ reward.dailyLimit }}XP</span
-        > -->
         <span v-if="reward.bonus" class="text-sm text-philippine-gray mt-2"
           ><strong>Bonus:</strong> {{ reward.bonus }}</span
         >
+        <div v-if="reward.tags?.length" class="mt-4 flex gap-2">
+          <span
+            v-for="tag in reward.tags"
+            class="text-[12px] rounded-[5px] px-2 py-[1px]"
+            :style="{
+              background: tag.color.bg,
+              color: tag.color.text,
+            }"
+            >{{ tag.name }}</span
+          >
+        </div>
       </div>
     </div>
     <div
@@ -59,14 +71,7 @@ function onClick(reward) {
       v-if="reward.task"
       @click="emits(reward.task)"
     >
-      <img
-        :src="ArrowRightIcon"
-        class="w-5 h-5"
-        :class="{
-          'opacity-0': reward.task === 'Transact',
-        }"
-        alt=""
-      />
+      <img :src="ArrowRightIcon" class="w-5 h-5" />
     </div>
   </button>
 </template>

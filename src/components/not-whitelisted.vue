@@ -18,7 +18,7 @@ const emits = defineEmits(["go-back", "join-waitlist"]);
           />
           <span class="font-[500] text-[20px] uppercase">No Access</span>
           <span class="text-xs text-philippine-gray max-w-[320px] text-center">
-            The email ID or Twitter handle you used to sign up has not been
+            The email address or Twitter handle you used to sign up has not been
             whitelisted. Would you like to join the waitlist?
           </span>
         </div>

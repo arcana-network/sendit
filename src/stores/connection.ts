@@ -77,6 +77,7 @@ class Connection {
 
     this.state = ConnectionState.NOT_CONNECTED;
     this.socket = new WebSocket(import.meta.env.VITE_API_URL);
+    this.socket.binaryType = "arraybuffer";
     this.socket.addEventListener("open", this.onOpen.bind(this));
     this.socket.addEventListener("message", this.onMessage.bind(this));
     this.socket.addEventListener("close", closeCb);
@@ -140,7 +141,7 @@ class Connection {
   }
 
   public async onMessage(ev: MessageEvent) {
-    const _data = msgunpack(Buffer.from(await ev.data.arrayBuffer()));
+    const _data = msgunpack(Buffer.from(ev.data));
     if (_data.length !== 3) {
       return;
     }
@@ -234,6 +235,9 @@ export const useConnection = defineStore("connection", {
     },
     onEvent(state) {
       return state.connection.emitter.on.bind(state.connection.emitter);
+    },
+    onceEvent(state) {
+      return state.connection.emitter.once.bind(state.connection.emitter);
     },
   },
   actions: {

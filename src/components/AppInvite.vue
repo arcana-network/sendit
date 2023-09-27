@@ -170,7 +170,7 @@ const isButtonDisabled = computed(() => {
         <form class="flex flex-col gap-5" @submit.prevent="handleEmailInvite">
           <div class="flex flex-col gap-1 space-y-1">
             <label class="text-xs text-start font-[500]" for="email-invite"
-              >Add Email ID</label
+              >Add Email Address</label
             >
             <div
               class="text-sm placeholder:text-philippine-gray bg-[#313131] rounded-[5px] p-2 input flex flex-col gap-4"

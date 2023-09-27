@@ -115,14 +115,18 @@ body {
 .Vue-Toastification__toast {
   min-height: unset !important;
   max-height: 360px !important;
-  padding: 1rem !important;
+  padding: 1.5rem 1rem !important;
   font-family: Onest, sans-serif !important;
   text-overflow: ellipsis !important;
+  background-color: #1F1F1F !important;
+  border-radius: 10px !important;
+  border: 1px solid #363636 !important;
+  align-items: center !important;
 }
 
 .Vue-Toastification__icon {
-  width: 14px !important;
-  margin-right: 8px !important;
+  width: 24px !important;
+  margin-right: 16px !important;
 }
 
 .Vue-Toastification__toast-body {
@@ -131,7 +135,23 @@ body {
 }
 
 .Vue-Toastification__progress-bar {
-  height: 2px !important;
+  height: 4px !important;
+}
+
+.Vue-Toastification__toast--success .Vue-Toastification__icon {
+  color: #15AC65 !important;
+}
+
+.Vue-Toastification__toast--success .Vue-Toastification__progress-bar {
+  background-color: #15AC65 !important;
+}
+
+.Vue-Toastification__toast--error .Vue-Toastification__icon {
+  color: #FF4264 !important;
+}
+
+.Vue-Toastification__toast--error .Vue-Toastification__progress-bar {
+  background-color: #FF4264 !important;
 }
 
 .landing-section-title {

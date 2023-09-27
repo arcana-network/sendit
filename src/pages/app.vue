@@ -13,6 +13,7 @@ import NotWhiteListed from "@/components/not-whitelisted.vue";
 import useSendStore from "@/stores/send";
 import useWalletConnect from "@/use/walletconnect";
 import ReceiverMessage from "@/components/ReceiverMessage.vue";
+import RequestTokensMessage from "@/components/RequestTokensMessage.vue";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import TweetVerify from "@/components/TweetVerify.vue";
 import {
@@ -21,7 +22,16 @@ import {
   SocketConnectionAccount,
 } from "@/stores/connection.ts";
 import AirdropSuccess from "@/components/AirdropSuccess.vue";
-// import { getBytes } from "ethers";
+import { getBytes, hexlify } from "ethers";
+import Decimal from "decimal.js";
+import TokenRequestInvalid from "@/components/TokenRequestInvalid.vue";
+
+const REQUEST_STATE = {
+  UNFULFILLED: 0x0,
+  CANCELLED: 0x10,
+  REJECTED: 0x20,
+  FULFILLED: 0xf0,
+};
 
 const AppMaintenance = defineAsyncComponent(
   () => import("@/pages/maintenance.vue")
@@ -47,7 +57,42 @@ const showReceivedCryptoMessage = ref(false);
 const showTweetVerificationModal = ref(false);
 const tweetHash = ref("");
 const faucetFundsReceived = ref(false);
+const showRequestPopup = ref(false);
+const requestPopupData = ref({} as any);
+const showRequestInvalidPopup = ref(false);
+const requestInvalidPopupType = ref("");
 const isBannerClosed = ref(false);
+
+loaderStore.showLoader("Initializing...");
+
+onMounted(() => {
+  initAuth();
+});
+
+async function connectSocket() {
+  const account: SocketConnectionAccount = {
+    verifier: authStore.userInfo.loginType,
+    verifier_id: authStore.userInfo.id,
+  };
+  await conn.initialize(
+    // @ts-ignore
+    authStore.provider,
+    account
+  );
+  conn.onceEvent(Connection.ON_ERROR, (error) => {
+    if (error.code === ACTION_REJECTED) {
+      loaderStore.hideLoader();
+      toast.error("Signature rejected");
+      if (authStore.loggedInWith === "walletconnect") {
+        walletConnect.disconnect();
+        onWalletDisconnect();
+      } else {
+        auth.getAuthInstance().logout();
+      }
+      router.replace({ name: "Login", query: { ...route.query } });
+    }
+  });
+}
 
 async function initAuth() {
   loaderStore.showLoader("Initializing...");
@@ -58,11 +103,15 @@ async function initAuth() {
     const arcanaAuthProvider = auth.getProvider();
     authStore.provider = arcanaAuthProvider;
     arcanaAuthProvider.on("connect", () => {
+      authStore.provider = arcanaAuthProvider;
+      authStore.isLoggedIn = true;
+      authStore.loggedInWith = "";
       onWalletConnect();
     });
     authStore.setAuthInitialized(true);
     const isLoggedIn = await auth.isLoggedIn();
     if (isLoggedIn) {
+      authStore.provider = arcanaAuthProvider;
       authStore.isLoggedIn = true;
       authStore.loggedInWith = "";
       if (route.query["try-it-out"] === "1") {
@@ -78,32 +127,12 @@ async function initAuth() {
 }
 
 async function initSocketConnect() {
-  const account: SocketConnectionAccount = {
-    verifier: authStore.userInfo.loginType,
-    verifier_id: authStore.userInfo.id,
-    invite_id: 0,
-  };
-  if (route.query.id && route.query.id !== "-1") {
-    account.invite_id = Number(route.query.id);
+  try {
+    await connectSocket();
+  } catch (error) {
+    console.log({ error });
+    toast.error("Error connecting to socket");
   }
-  await conn.initialize(
-    // @ts-ignore
-    authStore.provider,
-    account
-  );
-  conn.onEvent(Connection.ON_ERROR, (error) => {
-    if (error.code === ACTION_REJECTED) {
-      loaderStore.hideLoader();
-      toast.error("Signature rejected");
-      if (authStore.loggedInWith === "walletconnect") {
-        walletConnect.disconnect();
-        onWalletDisconnect();
-      } else {
-        auth.getAuthInstance().logout();
-      }
-      router.replace({ name: "Login", query: { ...route.query } });
-    }
-  });
 }
 
 async function getUserInfo() {
@@ -132,14 +161,17 @@ async function onWalletConnect() {
   loaderStore.showLoader("Connecting...");
   if (authStore.loggedInWith === "walletconnect") {
     authStore.provider.on("accountsChanged", async (accounts) => {
+      loaderStore.showLoader(
+        "Switching account...",
+        "Accounts switched by the wallet. Please approve the new signature request to continue."
+      );
       await initSocketConnect();
       authStore.setUserInfo({
         address: accounts[0],
         loginType: "null",
-        id: "null",
+        id: accounts[0],
       });
       userStore.address = accounts[0];
-      loaderStore.hideLoader();
     });
   }
   await getUserInfo();
@@ -150,8 +182,6 @@ async function onWalletDisconnect() {
   conn.closeSocket();
   authStore.setLoginStatus(false);
 }
-
-onMounted(initAuth);
 
 watch(
   () => conn.connected,
@@ -164,6 +194,39 @@ watch(
         router.replace({ name: "Send", query });
       }
       await sendStore.fetchSupportedChains();
+      if (route.query.requestId) {
+        try {
+          const request = await conn.sendMessage(SOCKET_IDS.GET_REQUEST, {
+            request_id: getBytes(route.query.requestId as string),
+          });
+          if (request) {
+            if (
+              request.state === REQUEST_STATE.CANCELLED ||
+              request.state === REQUEST_STATE.REJECTED ||
+              request.state === REQUEST_STATE.FULFILLED
+            ) {
+              showRequestInvalidPopup.value = true;
+              requestInvalidPopupType.value = REQUEST_STATE.CANCELLED
+                ? "cancelled"
+                : REQUEST_STATE.REJECTED
+                ? "rejected"
+                : "fulfilled";
+            } else if (Number(request.data.expiry) < Date.now()) {
+              showRequestInvalidPopup.value = true;
+              requestInvalidPopupType.value = "expired";
+            } else if (request.state === REQUEST_STATE.UNFULFILLED) {
+              showRequestPopup.value = true;
+              requestPopupData.value = request;
+            } else {
+              router.replace({ name: "Send" });
+            }
+          } else {
+            router.replace({ name: "Send" });
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
       rewardsStore.fetchRewards(userStore.address);
       await userStore.fetchUserPointsAndRank();
       notificationStore.getNotifications();
@@ -221,6 +284,63 @@ function handleShoutout({ hash }: any) {
 }
 
 const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
+
+function handleRequestDoLater() {
+  showRequestPopup.value = false;
+  sendStore.resetRequestInput();
+  router.replace({ name: "Send" });
+  conn.sendMessage(SOCKET_IDS.ADD_PENDING_TX, {
+    type: "request",
+    ...requestPopupData.value,
+  });
+}
+
+function handleRequestAccept() {
+  showReceivedCryptoMessage.value = false;
+  sendStore.requestInput.amount = new Decimal(
+    hexlify(requestPopupData.value.data.value)
+  ).toNumber();
+  sendStore.requestInput.recipientAddress = hexlify(
+    requestPopupData.value.data.requester
+  );
+  sendStore.requestInput.requestId = route.query.requestId as string;
+  sendStore.requestInput.chain = requestPopupData.value.chain_id;
+  sendStore.requestInput.token = hexlify(
+    requestPopupData.value.data.token_address
+  );
+  sendStore.requestInput.nonce = hexlify(requestPopupData.value.data.nonce);
+  sendStore.requestInput.signature = hexlify(requestPopupData.value.signature);
+  sendStore.requestInput.expiry = requestPopupData.value.data.expiry;
+  sendStore.requestInput.recipientVerifier =
+    requestPopupData.value.requester_meta.verifier;
+  sendStore.requestInput.recipientVerifierHuman =
+    requestPopupData.value.requester_meta.verifier_human;
+  router.replace({ name: "Send", query: { ...route.query } });
+  showRequestPopup.value = false;
+  conn.sendMessage(SOCKET_IDS.ADD_PENDING_TX, {
+    type: "request",
+    ...requestPopupData.value,
+  });
+}
+
+async function handleRequestReject() {
+  loaderStore.showLoader("Rejecting request...");
+  showRequestPopup.value = false;
+  await sendStore.removePendingTxForPaymentRequest(
+    route.query.requestId as string
+  );
+  await conn.sendMessage(SOCKET_IDS.REJECT_REQUEST, {
+    request_id: getBytes(route.query.requestId as string),
+  });
+  router.replace({ name: "Send" });
+  loaderStore.hideLoader();
+}
+
+function handleExpiryDismiss() {
+  showRequestInvalidPopup.value = false;
+  requestInvalidPopupType.value = "";
+  router.replace({ name: "Send" });
+}
 </script>
 
 <template>
@@ -263,5 +383,25 @@ const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
       @go-back="handleNoAccessBack"
       @join-waitlist="router.push({ name: 'Waitlist' })"
     />
+    <TokenRequestInvalid
+      v-if="showRequestInvalidPopup"
+      :type="requestInvalidPopupType"
+      @dismiss="handleExpiryDismiss"
+    />
+    <RequestTokensMessage
+      v-if="showRequestPopup"
+      :data="requestPopupData"
+      @do-later="handleRequestDoLater"
+      @accept="handleRequestAccept"
+      @reject="handleRequestReject"
+      @dismiss="showRequestPopup = false"
+    />
   </main>
 </template>
+
+<style>
+.carousel__next,
+.carousel__prev {
+  color: #f7f7f7 !important;
+}
+</style>
