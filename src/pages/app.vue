@@ -61,7 +61,7 @@ const showRequestPopup = ref(false);
 const requestPopupData = ref({} as any);
 const showRequestInvalidPopup = ref(false);
 const requestInvalidPopupType = ref("");
-const isBannerClosed = ref(false);
+const isBannerClosed = ref(true);
 
 loaderStore.showLoader("Initializing...");
 

@@ -38,7 +38,7 @@ const emits = defineEmits(["dismiss", "reject", "accept", "do-later"]);
       class="max-w-[500px] w-screen bg-eerie-black rounded-[10px] border-1 border-jet flex flex-col relative p-4 gap-5"
     >
       <div class="flex flex-col gap-5 relative">
-        <button class="absolute right-0" @click="emits('dismiss')">
+        <button class="absolute right-0" @click="emits('do-later')">
           <img src="@/assets/images/icons/close.svg" alt="close" />
         </button>
         <div class="flex flex-col justify-center items-center gap-4">

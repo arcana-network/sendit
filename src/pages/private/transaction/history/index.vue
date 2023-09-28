@@ -105,7 +105,7 @@ function sanitizePaymentRequestRecord(record) {
         : "sent",
     socialId: isRequester
       ? record.target_meta.verifier_human
-      : record.requester_meta.verifier_human,
+      : record.requester_meta.verifier_human || "",
     verifier: record.target_verifier,
     walletAddress: hexlify(record.target),
     link: record.share_url,
@@ -158,7 +158,7 @@ function sanitizeTokenTransferRecord(record) {
     chain: chainList[Number(record.chainId)]?.name || "N/A",
     txHash: hexlify(record.hash),
     txStatus: record.sent ? "sent" : "received",
-    socialId: record.user.verifier_human || hexlify(record.user_address),
+    socialId: record.user.verifier_human || "",
     verifier: record.user?.verifier,
     walletAddress: hexlify(record.user_address),
     link: record.share_url,
@@ -256,15 +256,25 @@ async function fetchTxHistory() {
   if (currentPage === 1) {
     const pendingTxns = pendingTx?.length ? pendingTx : [];
     const pendingTxnsData = pendingTxns
-      .filter((record) => {
+      .filter((record, mainIndex) => {
         if (record.data.type === "transfer") {
           return true;
         } else if (record.data.type === "request") {
-          const isRequestUsed = paymentRequestTxnsData.find(
-            (request) => request.requestId === record.data.request_id
-          );
+          const isRequestUsed = paymentRequestTxnsData.find((request) => {
+            return request.requestId === hexlify(record.data.request_id);
+          });
           if (!isRequestUsed) {
-            return true;
+            const isDuplicate = pendingTxns.find((txn, subIndex) => {
+              return (
+                hexlify(txn.data.request_id) ===
+                  hexlify(record.data.request_id) &&
+                txn.id !== record.id &&
+                mainIndex > subIndex
+              );
+            });
+            if (!isDuplicate) {
+              return true;
+            }
           }
         }
         return false;
@@ -300,6 +310,8 @@ async function fetchTxHistory() {
             ? request.final_fulfiller_meta.verifier_human ||
               hexlify(request.final_fulfiller)
             : "";
+        txn.state = request.state;
+        console.log(txn);
       }
     }
     history.value = [...pendingTxnsData, ...paymentRequestTxnsData, ...txns];
