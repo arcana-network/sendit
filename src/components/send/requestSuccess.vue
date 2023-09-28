@@ -23,7 +23,7 @@ function getChainSpecificExplorer() {
 <template>
   <Overlay>
     <div
-      class="w-screen max-w-[450px] flex flex-col items-center border-1 border-jet p-4 pb-8 rounded-md bg-eerie-black space-y-5 relative"
+      class="w-screen max-w-[450px] flex flex-col items-center border-1 border-jet p-4 rounded-md bg-eerie-black space-y-5 relative"
     >
       <button class="absolute right-4 top-4" @click.stop="emit('close')">
         <img src="@/assets/images/icons/close.svg" alt="close" />
@@ -43,13 +43,13 @@ function getChainSpecificExplorer() {
             {{ getChainSpecificExplorer() }}</a
           >
         </p>
-        <button
-          class="btn btn-submit-secondary flex justify-center gap-2 items-center w-full text-center"
-          @click.stop="router.push({ name: 'History' })"
-        >
-          <span class="font-bold text-xs">View Transaction</span>
-        </button>
       </div>
+      <button
+        class="btn btn-submit-secondary flex justify-center gap-2 w-full items-center text-center"
+        @click.stop="router.push({ name: 'History' })"
+      >
+        <span class="font-bold text-xs">View Transaction</span>
+      </button>
     </div>
   </Overlay>
 </template>
