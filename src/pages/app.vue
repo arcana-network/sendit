@@ -61,7 +61,7 @@ const showRequestPopup = ref(false);
 const requestPopupData = ref({} as any);
 const showRequestInvalidPopup = ref(false);
 const requestInvalidPopupType = ref("");
-const isBannerClosed = ref(false);
+const isBannerClosed = ref(true);
 
 loaderStore.showLoader("Initializing...");
 
@@ -201,6 +201,11 @@ watch(
           });
           if (request) {
             if (
+              hexlify(request.data.requester) ===
+              userStore.address.toLowerCase()
+            ) {
+              router.replace({ name: "Send" });
+            } else if (
               request.state === REQUEST_STATE.CANCELLED ||
               request.state === REQUEST_STATE.REJECTED ||
               request.state === REQUEST_STATE.FULFILLED
@@ -285,17 +290,20 @@ function handleShoutout({ hash }: any) {
 
 const isAppDown = import.meta.env.VITE_APP_DOWN === "true";
 
-function handleRequestDoLater() {
+async function handleRequestDoLater() {
   showRequestPopup.value = false;
   sendStore.resetRequestInput();
   router.replace({ name: "Send" });
-  conn.sendMessage(SOCKET_IDS.ADD_PENDING_TX, {
+  await sendStore.removePendingTxForPaymentRequest(
+    route.query.requestId as string
+  );
+  await conn.sendMessage(SOCKET_IDS.ADD_PENDING_TX, {
     type: "request",
     ...requestPopupData.value,
   });
 }
 
-function handleRequestAccept() {
+async function handleRequestAccept() {
   showReceivedCryptoMessage.value = false;
   sendStore.requestInput.amount = new Decimal(
     hexlify(requestPopupData.value.data.value)
@@ -317,7 +325,10 @@ function handleRequestAccept() {
     requestPopupData.value.requester_meta.verifier_human;
   router.replace({ name: "Send", query: { ...route.query } });
   showRequestPopup.value = false;
-  conn.sendMessage(SOCKET_IDS.ADD_PENDING_TX, {
+  await sendStore.removePendingTxForPaymentRequest(
+    route.query.requestId as string
+  );
+  await conn.sendMessage(SOCKET_IDS.ADD_PENDING_TX, {
     type: "request",
     ...requestPopupData.value,
   });

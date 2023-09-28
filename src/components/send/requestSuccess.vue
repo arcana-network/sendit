@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import Overlay from "@/components/overlay.vue";
+import { useRouter } from "vue-router";
 
 const props = defineProps<{
   hash: string;
   chainId: string;
 }>();
 
+const router = useRouter();
 const emit = defineEmits(["close", "shoutout"]);
 
 const chainSpecificExplorers = {
@@ -41,6 +43,12 @@ function getChainSpecificExplorer() {
             {{ getChainSpecificExplorer() }}</a
           >
         </p>
+        <button
+          class="btn btn-submit-secondary flex justify-center gap-2 items-center w-full text-center"
+          @click.stop="router.push({ name: 'History' })"
+        >
+          <span class="font-bold text-xs">View Transaction</span>
+        </button>
       </div>
     </div>
   </Overlay>
