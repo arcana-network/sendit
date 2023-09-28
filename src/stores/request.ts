@@ -12,7 +12,7 @@ import { normaliseEmail } from "@/utils/normalise";
 const conn = useConnection(activePiniaInstance);
 const authStore = useAuthStore(activePiniaInstance);
 const userStore = useUserStore(activePiniaInstance);
-const REQUEST_EXPIRY = 1000 * 60 * 15; // 15 minutes
+const REQUEST_EXPIRY = 1000 * 60 * 60 * 24 * 7; // 7 days
 
 type RequestStoreKind = {
   userInput: {
