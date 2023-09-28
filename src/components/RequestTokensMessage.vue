@@ -1,18 +1,25 @@
 <script setup lang="ts">
 import Overlay from "@/components/overlay.vue";
-import { onBeforeMount, reactive } from "vue";
+import { computed, onBeforeMount, reactive } from "vue";
 import { ethers, hexlify } from "ethers";
 import { requestableTokens } from "@/constants/requestableTokens";
 import Decimal from "decimal.js";
+import useUserStore from "@/stores/user";
 
 const props = defineProps<{
   data: any;
 }>();
 
+const userStore = useUserStore();
+
 const reactiveData = reactive({
   symbol: "",
   decimals: "",
   amount: "",
+});
+
+const canReject = computed(() => {
+  return userStore.address.toLowerCase() === hexlify(props.data.target);
 });
 
 onBeforeMount(() => {
@@ -67,6 +74,7 @@ const emits = defineEmits(["dismiss", "reject", "accept", "do-later"]);
           <button
             class="flex justify-center items-center btn btn-submit-secondary"
             @click="emits('reject')"
+            v-if="canReject"
           >
             REJECT REQUEST
           </button>

@@ -201,6 +201,11 @@ watch(
           });
           if (request) {
             if (
+              hexlify(request.data.requester) ===
+              userStore.address.toLowerCase()
+            ) {
+              router.replace({ name: "Send" });
+            } else if (
               request.state === REQUEST_STATE.CANCELLED ||
               request.state === REQUEST_STATE.REJECTED ||
               request.state === REQUEST_STATE.FULFILLED

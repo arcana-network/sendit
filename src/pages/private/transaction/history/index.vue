@@ -386,6 +386,13 @@ async function rejectRequest(record, index) {
   }
   await sendStore.removePendingTxForPaymentRequest(record.requestId);
 }
+
+function isTarget(record) {
+  return (
+    record.rawData?.target &&
+    hexlify(record.rawData.target) === userStore.address.toLowerCase()
+  );
+}
 </script>
 
 <template>
@@ -518,7 +525,7 @@ async function rejectRequest(record, index) {
                   @click.stop="rejectRequest(record, index)"
                 >
                   <span v-if="record.isRequester">Cancel Request</span>
-                  <span v-else>Reject Request</span>
+                  <span v-else-if="isTarget(record)">Reject Request</span>
                 </button>
               </div>
               <div
@@ -667,7 +674,7 @@ async function rejectRequest(record, index) {
                 @click.stop="rejectRequest(record, index)"
               >
                 <span v-if="record.isRequester">Cancel Request</span>
-                <span v-else>Reject Request</span>
+                <span v-else-if="isTarget(record)">Reject Request</span>
               </button>
             </div>
           </div>
