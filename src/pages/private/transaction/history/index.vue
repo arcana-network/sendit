@@ -3,7 +3,7 @@ import { onBeforeMount, onBeforeUnmount, ref } from "vue";
 import { useConnection } from "@/stores/connection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import dayjs from "dayjs";
-import { ethers } from "ethers";
+import { ethers, getBytes } from "ethers";
 import { composeAndSendTweet } from "@/utils/tweet";
 import TweetVerify from "@/components/TweetVerify.vue";
 import { hexlify, formatUnits } from "ethers";
@@ -33,6 +33,13 @@ const loaderStore = useLoaderStore();
 const toast = useToast();
 let currentPage = 1;
 let endOFHistory = false;
+
+const REQUEST_STATE = {
+  UNFULFILLED: 0x0,
+  CANCELLED: 0x10,
+  REJECTED: 0x20,
+  FULFILLED: 0xf0,
+};
 
 onBeforeMount(async () => {
   fetchTxHistory();
@@ -84,13 +91,14 @@ function sanitizePaymentRequestRecord(record) {
     },
     chain: chainList[Number(record.chain_id)]?.name || "N/A",
     txStatus:
-      txState === 0x0 && Number(record.data.expiry) < Date.now()
+      txState === REQUEST_STATE.UNFULFILLED &&
+      Number(record.data.expiry) < Date.now()
         ? "expired"
-        : txState === 0x0
+        : txState === REQUEST_STATE.UNFULFILLED
         ? "pending"
-        : txState === 0x10
+        : txState === REQUEST_STATE.CANCELLED
         ? "cancelled"
-        : txState === 0x20
+        : txState === REQUEST_STATE.REJECTED
         ? "rejected"
         : isRequester
         ? "received"
@@ -217,14 +225,23 @@ async function fetchTxHistory() {
     offset: (currentPage - 1) * 30,
     count: 30,
   };
-  const txHistory = (await conn.sendMessage(
+  const txHistoryPromise = conn.sendMessage(
     SOCKET_IDS.GET_TX_HISTORY,
     message
-  )) as { txns: any[] };
-  const paymentRequestTxns = (await conn.sendMessage(
+  ) as Promise<{ txns: any[] }>;
+  const paymentRequestPromise = conn.sendMessage(
     SOCKET_IDS.LIST_REQUESTS,
     message
-  )) as any;
+  ) as Promise<{ data: any[] }>;
+  const pendingTxPromise =
+    currentPage === 1
+      ? conn.sendMessage(SOCKET_IDS.LIST_PENDING_TXS)
+      : Promise.resolve([]);
+  const [txHistory, paymentRequestTxns, pendingTx] = await Promise.all([
+    txHistoryPromise,
+    paymentRequestPromise,
+    pendingTxPromise,
+  ]);
   const paymentRequests = paymentRequestTxns.data?.length
     ? paymentRequestTxns.data
     : [];
@@ -237,20 +254,54 @@ async function fetchTxHistory() {
   });
   if (txns.length < 20) endOFHistory = true;
   if (currentPage === 1) {
-    const pendingTx = (await conn.sendMessage(
-      SOCKET_IDS.LIST_PENDING_TXS
-    )) as any;
     const pendingTxns = pendingTx?.length ? pendingTx : [];
-    const pendingTxnsData = pendingTxns.map((record) => {
-      let sanitizedRecord: any;
-      if (record.data.type === "request") {
-        sanitizedRecord = sanitizePaymentRequestRecord(record.data) as any;
-      } else {
-        sanitizedRecord = sanitizeTokenTransferRecord(record.data) as any;
+    const pendingTxnsData = pendingTxns
+      .filter((record) => {
+        if (record.data.type === "transfer") {
+          return true;
+        } else if (record.data.type === "request") {
+          const isRequestUsed = paymentRequestTxnsData.find(
+            (request) => request.requestId === record.data.request_id
+          );
+          if (!isRequestUsed) {
+            return true;
+          }
+        }
+        return false;
+      })
+      .map((record) => {
+        let sanitizedRecord: any;
+        if (record.data.type === "request") {
+          sanitizedRecord = sanitizePaymentRequestRecord(record.data) as any;
+        } else {
+          sanitizedRecord = sanitizeTokenTransferRecord(record.data) as any;
+        }
+        sanitizedRecord.pendingTxId = record.id;
+        return sanitizedRecord;
+      });
+    for (let txn of pendingTxnsData) {
+      const request = await conn.sendMessage(SOCKET_IDS.GET_REQUEST, {
+        request_id: getBytes(txn.requestId as string),
+      });
+      if (request.state !== REQUEST_STATE.UNFULFILLED) {
+        txn.txStatus =
+          request.state === REQUEST_STATE.UNFULFILLED &&
+          Number(request.data.expiry) < Date.now()
+            ? "expired"
+            : request.state === REQUEST_STATE.UNFULFILLED
+            ? "pending"
+            : request.state === REQUEST_STATE.CANCELLED
+            ? "cancelled"
+            : request.state === REQUEST_STATE.REJECTED
+            ? "rejected"
+            : "fulfilled";
+        txn.fulfilledBy =
+          request.state === 0xf0
+            ? request.final_fulfiller_meta.verifier_human ||
+              hexlify(request.final_fulfiller)
+            : "";
       }
-      sanitizedRecord.pendingTxId = record.id;
-      return sanitizedRecord;
-    });
+    }
     history.value = [...pendingTxnsData, ...paymentRequestTxnsData, ...txns];
   } else history.value = [...paymentRequestTxnsData, ...txns, ...history.value];
   history.value.sort((a, b) => b.actualDate - a.actualDate);
