@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import "vue3-carousel/dist/carousel.css";
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, computed, onBeforeUnmount } from "vue";
 import SendForm from "@/components/send/sendForm.vue";
 import useSendStore from "@/stores/send";
 import SendSuccess from "@/components/send/success.vue";
 import RequestSendSuccess from "@/components/send/requestSuccess.vue";
 import TweetVerify from "@/components/TweetVerify.vue";
 import { composeAndSendTweet } from "@/utils/tweet";
-import { EARN_XP } from "@/constants/rewards";
+import { EARN_XP, MONDAY_REWARDS, TUESDAY_REWARDS } from "@/constants/rewards";
 import RewardsCard from "@/components/rewards-card.vue";
 import AppInvite from "@/components/AppInvite.vue";
 import useUserStore from "@/stores/user";
@@ -17,6 +17,7 @@ import TwitterFollowVerify from "@/components/TwitterFollowVerify.vue";
 import { Carousel, Slide, Navigation } from "vue3-carousel";
 import { useRoute } from "vue-router";
 import RequestSendForm from "@/components/send/requestForm.vue";
+import dayjs from "dayjs";
 
 const sendStore = useSendStore();
 const showSuccessMessage = ref(false);
@@ -40,6 +41,18 @@ const token = ref("");
 const chain = ref("");
 const rewardCards = ref([] as typeof EARN_XP);
 const route = useRoute();
+const rewardsInterval = ref(null as any);
+const currentDayOfWeek = ref(dayjs().day());
+
+const displayableRewards = computed(() => {
+  if ([1, 3].includes(currentDayOfWeek.value)) {
+    return [...MONDAY_REWARDS, ...rewardCards.value];
+  } else if ([2, 4].includes(currentDayOfWeek.value)) {
+    return [...TUESDAY_REWARDS, ...rewardCards.value];
+  } else {
+    return [...rewardCards.value];
+  }
+});
 
 function handleTxSuccess(data) {
   showSuccessMessage.value = true;
@@ -104,6 +117,13 @@ onBeforeMount(async () => {
   rewardCards.value = EARN_XP.filter((item) =>
     userStore.followedOnTwitter ? item.medium !== "twitter" : true
   );
+  rewardsInterval.value = setInterval(() => {
+    currentDayOfWeek.value = dayjs().day();
+  }, 1000 * 60);
+});
+
+onBeforeUnmount(() => {
+  clearInterval(rewardsInterval.value);
 });
 </script>
 
@@ -162,7 +182,7 @@ onBeforeMount(async () => {
     :transition="500"
     class="w-full max-w-[600px] m-auto mb-3"
   >
-    <Slide v-for="item in rewardCards" :key="item.name">
+    <Slide v-for="item in displayableRewards" :key="item.name">
       <RewardsCard
         class="carousel__item"
         :reward="item"
