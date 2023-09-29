@@ -166,6 +166,18 @@ Congratulations on being one of the top 2000 users through the first few weeks o
     path: "",
     shoutout: false,
   }),
+  4096: ({ points }) => ({
+    title: "Daily task completed",
+    body: `Congratulations on completing 50 transactions today. You have earned ${points} XP!`,
+    path: "",
+    shoutout: false,
+  }),
+  4097: ({ points }) => ({
+    title: "Daily task completed",
+    body: `Congratulations on completing 10 transactions more than 10$ today. You have earned ${points} XP!`,
+    path: "",
+    shoutout: false,
+  }),
 };
 
 export default notificationsContent;
