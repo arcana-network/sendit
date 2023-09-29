@@ -13,6 +13,7 @@ const conn = useConnection(activePiniaInstance);
 const authStore = useAuthStore(activePiniaInstance);
 const userStore = useUserStore(activePiniaInstance);
 const REQUEST_EXPIRY = 1000 * 60 * 60 * 24 * 7; // 7 days
+const REQUEST_EXPIRY_ENV = import.meta.env.VITE_REQUEST_EXPIRY_TIME_IN_MS;
 
 type RequestStoreKind = {
   userInput: {
@@ -56,7 +57,10 @@ const useRequestStore = defineStore("request", {
         wallet
       );
       const requestNonce = ethers.randomBytes(32);
-      const expiry = Date.now() + REQUEST_EXPIRY;
+      const requestExpiration = REQUEST_EXPIRY_ENV
+        ? Number(REQUEST_EXPIRY_ENV)
+        : REQUEST_EXPIRY;
+      const expiry = Date.now() + requestExpiration;
       const request = {
         nonce: BigInt(ethers.hexlify(requestNonce)),
         recipient: userStore.address,
