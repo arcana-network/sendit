@@ -36,7 +36,7 @@ const TUESDAY_REWARDS = [
     name: "Earn 250 XP",
     xp: 50,
     description:
-      "Send 10 transactions worth more than 10$ each and win 250 XP.",
+      "Send 10 transactions worth more than $10 each and win 250 XP.",
     task: "Send",
     tags: [
       {
