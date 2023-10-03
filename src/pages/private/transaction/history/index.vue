@@ -196,8 +196,9 @@ function calculateRewards(requests) {
       }
       return acc;
     }, {});
+  const sortedRequests = requests.sort((a, b) => a.actualDate - b.actualDate);
   let isFirstFulfilledRequest = false;
-  requests.forEach((req) => {
+  sortedRequests.forEach((req) => {
     if (
       req.state === 0xf0 &&
       req.data.requester === userStore.address.toLowerCase() &&
@@ -212,7 +213,7 @@ function calculateRewards(requests) {
       }
     }
   });
-  return requests;
+  return sortedRequests;
 }
 
 async function fetchTxHistory() {
@@ -311,7 +312,6 @@ async function fetchTxHistory() {
               hexlify(request.final_fulfiller)
             : "";
         txn.state = request.state;
-        console.log(txn);
       }
     }
     history.value = [...pendingTxnsData, ...paymentRequestTxnsData, ...txns];
