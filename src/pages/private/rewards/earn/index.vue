@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { composeAndSendTweet } from "@/utils/tweet";
-import { EARN_XP } from "@/constants/rewards";
+import { EARN_XP, MONDAY_REWARDS, TUESDAY_REWARDS } from "@/constants/rewards";
 import AppInvite from "@/components/AppInvite.vue";
 import useUserStore from "@/stores/user";
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, computed, onBeforeUnmount } from "vue";
 import TwitterFollowVerify from "@/components/TwitterFollowVerify.vue";
+import dayjs from "dayjs";
 
 const router = useRouter();
 const showInvitePopup = ref(false);
@@ -17,12 +18,31 @@ const showTweetVerifyPopup = ref(false);
 const tweetXp = ref(0);
 const userStore = useUserStore();
 const rewardCards = ref([] as any[]);
+const rewardsInterval = ref(null as any);
+const currentDayOfWeek = ref(dayjs().day());
+
+const displayableRewards = computed(() => {
+  if ([1, 3].includes(currentDayOfWeek.value)) {
+    return [...MONDAY_REWARDS, ...rewardCards.value];
+  } else if ([2, 4].includes(currentDayOfWeek.value)) {
+    return [...TUESDAY_REWARDS, ...rewardCards.value];
+  } else {
+    return [...rewardCards.value];
+  }
+});
 
 onBeforeMount(async () => {
   await userStore.fetchUserPointsAndRank();
   rewardCards.value = EARN_XP.filter((item) =>
     userStore.followedOnTwitter ? item.medium !== "twitter" : true
   );
+  rewardsInterval.value = setInterval(() => {
+    currentDayOfWeek.value = dayjs().day();
+  }, 1000 * 60);
+});
+
+onBeforeUnmount(() => {
+  clearInterval(rewardsInterval.value);
 });
 
 function handleAction(reward) {
@@ -53,7 +73,7 @@ function handleAction(reward) {
     <div class="grid grid-cols-1 gap-4 p-4 md:grid-cols-2">
       <div
         class="flex rounded-[10px] overflow-hidden border border-jet pr-5 bg-[#0e0e0e] cursor-pointer"
-        v-for="reward in rewardCards"
+        v-for="reward in displayableRewards"
         :key="JSON.stringify(reward)"
         @click.stop="handleAction(reward)"
       >

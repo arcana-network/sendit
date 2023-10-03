@@ -14,6 +14,39 @@ const tagColors = {
   },
 };
 
+const MONDAY_REWARDS = [
+  {
+    image: NavigationIcon,
+    name: "Earn 500 XP",
+    xp: 50,
+    description: "Send 50 transactions today and win 500 XP.",
+    task: "Send",
+    tags: [
+      {
+        name: "Daily",
+        color: tagColors.orange,
+      },
+    ],
+  },
+];
+
+const TUESDAY_REWARDS = [
+  {
+    image: NavigationIcon,
+    name: "Earn 250 XP",
+    xp: 50,
+    description:
+      "Send 10 transactions worth more than $10 each and win 250 XP.",
+    task: "Send",
+    tags: [
+      {
+        name: "Daily",
+        color: tagColors.orange,
+      },
+    ],
+  },
+];
+
 const EARN_XP_SEND_FORM = [
   {
     image: NavigationIcon,
@@ -210,4 +243,10 @@ const REDEEM_XP = [
   },
 ];
 
-export { EARN_XP, REDEEM_XP, EARN_XP_SEND_FORM };
+export {
+  EARN_XP,
+  REDEEM_XP,
+  EARN_XP_SEND_FORM,
+  MONDAY_REWARDS,
+  TUESDAY_REWARDS,
+};
