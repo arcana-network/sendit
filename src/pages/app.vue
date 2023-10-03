@@ -25,6 +25,7 @@ import AirdropSuccess from "@/components/AirdropSuccess.vue";
 import { getBytes, hexlify } from "ethers";
 import Decimal from "decimal.js";
 import TokenRequestInvalid from "@/components/TokenRequestInvalid.vue";
+// import useOKXWallet from "@/use/okxwallet";
 
 const REQUEST_STATE = {
   UNFULFILLED: 0x0,
@@ -53,6 +54,7 @@ const isNotWhitelisted = ref(false);
 const hasBalance = ref(false);
 const sendStore = useSendStore();
 const walletConnect = useWalletConnect();
+// const okxwallet = useOKXWallet();
 const showReceivedCryptoMessage = ref(false);
 const showTweetVerificationModal = ref(false);
 const tweetHash = ref("");
@@ -85,6 +87,9 @@ async function connectSocket() {
       toast.error("Signature rejected");
       if (authStore.loggedInWith === "walletconnect") {
         walletConnect.disconnect();
+        onWalletDisconnect();
+      } else if (authStore.loggedInWith === "okxwallet") {
+        // okxwallet.disconnect();
         onWalletDisconnect();
       } else {
         auth.getAuthInstance().logout();
@@ -159,7 +164,10 @@ async function requestFaucetFunds() {
 
 async function onWalletConnect() {
   loaderStore.showLoader("Connecting...");
-  if (authStore.loggedInWith === "walletconnect") {
+  if (
+    authStore.loggedInWith === "walletconnect" ||
+    authStore.loggedInWith === "okxwallet"
+  ) {
     authStore.provider.on("accountsChanged", async (accounts) => {
       loaderStore.showLoader(
         "Switching account...",
@@ -235,7 +243,10 @@ watch(
       rewardsStore.fetchRewards(userStore.address);
       await userStore.fetchUserPointsAndRank();
       notificationStore.getNotifications();
-      if (authStore.loggedInWith !== "walletconnect") {
+      if (
+        authStore.loggedInWith !== "walletconnect" &&
+        authStore.loggedInWith !== "okxwallet"
+      ) {
         authStore.provider.on("disconnect", onWalletDisconnect);
       }
       loaderStore.hideLoader();
@@ -271,7 +282,7 @@ const showFullScreenLoader = computed(() => {
 
 async function handleNoAccessBack() {
   if (
-    authStore.loggedInWith !== "metamask" &&
+    authStore.loggedInWith !== "okxwallet" &&
     authStore.loggedInWith !== "walletconnect"
   ) {
     await auth.getAuthInstance().logout();

@@ -13,6 +13,7 @@ import useUserStore from "@/stores/user";
 import useWalletConnect from "@/use/walletconnect";
 import type { GetAccountResult, PublicClient } from "@wagmi/core";
 import { normaliseEmail } from "@/utils/normalise";
+import useOkxWallet from "@/use/okxwallet";
 
 const arcanaAuth = useArcanaAuth();
 const authStore = useAuthStore();
@@ -22,6 +23,7 @@ const loaderStore = useLoaderStore();
 const passwordlessEmailId = ref("");
 const toast = useToast();
 const walletConnect = useWalletConnect();
+const okxWallet = useOkxWallet();
 
 const query = route.query;
 const verifier = query.verifier as string;
@@ -87,11 +89,13 @@ async function onConnectToWalletConnect() {
   const accountDetails = walletConnect.getAccount();
   const isConnected = accountDetails.isConnected;
   if (!isConnected) {
-    walletConnect.web3modal.subscribeModal(async () => {
-      const accountDetails = walletConnect.getAccount();
-      if (accountDetails.isConnected) onLoginWalletConnected(accountDetails);
+    walletConnect.web3modal.subscribeState(async (state) => {
+      if (!state.open) {
+        const accountDetails = walletConnect.getAccount();
+        if (accountDetails.isConnected) onLoginWalletConnected(accountDetails);
+      }
     });
-    walletConnect.web3modal.openModal();
+    walletConnect.web3modal.open();
   } else onLoginWalletConnected(accountDetails);
 }
 
@@ -107,6 +111,34 @@ async function onLoginWalletConnected(
   authStore.isLoggedIn = true;
   authStore.loggedInWith = "walletconnect";
   userStore.address = accountDetails.address as string;
+}
+
+async function onConnectToOkxWallet() {
+  loaderStore.showLoader("Connecting to OKXWallet...");
+  const isOkxWalletInstalled = okxWallet.isOKXWalletInstalled;
+  if (!isOkxWalletInstalled) {
+    toast.error(
+      "OKXWallet is not installed. Please install OKXWallet to continue."
+    );
+    loaderStore.hideLoader();
+    return;
+  }
+  try {
+    const { accounts, provider } = await okxWallet.connectOKXWallet();
+    authStore.provider = provider;
+    authStore.setUserInfo({
+      address: accounts[0],
+      loginType: "null",
+      id: accounts[0],
+    });
+    authStore.isLoggedIn = true;
+    authStore.loggedInWith = "okxwallet";
+    userStore.address = accounts[0];
+  } catch (e) {
+    console.error(e);
+    toast.error("Failed to connect to OKXWallet. Please try again.");
+    loaderStore.hideLoader();
+  }
 }
 </script>
 
@@ -174,10 +206,23 @@ async function onLoginWalletConnected(
               <div class="flex flex-col space-y-2 w-full">
                 <button
                   class="btn btn-login flex w-full justify-center items-center space-x-2"
+                  @click="onConnectToOkxWallet"
+                >
+                  <img
+                    src="@/assets/images/icons/okxwallet.png"
+                    alt="metamask"
+                    class="w-4"
+                  />
+                  <span class="text-sm font-semibold text-white">
+                    Connect OKX Wallet
+                  </span>
+                </button>
+                <button
+                  class="btn btn-login flex w-full justify-center items-center space-x-2"
                   @click="onConnectToWalletConnect"
                 >
                   <img
-                    src="@/assets/images/icons/wallet-connect.svg"
+                    src="@/assets/images/icons/wallet.svg"
                     alt="metamask"
                     class="w-4"
                   />
