@@ -4,7 +4,7 @@ type AuthStore = {
   isLoggedIn: boolean;
   userInfo: Record<string, any>;
   isAuthSDKInitialized: boolean;
-  loggedInWith: "" | "metamask" | "walletconnect";
+  loggedInWith: "" | "metamask" | "walletconnect" | "okxwallet";
   provider: any | null;
 };
 
