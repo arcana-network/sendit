@@ -1,30 +1,45 @@
+import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/vue";
+import { getAccount, disconnect } from "@wagmi/core";
 import {
-  EthereumClient,
-  w3mConnectors,
-  w3mProvider,
-} from "@web3modal/ethereum";
-import { Web3Modal } from "@web3modal/html";
-import { configureChains, createConfig, getAccount } from "@wagmi/core";
-import { mainnet, polygon, sepolia, polygonMumbai } from "@wagmi/core/chains";
+  mainnet,
+  polygon,
+  sepolia,
+  polygonMumbai,
+  arbitrum,
+  bsc,
+  bscTestnet,
+} from "@wagmi/core/chains";
 
 function useWalletConnect() {
-  const chains = [mainnet, polygon, sepolia, polygonMumbai];
+  const chains = [
+    mainnet,
+    polygon,
+    sepolia,
+    polygonMumbai,
+    arbitrum,
+    bsc,
+    bscTestnet,
+  ];
   const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
+  const featuredWallets = {
+    okx: "971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709",
+  };
 
-  const { publicClient } = configureChains(chains, [
-    w3mProvider({ projectId }),
-  ]);
-  const wagmiConfig = createConfig({
-    autoConnect: true,
-    connectors: w3mConnectors({ projectId, chains }),
-    publicClient,
+  const metadata = {
+    name: "SendIt",
+    description: "Send crypto with email.",
+    url: "https://sendit.arcana.network",
+    icons: ["https://sendit.arcana.network/send-it.svg"],
+  };
+
+  const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
+  const web3modal = createWeb3Modal({
+    wagmiConfig,
+    projectId,
+    chains,
+    themeMode: "light",
+    featuredWalletIds: [featuredWallets.okx],
   });
-  const ethereumClient = new EthereumClient(wagmiConfig, chains);
-  const web3modal = new Web3Modal({ projectId }, ethereumClient);
-
-  function disconnect() {
-    ethereumClient.disconnect();
-  }
 
   return {
     getAccount,

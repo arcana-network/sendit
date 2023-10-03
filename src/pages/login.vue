@@ -87,11 +87,13 @@ async function onConnectToWalletConnect() {
   const accountDetails = walletConnect.getAccount();
   const isConnected = accountDetails.isConnected;
   if (!isConnected) {
-    walletConnect.web3modal.subscribeModal(async () => {
-      const accountDetails = walletConnect.getAccount();
-      if (accountDetails.isConnected) onLoginWalletConnected(accountDetails);
+    walletConnect.web3modal.subscribeState(async (state) => {
+      if (!state.open) {
+        const accountDetails = walletConnect.getAccount();
+        if (accountDetails.isConnected) onLoginWalletConnected(accountDetails);
+      }
     });
-    walletConnect.web3modal.openModal();
+    walletConnect.web3modal.open();
   } else onLoginWalletConnected(accountDetails);
 }
 
