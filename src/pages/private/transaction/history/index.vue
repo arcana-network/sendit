@@ -209,7 +209,7 @@ function calculateRewards(requests) {
         isFirstFulfilledRequest = true;
         req.points = 500;
       } else {
-        req.points = req.data.chainId === 56 ? 50 : 10;
+        req.points = req.data.chainId === 56 ? 200 : 20;
       }
     }
   });

@@ -63,8 +63,8 @@ const EARN_XP_SEND_FORM = [
   },
   {
     image: NavigationIcon,
-    name: "Earn 50 XP",
-    xp: 50,
+    name: "Earn 200 XP",
+    xp: 200,
     description:
       "Request BNB tokens on mainnet to new or existing user. Max 50 requests per day.",
     task: "Request",
@@ -77,8 +77,8 @@ const EARN_XP_SEND_FORM = [
   },
   {
     image: NavigationIcon,
-    name: "Earn 10 XP",
-    xp: 10,
+    name: "Earn 20 XP",
+    xp: 20,
     description:
       "Request BNB tokens on testnet to new or existing user. Max 50 requests per day.",
     task: "Request",
@@ -136,8 +136,8 @@ const EARN_XP = [
   },
   {
     image: NavigationIcon,
-    name: "Earn 50 XP",
-    xp: 50,
+    name: "Earn 200 XP",
+    xp: 200,
     description:
       "Request BNB tokens on mainnet to new or existing user. Max 50 requests per day.",
     task: "Request",
@@ -150,8 +150,8 @@ const EARN_XP = [
   },
   {
     image: NavigationIcon,
-    name: "Earn 10 XP",
-    xp: 10,
+    name: "Earn 20 XP",
+    xp: 20,
     description:
       "Request BNB tokens on testnet to new or existing user. Max 50 requests per day.",
     task: "Request",
