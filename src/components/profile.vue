@@ -11,12 +11,14 @@ import { useConnection } from "@/stores/connection";
 import useSendStore from "@/stores/send";
 import useRewardsStore from "@/stores/rewards";
 import useNotificationStore from "@/stores/notification";
+// import useOKXWallet from "@/use/okxwallet";
 
 // const emit = defineEmits(["invite"]);
 const authStore = useAuthStore();
 const { userInfo }: { userInfo: any } = toRefs(authStore);
 const arcanaAuth = useArcanaAuth();
 const walletConnect = useWalletConnect();
+// const okxWallet = useOKXWallet();
 const conn = useConnection();
 const sendStore = useSendStore();
 const rewardsStore = useRewardsStore();
@@ -43,6 +45,9 @@ async function handleCopy() {
 function logout() {
   if (authStore.loggedInWith === "walletconnect") {
     walletConnect.disconnect();
+    conn.closeSocket();
+    authStore.setLoginStatus(false);
+  } else if (authStore.loggedInWith === "okxwallet") {
     conn.closeSocket();
     authStore.setLoginStatus(false);
   } else arcanaAuth.getAuthInstance().logout();

@@ -14,6 +14,39 @@ const tagColors = {
   },
 };
 
+const MONDAY_REWARDS = [
+  {
+    image: NavigationIcon,
+    name: "Earn 500 XP",
+    xp: 50,
+    description: "Send 50 transactions today and win 500 XP.",
+    task: "Send",
+    tags: [
+      {
+        name: "Daily",
+        color: tagColors.orange,
+      },
+    ],
+  },
+];
+
+const TUESDAY_REWARDS = [
+  {
+    image: NavigationIcon,
+    name: "Earn 250 XP",
+    xp: 50,
+    description:
+      "Send 10 transactions worth more than $10 each and win 250 XP.",
+    task: "Send",
+    tags: [
+      {
+        name: "Daily",
+        color: tagColors.orange,
+      },
+    ],
+  },
+];
+
 const EARN_XP_SEND_FORM = [
   {
     image: NavigationIcon,
@@ -30,8 +63,8 @@ const EARN_XP_SEND_FORM = [
   },
   {
     image: NavigationIcon,
-    name: "Earn 50 XP",
-    xp: 50,
+    name: "Earn 200 XP",
+    xp: 200,
     description:
       "Request BNB tokens on mainnet to new or existing user. Max 50 requests per day.",
     task: "Request",
@@ -44,8 +77,8 @@ const EARN_XP_SEND_FORM = [
   },
   {
     image: NavigationIcon,
-    name: "Earn 10 XP",
-    xp: 10,
+    name: "Earn 20 XP",
+    xp: 20,
     description:
       "Request BNB tokens on testnet to new or existing user. Max 50 requests per day.",
     task: "Request",
@@ -103,8 +136,8 @@ const EARN_XP = [
   },
   {
     image: NavigationIcon,
-    name: "Earn 50 XP",
-    xp: 50,
+    name: "Earn 200 XP",
+    xp: 200,
     description:
       "Request BNB tokens on mainnet to new or existing user. Max 50 requests per day.",
     task: "Request",
@@ -117,8 +150,8 @@ const EARN_XP = [
   },
   {
     image: NavigationIcon,
-    name: "Earn 10 XP",
-    xp: 10,
+    name: "Earn 20 XP",
+    xp: 20,
     description:
       "Request BNB tokens on testnet to new or existing user. Max 50 requests per day.",
     task: "Request",
@@ -210,4 +243,10 @@ const REDEEM_XP = [
   },
 ];
 
-export { EARN_XP, REDEEM_XP, EARN_XP_SEND_FORM };
+export {
+  EARN_XP,
+  REDEEM_XP,
+  EARN_XP_SEND_FORM,
+  MONDAY_REWARDS,
+  TUESDAY_REWARDS,
+};

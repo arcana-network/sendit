@@ -141,11 +141,12 @@ Congratulations on being one of the top 2000 users through the first few weeks o
     path: "My Rewards",
     shoutout: false,
   }),
-  512: ({ final_fulfiller }) => ({
+  512: ({ final_fulfiller, points }) => ({
     path: "History",
-    title: `Your request has been fulfilled by ${truncateAddress(
+    title: "Request fulfilled",
+    body: `Your request has been fulfilled by ${truncateAddress(
       hexlify(final_fulfiller)
-    )}.`,
+    )}. You have earned ${points} XP.`,
   }),
   513: ({ points }) => ({
     title: "10 Transactions completed",
@@ -162,6 +163,18 @@ Congratulations on being one of the top 2000 users through the first few weeks o
   515: ({ points }) => ({
     title: "50 Transactions completed",
     body: `Congratulations on completing 50 transactions on #Sendit successfully! You have earned ${points} XP as a bonus.`,
+    path: "",
+    shoutout: false,
+  }),
+  4096: ({ points }) => ({
+    title: "Daily task completed",
+    body: `Congratulations on completing 50 transactions today. You have earned ${points} XP!`,
+    path: "",
+    shoutout: false,
+  }),
+  4097: ({ points }) => ({
+    title: "Daily task completed",
+    body: `Congratulations on completing 10 transactions more than $10 today. You have earned ${points} XP!`,
     path: "",
     shoutout: false,
   }),

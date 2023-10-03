@@ -6,6 +6,10 @@ declare global {
       isMetaMask: boolean;
       request: (args: { method: string }) => Promise<string[]>;
     };
+    okxwallet: {
+      isOkxWallet: boolean;
+      request: (args: { method: string }) => Promise<string[]>;
+    };
     grecaptcha: {
       render: (
         id: string,
