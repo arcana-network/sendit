@@ -34,6 +34,7 @@ import { hexlify } from "ethers";
 import { GAS_SUPPORTED_CHAINS } from "@/constants/socket-ids";
 import { Decimal } from "decimal.js";
 import copyToClipboard from "@/utils/copyToClipboard";
+import { switchChain } from "@/use/switchChain";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -358,17 +359,6 @@ function resetAll() {
   twitterId.value = "";
   hasTwitterError.value = false;
   hasStartedTyping.value = false;
-}
-
-async function switchChain(chainId: string) {
-  await authStore.provider.request({
-    method: "wallet_switchEthereumChain",
-    params: [
-      {
-        chainId: new Decimal(chainId).toHexadecimal(),
-      },
-    ],
-  });
 }
 
 watch(

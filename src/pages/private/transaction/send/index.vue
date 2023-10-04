@@ -182,7 +182,7 @@ onBeforeUnmount(() => {
     :transition="500"
     class="w-full max-w-[600px] m-auto mb-3"
   >
-    <Slide v-for="item in displayableRewards" :key="item.name">
+    <Slide v-for="item in displayableRewards" :key="JSON.stringify(item)">
       <RewardsCard
         class="carousel__item"
         :reward="item"
