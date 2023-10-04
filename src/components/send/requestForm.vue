@@ -23,6 +23,7 @@ import {
 } from "@/services/send.service";
 import requestVia from "@/constants/requestVia";
 import copyToClipboard from "@/utils/copyToClipboard";
+import { switchChain } from "@/use/switchChain";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -232,17 +233,6 @@ async function proceed() {
       "Switching chain rejected by user. Cannot proceed with this transaction."
     );
   }
-}
-
-async function switchChain(chainId: string) {
-  await authStore.provider.request({
-    method: "wallet_switchEthereumChain",
-    params: [
-      {
-        chainId: new Decimal(chainId).toHexadecimal(),
-      },
-    ],
-  });
 }
 
 function isSelectedVerifier(verifier, v) {
