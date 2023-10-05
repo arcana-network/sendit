@@ -20,7 +20,7 @@ function onClickNotification(notification) {
 }
 
 function getTweetMessage() {
-  return `Cha-ching! 💸 Just received crypto on #SendIt. Join the #GetOnWeb3 revolution at ${generateSenditUrl()}!`;
+  return `Cha-ching! 💸 Just received crypto on #SendIt by @ArcanaNetwork. Join the #GetOnWeb3 revolution at ${generateSenditUrl()}!`;
 }
 </script>
 
@@ -60,10 +60,10 @@ function getTweetMessage() {
                 alt="twitter"
                 class="w-8 flex-1"
               />
-              <span
+              <!-- <span
                 class="text-cornflower-blue w-full text-xs font-light bg-feep-koamaru p-1 rounded-md"
                 >Earn 5 XP</span
-              >
+              > -->
             </button>
           </div>
         </div>

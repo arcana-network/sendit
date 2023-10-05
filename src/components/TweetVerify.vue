@@ -16,7 +16,7 @@ type TweetVerifyProps = {
 
 const props = defineProps<TweetVerifyProps>();
 const emit = defineEmits(["close"]);
-const isTweetVerified = ref(false);
+const isTweetVerified = ref(true);
 const router = useRouter();
 const tweetUrl = ref("");
 const loaderStore = useLoaderStore();
@@ -65,7 +65,7 @@ function handleViewRewards() {
             class="w-[50px] aspect-square"
           />
           <span class="font-[500] text-[20px] uppercase font-bold"
-            >{{ props.xp }} XP Earned</span
+            >Thanks for the shoutout</span
           >
           <span class="text-xs text-philippine-gray max-w-[320px] text-center">
             Check out the leaderboard to see your current standing
