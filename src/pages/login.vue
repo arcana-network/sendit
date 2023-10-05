@@ -224,7 +224,7 @@ async function onConnectToOkxWallet() {
                   <img
                     src="@/assets/images/icons/okxwallet.png"
                     alt="okx wallet"
-                    class="w-4"
+                    class="w-4 invert"
                   />
                   <span class="text-sm font-semibold text-white">
                     Connect OKX Wallet
