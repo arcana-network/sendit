@@ -116,7 +116,6 @@ async function fetchAssets() {
     const data = await getAccountBalance(walletAddress, [
       "eth",
       "polygon",
-      "polygon_mumbai",
       "arbitrum",
       "bsc",
     ]);
