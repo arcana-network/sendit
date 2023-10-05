@@ -9,9 +9,9 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Content-Security-Policy = '''
-      script-src 'self' 'unsafe-inline' *.google-analytics.com *.googletagmanager.com *.gstatic.com *.walletconnect.org;
-      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com *.walletconnect.org;
-      frame-src wallet.arcana.network wallet.dev.arcana.network wallet.beta.arcana.network *.walletconnect.org;
+      script-src 'self' 'unsafe-inline' *.google-analytics.com *.googletagmanager.com *.gstatic.com *.walletconnect.org *.walletconnect.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com *.walletconnect.org *.walletconnect.com;
+      frame-src wallet.arcana.network wallet.dev.arcana.network wallet.beta.arcana.network *.walletconnect.org *.walletconnect.com;
     '''
 [[headers]]
   for = "/assets/*"
