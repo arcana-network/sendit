@@ -136,7 +136,13 @@ async function onConnectToOkxWallet() {
     userStore.address = accounts[0];
   } catch (e) {
     console.error(e);
-    toast.error("Failed to connect to OKXWallet. Please try again.");
+    if (e === "wallet_not_installed") {
+      toast.error(
+        "OKXWallet is not installed. Please install OKXWallet to continue."
+      );
+    } else {
+      toast.error("Failed to connect to OKXWallet. Please try again.");
+    }
     loaderStore.hideLoader();
   }
 }
