@@ -80,7 +80,7 @@ function handleShoutout() {
     `Whoosh! I just sent crypto to ${getToValue(
       verifier.value,
       verifierHuman.value
-    )} using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
+    )} using #SendIt by @ArcanaNetwork! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
   );
   showTweetVerificationModal.value = true;
   resetUserInput();
@@ -89,7 +89,7 @@ function handleShoutout() {
 function handleRequestShoutout() {
   showSuccessMessage.value = false;
   composeAndSendTweet(
-    `Whoosh! I just sent crypto using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
+    `Whoosh! I just sent crypto using #SendIt by @ArcanaNetwork! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
   );
   showTweetVerificationModal.value = true;
   resetUserInput();
@@ -182,7 +182,7 @@ onBeforeUnmount(() => {
     :transition="500"
     class="w-full max-w-[600px] m-auto mb-3"
   >
-    <Slide v-for="item in displayableRewards" :key="item.name">
+    <Slide v-for="item in displayableRewards" :key="JSON.stringify(item)">
       <RewardsCard
         class="carousel__item"
         :reward="item"

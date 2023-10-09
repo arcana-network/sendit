@@ -98,10 +98,10 @@ function handleMail() {
           @click.stop="emit('shoutout')"
         >
           <span class="font-bold text-xs">Shoutout on twitter</span>
-          <span
+          <!-- <span
             class="text-cornflower-blue text-xs font-light bg-feep-koamaru p-1 rounded-md"
             >Earn 5 XP</span
-          >
+          > -->
         </button>
       </div>
     </div>

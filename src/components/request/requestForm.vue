@@ -16,6 +16,7 @@ import useSendStore from "@/stores/send";
 import useArcanaAuth from "@/use/arcanaAuth";
 import { normaliseEmail } from "@/utils/normalise";
 import { computeAddress, ethers } from "ethers";
+import { switchChain } from "@/use/switchChain";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -190,17 +191,6 @@ function resetAll() {
   twitterId.value = "";
   hasTwitterError.value = false;
   hasStartedTyping.value = false;
-}
-
-async function switchChain(chainId: string) {
-  await authStore.provider.request({
-    method: "wallet_switchEthereumChain",
-    params: [
-      {
-        chainId: new Decimal(chainId).toHexadecimal(),
-      },
-    ],
-  });
 }
 
 watch(

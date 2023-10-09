@@ -11,12 +11,10 @@ function useOKXWallet() {
         });
         return { accounts, provider: window.okxwallet };
       } else {
-        throw new Error(
-          "OKXWallet is not installed. Please install OKXWallet to continue."
-        );
+        throw "wallet_not_installed";
       }
     } catch (error: any) {
-      throw new Error(error.message);
+      throw error;
     }
   }
 

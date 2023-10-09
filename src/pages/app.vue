@@ -25,7 +25,6 @@ import AirdropSuccess from "@/components/AirdropSuccess.vue";
 import { getBytes, hexlify } from "ethers";
 import Decimal from "decimal.js";
 import TokenRequestInvalid from "@/components/TokenRequestInvalid.vue";
-// import useOKXWallet from "@/use/okxwallet";
 
 const REQUEST_STATE = {
   UNFULFILLED: 0x0,
@@ -54,7 +53,6 @@ const isNotWhitelisted = ref(false);
 const hasBalance = ref(false);
 const sendStore = useSendStore();
 const walletConnect = useWalletConnect();
-// const okxwallet = useOKXWallet();
 const showReceivedCryptoMessage = ref(false);
 const showTweetVerificationModal = ref(false);
 const tweetHash = ref("");
@@ -89,7 +87,6 @@ async function connectSocket() {
         walletConnect.disconnect();
         onWalletDisconnect();
       } else if (authStore.loggedInWith === "okxwallet") {
-        // okxwallet.disconnect();
         onWalletDisconnect();
       } else {
         auth.getAuthInstance().logout();
