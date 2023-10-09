@@ -136,20 +136,7 @@ function sanitizePaymentRequestRecord(record) {
 }
 
 function sanitizeTokenTransferRecord(record) {
-  let points;
-  if (!record.sent) {
-    if (record.shared) {
-      points = "5";
-    } else {
-      points = "";
-    }
-  } else {
-    if (record.shared) {
-      points = record.points + 5;
-    } else {
-      points = record.points;
-    }
-  }
+  const points = record.points;
   return {
     amount: {
       value: formatUnits(hexlify(record.amount), getDecimals(record.info)),
@@ -340,8 +327,8 @@ function shareTweet(record) {
       ? `Whoosh! I just sent crypto to ${getToValue(
           record.verifier,
           record.socialId
-        )} using #SendIt! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
-      : `Cha-ching! 💸 Just received crypto on #SendIt. Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `;
+        )} using #SendIt by @ArcanaNetwork! Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `
+      : `Cha-ching! 💸 Just received crypto on #SendIt by @ArcanaNetwork. Join the #GetOnWeb3 revolution at ${generateSenditUrl()}! `;
   composeAndSendTweet(tweet);
   tweetVerificationHash.value = record.txHash;
   showTweetVerificationModal.value = true;
@@ -542,13 +529,13 @@ function isTarget(record) {
                 <div v-else class="text-philippine-gray lg-max:text-center">
                   Shared on Twitter
                 </div>
-                <div
+                <!-- <div
                   v-if="!record.isSharedOnTwitter"
                   class="leaderboard-table-row-item text-center text-[#659CFF] text-[10px] bg-[#293C5F] px-1 rounded-[5px] grid self-start content-center"
                 >
                   Earn 5 XP
                 </div>
-                <div v-else></div>
+                <div v-else></div> -->
               </div>
             </div>
           </div>
@@ -645,7 +632,7 @@ function isTarget(record) {
                 {{ record.joinDate }}
               </div>
             </div>
-            <button
+            <!-- <button
               v-if="!record.isPendingRequest && !record.isSharedOnTwitter"
               class="flex flex-col p-3 rounded-[5px] bg-[#1a1a1a] justify-center items-center ml-auto cursor-pointer"
               @click.stop="shareTweet(record)"
@@ -656,7 +643,7 @@ function isTarget(record) {
               >
                 Earn 5 XP
               </div>
-            </button>
+            </button> -->
             <div
               v-if="record.isPendingRequest"
               class="flex flex-col gap-4 ml-auto text-[12px]"

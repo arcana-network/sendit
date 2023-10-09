@@ -16,7 +16,7 @@ const isMultipleTransactions = transactionCount > 1;
 const transactionDetails =
   transactionCount === 1 ? notificationStore.notificationReceivedToken[0] : "";
 
-const tweetMessage = `Cha-ching! 💸 Just received crypto on #SendIt. Join the #GetOnWeb3 revolution at ${generateSenditUrl()}!`;
+const tweetMessage = `Cha-ching! 💸 Just received crypto on #SendIt by @ArcanaNetwork. Join the #GetOnWeb3 revolution at ${generateSenditUrl()}!`;
 
 async function handleShoutout(transactionDetails: any) {
   composeAndSendTweet(tweetMessage);
@@ -80,10 +80,10 @@ async function viewTransactions() {
           @click="handleShoutout(transactionDetails)"
         >
           <span class="uppercase text-sm">Shoutout on Twitter</span>
-          <span
+          <!-- <span
             class="text-cornflower-blue text-xs font-light bg-feep-koamaru p-1 rounded-md"
             >Earn 5 XP</span
-          >
+          > -->
         </button>
       </div>
     </div>
