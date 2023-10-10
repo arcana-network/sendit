@@ -205,15 +205,15 @@ const EARN_XP = [
     xp: 10,
     dailyLimit: 100,
   },
-  {
-    image: TwitterGreyBgIcon,
-    name: "Shoutout on Twitter",
-    description:
-      "Earn 5XP by doing a shoutout on Twitter after every transaction.",
-    task: "Shoutout",
-    xp: 5,
-    dailyLimit: 50,
-  },
+  // {
+  //   image: TwitterGreyBgIcon,
+  //   name: "Shoutout on Twitter",
+  //   description:
+  //     "Earn 5XP by doing a shoutout on Twitter after every transaction.",
+  //   task: "Shoutout",
+  //   xp: 5,
+  //   dailyLimit: 50,
+  // },
 ];
 
 const REDEEM_XP = [
