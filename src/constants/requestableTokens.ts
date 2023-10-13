@@ -95,4 +95,12 @@ export const requestableTokens = {
       decimals: 18,
     },
   ],
+  204: [
+    {
+      symbol: "opBNB",
+      tokenType: "NATIVE",
+      address: "NATIVE",
+      decimals: 18,
+    },
+  ],
 };
