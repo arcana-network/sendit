@@ -7,7 +7,7 @@ export async function switchChain(chainId) {
   try {
     await authStore.provider.request({
       method: "wallet_switchEthereumChain",
-      params: [{ chainId: new Decimal(chainId).toHexadecimal() }],
+      params: [{ chainId: new Decimal(chainId).ceil().toHexadecimal() }],
     });
   } catch (e: any) {
     if (e.code === 4902) {
@@ -18,7 +18,7 @@ export async function switchChain(chainId) {
           method: "wallet_addEthereumChain",
           params: [
             {
-              chainId: new Decimal(chainId).toHexadecimal(),
+              chainId: new Decimal(chainId).ceil().toHexadecimal(),
               chainName: chainDetails.name,
               nativeCurrency: {
                 symbol: chainDetails.currency,
@@ -29,10 +29,15 @@ export async function switchChain(chainId) {
             },
           ],
         });
-        await authStore.provider.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: new Decimal(chainId).toHexadecimal() }],
+        const walletChainId = await authStore.provider.request({
+          method: "eth_chainId",
         });
+        if (Number(walletChainId) !== Number(chainId)) {
+          await authStore.provider.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: new Decimal(chainId).ceil().toHexadecimal() }],
+          });
+        }
       } catch (e) {
         throw e;
       }

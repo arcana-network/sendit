@@ -47,6 +47,14 @@ const chains = {
     currency: "tBNB",
     explorer: "https://testnet.bscscan.com",
   },
+  204: {
+    name: "opBNB Mainnet",
+    chain_id: 204,
+    blockchain: "opbnb",
+    rpc_url: "https://opbnb.publicnode.com",
+    currency: "opBNB",
+    explorer: "https://opbnbscan.com/",
+  },
 };
 
 export const testnetChains = [80001, 97];
