@@ -29,10 +29,15 @@ export async function switchChain(chainId) {
             },
           ],
         });
-        await authStore.provider.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: new Decimal(chainId).ceil().toHexadecimal() }],
+        const walletChainId = await authStore.provider.request({
+          method: "eth_chainId",
         });
+        if (Number(walletChainId) !== Number(chainId)) {
+          await authStore.provider.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: new Decimal(chainId).ceil().toHexadecimal() }],
+          });
+        }
       } catch (e) {
         throw e;
       }
