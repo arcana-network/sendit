@@ -165,13 +165,17 @@ async function proceed() {
           supportedChains.value.find(
             (chain) => Number(chain.chain_id) === Number(chainId)
           )?.sendit_contract as string,
-          new Decimal(requestInput.value.amount as number).toHexadecimal(),
+          new Decimal(requestInput.value.amount as number)
+            .ceil()
+            .toHexadecimal(),
           authStore.provider
         );
       }
       const data = {
         recipientAddress: requestInput.value.recipientAddress,
-        value: new Decimal(requestInput.value.amount as number).toHexadecimal(),
+        value: new Decimal(requestInput.value.amount as number)
+          .ceil()
+          .toHexadecimal(),
         tokenAddress: requestInput.value.token,
         signature: requestInput.value.signature,
         nonce: requestInput.value.nonce,
