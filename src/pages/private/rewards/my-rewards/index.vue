@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import useRewardsStore from "@/stores/rewards";
+import useUserStore from "@/stores/user";
 
 const rewardsStore = useRewardsStore();
+const userStore = useUserStore();
+
+const VITE_REWARDS_CONTRACT_ADDRESS = import.meta.env
+  .VITE_REWARDS_CONTRACT_ADDRESS;
 </script>
 
 <template>
@@ -22,8 +27,21 @@ const rewardsStore = useRewardsStore();
         <span class="p-3 text-base font-[500]">{{ reward.name }}</span>
       </div>
     </div>
-    <div v-else class="flex p-4 flex-wrap items-center justify-center">
+    <div
+      v-else
+      class="flex flex-col gap-2 p-4 flex-wrap items-center justify-center"
+    >
       <span class="text-sm text-philippine-gray">No rewards yet.</span>
+      <span class="text-sm text-philippine-gray"
+        ><strong>Note: </strong>If your NFTs are not displayed here, please
+        check on
+        <a
+          class="text-white underline"
+          :href="`https://polygonscan.com/token/${VITE_REWARDS_CONTRACT_ADDRESS}?a=${userStore.address}#inventory`"
+          target="_blank"
+          >PolygonScan</a
+        ></span
+      >
     </div>
   </div>
 </template>
