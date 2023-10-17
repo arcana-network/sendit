@@ -633,13 +633,6 @@ async function copyWalletAddress() {
             >
               <img src="@/assets/images/icons/copy.svg" />
             </button>
-            <!-- <button
-              type="button"
-              @click.stop="copyWalletAddress"
-              title="Refresh Balance"
-            >
-              <img src="@/assets/images/icons/refresh.svg" />
-            </button> -->
           </div>
           <a
             class="text-[#ff4264] text-[10px] underline"
