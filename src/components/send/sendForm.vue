@@ -597,6 +597,7 @@ async function copyWalletAddress() {
               :title="
                 refreshIconAnimating ? 'Refreshing...' : 'Refresh Balance'
               "
+              :disabled="refreshIconAnimating"
               class="w-[16px] h-[16px] rounded-full"
               :class="{ 'animate-spin': refreshIconAnimating }"
             >
