@@ -41,6 +41,13 @@ const ACTION_REJECTED = "ACTION_REJECTED";
 const INSUFFICIENT_FUNDS = "INSUFFICIENT_FUNDS";
 const SELF_TX_ERROR = "self-transactions are not permitted";
 let assetInterval: NodeJS.Timer;
+const refreshIconAnimating = ref(false);
+
+async function handleRefresh() {
+  refreshIconAnimating.value = true;
+  await fetchAssets();
+  refreshIconAnimating.value = false;
+}
 
 onBeforeMount(async () => {
   await fetchAssets();
@@ -67,6 +74,7 @@ const hasStartedTyping = ref(false);
 const allAssets: Ref<any[]> = ref([]);
 const isBalanceFetching = ref(false);
 
+sendStore.resetUserInput();
 const { userInput, supportedChains } = toRefs(sendStore);
 
 const isEmailValid = computed(() => {
@@ -582,9 +590,21 @@ async function copyWalletAddress() {
       <div class="flex flex-col space-y-1">
         <div class="flex justify-between">
           <label class="text-xs">Amount</label>
-          <span v-if="userInput.token" class="text-xs"
-            >Balance: {{ tokenBalance }}</span
-          >
+          <div v-if="userInput.token" class="flex items-center gap-2">
+            <span class="text-xs">Balance: {{ tokenBalance }}</span>
+            <button
+              type="button"
+              @click.stop="handleRefresh"
+              :title="
+                refreshIconAnimating ? 'Refreshing...' : 'Refresh Balance'
+              "
+              :disabled="refreshIconAnimating"
+              class="w-[16px] h-[16px] rounded-full"
+              :class="{ 'animate-spin': refreshIconAnimating }"
+            >
+              <img src="@/assets/images/icons/refresh.svg" />
+            </button>
+          </div>
         </div>
         <input
           class="input disabled:opacity-60"
@@ -615,13 +635,6 @@ async function copyWalletAddress() {
             >
               <img src="@/assets/images/icons/copy.svg" />
             </button>
-            <!-- <button
-              type="button"
-              @click.stop="copyWalletAddress"
-              title="Refresh Balance"
-            >
-              <img src="@/assets/images/icons/refresh.svg" />
-            </button> -->
           </div>
           <a
             class="text-[#ff4264] text-[10px] underline"
