@@ -41,6 +41,13 @@ const ACTION_REJECTED = "ACTION_REJECTED";
 const INSUFFICIENT_FUNDS = "INSUFFICIENT_FUNDS";
 const SELF_TX_ERROR = "self-transactions are not permitted";
 let assetInterval: NodeJS.Timer;
+const refreshIconAnimating = ref(false);
+
+async function handleRefresh() {
+  refreshIconAnimating.value = true;
+  await fetchAssets();
+  refreshIconAnimating.value = false;
+}
 
 onBeforeMount(async () => {
   await fetchAssets();
@@ -582,9 +589,20 @@ async function copyWalletAddress() {
       <div class="flex flex-col space-y-1">
         <div class="flex justify-between">
           <label class="text-xs">Amount</label>
-          <span v-if="userInput.token" class="text-xs"
-            >Balance: {{ tokenBalance }}</span
-          >
+          <div v-if="userInput.token" class="flex items-center gap-2">
+            <span class="text-xs">Balance: {{ tokenBalance }}</span>
+            <button
+              type="button"
+              @click.stop="handleRefresh"
+              :title="
+                refreshIconAnimating ? 'Refreshing...' : 'Refresh Balance'
+              "
+              class="w-[16px] h-[16px] rounded-full"
+              :class="{ 'animate-spin': refreshIconAnimating }"
+            >
+              <img src="@/assets/images/icons/refresh.svg" />
+            </button>
+          </div>
         </div>
         <input
           class="input disabled:opacity-60"
