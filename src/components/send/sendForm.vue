@@ -74,6 +74,7 @@ const hasStartedTyping = ref(false);
 const allAssets: Ref<any[]> = ref([]);
 const isBalanceFetching = ref(false);
 
+sendStore.resetUserInput();
 const { userInput, supportedChains } = toRefs(sendStore);
 
 const isEmailValid = computed(() => {
