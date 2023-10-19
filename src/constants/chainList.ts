@@ -52,7 +52,7 @@ const chains = {
     chain_id: 204,
     blockchain: "opbnb",
     rpc_url: "https://opbnb.publicnode.com",
-    currency: "opBNB",
+    currency: "BNB",
     explorer: "https://opbnbscan.com/",
   },
 };
