@@ -42,7 +42,6 @@ const tokenDecimals = ref(0);
 const tokenBalanceInUnits = ref(0);
 const displayAmount = ref("0");
 
-sendStore.resetRequestInput();
 const { requestInput, supportedChains } = toRefs(sendStore);
 
 onMounted(async () => {
