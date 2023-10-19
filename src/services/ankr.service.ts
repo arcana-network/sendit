@@ -135,7 +135,7 @@ async function getNativeTokenBalances(walletAddress: string) {
     },
     {
       tokenType: "NATIVE",
-      tokenSymbol: "opBNB",
+      tokenSymbol: "BNB",
       blockchain: "opbnb",
       balance: new Decimal(opbnb_mainnet.data.result)
         .mul(Decimal.pow(10, -18))
