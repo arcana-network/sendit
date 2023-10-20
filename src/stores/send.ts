@@ -69,6 +69,7 @@ const useSendStore = defineStore("send", {
           ...chain,
           sendit_contract: hexlify(chain.sendit_contract),
           blockchain: chainList[Number(chain.chain_id)].blockchain,
+          name: chainList[Number(chain.chain_id)].name || chain.name,
         };
       });
     },

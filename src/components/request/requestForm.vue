@@ -78,7 +78,7 @@ function getSelectedChainInfo(chainId) {
 }
 
 function serializeDecimal(dec: Decimal): string {
-  const weird = dec.toHexadecimal().slice(2);
+  const weird = dec.ceil().toHexadecimal().slice(2);
   const len = Math.ceil(weird.length / 2) * 2;
   return "0x" + weird.padStart(len, "0");
 }

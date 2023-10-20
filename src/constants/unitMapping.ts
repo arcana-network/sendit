@@ -7,6 +7,7 @@ const nativeUnitMapping = {
   42161: "ETH",
   56: "BNB",
   97: "tBNB",
+  204: "BNB",
 };
 
 export { nativeUnitMapping };

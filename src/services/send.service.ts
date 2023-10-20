@@ -25,7 +25,7 @@ async function nativeTokenTransfer(
   const rawTx: any = {
     type: 2,
     to: receiverWalletAddress,
-    value: decimalAmount.mul(Decimal.pow(10, 18)).toHexadecimal(),
+    value: decimalAmount.mul(Decimal.pow(10, 18)).ceil().toHexadecimal(),
   };
   if (feeData) {
     rawTx.gasLimit = 21000n;

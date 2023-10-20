@@ -62,6 +62,7 @@ const useRequestStore = defineStore("request", {
         : REQUEST_EXPIRY;
       const expiry = Date.now() + requestExpiration;
       const request = {
+        chainId: Number.parseInt(`${this.userInput.chain}`),
         nonce: BigInt(ethers.hexlify(requestNonce)),
         recipient: userStore.address,
         value: amount,
