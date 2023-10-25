@@ -121,26 +121,6 @@ async function fetchAssets() {
   try {
     isBalanceFetching.value = true;
     const walletAddress = authStore.walletAddress;
-    const data = await getAccountBalance(walletAddress, [
-      "eth",
-      "polygon",
-      "arbitrum",
-      "bsc",
-    ]);
-    let erc20Assets = [] as any[];
-    if (data?.result?.assets?.length) {
-      erc20Assets = data?.result?.assets
-        .map((asset) => {
-          const address =
-            asset.tokenType === "NATIVE" ? "NATIVE" : asset.contractAddress;
-          return {
-            ...asset,
-            contractAddress: address,
-            name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
-          };
-        })
-        .filter((asset) => asset.tokenType !== "NATIVE");
-    }
     let nativeAssets = [] as any[];
     const nativeData = await getNativeTokenBalances(walletAddress);
     if (nativeData?.length) {
@@ -153,12 +133,39 @@ async function fetchAssets() {
         };
       });
     }
-    allAssets.value = [...nativeAssets, ...erc20Assets];
+    allAssets.value = [...nativeAssets];
+    console.log(allAssets.value);
+    loadStore.hideLoader();
+    findFallbackBalanceInAnkr(walletAddress, nativeAssets);
   } catch (error) {
     console.error(error);
   } finally {
     isBalanceFetching.value = false;
   }
+}
+
+async function findFallbackBalanceInAnkr(walletAddress, nativeAssets) {
+  const data = await getAccountBalance(walletAddress, [
+    "eth",
+    "polygon",
+    "arbitrum",
+    "bsc",
+  ]);
+  let erc20Assets = [] as any[];
+  if (data?.result?.assets?.length) {
+    erc20Assets = data?.result?.assets
+      .map((asset) => {
+        const address =
+          asset.tokenType === "NATIVE" ? "NATIVE" : asset.contractAddress;
+        return {
+          ...asset,
+          contractAddress: address,
+          name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
+        };
+      })
+      .filter((asset) => asset.tokenType !== "NATIVE");
+  }
+  allAssets.value = [...nativeAssets, ...erc20Assets];
 }
 
 function messageArcana(
