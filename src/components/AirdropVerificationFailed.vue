@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Overlay from "@/components/overlay.vue";
 
-const emit = defineEmits(["dismiss", "success", "failed"]);
+const emit = defineEmits(["dismiss", "retry"]);
 </script>
 
 <template>
@@ -15,37 +15,28 @@ const emit = defineEmits(["dismiss", "success", "failed"]);
         </button>
         <div class="flex flex-col justify-center items-center gap-6 mt-2">
           <img
-            src="@/assets/images/illustration-icons/default.png"
+            src="@/assets/images/illustration-icons/failed.png"
             alt="success"
             class="w-[60px] aspect-square"
           />
           <div class="flex flex-col">
             <span class="font-[700] text-xl uppercase text-center">
-              Verify you account
+              Verification Failed
             </span>
             <span
               class="text-xs text-philippine-gray text-center max-w-[360px]"
             >
-              Verify your account to be eligible to claim XAR tokens. Your
-              account should be created
-              <span class="font-[500] text-white">before Oct 1st, 2023.</span>
+              Either your date of creating the social account doesn’t meet our
+              criteria or something else went wrong while trying to do this.
             </span>
           </div>
         </div>
         <div class="flex gap-4 mt-4 flex-wrap justify-center">
           <button
-            class="flex justify-center flex-grow items-center p-2 space-x-2 border-2 rounded-md"
-            @click="emit('success')"
+            class="flex justify-center flex-grow items-center btn btn-submit"
+            @click="emit('retry')"
           >
-            <span class="uppercase text-sm font-bold">Verify with Twitter</span>
-          </button>
-          <button
-            class="flex justify-center flex-grow items-center p-2 space-x-2 border-2 rounded-md"
-            @click="emit('failed')"
-          >
-            <span class="uppercase text-sm font-bold"
-              >Verify with Linkedin</span
-            >
+            <span class="uppercase text-sm font-bold">Retry</span>
           </button>
         </div>
       </div>

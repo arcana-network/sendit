@@ -2,9 +2,15 @@
 import AirdropPhase1 from "@/assets/images/airdrop-phase-1.png";
 import { truncateAddress } from "@/utils/truncateAddress";
 import AirdropVerification from "@/components/AirdropVerification.vue";
+import AirdropSuccess from "@/components/AirdropVerificationSuccess.vue";
+import AirdropFailed from "@/components/AirdropVerificationFailed.vue";
 import { ref } from "vue";
 
-const accountVerificationModal = ref(false);
+const accountVerificationModal = ref({
+  verify: false,
+  success: false,
+  failed: false,
+});
 
 const airdropPhases = [
   {
@@ -82,7 +88,7 @@ const airdropPhases = [
           <button
             v-if="!airdropPhase.dropDetails.isVerified"
             class="btn-submit rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center"
-            @click.stop="accountVerificationModal = true"
+            @click.stop="accountVerificationModal.verify = true"
           >
             Verify Account Now
             <img
@@ -94,8 +100,29 @@ const airdropPhases = [
       </div>
     </div>
     <AirdropVerification
-      v-if="accountVerificationModal"
-      @dismiss="accountVerificationModal = false"
+      v-if="accountVerificationModal.verify"
+      @success="
+        accountVerificationModal.success = true;
+        accountVerificationModal.verify = false;
+      "
+      @failed="
+        accountVerificationModal.failed = true;
+        accountVerificationModal.verify = false;
+      "
+      @dismiss="accountVerificationModal.verify = false"
+    />
+    <AirdropSuccess
+      v-if="accountVerificationModal.success"
+      @dismiss="accountVerificationModal.success = false"
+      @claim="accountVerificationModal.success = false"
+    />
+    <AirdropFailed
+      v-if="accountVerificationModal.failed"
+      @dismiss="accountVerificationModal.failed = false"
+      @retry="
+        accountVerificationModal.failed = false;
+        accountVerificationModal.verify = true;
+      "
     />
   </div>
 </template>
