@@ -128,6 +128,7 @@ const stats = computed(() => {
             </router-link>
           </nav>
           <router-link
+            v-if="!props.hideNav"
             :to="{ name: 'Airdrop' }"
             class="text-cornflower-blue text-xs font-normal bg-[#293c5f] rounded-[5px] p-1"
             >Airdrop Live!</router-link
