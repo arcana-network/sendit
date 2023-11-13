@@ -119,10 +119,11 @@ onBeforeMount(async () => {
           </div>
           <button
             v-if="!airdropPhase.dropDetails.isVerified"
-            class="btn-submit rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center"
+            class="btn-submit rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
             @click.stop="accountVerificationModal.verify = true"
+            disabled
           >
-            Verify Account Now
+            Verify to Claim Soon
             <img
               src="@/assets/images/icons/arrow-right-black.svg"
               class="ml-2"
