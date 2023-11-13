@@ -41,7 +41,7 @@ const airdropPhases = [
             class="w-full h-[150px] object-cover object-center z-[1]"
           />
           <div
-            class="absolute inset-0 flex justify-center items-center z-[2] airdrop-card-bg font-[700] text-4.5xl uppercase"
+            class="absolute inset-0 flex justify-center items-center z-[2] airdrop-card-bg font-[700] text-4.5xl uppercase text-[#f7f7f7d9]"
           >
             {{ airdropPhase.phase.name }}
           </div>
