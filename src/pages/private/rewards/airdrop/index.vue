@@ -12,6 +12,11 @@ const accountVerificationModal = ref({
   failed: false,
 });
 
+enum ClaimStatus {
+  init = "Claim Initiated",
+  complete = "Claim Completed",
+}
+
 const airdropPhases = [
   {
     phase: {
@@ -84,6 +89,25 @@ const airdropPhases = [
                 {{ airdropPhase.dropDetails.distributionDates.end }}
               </span>
             </div>
+            <div
+              class="text-xs flex"
+              v-if="airdropPhase.dropDetails.claimStatus"
+            >
+              <span class="text-philippine-gray w-[16ch]">Status:</span>
+              <span
+                class="capitalize"
+                :class="{
+                  'text-[#05c168]':
+                    airdropPhase.dropDetails.claimStatus ===
+                    ClaimStatus.complete,
+                  'text-[#eeb113]':
+                    airdropPhase.dropDetails.claimStatus !==
+                    ClaimStatus.complete,
+                }"
+              >
+                {{ airdropPhase.dropDetails.claimStatus }}
+              </span>
+            </div>
           </div>
           <button
             v-if="!airdropPhase.dropDetails.isVerified"
@@ -91,6 +115,20 @@ const airdropPhases = [
             @click.stop="accountVerificationModal.verify = true"
           >
             Verify Account Now
+            <img
+              src="@/assets/images/icons/arrow-right-black.svg"
+              class="ml-2"
+            />
+          </button>
+          <button
+            v-if="
+              airdropPhase.dropDetails.isVerified &&
+              !airdropPhase.dropDetails.claimStatus
+            "
+            class="btn-submit rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center"
+            @click.stop="void 0"
+          >
+            Claim Now
             <img
               src="@/assets/images/icons/arrow-right-black.svg"
               class="ml-2"
