@@ -4,40 +4,48 @@ import { truncateAddress } from "@/utils/truncateAddress";
 import AirdropVerification from "@/components/AirdropVerification.vue";
 import AirdropSuccess from "@/components/AirdropVerificationSuccess.vue";
 import AirdropFailed from "@/components/AirdropVerificationFailed.vue";
-import { ref } from "vue";
+import { onBeforeMount, reactive, ref } from "vue";
+import { useConnection } from "@/stores/connection";
+import { SOCKET_IDS } from "@/constants/socket-ids";
+import Decimal from "decimal.js";
+import useUserStore from "@/stores/user";
+import dayjs from "dayjs";
 
 const accountVerificationModal = ref({
   verify: false,
   success: false,
   failed: false,
 });
+const conn = useConnection();
+const user = useUserStore();
+const airdropPhases = reactive([] as any[]);
 
 enum ClaimStatus {
   init = "Claim Initiated",
   complete = "Claim Completed",
 }
 
-const airdropPhases = [
-  {
+onBeforeMount(async () => {
+  const data = await conn.sendMessage(SOCKET_IDS.GET_AIRDROP_INFO);
+  airdropPhases.push({
     phase: {
       name: "Phase 1",
       image: AirdropPhase1,
       status: "ongoing",
     },
     dropDetails: {
-      walletAddress: "sjdhfksdfjkdshfjksdfs",
-      xp: 500,
-      xar: 50,
+      walletAddress: user.address,
+      xp: data.total_xp,
+      xar: new Decimal(data.total_xar || 0).toDecimalPlaces(10).toString(),
       distributionDates: {
-        start: "22 Jan 2024",
-        end: "22 Mar 2024",
+        start: dayjs(data.distribution_start).format("DD MMM YYYY"),
+        end: dayjs(data.distribution_end).format("DD MMM YYYY"),
       },
-      isVerified: false,
-      verifiedOn: null,
-      claimStatus: null,
+      isVerified: data.account_verified,
+      claimStatus: data.claim_status,
     },
-  },
-];
+  });
+});
 </script>
 
 <template>
