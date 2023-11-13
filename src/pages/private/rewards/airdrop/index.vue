@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import AirdropPhase1 from "@/assets/images/airdrop-phase-1.png";
 import { truncateAddress } from "@/utils/truncateAddress";
+import AirdropVerification from "@/components/AirdropVerification.vue";
+import { ref } from "vue";
+
+const accountVerificationModal = ref(false);
 
 const airdropPhases = [
   {
@@ -78,6 +82,7 @@ const airdropPhases = [
           <button
             v-if="!airdropPhase.dropDetails.isVerified"
             class="btn-submit rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center"
+            @click.stop="accountVerificationModal = true"
           >
             Verify Account Now
             <img
@@ -88,6 +93,10 @@ const airdropPhases = [
         </div>
       </div>
     </div>
+    <AirdropVerification
+      v-if="accountVerificationModal"
+      @dismiss="accountVerificationModal = false"
+    />
   </div>
 </template>
 
