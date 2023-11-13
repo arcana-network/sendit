@@ -86,7 +86,7 @@ onBeforeMount(async () => {
               <span class="text-philippine-gray w-[16ch]"
                 >XAR Eligible Reward:</span
               >
-              <span>{{ airdropPhase.dropDetails.xar }}</span>
+              <span>{{ airdropPhase.dropDetails.xar }} XAR</span>
             </div>
             <div class="text-xs flex">
               <span class="text-philippine-gray w-[16ch]"
