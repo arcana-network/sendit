@@ -85,10 +85,10 @@ const stats = computed(() => {
       label: "Total XP",
       value: userStore.points,
     },
-    // {
-    //   label: "Referral XP",
-    //   value: userStore.xpBreakdown?.referreePoints || 0,
-    // },
+    {
+      label: "Referral XP",
+      value: userStore.xpBreakdown?.referreePoints ?? 0,
+    },
     // {
     //   label: "My Rewards",
     //   value: rewardsStore.rewards.length,
