@@ -123,7 +123,7 @@ onBeforeMount(async () => {
             @click.stop="accountVerificationModal.verify = true"
             disabled
           >
-            Verify to Claim Soon
+            Claim process starts soon
             <img
               src="@/assets/images/icons/arrow-right-black.svg"
               class="ml-2"
