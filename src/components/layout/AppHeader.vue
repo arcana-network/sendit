@@ -78,17 +78,17 @@ function handleInvite() {
 const stats = computed(() => {
   return [
     {
-      label: "Weekly Rank",
+      label: "Global Rank",
       value: userStore.rank,
     },
     {
       label: "Total XP",
       value: userStore.points,
     },
-    {
-      label: "Referral XP",
-      value: userStore.xpBreakdown?.referreePoints || 0,
-    },
+    // {
+    //   label: "Referral XP",
+    //   value: userStore.xpBreakdown?.referreePoints || 0,
+    // },
     // {
     //   label: "My Rewards",
     //   value: rewardsStore.rewards.length,

@@ -53,7 +53,7 @@ const useUserStore = defineStore("user", {
       }
       this.followedOnTwitter = response.followed_on_twitter;
       // this.points = response.points;
-      this.rank = response.weekly_rank;
+      this.rank = response.global_rank ?? 0;
     },
   },
 });
