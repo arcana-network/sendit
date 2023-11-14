@@ -124,10 +124,10 @@ onBeforeMount(async () => {
             disabled
           >
             Claim process starts soon
-            <img
+            <!-- <img
               src="@/assets/images/icons/arrow-right-black.svg"
               class="ml-2"
-            />
+            /> -->
           </button>
           <button
             v-if="
