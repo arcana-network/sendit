@@ -1,7 +1,42 @@
 <script setup lang="ts">
 import Overlay from "@/components/overlay.vue";
+import { useConnection } from "@/stores/connection";
+import {
+  openTwitterLogin,
+  handleTwitterRedirect,
+} from "@/services/twitter.service";
+import { onMounted, onUnmounted } from "vue";
+import { useToast } from "vue-toastification";
 
 const emit = defineEmits(["dismiss", "success", "failed"]);
+const conn = useConnection();
+const toast = useToast();
+
+async function verifyTwitter() {
+  try {
+    await openTwitterLogin(conn);
+  } catch (e) {
+    toast.error(e as string);
+    console.log(e);
+  }
+}
+
+async function handleMessage(event) {
+  if (event.origin !== window.location.origin) return;
+  if (event.data?.type === "twitter-redirect") {
+    const res = await handleTwitterRedirect(conn, event.data?.payload);
+    console.log(res);
+    emit("success");
+  }
+}
+
+onMounted(() => {
+  window.addEventListener("message", handleMessage);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("message", handleMessage);
+});
 </script>
 
 <template>
@@ -35,7 +70,7 @@ const emit = defineEmits(["dismiss", "success", "failed"]);
         <div class="flex gap-4 mt-4 flex-wrap justify-center">
           <button
             class="flex justify-center flex-grow items-center p-2 space-x-2 border-2 rounded-md"
-            @click="emit('success')"
+            @click="verifyTwitter"
           >
             <span class="uppercase text-sm font-bold">Verify with Twitter</span>
           </button>
