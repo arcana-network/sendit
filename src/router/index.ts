@@ -76,6 +76,12 @@ const routes: RouteRecordRaw[] = [
                 component: () =>
                   import("@/pages/private/rewards/earn/index.vue"),
               },
+              {
+                name: "Airdrop",
+                path: "airdrop",
+                component: () =>
+                  import("@/pages/private/rewards/airdrop/index.vue"),
+              },
             ],
           },
         ],

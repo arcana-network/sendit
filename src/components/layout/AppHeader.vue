@@ -78,7 +78,7 @@ function handleInvite() {
 const stats = computed(() => {
   return [
     {
-      label: "Weekly Rank",
+      label: "Global Rank",
       value: userStore.rank,
     },
     {
@@ -87,7 +87,7 @@ const stats = computed(() => {
     },
     {
       label: "Referral XP",
-      value: userStore.xpBreakdown?.referreePoints || 0,
+      value: userStore.xpBreakdown?.referreePoints ?? 0,
     },
     // {
     //   label: "My Rewards",
@@ -99,13 +99,13 @@ const stats = computed(() => {
 
 <template>
   <div class="flex flex-col bg-[#0e0e0e]">
-    <header class="border-b-1 border-jet px-7.5 py-4">
-      <div class="container flex justify-between">
-        <div class="flex space-x-5 items-center">
+    <header class="border-b-1 border-jet px-7.5 py-4 max-lg:px-2">
+      <div class="container flex justify-between gap-2">
+        <div class="flex gap-5 max-lg:gap-2 items-center">
           <img src="@/assets/images/sendit-title.png" class="h-10" />
           <nav
             v-if="!props.hideNav"
-            class="flex space-x-5 max-lg:hidden items-center"
+            class="flex gap-5 max-lg:hidden items-center"
           >
             <router-link
               v-for="menu in navMenu"
@@ -127,11 +127,17 @@ const stats = computed(() => {
               {{ menu.label }}
             </router-link>
           </nav>
+          <router-link
+            v-if="!props.hideNav"
+            :to="{ name: 'Airdrop' }"
+            class="text-cornflower-blue text-xs font-normal bg-[#293c5f] rounded-[5px] p-1"
+            >Airdrop Live!</router-link
+          >
         </div>
-        <div v-if="!props.hideNav" class="flex items-center space-x-5">
-          <div class="flex space-x-3 max-md:hidden">
+        <div v-if="!props.hideNav" class="flex items-center gap-5">
+          <div class="flex gap-3 max-md:hidden">
             <div
-              class="flex items-center space-x-2 p-2.5 border-1 border-jet rounded-xl"
+              class="flex items-center gap-2 p-2.5 border-1 border-jet rounded-xl"
               v-for="stat in stats"
               :key="stat.label"
             >
@@ -139,7 +145,7 @@ const stats = computed(() => {
               <span class="text-xl">{{ stat.value }}</span>
             </div>
           </div>
-          <div class="space-x-3 flex items-center">
+          <div class="gap-3 flex items-center">
             <a href="mailto:support@arcana.network">Help</a>
             <button class="relative" @click.stop="toggleNotifications">
               <span
@@ -201,9 +207,9 @@ const stats = computed(() => {
       v-if="!props.hideUserData"
       class="border-b-1 border-jet md:hidden py-2 flex justify-center"
     >
-      <div class="flex space-x-3">
+      <div class="flex gap-3">
         <div
-          class="flex items-center space-x-2 p-2.5 border-1 border-jet rounded-xl"
+          class="flex items-center gap-2 p-2.5 border-1 border-jet rounded-xl"
           v-for="stat in stats"
           :key="stat.label"
         >
