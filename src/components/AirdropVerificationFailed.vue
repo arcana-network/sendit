@@ -2,6 +2,12 @@
 import Overlay from "@/components/overlay.vue";
 
 const emit = defineEmits(["dismiss", "retry"]);
+
+type VerificationFailedProps = {
+  message?: string;
+};
+
+const props = defineProps<VerificationFailedProps>();
 </script>
 
 <template>
@@ -24,6 +30,13 @@ const emit = defineEmits(["dismiss", "retry"]);
               Verification Failed
             </span>
             <span
+              v-if="props.message?.length"
+              class="text-xs text-philippine-gray text-center max-w-[360px]"
+            >
+              {{ props.message }}
+            </span>
+            <span
+              v-else
               class="text-xs text-philippine-gray text-center max-w-[360px]"
             >
               Either your date of creating the social account doesn’t meet our
