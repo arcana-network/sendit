@@ -15,8 +15,8 @@ const toast = useToast();
 async function verifyTwitter() {
   try {
     await openTwitterLogin(conn);
-  } catch (e) {
-    toast.error(e as string);
+  } catch (e: any) {
+    toast.error(e.message as string);
     console.log(e);
   }
 }
