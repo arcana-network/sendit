@@ -38,15 +38,15 @@ const useUserStore = defineStore("user", {
       const xpBreakdown = (await conn.sendMessage(
         SOCKET_IDS.GET_XP_BREAKDOWN,
         null
-      )) as { task_id: number; total_points?: number }[];
-      console.log({ xpBreakdown });
+      )) as { task_id: number; total_points?: number; total_ponts?: number }[];
       this.points = 0; // reset points
       if (xpBreakdown?.length > 0) {
         const xpBreakdownObj = {} as XPBreakdown;
-        for (const { task_id, total_points } of xpBreakdown) {
-          this.points += total_points || 0;
+        for (const { task_id, total_points, total_ponts } of xpBreakdown) {
+          this.points += total_points || total_ponts || 0;
           if (XPBreakdownTasks[task_id]) {
-            xpBreakdownObj[XPBreakdownTasks[task_id]] = total_points || 0;
+            xpBreakdownObj[XPBreakdownTasks[task_id]] =
+              total_points || total_ponts || 0;
           }
         }
         this.xpBreakdown = xpBreakdownObj;
