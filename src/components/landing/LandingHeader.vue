@@ -64,6 +64,7 @@ onBeforeUnmount(() => {
           Launch App
         </button>
         <a
+          class="max-md:hidden"
           href="https://www.producthunt.com/posts/sendit-3?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-sendit&#0045;3"
           target="_blank"
           ><img
