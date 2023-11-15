@@ -39,6 +39,7 @@ const useUserStore = defineStore("user", {
         SOCKET_IDS.GET_XP_BREAKDOWN,
         null
       )) as { task_id: number; total_points?: number }[];
+      console.log({ xpBreakdown });
       this.points = 0; // reset points
       if (xpBreakdown?.length > 0) {
         const xpBreakdownObj = {} as XPBreakdown;
