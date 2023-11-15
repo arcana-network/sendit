@@ -8,6 +8,7 @@ import { truncateAddress } from "@/utils/truncateAddress";
 import dayjs from "dayjs";
 import { ethers } from "ethers";
 import useLoaderStore from "@/stores/loader";
+import useUserStore from "@/stores/user";
 
 const route = useRoute();
 const conn = useConnection();
@@ -15,6 +16,8 @@ const conn = useConnection();
 const rankers = ref([] as any[]);
 let currentPage = 1;
 const loaderStore = useLoaderStore();
+const userStore = useUserStore();
+const userRank = ref(userStore.rank);
 
 onBeforeMount(() => {
   if (route.query.duration === "global") fetchLeaderboard("global");
@@ -29,7 +32,7 @@ const headerHeight = computed(() => {
   return document.querySelector("#header")?.clientHeight as number;
 });
 
-async function fetchLeaderboard(duration: "global" | "weekly" = "weekly") {
+async function fetchLeaderboard(duration: "global" | "weekly" = "global") {
   if (currentPage === 1) {
     loaderStore.showLoader(`Fetching ${duration} leaderboard...`);
   } else {
@@ -47,7 +50,8 @@ async function fetchLeaderboard(duration: "global" | "weekly" = "weekly") {
   const leaderboard = (await conn.sendMessage(
     SOCKET_IDS.GET_LEADERBOARD,
     message
-  )) as { rankings: any[] };
+  )) as { rankings: any[]; user_rank: number };
+  userRank.value = leaderboard.user_rank ?? userStore.rank;
   const leaderboardRankings = leaderboard.rankings.map((ranking) => {
     return {
       rank: ranking.rank,
@@ -69,7 +73,7 @@ watch(
   () => route.query.duration,
   async () => {
     currentPage = 1;
-    if (route.query.duration === "global") fetchLeaderboard("global");
+    if (route.query.duration === "weekly") fetchLeaderboard("weekly");
     else fetchLeaderboard();
   }
 );
@@ -93,22 +97,23 @@ const restRankers = computed(() => rankers.value.slice(3));
       class="flex mx-8 my-0 bg-eerie-black max-w-max flex-wrap py-1 px-2 border border-jet rounded-[10px] text-philippine-gray text-sm sticky"
       :style="{ top: `${headerHeight + 16}px` }"
     >
-      <router-link
+      Global Ranks
+      <!-- <router-link
         class="px-2 py-1 cursor-pointer rounded-[5px]"
         :class="{
           'bg-[#141414] text-white': route.query.duration !== 'global',
         }"
         :to="{ name: 'Leaderboard', query: {} }"
         >Weekly</router-link
-      >
-      <router-link
+      > -->
+      <!-- <router-link
         class="px-2 py-1 cursor-pointer rounded-[5px]"
         :class="{
           'bg-[#141414] text-white': route.query.duration === 'global',
         }"
         :to="{ name: 'Leaderboard', query: { duration: 'global' } }"
         >Overall</router-link
-      >
+      > -->
     </div>
     <div
       class="flex-col bg-eerie-black rounded-[10px] border border-jet mx-8 my-5"

@@ -189,7 +189,7 @@ function calculateRewards(requests) {
     if (
       req.state === 0xf0 &&
       req.data.requester === userStore.address.toLowerCase() &&
-      dailyFulfilledRequests[req.data.chainId][req.date] < 50
+      dailyFulfilledRequests?.[req.data.chainId]?.[req.date] < 50
     ) {
       dailyFulfilledRequests[req.data.chainId][req.date] += 1;
       if (!isFirstFulfilledRequest) {

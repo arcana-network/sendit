@@ -61,7 +61,7 @@ const showRequestPopup = ref(false);
 const requestPopupData = ref({} as any);
 const showRequestInvalidPopup = ref(false);
 const requestInvalidPopupType = ref("");
-const isBannerClosed = ref(true);
+const isBannerClosed = ref(false);
 
 loaderStore.showLoader("Initializing...");
 
@@ -374,7 +374,14 @@ function handleExpiryDismiss() {
         v-if="!isBannerClosed"
       >
         <div class="flex items-baseline flex-wrap justify-center">
-          The next batch of SendIT rewards will be distributed on 24 Sep 2023.
+          Airdrop Phase 1 is closed and leaderboard is reset. Phase 2 has now
+          begun.&nbsp;
+          <a
+            class="underline cursor-pointer underline-offset-[4px] font-[700]"
+            href="https://www.arcana.network/blog/sendit-drop-onboarding-everyone-to-crypto"
+            target="blank"
+            >Read Blog</a
+          >
         </div>
         <button class="absolute right-4" @click.stop="isBannerClosed = true">
           <img src="@/assets/images/icons/close.svg" alt="close" />
