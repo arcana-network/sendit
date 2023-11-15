@@ -10,6 +10,7 @@ import { SOCKET_IDS } from "@/constants/socket-ids";
 import Decimal from "decimal.js";
 import useUserStore from "@/stores/user";
 import dayjs from "dayjs";
+import useLoaderStore from "@/stores/loader";
 
 const accountVerificationModal = ref({
   verify: false,
@@ -19,6 +20,8 @@ const accountVerificationModal = ref({
 const conn = useConnection();
 const user = useUserStore();
 const airdropPhases = reactive([] as any[]);
+const loaderStore = useLoaderStore();
+const verificationFailMsg = ref("");
 
 enum ClaimStatus {
   init = "Claim Initiated",
@@ -26,25 +29,30 @@ enum ClaimStatus {
 }
 
 onBeforeMount(async () => {
-  const data = await conn.sendMessage(SOCKET_IDS.GET_AIRDROP_INFO);
-  airdropPhases.push({
-    phase: {
-      name: "Phase 1",
-      image: AirdropPhase1,
-      status: "ongoing",
-    },
-    dropDetails: {
-      walletAddress: user.address,
-      xp: data.total_xp,
-      xar: new Decimal(data.total_xar || 0).toDecimalPlaces(10).toString(),
-      distributionDates: {
-        start: dayjs(data.distribution_start).format("DD MMM YYYY"),
-        end: dayjs(data.distribution_end).format("DD MMM YYYY"),
+  loaderStore.showLoader("Fetching airdrop details...");
+  try {
+    const data = await conn.sendMessage(SOCKET_IDS.GET_AIRDROP_INFO);
+    airdropPhases.push({
+      phase: {
+        name: "Phase 1",
+        image: AirdropPhase1,
+        status: "ongoing",
       },
-      isVerified: data.account_verified,
-      claimStatus: data.claim_status,
-    },
-  });
+      dropDetails: {
+        walletAddress: user.address,
+        xp: data.total_xp,
+        xar: new Decimal(data.total_xar || 0).toDecimalPlaces(9).toString(),
+        distributionDates: {
+          start: dayjs(data.distribution_start).format("DD MMM YYYY"),
+          end: dayjs(data.distribution_end).format("DD MMM YYYY"),
+        },
+        isVerified: data.account_verified,
+        claimStatus: data.claim_status ? ClaimStatus.complete : false,
+      },
+    });
+  } finally {
+    loaderStore.hideLoader();
+  }
 });
 </script>
 
@@ -152,22 +160,33 @@ onBeforeMount(async () => {
         accountVerificationModal.verify = false;
       "
       @failed="
-        accountVerificationModal.failed = true;
-        accountVerificationModal.verify = false;
+        (msg) => {
+          accountVerificationModal.failed = true;
+          accountVerificationModal.verify = false;
+          verificationFailMsg = msg;
+        }
       "
       @dismiss="accountVerificationModal.verify = false"
     />
     <AirdropSuccess
       v-if="accountVerificationModal.success"
       @dismiss="accountVerificationModal.success = false"
-      @claim="accountVerificationModal.success = false"
+      @claim="
+        accountVerificationModal.success = false;
+        airdropPhases[0].dropDetails.claimStatus = ClaimStatus.complete;
+      "
     />
     <AirdropFailed
       v-if="accountVerificationModal.failed"
-      @dismiss="accountVerificationModal.failed = false"
+      :message="verificationFailMsg"
+      @dismiss="
+        accountVerificationModal.failed = false;
+        verificationFailMsg = '';
+      "
       @retry="
         accountVerificationModal.failed = false;
         accountVerificationModal.verify = true;
+        verificationFailMsg = '';
       "
     />
   </div>
