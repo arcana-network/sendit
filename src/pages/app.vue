@@ -373,10 +373,9 @@ function handleExpiryDismiss() {
         class="relative flex justify-center items-center p-1 bg-[#16AD65] text-[14px] font-[500] px-4 text-center"
         v-if="!isBannerClosed"
       >
-        <div class="flex items-baseline flex-wrap justify-center">
+        <div class="items-baseline flex-wrap justify-center mr-3">
           Airdrop Phase 1 is closed and leaderboard is reset. Phase 2 has now
-          begun.&nbsp;
-          <a
+          begun.&nbsp;<a
             class="underline cursor-pointer underline-offset-[4px] font-[700]"
             href="https://www.arcana.network/blog/sendit-drop-onboarding-everyone-to-crypto"
             target="blank"
