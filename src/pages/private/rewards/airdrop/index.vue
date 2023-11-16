@@ -29,6 +29,13 @@ enum ClaimStatus {
   failed = "Claim Failed",
 }
 
+function generateFailMsg(code) {
+  if (code === 564) {
+    verificationFailMsg.value =
+      "This twitter handle is already verified and linked to another account.";
+  }
+}
+
 onBeforeMount(async () => {
   loaderStore.showLoader("Fetching airdrop details...");
   try {
@@ -153,7 +160,7 @@ onBeforeMount(async () => {
         (msg) => {
           accountVerificationModal.failed = true;
           accountVerificationModal.verify = false;
-          verificationFailMsg = msg;
+          generateFailMsg(code);
         }
       "
       @dismiss="accountVerificationModal.verify = false"

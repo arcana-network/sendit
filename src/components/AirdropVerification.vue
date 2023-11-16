@@ -29,7 +29,7 @@ async function handleMessage(event) {
       console.log(res);
       emit("success");
     } catch (e: any) {
-      emit("failed", e.message);
+      emit("failed", e.code);
     }
   }
 }
