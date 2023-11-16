@@ -78,14 +78,14 @@ onUnmounted(() => {
           >
             <span class="uppercase text-sm font-bold">Verify with Twitter</span>
           </button>
-          <button
+          <!-- <button
             class="flex justify-center flex-grow items-center p-2 space-x-2 border-2 rounded-md"
             @click="emit('failed')"
           >
             <span class="uppercase text-sm font-bold"
               >Verify with Linkedin</span
             >
-          </button>
+          </button> -->
         </div>
       </div>
     </div>
