@@ -2,6 +2,12 @@
 import Overlay from "@/components/overlay.vue";
 
 const emit = defineEmits(["dismiss", "retry"]);
+
+type VerificationFailedProps = {
+  message?: string;
+};
+
+const props = defineProps<VerificationFailedProps>();
 </script>
 
 <template>
@@ -24,6 +30,13 @@ const emit = defineEmits(["dismiss", "retry"]);
               Verification Failed
             </span>
             <span
+              v-if="props.message?.length"
+              class="text-xs text-philippine-gray text-center max-w-[360px]"
+            >
+              {{ props.message }}
+            </span>
+            <span
+              v-else
               class="text-xs text-philippine-gray text-center max-w-[360px]"
             >
               Either your date of creating the social account doesn’t meet our
@@ -34,9 +47,9 @@ const emit = defineEmits(["dismiss", "retry"]);
         <div class="flex gap-4 mt-4 flex-wrap justify-center">
           <button
             class="flex justify-center flex-grow items-center btn btn-submit"
-            @click="emit('retry')"
+            @click="emit('dismiss')"
           >
-            <span class="uppercase text-sm font-bold">Retry</span>
+            <span class="uppercase text-sm font-bold">Close</span>
           </button>
         </div>
       </div>

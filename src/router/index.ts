@@ -89,8 +89,9 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    path: "/:pathMatch(.*)*",
-    redirect: { name: "Waitlist" },
+    name: "Twitter Redirect",
+    path: "/twitter-redirect",
+    component: () => import("@/pages/twitter-redirect.vue"),
   },
 ];
 

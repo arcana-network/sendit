@@ -61,7 +61,8 @@ async function socialLogin(type: string) {
     authStore.isLoggedIn = true;
     authStore.loggedInWith = "";
   } catch (e: any) {
-    toast.error(e);
+    toast.error(e.message || e);
+    console.error(e);
   } finally {
     loaderStore.hideLoader();
   }

@@ -10,6 +10,7 @@ import { SOCKET_IDS } from "@/constants/socket-ids";
 import Decimal from "decimal.js";
 import useUserStore from "@/stores/user";
 import dayjs from "dayjs";
+import useLoaderStore from "@/stores/loader";
 
 const accountVerificationModal = ref({
   verify: false,
@@ -19,32 +20,54 @@ const accountVerificationModal = ref({
 const conn = useConnection();
 const user = useUserStore();
 const airdropPhases = reactive([] as any[]);
+const loaderStore = useLoaderStore();
+const verificationFailMsg = ref("");
 
 enum ClaimStatus {
   init = "Claim Initiated",
   complete = "Claim Completed",
+  failed = "Claim Failed - Verification Unsuccessful",
+}
+
+function generateFailMsg(code) {
+  if (code === 564) {
+    verificationFailMsg.value =
+      "Claim Failed - Twitter account already linked to another wallet.";
+  } else if (code === 570) {
+    verificationFailMsg.value =
+      "Claim Failed - Twitter account was created post 01 Sep'23.";
+  }
 }
 
 onBeforeMount(async () => {
-  const data = await conn.sendMessage(SOCKET_IDS.GET_AIRDROP_INFO);
-  airdropPhases.push({
-    phase: {
-      name: "Phase 1",
-      image: AirdropPhase1,
-      status: "ongoing",
-    },
-    dropDetails: {
-      walletAddress: user.address,
-      xp: data.total_xp,
-      xar: new Decimal(data.total_xar || 0).toDecimalPlaces(10).toString(),
-      distributionDates: {
-        start: dayjs(data.distribution_start).format("DD MMM YYYY"),
-        end: dayjs(data.distribution_end).format("DD MMM YYYY"),
+  loaderStore.showLoader("Fetching airdrop details...");
+  try {
+    const data = await conn.sendMessage(SOCKET_IDS.GET_AIRDROP_INFO);
+    airdropPhases.push({
+      phase: {
+        name: "Phase 1",
+        image: AirdropPhase1,
+        status: "ongoing",
       },
-      isVerified: data.account_verified,
-      claimStatus: data.claim_status,
-    },
-  });
+      dropDetails: {
+        walletAddress: user.address,
+        xp: data.total_xp,
+        xar: new Decimal(data.total_xar || 0).toDecimalPlaces(9).toString(),
+        distributionDates: {
+          start: dayjs(data.distribution_start).format("DD MMM YYYY"),
+          end: dayjs(data.distribution_end).format("DD MMM YYYY"),
+        },
+        isVerified: data.account_verified,
+        claimStatus: data.claim_status
+          ? ClaimStatus.complete
+          : data.account_verified
+          ? ClaimStatus.failed
+          : false,
+      },
+    });
+  } finally {
+    loaderStore.hideLoader();
+  }
 });
 </script>
 
@@ -108,9 +131,8 @@ onBeforeMount(async () => {
                   'text-[#05c168]':
                     airdropPhase.dropDetails.claimStatus ===
                     ClaimStatus.complete,
-                  'text-[#eeb113]':
-                    airdropPhase.dropDetails.claimStatus !==
-                    ClaimStatus.complete,
+                  'text-[#ff4264]':
+                    airdropPhase.dropDetails.claimStatus === ClaimStatus.failed,
                 }"
               >
                 {{ airdropPhase.dropDetails.claimStatus }}
@@ -121,23 +143,8 @@ onBeforeMount(async () => {
             v-if="!airdropPhase.dropDetails.isVerified"
             class="btn-submit rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
             @click.stop="accountVerificationModal.verify = true"
-            disabled
           >
-            Claim process starts soon
-            <!-- <img
-              src="@/assets/images/icons/arrow-right-black.svg"
-              class="ml-2"
-            /> -->
-          </button>
-          <button
-            v-if="
-              airdropPhase.dropDetails.isVerified &&
-              !airdropPhase.dropDetails.claimStatus
-            "
-            class="btn-submit rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center"
-            @click.stop="void 0"
-          >
-            Claim Now
+            Verify to Claim
             <img
               src="@/assets/images/icons/arrow-right-black.svg"
               class="ml-2"
@@ -153,22 +160,31 @@ onBeforeMount(async () => {
         accountVerificationModal.verify = false;
       "
       @failed="
-        accountVerificationModal.failed = true;
-        accountVerificationModal.verify = false;
+        (code) => {
+          accountVerificationModal.failed = true;
+          accountVerificationModal.verify = false;
+          generateFailMsg(code);
+        }
       "
       @dismiss="accountVerificationModal.verify = false"
     />
     <AirdropSuccess
       v-if="accountVerificationModal.success"
       @dismiss="accountVerificationModal.success = false"
-      @claim="accountVerificationModal.success = false"
+      @claim="
+        accountVerificationModal.success = false;
+        airdropPhases[0].dropDetails.claimStatus = ClaimStatus.complete;
+        airdropPhases[0].dropDetails.isVerified = true;
+      "
     />
     <AirdropFailed
       v-if="accountVerificationModal.failed"
-      @dismiss="accountVerificationModal.failed = false"
-      @retry="
+      :message="verificationFailMsg"
+      @dismiss="
         accountVerificationModal.failed = false;
-        accountVerificationModal.verify = true;
+        airdropPhases[0].dropDetails.claimStatus = ClaimStatus.failed;
+        airdropPhases[0].dropDetails.isVerified = true;
+        verificationFailMsg = '';
       "
     />
   </div>
