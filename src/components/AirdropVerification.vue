@@ -29,7 +29,7 @@ async function handleMessage(event) {
       console.log(res);
       emit("success");
     } catch (e: any) {
-      emit("failed", e.message);
+      emit("failed", e.code);
     }
   }
 }
@@ -60,14 +60,14 @@ onUnmounted(() => {
           />
           <div class="flex flex-col">
             <span class="font-[700] text-xl uppercase text-center">
-              Verify you account
+              Verify your social account
             </span>
             <span
               class="text-xs text-philippine-gray text-center max-w-[360px]"
             >
               Verify your account to be eligible to claim XAR tokens. Your
               account should be created
-              <span class="font-[500] text-white">before Oct 1st, 2023.</span>
+              <span class="font-[500] text-white">before Sept 1st, 2023.</span>
             </span>
           </div>
         </div>
@@ -78,14 +78,14 @@ onUnmounted(() => {
           >
             <span class="uppercase text-sm font-bold">Verify with Twitter</span>
           </button>
-          <button
+          <!-- <button
             class="flex justify-center flex-grow items-center p-2 space-x-2 border-2 rounded-md"
             @click="emit('failed')"
           >
             <span class="uppercase text-sm font-bold"
               >Verify with Linkedin</span
             >
-          </button>
+          </button> -->
         </div>
       </div>
     </div>
