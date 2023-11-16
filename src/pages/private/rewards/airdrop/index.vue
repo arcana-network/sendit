@@ -26,6 +26,7 @@ const verificationFailMsg = ref("");
 enum ClaimStatus {
   init = "Claim Initiated",
   complete = "Claim Completed",
+  failed = "Claim Failed",
 }
 
 onBeforeMount(async () => {
@@ -47,7 +48,11 @@ onBeforeMount(async () => {
           end: dayjs(data.distribution_end).format("DD MMM YYYY"),
         },
         isVerified: data.account_verified,
-        claimStatus: data.claim_status ? ClaimStatus.complete : false,
+        claimStatus: data.claim_status
+          ? ClaimStatus.complete
+          : data.account_verified
+          ? ClaimStatus.failed
+          : false,
       },
     });
   } finally {
@@ -116,9 +121,8 @@ onBeforeMount(async () => {
                   'text-[#05c168]':
                     airdropPhase.dropDetails.claimStatus ===
                     ClaimStatus.complete,
-                  'text-[#eeb113]':
-                    airdropPhase.dropDetails.claimStatus !==
-                    ClaimStatus.complete,
+                  'text-[#ff4264]':
+                    airdropPhase.dropDetails.claimStatus === ClaimStatus.failed,
                 }"
               >
                 {{ airdropPhase.dropDetails.claimStatus }}
@@ -131,20 +135,6 @@ onBeforeMount(async () => {
             @click.stop="accountVerificationModal.verify = true"
           >
             Verify to Claim
-            <img
-              src="@/assets/images/icons/arrow-right-black.svg"
-              class="ml-2"
-            />
-          </button>
-          <button
-            v-if="
-              airdropPhase.dropDetails.isVerified &&
-              !airdropPhase.dropDetails.claimStatus
-            "
-            class="btn-submit rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center"
-            @click.stop="void 0"
-          >
-            Claim Now
             <img
               src="@/assets/images/icons/arrow-right-black.svg"
               class="ml-2"
@@ -174,6 +164,7 @@ onBeforeMount(async () => {
       @claim="
         accountVerificationModal.success = false;
         airdropPhases[0].dropDetails.claimStatus = ClaimStatus.complete;
+        airdropPhases[0].dropDetails.isVerified = true;
       "
     />
     <AirdropFailed
@@ -181,11 +172,8 @@ onBeforeMount(async () => {
       :message="verificationFailMsg"
       @dismiss="
         accountVerificationModal.failed = false;
-        verificationFailMsg = '';
-      "
-      @retry="
-        accountVerificationModal.failed = false;
-        accountVerificationModal.verify = true;
+        airdropPhases[0].dropDetails.claimStatus = ClaimStatus.failed;
+        airdropPhases[0].dropDetails.isVerified = true;
         verificationFailMsg = '';
       "
     />

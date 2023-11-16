@@ -47,9 +47,9 @@ const props = defineProps<VerificationFailedProps>();
         <div class="flex gap-4 mt-4 flex-wrap justify-center">
           <button
             class="flex justify-center flex-grow items-center btn btn-submit"
-            @click="emit('retry')"
+            @click="emit('dismiss')"
           >
-            <span class="uppercase text-sm font-bold">Retry</span>
+            <span class="uppercase text-sm font-bold">Close</span>
           </button>
         </div>
       </div>
