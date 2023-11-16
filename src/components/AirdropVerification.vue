@@ -25,8 +25,7 @@ async function handleMessage(event) {
   if (event.origin !== window.location.origin) return;
   if (event.data?.type === "twitter-redirect") {
     try {
-      const res = await handleTwitterRedirect(conn, event.data?.payload);
-      console.log(res);
+      await handleTwitterRedirect(conn, event.data?.payload);
       emit("success");
     } catch (e: any) {
       emit("failed", e.code);

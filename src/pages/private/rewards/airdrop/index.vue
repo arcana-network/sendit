@@ -43,7 +43,6 @@ onBeforeMount(async () => {
   loaderStore.showLoader("Fetching airdrop details...");
   try {
     const data = await conn.sendMessage(SOCKET_IDS.GET_AIRDROP_INFO);
-    console.log(data);
     airdropPhases.push({
       phase: {
         name: "Phase 1",
@@ -66,7 +65,6 @@ onBeforeMount(async () => {
           : false,
       },
     });
-    console.log(airdropPhases);
   } finally {
     loaderStore.hideLoader();
   }
