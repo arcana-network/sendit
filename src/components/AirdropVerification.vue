@@ -60,14 +60,14 @@ onUnmounted(() => {
           />
           <div class="flex flex-col">
             <span class="font-[700] text-xl uppercase text-center">
-              Verify you account
+              Verify your social account
             </span>
             <span
               class="text-xs text-philippine-gray text-center max-w-[360px]"
             >
               Verify your account to be eligible to claim XAR tokens. Your
               account should be created
-              <span class="font-[500] text-white">before Oct 1st, 2023.</span>
+              <span class="font-[500] text-white">before Sept 1st, 2023.</span>
             </span>
           </div>
         </div>

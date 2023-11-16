@@ -26,13 +26,16 @@ const verificationFailMsg = ref("");
 enum ClaimStatus {
   init = "Claim Initiated",
   complete = "Claim Completed",
-  failed = "Claim Failed",
+  failed = "Claim Failed - Verification Unsuccessful",
 }
 
 function generateFailMsg(code) {
   if (code === 564) {
     verificationFailMsg.value =
-      "This twitter handle is already verified and linked to another account.";
+      "Claim Failed - Twitter account already linked to another wallet.";
+  } else if (code === 570) {
+    verificationFailMsg.value =
+      "Claim Failed - Twitter account was created post 01 Sep'23.";
   }
 }
 
@@ -40,6 +43,7 @@ onBeforeMount(async () => {
   loaderStore.showLoader("Fetching airdrop details...");
   try {
     const data = await conn.sendMessage(SOCKET_IDS.GET_AIRDROP_INFO);
+    console.log(data);
     airdropPhases.push({
       phase: {
         name: "Phase 1",
@@ -62,6 +66,7 @@ onBeforeMount(async () => {
           : false,
       },
     });
+    console.log(airdropPhases);
   } finally {
     loaderStore.hideLoader();
   }
@@ -157,7 +162,7 @@ onBeforeMount(async () => {
         accountVerificationModal.verify = false;
       "
       @failed="
-        (msg) => {
+        (code) => {
           accountVerificationModal.failed = true;
           accountVerificationModal.verify = false;
           generateFailMsg(code);
