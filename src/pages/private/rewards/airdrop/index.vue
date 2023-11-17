@@ -59,7 +59,7 @@ onBeforeMount(async () => {
         },
         isVerified: data.account_verified,
         claimStatus: data.claim_status
-          ? ClaimStatus.complete
+          ? ClaimStatus.init
           : data.account_verified
           ? ClaimStatus.failed
           : false,
@@ -131,6 +131,8 @@ onBeforeMount(async () => {
                   'text-[#05c168]':
                     airdropPhase.dropDetails.claimStatus ===
                     ClaimStatus.complete,
+                  'text-[#eeb113]':
+                    airdropPhase.dropDetails.claimStatus === ClaimStatus.init,
                   'text-[#ff4264]':
                     airdropPhase.dropDetails.claimStatus === ClaimStatus.failed,
                 }"
