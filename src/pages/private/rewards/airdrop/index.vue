@@ -105,7 +105,9 @@ onBeforeMount(async () => {
           <div class="flex flex-col gap-1 p-4">
             <span class="font-[700] text-sm uppercase">Drop Details</span>
             <div class="text-xs flex">
-              <span class="text-philippine-gray w-[16ch]">Wallet Address:</span>
+              <span class="text-philippine-gray w-[16ch] shrink-0"
+                >Wallet Address:</span
+              >
               <span>{{
                 truncateAddress(airdropPhase.dropDetails.walletAddress)
               }}</span>
@@ -117,13 +119,13 @@ onBeforeMount(async () => {
               <span>{{ airdropPhase.dropDetails.xp }}</span>
             </div>
             <div class="text-xs flex">
-              <span class="text-philippine-gray w-[16ch]"
+              <span class="text-philippine-gray w-[16ch] shrink-0"
                 >XAR Eligible Reward:</span
               >
               <span>{{ airdropPhase.dropDetails.xar }} XAR</span>
             </div>
             <div class="text-xs flex">
-              <span class="text-philippine-gray w-[16ch]"
+              <span class="text-philippine-gray w-[16ch] shrink-0"
                 >Distribution Date:</span
               >
               <span>
@@ -135,7 +137,9 @@ onBeforeMount(async () => {
               class="text-xs flex"
               v-if="airdropPhase.dropDetails.claimStatus"
             >
-              <span class="text-philippine-gray w-[16ch]">Status:</span>
+              <span class="text-philippine-gray w-[16ch] shrink-0"
+                >Status:</span
+              >
               <span
                 class="capitalize"
                 :class="{
