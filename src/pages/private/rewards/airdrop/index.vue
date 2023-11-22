@@ -111,7 +111,9 @@ onBeforeMount(async () => {
               }}</span>
             </div>
             <div class="text-xs flex">
-              <span class="text-philippine-gray w-[16ch]">XP Gained:</span>
+              <span class="text-philippine-gray w-[16ch] shrink-0"
+                >XP Gained:</span
+              >
               <span>{{ airdropPhase.dropDetails.xp }}</span>
             </div>
             <div class="text-xs flex">
