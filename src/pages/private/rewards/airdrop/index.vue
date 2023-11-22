@@ -26,16 +26,24 @@ const verificationFailMsg = ref("");
 enum ClaimStatus {
   init = "Claim Initiated",
   complete = "Claim Completed",
-  failed = "Claim Failed - Verification Unsuccessful",
+  failed = "Claim Failed - Verification Unsuccessful.",
 }
 
+const claimFailedReason = {
+  64: "Claim Failed - Twitter account already linked to another wallet.",
+  128: "Claim Failed - Twitter account was created post 01 Sep'23.",
+};
+
 function generateFailMsg(code) {
+  airdropPhases[0].dropDetails.claimStatus = ClaimStatus.failed;
   if (code === 564) {
     verificationFailMsg.value =
       "Claim Failed - Twitter account already linked to another wallet.";
+    airdropPhases[0].dropDetails.claimFailedReason = claimFailedReason[64];
   } else if (code === 570) {
     verificationFailMsg.value =
       "Claim Failed - Twitter account was created post 01 Sep'23.";
+    airdropPhases[0].dropDetails.claimFailedReason = claimFailedReason[128];
   }
 }
 
@@ -57,12 +65,13 @@ onBeforeMount(async () => {
           start: dayjs(data.distribution_start).format("DD MMM YYYY"),
           end: dayjs(data.distribution_end).format("DD MMM YYYY"),
         },
-        isVerified: data.account_verified,
+        isVerified: data.twitter_verified,
         claimStatus: data.claim_status
           ? ClaimStatus.init
-          : data.account_verified
+          : data.twitter_verified
           ? ClaimStatus.failed
           : false,
+        claimFailedReason: claimFailedReason[data.twitter_errors],
       },
     });
   } finally {
@@ -137,7 +146,10 @@ onBeforeMount(async () => {
                     airdropPhase.dropDetails.claimStatus === ClaimStatus.failed,
                 }"
               >
-                {{ airdropPhase.dropDetails.claimStatus }}
+                {{
+                  airdropPhase.dropDetails.claimFailedReason ||
+                  airdropPhase.dropDetails.claimStatus
+                }}
               </span>
             </div>
           </div>
