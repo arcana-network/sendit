@@ -64,36 +64,6 @@ onBeforeMount(async () => {
     console.log(data);
     airdropPhases.push({
       phase: {
-        name: "Phase 1",
-        image: AirdropPhase1,
-        status: "ongoing",
-        id: PhaseIds.ph1,
-      },
-      dropDetails: {
-        walletAddress: user.address,
-        xp: data.ph1?.eligible_xp ?? 0,
-        xar: new Decimal(data.ph1.eligible_xar || 0)
-          .toDecimalPlaces(9)
-          .toString(),
-        distributionDates: {
-          start: dayjs(data.ph1?.distribution_start || new Date()).format(
-            "DD MMM YYYY"
-          ),
-          end: dayjs(data.ph1?.distribution_end || new Date()).format(
-            "DD MMM YYYY"
-          ),
-        },
-        isVerified: data.twitter_verified,
-        claimStatus: data.ph1?.claimed
-          ? ClaimStatus.init
-          : data.twitter_verified && data.twitter_errors
-          ? ClaimStatus.failed
-          : false,
-        claimFailedReason: claimFailedReason[data.twitter_errors],
-      },
-    });
-    airdropPhases.push({
-      phase: {
         name: "Phase 2",
         image: AirdropPhase1,
         status: "ongoing",
@@ -115,6 +85,36 @@ onBeforeMount(async () => {
         },
         isVerified: data.twitter_verified,
         claimStatus: data.ph2?.claimed
+          ? ClaimStatus.init
+          : data.twitter_verified && data.twitter_errors
+          ? ClaimStatus.failed
+          : false,
+        claimFailedReason: claimFailedReason[data.twitter_errors],
+      },
+    });
+    airdropPhases.push({
+      phase: {
+        name: "Phase 1",
+        image: AirdropPhase1,
+        status: "ongoing",
+        id: PhaseIds.ph1,
+      },
+      dropDetails: {
+        walletAddress: user.address,
+        xp: data.ph1?.eligible_xp ?? 0,
+        xar: new Decimal(data.ph1.eligible_xar || 0)
+          .toDecimalPlaces(9)
+          .toString(),
+        distributionDates: {
+          start: dayjs(data.ph1?.distribution_start || new Date()).format(
+            "DD MMM YYYY"
+          ),
+          end: dayjs(data.ph1?.distribution_end || new Date()).format(
+            "DD MMM YYYY"
+          ),
+        },
+        isVerified: data.twitter_verified,
+        claimStatus: data.ph1?.claimed
           ? ClaimStatus.init
           : data.twitter_verified && data.twitter_errors
           ? ClaimStatus.failed
