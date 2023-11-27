@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import Overlay from "@/components/overlay.vue";
-
 const emit = defineEmits(["dismiss", "claim"]);
 </script>
 
