@@ -129,14 +129,19 @@ onBeforeMount(async () => {
 
 async function handleClaim(phaseId: PhaseIds) {
   loaderStore.showLoader("Claiming airdrop...");
-  let airdropData;
+  const socketId =
+    phaseId === PhaseIds.ph1
+      ? SOCKET_IDS.CLAIM_PHASE_1
+      : SOCKET_IDS.CLAIM_PHASE_2;
+  const phaseIndex = airdropPhases.findIndex(
+    (phase) => phase.phase.id === phaseId
+  );
+  accountVerificationModal.value.success = false;
   try {
-    if (phaseId === PhaseIds.ph1) {
-      airdropData = await conn.sendMessage(SOCKET_IDS.CLAIM_PHASE_1);
-    } else if (phaseId === PhaseIds.ph2) {
-      airdropData = await conn.sendMessage(SOCKET_IDS.CLAIM_PHASE_2);
-    }
+    const airdropData = await conn.sendMessage(socketId);
     console.log({ airdropData });
+    airdropPhases[phaseIndex].dropDetails.claimStatus = ClaimStatus.init;
+    airdropPhases[phaseIndex].dropDetails.isVerified = true;
   } catch (e: any) {
     console.log(e);
     toast.error(e.message);
@@ -272,14 +277,7 @@ async function handleClaim(phaseId: PhaseIds) {
     <AirdropSuccess
       v-if="accountVerificationModal.success"
       @dismiss="accountVerificationModal.success = false"
-      @claim="
-        async () => {
-          await handleClaim(selectedAirdropPhase.phase.id);
-          accountVerificationModal.success = false;
-          selectedAirdropPhase.dropDetails.claimStatus = ClaimStatus.complete;
-          selectedAirdropPhase.dropDetails.isVerified = true;
-        }
-      "
+      @claim="handleClaim(selectedAirdropPhase.phase.id)"
     />
     <AirdropFailed
       v-if="accountVerificationModal.failed"
