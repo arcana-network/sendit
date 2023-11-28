@@ -165,6 +165,14 @@ async function handleClaim(phaseId: PhaseIds) {
     loaderStore.hideLoader();
   }
 }
+
+function handleVerificationFailed(msg) {
+  airdropPhases.forEach((phase) => {
+    phase.dropDetails.claimStatus = ClaimStatus.failed;
+    phase.dropDetails.isVerified = true;
+    phase.dropDetails.claimFailedReason = msg;
+  });
+}
 </script>
 
 <template>
@@ -306,10 +314,7 @@ async function handleClaim(phaseId: PhaseIds) {
       :message="verificationFailMsg"
       @dismiss="
         accountVerificationModal.failed = false;
-        selectedAirdropPhase.dropDetails.claimStatus = ClaimStatus.failed;
-        selectedAirdropPhase.dropDetails.isVerified = true;
-        selectedAirdropPhase.dropDetails.claimFailedReason =
-          verificationFailMsg;
+        handleVerificationFailed(verificationFailMsg);
         verificationFailMsg = '';
       "
     />
