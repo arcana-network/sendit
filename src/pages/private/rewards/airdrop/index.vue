@@ -173,6 +173,13 @@ function handleVerificationFailed(msg) {
     phase.dropDetails.claimFailedReason = msg;
   });
 }
+
+function handleVerificationSuccess() {
+  airdropPhases.forEach((phase) => {
+    phase.dropDetails.claimStatus = ClaimStatus.verified;
+    phase.dropDetails.isVerified = true;
+  });
+}
 </script>
 
 <template>
@@ -293,6 +300,7 @@ function handleVerificationFailed(msg) {
       v-if="accountVerificationModal.verify"
       @success="
         accountVerificationModal.success = true;
+        handleVerificationSuccess();
         accountVerificationModal.verify = false;
       "
       @failed="
