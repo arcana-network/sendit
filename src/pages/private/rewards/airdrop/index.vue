@@ -30,6 +30,12 @@ enum ClaimStatus {
   init = "Claim Initiated",
   complete = "Claim Completed",
   failed = "Claim Failed - Verification Unsuccessful.",
+  verified = "Account Verified",
+}
+
+enum PhaseStatus {
+  ongoing,
+  upcoming,
 }
 
 enum PhaseIds {
@@ -61,42 +67,11 @@ onBeforeMount(async () => {
   loaderStore.showLoader("Fetching airdrop details...");
   try {
     const data = await conn.sendMessage(SOCKET_IDS.GET_AIRDROP_INFO);
-    console.log(data);
-    airdropPhases.push({
-      phase: {
-        name: "Phase 2",
-        image: AirdropPhase1,
-        status: "ongoing",
-        id: PhaseIds.ph2,
-      },
-      dropDetails: {
-        walletAddress: user.address,
-        xp: user.points,
-        xar: new Decimal(data.ph2.eligible_xar || 0)
-          .toDecimalPlaces(9)
-          .toString(),
-        distributionDates: {
-          start: dayjs(data.ph2?.distribution_start || new Date()).format(
-            "DD MMM YYYY"
-          ),
-          end: dayjs(data.ph2?.distribution_end || new Date()).format(
-            "DD MMM YYYY"
-          ),
-        },
-        isVerified: data.twitter_verified,
-        claimStatus: data.ph2?.claimed
-          ? ClaimStatus.init
-          : data.twitter_verified && data.twitter_errors
-          ? ClaimStatus.failed
-          : false,
-        claimFailedReason: claimFailedReason[data.twitter_errors],
-      },
-    });
     airdropPhases.push({
       phase: {
         name: "Phase 1",
         image: AirdropPhase1,
-        status: "ongoing",
+        status: PhaseStatus.ongoing,
         id: PhaseIds.ph1,
       },
       dropDetails: {
@@ -118,6 +93,40 @@ onBeforeMount(async () => {
           ? ClaimStatus.init
           : data.twitter_verified && data.twitter_errors
           ? ClaimStatus.failed
+          : data.twitter_verified
+          ? ClaimStatus.verified
+          : false,
+        claimFailedReason: claimFailedReason[data.twitter_errors],
+      },
+    });
+    airdropPhases.push({
+      phase: {
+        name: "Phase 2",
+        image: AirdropPhase1,
+        status: PhaseStatus.upcoming,
+        id: PhaseIds.ph2,
+      },
+      dropDetails: {
+        walletAddress: user.address,
+        xp: user.points,
+        xar: new Decimal(data.ph2.eligible_xar || 0)
+          .toDecimalPlaces(9)
+          .toString(),
+        distributionDates: {
+          start: dayjs(data.ph2?.distribution_start || new Date()).format(
+            "DD MMM YYYY"
+          ),
+          end: dayjs(data.ph2?.distribution_end || new Date()).format(
+            "DD MMM YYYY"
+          ),
+        },
+        isVerified: data.twitter_verified,
+        claimStatus: data.ph2?.claimed
+          ? ClaimStatus.init
+          : data.twitter_verified && data.twitter_errors
+          ? ClaimStatus.failed
+          : data.twitter_verified
+          ? ClaimStatus.verified
           : false,
         claimFailedReason: claimFailedReason[data.twitter_errors],
       },
@@ -217,7 +226,9 @@ async function handleClaim(phaseId: PhaseIds) {
                 :class="{
                   'text-[#05c168]':
                     airdropPhase.dropDetails.claimStatus ===
-                    ClaimStatus.complete,
+                      ClaimStatus.complete ||
+                    airdropPhase.dropDetails.claimStatus ===
+                      ClaimStatus.verified,
                   'text-[#eeb113]':
                     airdropPhase.dropDetails.claimStatus === ClaimStatus.init,
                   'text-[#ff4264]':
@@ -246,9 +257,13 @@ async function handleClaim(phaseId: PhaseIds) {
             />
           </button>
           <button
-            v-else-if="!airdropPhase.dropDetails.claimStatus"
+            v-else-if="
+              !airdropPhase.dropDetails.claimStatus ||
+              airdropPhase.dropDetails.claimStatus === ClaimStatus.verified
+            "
             class="btn-submit rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
             @click.stop="handleClaim(airdropPhase.phase.id)"
+            :disabled="airdropPhase.phase.status !== PhaseStatus.ongoing"
           >
             Claim Now
             <img
