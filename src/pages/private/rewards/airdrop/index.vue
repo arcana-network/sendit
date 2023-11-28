@@ -146,6 +146,13 @@ async function handleClaim(phaseId: PhaseIds) {
     (phase) => phase.phase.id === phaseId
   );
   accountVerificationModal.value.success = false;
+  if (airdropPhases[phaseIndex].phase.status !== PhaseStatus.ongoing) {
+    toast.error(
+      `Airdrop ${airdropPhases[phaseIndex].phase.name} is not live yet.`
+    );
+    loaderStore.hideLoader();
+    return;
+  }
   try {
     const airdropData = await conn.sendMessage(socketId);
     console.log({ airdropData });
