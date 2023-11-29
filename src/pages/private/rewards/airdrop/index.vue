@@ -109,9 +109,9 @@ onBeforeMount(async () => {
       dropDetails: {
         walletAddress: user.address,
         xp: user.points,
-        xar: new Decimal(data.ph2.eligible_xar || 0)
-          .toDecimalPlaces(9)
-          .toString(),
+        xar: data.ph2.eligible_xar
+          ? new Decimal(data.ph2.eligible_xar).toDecimalPlaces(9).toString()
+          : null,
         distributionDates: {
           start: dayjs(data.ph2?.distribution_start || new Date()).format(
             "DD MMM YYYY"
@@ -225,7 +225,10 @@ function handleVerificationSuccess() {
               <span class="text-philippine-gray w-[16ch] shrink-0"
                 >XAR Eligible Reward:</span
               >
-              <span>{{ airdropPhase.dropDetails.xar }} XAR</span>
+              <span v-if="airdropPhase.dropDetails.xar"
+                >{{ airdropPhase.dropDetails.xar }} XAR</span
+              >
+              <span v-else>-</span>
             </div>
             <div class="text-xs flex">
               <span class="text-philippine-gray w-[16ch] shrink-0"
