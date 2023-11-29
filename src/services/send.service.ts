@@ -3,8 +3,7 @@ import { BrowserProvider, computeAddress, Contract, ethers } from "ethers";
 import { Decimal } from "decimal.js";
 import senditRequestAbi from "@/abis/sendit-request.abi.json";
 import erc20ABI from "@/abis/erc20.abi.json";
-
-const SELF_TX_ERROR = "self-transactions are not permitted";
+import { errors } from "@/constants/content";
 
 type FeeData = {
   maxFeePerGas: string;
@@ -20,7 +19,8 @@ async function nativeTokenTransfer(
   const web3Provider = new BrowserProvider(provider);
   const wallet = await web3Provider.getSigner();
   const receiverWalletAddress = computeAddress(`0x${publickey}`);
-  if (wallet.address === receiverWalletAddress) throw new Error(SELF_TX_ERROR);
+  if (wallet.address === receiverWalletAddress)
+    throw new Error(errors.SELF_TX_ERROR);
   const decimalAmount = new Decimal(amount);
   const rawTx: any = {
     type: 2,
@@ -35,7 +35,7 @@ async function nativeTokenTransfer(
   const tx = await wallet.sendTransaction(rawTx);
   const confirmed = await tx.wait(4);
   if (confirmed == null) {
-    throw new Error("Invalid transaction");
+    throw new Error(errors.INVALID_TX);
   }
   return confirmed;
 }
@@ -55,7 +55,8 @@ async function erc20TokenTransfer(
   const web3Provider = new BrowserProvider(provider);
   const wallet = await web3Provider.getSigner();
   const receiverWalletAddress = computeAddress(`0x${publickey}`);
-  if (wallet.address === receiverWalletAddress) throw new Error(SELF_TX_ERROR);
+  if (wallet.address === receiverWalletAddress)
+    throw new Error(errors.SELF_TX_ERROR);
   const tokenContract = new Contract(tokenAddress, erc20Abi, wallet);
   let tokenDecimals: number;
   const decimalAmount = new Decimal(amount);
@@ -78,7 +79,7 @@ async function erc20TokenTransfer(
   const confirmed = await tx.wait(4);
 
   if (confirmed == null) {
-    throw new Error("Invalid transaction");
+    throw new Error(errors.INVALID_TX);
   }
 
   return { hash: confirmed.hash, to: receiverWalletAddress };
@@ -129,7 +130,7 @@ async function requestedTokenTransfer(
   const confirmed = await tx.wait(4);
 
   if (confirmed == null) {
-    throw new Error("Invalid transaction");
+    throw new Error(errors.INVALID_TX);
   }
 
   return { hash: confirmed.hash };

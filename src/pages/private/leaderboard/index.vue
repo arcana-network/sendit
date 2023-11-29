@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import { ethers } from "ethers";
 import useLoaderStore from "@/stores/loader";
 import useUserStore from "@/stores/user";
+import { content } from "@/constants/content";
 
 const route = useRoute();
 const conn = useConnection();
@@ -34,9 +35,9 @@ const headerHeight = computed(() => {
 
 async function fetchLeaderboard(duration: "global" | "weekly" = "global") {
   if (currentPage === 1) {
-    loaderStore.showLoader(`Fetching ${duration} leaderboard...`);
+    loaderStore.showLoader(content.LEADERBOARD.LOADING(duration));
   } else {
-    loaderStore.showLoader(`Fetching more from ${duration} leaderboard...`);
+    loaderStore.showLoader(content.LEADERBOARD.LOADING_MORE(duration));
   }
   const message = {
     ltype:

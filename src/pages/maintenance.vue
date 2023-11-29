@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AppHeader from "@/components/layout/AppHeader.vue";
+import { content } from "@/constants/content";
 </script>
 
 <template>
@@ -22,12 +23,12 @@ import AppHeader from "@/components/layout/AppHeader.vue";
               <h1
                 class="text-[1.5rem] lg:text-[2rem] text-white font-bold mt-4"
               >
-                We are Under Maintenance
+                {{ content.UNDER_MAINTENANCE.TITLE }}
               </h1>
               <p
                 class="text-xs lg:text-base text-philippine-gray max-w-[280px] md:text-center md:mx-auto"
               >
-                We will be back shortly!
+                {{ content.UNDER_MAINTENANCE.MESSAGE }}
               </p>
             </header>
           </section>
@@ -36,3 +37,4 @@ import AppHeader from "@/components/layout/AppHeader.vue";
     </div>
   </div>
 </template>
+@/constants/content

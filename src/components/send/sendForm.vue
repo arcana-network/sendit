@@ -35,11 +35,12 @@ import { GAS_SUPPORTED_CHAINS } from "@/constants/socket-ids";
 import { Decimal } from "decimal.js";
 import copyToClipboard from "@/utils/copyToClipboard";
 import { switchChain } from "@/use/switchChain";
+import { errors } from "@/constants/content";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
 const INSUFFICIENT_FUNDS = "INSUFFICIENT_FUNDS";
-const SELF_TX_ERROR = "self-transactions are not permitted";
+const SELF_TX_ERROR = errors.SELF_TX_ERROR;
 let assetInterval: NodeJS.Timer;
 const refreshIconAnimating = ref(false);
 

@@ -12,6 +12,7 @@ import useUserStore from "@/stores/user";
 import dayjs from "dayjs";
 import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
+import { content, errors } from "@/constants/content";
 
 const accountVerificationModal = ref({
   verify: false,
@@ -26,12 +27,12 @@ const verificationFailMsg = ref("");
 const toast = useToast();
 const selectedAirdropPhase = ref({} as any);
 
-enum ClaimStatus {
-  init = "Claim Initiated",
-  complete = "Claim Completed",
-  failed = "Claim Failed - Verification Unsuccessful.",
-  verified = "Account Verified",
-}
+const ClaimStatus = {
+  init: content.AIRDROP.CLAIM_STATUS.INIT,
+  complete: content.AIRDROP.CLAIM_STATUS.COMPLETE,
+  failed: errors.AIRDROP.CLAIM_STATUS.GENERIC_FAILURE,
+  verified: content.AIRDROP.CLAIM_STATUS.VERIFIED,
+};
 
 enum PhaseStatus {
   ongoing,
@@ -44,27 +45,27 @@ enum PhaseIds {
 }
 
 const claimFailedReason = {
-  64: "Claim Failed - Twitter account already linked to another wallet.",
-  128: "Claim Failed - Twitter account was created post 01 Sep'23.",
+  64: errors.AIRDROP.CLAIM_STATUS.TWITTER_ALREADY_LINKED,
+  128: errors.AIRDROP.CLAIM_STATUS.TWITTER_ACCOUNT_CREATED_AFTER,
 };
 
 function generateFailMsg(code) {
   selectedAirdropPhase.value.dropDetails.claimStatus = ClaimStatus.failed;
   if (code === 564) {
     verificationFailMsg.value =
-      "Claim Failed - Twitter account already linked to another wallet.";
+      errors.AIRDROP.CLAIM_STATUS.TWITTER_ALREADY_LINKED;
     selectedAirdropPhase.value.dropDetails.claimFailedReason =
       claimFailedReason[64];
   } else if (code === 570) {
     verificationFailMsg.value =
-      "Claim Failed - Twitter account was created post 01 Sep'23.";
+      errors.AIRDROP.CLAIM_STATUS.TWITTER_ACCOUNT_CREATED_AFTER;
     selectedAirdropPhase.value.dropDetails.claimFailedReason =
       claimFailedReason[128];
   }
 }
 
 onBeforeMount(async () => {
-  loaderStore.showLoader("Fetching airdrop details...");
+  loaderStore.showLoader(content.AIRDROP.FETCHING_DETAILS);
   try {
     const data = await conn.sendMessage(SOCKET_IDS.GET_AIRDROP_INFO);
     airdropPhases.push({
@@ -137,7 +138,7 @@ onBeforeMount(async () => {
 });
 
 async function handleClaim(phaseId: PhaseIds) {
-  loaderStore.showLoader("Claiming airdrop...");
+  loaderStore.showLoader(content.AIRDROP.CLAIMING);
   const socketId =
     phaseId === PhaseIds.ph1
       ? SOCKET_IDS.CLAIM_PHASE_1
@@ -147,9 +148,7 @@ async function handleClaim(phaseId: PhaseIds) {
   );
   accountVerificationModal.value.success = false;
   if (airdropPhases[phaseIndex].phase.status !== PhaseStatus.ongoing) {
-    toast.error(
-      `Airdrop ${airdropPhases[phaseIndex].phase.name} is not live yet.`
-    );
+    toast.error(errors.AIRDROP.NOT_LIVE(airdropPhases[phaseIndex].phase.name));
     loaderStore.hideLoader();
     return;
   }

@@ -25,6 +25,7 @@ import AirdropSuccess from "@/components/AirdropSuccess.vue";
 import { getBytes, hexlify } from "ethers";
 import Decimal from "decimal.js";
 import TokenRequestInvalid from "@/components/TokenRequestInvalid.vue";
+import { content, errors } from "@/constants/content";
 
 const REQUEST_STATE = {
   UNFULFILLED: 0x0,
@@ -63,7 +64,7 @@ const showRequestInvalidPopup = ref(false);
 const requestInvalidPopupType = ref("");
 const isBannerClosed = ref(false);
 
-loaderStore.showLoader("Initializing...");
+loaderStore.showLoader(content.INIT.GENERIC);
 
 onMounted(() => {
   initAuth();
@@ -82,7 +83,7 @@ async function connectSocket() {
   conn.onceEvent(Connection.ON_ERROR, (error) => {
     if (error.code === ACTION_REJECTED) {
       loaderStore.hideLoader();
-      toast.error("Signature rejected");
+      toast.error(errors.SIGNATURE_REJECTED);
       if (authStore.loggedInWith === "walletconnect") {
         walletConnect.disconnect();
         onWalletDisconnect();
@@ -97,7 +98,7 @@ async function connectSocket() {
 }
 
 async function initAuth() {
-  loaderStore.showLoader("Initializing...");
+  loaderStore.showLoader(content.INIT.GENERIC);
   try {
     if (!authStore.isAuthSDKInitialized) {
       await auth.init();
@@ -133,7 +134,7 @@ async function initSocketConnect() {
     await connectSocket();
   } catch (error) {
     console.log({ error });
-    toast.error("Error connecting to socket");
+    toast.error(errors.SOCKET_CONNECTION_ERROR);
   }
 }
 
@@ -148,27 +149,27 @@ async function getUserInfo() {
 
 async function requestFaucetFunds() {
   try {
-    loaderStore.showLoader("Airdrop in progress...");
+    loaderStore.showLoader(content.FAUCET_FUNDS.AIRDROP_PROGRESS);
     await conn.connection.sendMessage(SOCKET_IDS.REQUEST_SOCKET_FUNDS);
     faucetFundsReceived.value = true;
   } catch (error) {
     console.log({ error });
-    toast.error("Airdrop already claimed for this account");
+    toast.error(errors.FAUCET_FUNDS_AIRDROP_CLAIMED);
   } finally {
     loaderStore.hideLoader();
   }
 }
 
 async function onWalletConnect() {
-  loaderStore.showLoader("Connecting...");
+  loaderStore.showLoader(content.CONNECTING.GENERIC);
   if (
     authStore.loggedInWith === "walletconnect" ||
     authStore.loggedInWith === "okxwallet"
   ) {
     authStore.provider.on("accountsChanged", async (accounts) => {
       loaderStore.showLoader(
-        "Switching account...",
-        "Accounts switched by the wallet. Please approve the new signature request to continue."
+        content.SWITCH_ACCOUNT.TITLE,
+        content.SWITCH_ACCOUNT.SUB_TITLE
       );
       await initSocketConnect();
       authStore.setUserInfo({
@@ -343,7 +344,7 @@ async function handleRequestAccept() {
 }
 
 async function handleRequestReject() {
-  loaderStore.showLoader("Rejecting request...");
+  loaderStore.showLoader(content.REQUEST_PAYMENTS.REJECT);
   showRequestPopup.value = false;
   await sendStore.removePendingTxForPaymentRequest(
     route.query.requestId as string
@@ -430,3 +431,4 @@ function handleExpiryDismiss() {
   color: #f7f7f7 !important;
 }
 </style>
+@/constants/content

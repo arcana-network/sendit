@@ -8,6 +8,7 @@ import { getBytes } from "ethers";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
+import { errors, content } from "@/constants/content";
 
 type TweetVerifyProps = {
   xp: number;
@@ -26,7 +27,7 @@ const userStore = useUserStore();
 
 async function handleTweetVerify() {
   if (tweetUrl.value) {
-    loaderStore.showLoader("Verifying tweet...");
+    loaderStore.showLoader(content.TWEET_VERIFYING);
     try {
       const message = {
         tx_hash: Buffer.from(getBytes(props.hash)),
@@ -37,7 +38,7 @@ async function handleTweetVerify() {
       await userStore.fetchUserPointsAndRank();
     } catch (e) {
       console.error(e);
-      toast.error("Error verifying tweet. Please try again.");
+      toast.error(errors.TWEET_VERIFY_ERROR);
     }
     loaderStore.hideLoader();
   }

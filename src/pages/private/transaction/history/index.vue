@@ -21,6 +21,7 @@ import Decimal from "decimal.js";
 import { router } from "@/router";
 import useSendStore from "@/stores/send";
 import { truncateAddress } from "@/utils/truncateAddress";
+import { content } from "@/constants/content";
 
 const conn = useConnection();
 const sendStore = useSendStore();
@@ -205,9 +206,9 @@ function calculateRewards(requests) {
 
 async function fetchTxHistory() {
   if (currentPage === 1) {
-    loaderStore.showLoader("Loading transaction history...");
+    loaderStore.showLoader(content.TX_HISTORY.LOADING);
   } else {
-    loaderStore.showLoader("Loading more transactions...");
+    loaderStore.showLoader(content.TX_HISTORY.LOADING_MORE);
   }
   const message = {
     offset: (currentPage - 1) * 30,
@@ -715,3 +716,4 @@ function isTarget(record) {
   color: #ff4264;
 }
 </style>
+@/constants/content

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Overlay from "@/components/overlay.vue";
 import { computed } from "vue";
+import { errors } from "@/constants/content";
 
 const props = defineProps<{
   type: string;
@@ -10,26 +11,26 @@ const emit = defineEmits(["dismiss"]);
 
 const popupTitle = computed(() => {
   if (props.type === "expired") {
-    return "Token Request Expired";
+    return errors.TOKEN_REQUEST.EXPIRED.TITLE;
   } else if (props.type === "fulfilled") {
-    return "Tokens Already Sent";
+    return errors.TOKEN_REQUEST.ALREADY_SENT.TITLE;
   } else if (props.type === "cancelled") {
-    return "Token Request Cancelled";
+    return errors.TOKEN_REQUEST.CANCELLED.TITLE;
   } else if (props.type === "rejected") {
-    return "Token Request Rejected";
+    return errors.TOKEN_REQUEST.REJECTED.TITLE;
   }
   return "";
 });
 
 const popupDescription = computed(() => {
   if (props.type === "expired") {
-    return "The request for the tokens has expired as it has been over a week since the request was created.";
+    return errors.TOKEN_REQUEST.EXPIRED.MESSAGE;
   } else if (props.type === "fulfilled") {
-    return "The requested tokens have already been sent to the recipient.";
+    return errors.TOKEN_REQUEST.ALREADY_SENT.MESSAGE;
   } else if (props.type === "cancelled") {
-    return "The request for the tokens was cancelled by the requester.";
+    return errors.TOKEN_REQUEST.CANCELLED.MESSAGE;
   } else if (props.type === "rejected") {
-    return "The request for the tokens is already been rejected by someone.";
+    return errors.TOKEN_REQUEST.REJECTED.MESSAGE;
   }
   return "";
 });

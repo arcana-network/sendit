@@ -14,6 +14,7 @@ import useWalletConnect from "@/use/walletconnect";
 import type { GetAccountResult, PublicClient } from "@wagmi/core";
 import { normaliseEmail } from "@/utils/normalise";
 import useOkxWallet from "@/use/okxwallet";
+import { content, errors } from "@/constants/content";
 
 const arcanaAuth = useArcanaAuth();
 const authStore = useAuthStore();
@@ -55,7 +56,7 @@ const isValidPasswordlessEmail = computed(() => {
 
 async function socialLogin(type: string) {
   try {
-    loaderStore.showLoader("Logging in...");
+    loaderStore.showLoader(content.LOGIN.SOCIAL_LOGIN);
     await arcanaAuth.getAuthInstance().loginWithSocial(type);
     authStore.provider = arcanaAuth.getProvider();
     authStore.isLoggedIn = true;
@@ -71,7 +72,7 @@ async function socialLogin(type: string) {
 async function passwordlessLogin() {
   try {
     loaderStore.showLoader(
-      `Click on the verification mail sent to ${passwordlessEmailId.value}...`
+      content.LOGIN.PASSWORDLESS_LOGIN(passwordlessEmailId.value)
     );
     await arcanaAuth
       .getAuthInstance()
@@ -115,12 +116,10 @@ async function onLoginWalletConnected(
 }
 
 async function onConnectToOkxWallet() {
-  loaderStore.showLoader("Connecting to OKXWallet...");
+  loaderStore.showLoader(content.LOGIN.OKX_CONNECTING);
   const isOkxWalletInstalled = okxWallet.isOKXWalletInstalled;
   if (!isOkxWalletInstalled) {
-    toast.error(
-      "OKXWallet is not installed. Please install OKXWallet to continue."
-    );
+    toast.error(errors.OKX_NOT_INSTALLED);
     loaderStore.hideLoader();
     return;
   }
@@ -138,11 +137,9 @@ async function onConnectToOkxWallet() {
   } catch (e) {
     console.error(e);
     if (e === "wallet_not_installed") {
-      toast.error(
-        "OKXWallet is not installed. Please install OKXWallet to continue."
-      );
+      toast.error(errors.OKX_NOT_INSTALLED);
     } else {
-      toast.error("Failed to connect to OKXWallet. Please try again.");
+      toast.error(errors.OKX_FAILED_TO_CONNECT);
     }
     loaderStore.hideLoader();
   }
@@ -282,3 +279,4 @@ async function onConnectToOkxWallet() {
     </div>
   </div>
 </template>
+@/constants/content
