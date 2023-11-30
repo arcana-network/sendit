@@ -370,16 +370,24 @@ function handleExpiryDismiss() {
     </div>
     <div v-else>
       <div
-        class="relative flex justify-center items-center p-1 bg-[#16AD65] text-[14px] font-[500] px-4 text-center"
+        class="relative flex justify-center items-center p-2 bg-[#16AD65] text-[14px] font-[500] px-4 text-center"
         v-if="!isBannerClosed"
       >
         <div class="items-baseline flex-wrap justify-center mr-3">
-          Airdrop Phase 1 is closed and leaderboard is reset. Phase 2 has now
-          begun.&nbsp;<a
-            class="underline cursor-pointer underline-offset-[4px] font-[700]"
-            href="https://www.arcana.network/blog/sendit-drop-onboarding-everyone-to-crypto"
+          $XAR Public Sale is Live on Republic
+          <a
+            href="https://republic.com/arcana/"
+            target="_blank"
+            rel="noopener"
+            class="btn-submit py-1 px-2 rounded-md font-bold border-none"
+            >Visit&nbsp;Republic</a
+          >
+          &nbsp;&nbsp;<a
+            class="underline cursor-pointer underline-offset-[4px] font-[500]"
+            href="https://t.me/ArcanaNetwork"
             target="blank"
-            >Read Blog</a
+            rel="noopener"
+            >Need help?</a
           >
         </div>
         <button class="absolute right-4" @click.stop="isBannerClosed = true">
