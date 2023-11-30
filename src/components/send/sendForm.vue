@@ -329,6 +329,9 @@ async function proceed() {
       console.log(error);
       console.log("After error");
       console.log("typeof error", typeof error);
+      console.log(
+        typeof error === "string" ? JSON.parse(error) : "Not a string"
+      );
       if (error === SELF_TX_ERROR || error.message === SELF_TX_ERROR) {
         toast.error("You cannot send tokens to yourself");
       } else if (error.code === ACTION_REJECTED) {
