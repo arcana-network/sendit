@@ -335,6 +335,34 @@ async function proceed() {
       } else if (error.code === INSUFFICIENT_FUNDS) {
         toast.error("Insufficient Gas to make this transaction.");
       } else {
+        console.error("error.error", error.error);
+        console.error("error.error?.data", error.error?.data);
+        console.error(
+          "error.error?.data?.originalError",
+          error.error?.data?.originalError
+        );
+        console.error(
+          "error.error?.data?.originalError?.body",
+          error.error?.data?.originalError?.body
+        );
+        console.error(
+          "error.error?.data?.originalError?.error",
+          error.error?.data?.originalError?.error
+        );
+        console.error(
+          "error.error?.data?.originalError?.error?.message",
+          error.error?.data?.originalError?.error?.message
+        );
+        console.error(
+          "error.error?.data?.originalError?.reason",
+          error.error?.data?.originalError?.reason
+        );
+        console.error(
+          "error.error?.data?.originalError?.code",
+          error.error?.data?.originalError?.code
+        );
+        console.error("error.message", error.message);
+        console.error("error", error);
         if (error.error?.data?.originalError?.body) {
           const body = error.error?.data?.originalError?.body;
           const errorBody =
