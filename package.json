@@ -19,7 +19,7 @@
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
     "decimal.js": "^10.4.3",
-    "ethers": "^6.6.1",
+    "ethers": "^6.9.0",
     "msgpackr": "^1.9.5",
     "pinia": "^2.1.4",
     "punycode": "^2.3.0",
