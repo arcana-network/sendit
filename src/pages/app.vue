@@ -370,7 +370,7 @@ function handleExpiryDismiss() {
     </div>
     <div v-else>
       <div
-        class="relative flex justify-center items-center p-1 bg-[#16AD65] text-[14px] font-[500] px-4 text-center"
+        class="relative flex justify-center items-center p-2 bg-[#16AD65] text-[14px] font-[500] px-4 text-center"
         v-if="!isBannerClosed"
       >
         <div class="items-baseline flex-wrap justify-center mr-3">
