@@ -20,11 +20,12 @@ async function getAccountBalance(walletAddress: string, blockchain: string[]) {
       walletAddress,
       blockchain,
       nativeFirst: true,
-      onlyWhitelisted: true,
       pageSize: 50,
       pageToken: null,
+      forceFetch: true,
     },
     id: 1,
+    forceFetch: true,
   };
   return (await ANKR_SERVICE.post("?ankr_getAccountBalance=", payload)).data;
 }
@@ -38,8 +39,10 @@ async function fetchRewards(walletAddress: string) {
       walletAddress,
       pageSize: 50,
       pageToken: null,
+      forceFetch: true,
     },
     id: 1,
+    forceFetch: true,
   };
   try {
     const { data } = await ANKR_SERVICE.post("?ankr_getNFTsByOwner=", payload);
