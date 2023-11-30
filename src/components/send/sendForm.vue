@@ -137,7 +137,7 @@ async function fetchAssets() {
     loadStore.hideLoader();
     findFallbackBalanceInAnkr(walletAddress, nativeAssets);
   } catch (error) {
-    console.error(error);
+    console.log(error);
   } finally {
     isBalanceFetching.value = false;
   }
@@ -325,7 +325,9 @@ async function proceed() {
       resetAll();
       emits("transaction-successful", sendRes);
     } catch (error: any) {
-      console.error(error);
+      console.log("Before error");
+      console.log(error);
+      console.log("After error");
       if (error === SELF_TX_ERROR || error.message === SELF_TX_ERROR) {
         toast.error("You cannot send tokens to yourself");
       } else if (error.code === ACTION_REJECTED) {
@@ -335,34 +337,34 @@ async function proceed() {
       } else if (error.code === INSUFFICIENT_FUNDS) {
         toast.error("Insufficient Gas to make this transaction.");
       } else {
-        console.error("error.error", error.error);
-        console.error("error.error?.data", error.error?.data);
-        console.error(
+        console.log("error.error", error.error);
+        console.log("error.error?.data", error.error?.data);
+        console.log(
           "error.error?.data?.originalError",
           error.error?.data?.originalError
         );
-        console.error(
+        console.log(
           "error.error?.data?.originalError?.body",
           error.error?.data?.originalError?.body
         );
-        console.error(
+        console.log(
           "error.error?.data?.originalError?.error",
           error.error?.data?.originalError?.error
         );
-        console.error(
+        console.log(
           "error.error?.data?.originalError?.error?.message",
           error.error?.data?.originalError?.error?.message
         );
-        console.error(
+        console.log(
           "error.error?.data?.originalError?.reason",
           error.error?.data?.originalError?.reason
         );
-        console.error(
+        console.log(
           "error.error?.data?.originalError?.code",
           error.error?.data?.originalError?.code
         );
-        console.error("error.message", error.message);
-        console.error("error", error);
+        console.log("error.message", error.message);
+        console.log("error", error);
         if (error.error?.data?.originalError?.body) {
           const body = error.error?.data?.originalError?.body;
           const errorBody =
@@ -423,7 +425,7 @@ watch(
           );
           await switchChain(selectedChainId as string);
         } catch (e) {
-          console.error({ e });
+          console.log({ e });
           userInput.value.chain = oldChain;
           toast.error("Switching chain rejected by user");
         }
