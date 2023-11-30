@@ -197,7 +197,7 @@ async function proceed() {
       );
       emits("transaction-successful", { hash, chain: chainId });
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
       if (error === SELF_TX_ERROR || error.message === SELF_TX_ERROR) {
         toast.error("You cannot send tokens to yourself");
       } else if (error.code === ACTION_REJECTED) {
