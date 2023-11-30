@@ -328,34 +328,7 @@ async function proceed() {
       console.log("Before error");
       console.log(error);
       console.log("After error");
-      console.log("error?.error", error?.error);
-      console.log("error?.error?.data", error?.error?.data);
-      console.log(
-        "error?.error?.data?.originalError",
-        error?.error?.data?.originalError
-      );
-      console.log(
-        "error?.error?.data?.originalError?.body",
-        error?.error?.data?.originalError?.body
-      );
-      console.log(
-        "error?.error?.data?.originalError?.error",
-        error?.error?.data?.originalError?.error
-      );
-      console.log(
-        "error?.error?.data?.originalError?.error?.message",
-        error?.error?.data?.originalError?.error?.message
-      );
-      console.log(
-        "error?.error?.data?.originalError?.reason",
-        error?.error?.data?.originalError?.reason
-      );
-      console.log(
-        "error?.error?.data?.originalError?.code",
-        error?.error?.data?.originalError?.code
-      );
-      console.log("error?.message", error?.message);
-      console.log("error", error);
+      console.log("typeof error", typeof error);
       if (error === SELF_TX_ERROR || error.message === SELF_TX_ERROR) {
         toast.error("You cannot send tokens to yourself");
       } else if (error.code === ACTION_REJECTED) {
