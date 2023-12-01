@@ -2,7 +2,7 @@ import { createApp } from "vue";
 import store from "@/stores";
 import { Buffer } from "buffer";
 import Toast from "vue-toastification";
-import * as Sentry from "@sentry/vue";
+// import * as Sentry from "@sentry/vue";
 
 import "vue-toastification/dist/index.css";
 import "@fontsource/caveat/700.css";
@@ -30,19 +30,20 @@ const toastOptions = {
 const app = createApp(App);
 
 if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
-  Sentry.init({
-    app,
-    dsn: import.meta.env.VITE_SENTRY_DSN,
-    integrations: [
-      new Sentry.BrowserTracing({
-        // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
-        tracePropagationTargets: ["https://sendit.arcana.network"],
-        routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-      }),
-    ],
-    // Performance Monitoring
-    tracesSampleRate: 1.0, // Capture 100% of the transactions
-  });
+  console.log(import.meta.env.PROD, import.meta.env.VITE_SENTRY_DSN);
+  // Sentry.init({
+  //   app,
+  //   dsn: import.meta.env.VITE_SENTRY_DSN,
+  //   integrations: [
+  //     new Sentry.BrowserTracing({
+  //       // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
+  //       tracePropagationTargets: ["https://sendit.arcana.network"],
+  //       routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+  //     }),
+  //   ],
+  //   // Performance Monitoring
+  //   tracesSampleRate: 1.0, // Capture 100% of the transactions
+  // });
 }
 
 app.use(store);
