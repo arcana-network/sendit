@@ -1,4 +1,3 @@
-import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 
@@ -13,33 +12,33 @@ export default defineConfig({
     },
   },
 
-  plugins: [vue(), nodePolyfills({
-    // To exclude specific polyfills, add them to this list.
-    exclude: [
-      "fs",
-      "console",
-      "constants",
-      "domain",
-      "http",
-      "https",
-      "os",
-      "querystring",
-      "timers",
-      "timers/promises",
-    ],
-    // Whether to polyfill specific globals.
-    globals: {
-      Buffer: true,
-      process: true,
-    },
-    // Whether to polyfill `node:` protocol imports.
-    protocolImports: false,
-  }), sentryVitePlugin({
-    org: "newfang-x1",
-    project: "sendit-prod"
-  })],
+  plugins: [
+    vue(),
+    nodePolyfills({
+      // To exclude specific polyfills, add them to this list.
+      exclude: [
+        "fs",
+        "console",
+        "constants",
+        "domain",
+        "http",
+        "https",
+        "os",
+        "querystring",
+        "timers",
+        "timers/promises",
+      ],
+      // Whether to polyfill specific globals.
+      globals: {
+        Buffer: true,
+        process: true,
+      },
+      // Whether to polyfill `node:` protocol imports.
+      protocolImports: false,
+    }),
+  ],
 
   build: {
-    sourcemap: true
-  }
+    sourcemap: true,
+  },
 });

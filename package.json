@@ -13,7 +13,6 @@
     "@fontsource/caveat": "^5.0.8",
     "@fontsource/syne": "^5.0.8",
     "@headlessui/vue": "^1.7.15",
-    "@sentry/vite-plugin": "^2.10.2",
     "@sentry/vue": "^7.84.0",
     "@wagmi/core": "^1.4.3",
     "@web3modal/wagmi": "^3.0.2",
