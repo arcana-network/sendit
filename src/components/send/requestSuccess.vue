@@ -41,7 +41,7 @@ function getChainSpecificExplorer() {
           <a
             :href="getChainSpecificExplorer()"
             target="_blank"
-            class="text-cornflower-blue underline"
+            class="text-white font-bold underline"
           >
             {{ getChainSpecificExplorer() }}</a
           >
