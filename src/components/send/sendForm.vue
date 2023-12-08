@@ -137,7 +137,7 @@ async function fetchAssets() {
     loadStore.hideLoader();
     findFallbackBalanceInAnkr(walletAddress, nativeAssets);
   } catch (error) {
-    console.error(error);
+    console.log(error);
   } finally {
     isBalanceFetching.value = false;
   }
@@ -325,7 +325,13 @@ async function proceed() {
       resetAll();
       emits("transaction-successful", sendRes);
     } catch (error: any) {
-      console.error(error);
+      console.log("Before error");
+      console.log(error);
+      console.log("After error");
+      console.log("typeof error", typeof error);
+      console.log(
+        typeof error === "string" ? JSON.parse(error) : "Not a string"
+      );
       if (error === SELF_TX_ERROR || error.message === SELF_TX_ERROR) {
         toast.error("You cannot send tokens to yourself");
       } else if (error.code === ACTION_REJECTED) {
@@ -395,7 +401,7 @@ watch(
           );
           await switchChain(selectedChainId as string);
         } catch (e) {
-          console.error({ e });
+          console.log({ e });
           userInput.value.chain = oldChain;
           toast.error("Switching chain rejected by user");
         }
