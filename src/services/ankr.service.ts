@@ -1,3 +1,4 @@
+import chains from "@/constants/chainList";
 import axios from "axios";
 import Decimal from "decimal.js";
 
@@ -67,13 +68,13 @@ async function getNativeTokenBalances(walletAddress: string) {
     jsonrpc: "2.0",
   };
   const ankrPromises = [
-    axios.post("https://rpc.ankr.com/eth", payload),
-    axios.post("https://rpc.ankr.com/polygon", payload),
-    axios.post("https://rpc.ankr.com/polygon_mumbai", payload),
-    axios.post("https://rpc.ankr.com/arbitrum", payload),
-    axios.post("https://rpc.ankr.com/bsc", payload),
-    axios.post("https://rpc.ankr.com/bsc_testnet_chapel", payload),
-    axios.post("https://opbnb.publicnode.com", payload),
+    axios.post(chains[1].rpc_url, payload),
+    axios.post(chains[137].rpc_url, payload),
+    axios.post(chains[80001].rpc_url, payload),
+    axios.post(chains[42161].rpc_url, payload),
+    axios.post(chains[56].rpc_url, payload),
+    axios.post(chains[97].rpc_url, payload),
+    axios.post(chains[204].rpc_url, payload),
   ];
   const [
     eth,
