@@ -13,6 +13,9 @@ const emit = defineEmits(["close", "shoutout"]);
 const chainSpecificExplorers = {
   56: "https://bscscan.com/",
   97: "https://testnet.bscscan.com/",
+  80001: "https://mumbai.polygonscan.com/",
+  137: "https://polygonscan.com/",
+  204: "https://opbnbscan.com/",
 };
 
 function getChainSpecificExplorer() {
@@ -38,7 +41,7 @@ function getChainSpecificExplorer() {
           <a
             :href="getChainSpecificExplorer()"
             target="_blank"
-            class="text-cornflower-blue underline"
+            class="text-white font-bold underline"
           >
             {{ getChainSpecificExplorer() }}</a
           >
