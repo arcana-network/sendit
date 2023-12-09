@@ -76,7 +76,7 @@ function sanitizePaymentRequestRecord(record) {
   const token = requestableTokens[record.chain_id].find(
     (token) =>
       (tokenAddress === ethers.ZeroAddress && token.address === "NATIVE") ||
-      token.address === tokenAddress
+      token.address?.toLowerCase() === tokenAddress.toLowerCase()
   );
   const txState = record.state;
   const isRequester =
