@@ -10,7 +10,7 @@
     >
       <div class="flex flex-col items-center">
         <span class="font-syne text-[20px] md:text-[48px] leading-[1.5]"
-          >250K+</span
+          >500K+</span
         >
         <span class="text-[#c4c4c4] uppercase text-[8px] md:text-[14px]"
           >Users signed up</span
@@ -18,7 +18,7 @@
       </div>
       <div class="flex flex-col items-center">
         <span class="font-syne text-[20px] md:text-[48px] leading-[1.5]"
-          >1M+</span
+          >3M+</span
         >
         <span
           class="text-[#c4c4c4] uppercase text-[8px] md:text-[14px] text-center"
