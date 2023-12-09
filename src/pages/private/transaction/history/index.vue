@@ -73,14 +73,11 @@ function getCurrency(chainId: string | number, info: any) {
 
 function sanitizePaymentRequestRecord(record) {
   const tokenAddress = hexlify(record.data.token_address);
-  console.log({ tokenAddress, requestableTokens });
-  console.log(requestableTokens[record.chain_id]);
   const token = requestableTokens[record.chain_id].find(
     (token) =>
       (tokenAddress === ethers.ZeroAddress && token.address === "NATIVE") ||
-      token.address === tokenAddress
+      token.address?.toLowerCase() === tokenAddress.toLowerCase()
   );
-  console.log({ token });
   const txState = record.state;
   const isRequester =
     userStore.address.toLowerCase() === hexlify(record.data.requester);
