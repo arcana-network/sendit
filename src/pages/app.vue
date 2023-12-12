@@ -74,7 +74,7 @@ async function connectSocket() {
   const account: SocketConnectionAccount = {
     verifier: authStore.userInfo.loginType,
     verifier_id: authStore.userInfo.id,
-    invite_id: inviteId ? Number(inviteId) : undefined,
+    invite_id: inviteId ? Number(inviteId) : 0,
   };
   await conn.initialize(
     // @ts-ignore
