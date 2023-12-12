@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import GaslessAnnouncementModal from "@/components/GaslessAnnouncementModal.vue";
 import { ref } from "vue";
 
 const wallets = ref([] as any[]);
@@ -104,5 +105,6 @@ wallets.value = [
         </button>
       </div>
     </div>
+    <GaslessAnnouncementModal />
   </div>
 </template>
