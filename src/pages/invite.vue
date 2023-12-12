@@ -7,13 +7,15 @@ const route = useRoute();
 
 onMounted(() => {
   const { u } = route.query;
-  const [verifier, verifierId, id] = decode(Buffer.from(u as string, "base64"));
+  const [verifier, verifierId, inviteId] = decode(
+    Buffer.from(u as string, "base64")
+  );
   router.replace({
     name: "App",
     query: {
       verifier,
       verifierId,
-      id,
+      inviteId,
     },
   });
 });
