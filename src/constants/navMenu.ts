@@ -4,6 +4,10 @@ const navMenu = [
     label: "Send",
   },
   {
+    routeName: "Wallets",
+    label: "Wallets",
+  },
+  {
     routeName: "Request",
     label: "Request",
   },
