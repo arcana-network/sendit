@@ -42,6 +42,18 @@ const INSUFFICIENT_FUNDS = "INSUFFICIENT_FUNDS";
 const SELF_TX_ERROR = "self-transactions are not permitted";
 let assetInterval: NodeJS.Timer;
 const refreshIconAnimating = ref(false);
+const supportedWallets = ref([] as any[]);
+
+supportedWallets.value = [
+  {
+    name: "My Smart Wallet",
+    value: "scw",
+  },
+  {
+    name: "My Ethereum Wallet",
+    value: "eoa",
+  },
+];
 
 async function handleRefresh() {
   refreshIconAnimating.value = true;
@@ -97,6 +109,10 @@ function getSelectedChainInfo(chainId) {
   return supportedChains.value.find(
     (chain) => Number(chain.chain_id) === Number(chainId)
   );
+}
+
+function getSourceOfFunds(fundValue) {
+  return supportedWallets.value.find((fund) => fund.value === fundValue);
 }
 
 function getSelectedAssets(contractAddress: string) {
@@ -572,6 +588,18 @@ async function copyWalletAddress() {
           :model-value="getSelectedChainInfo(userInput.chain)"
           display-field="name"
           placeholder="Select Chain"
+        />
+      </div>
+      <div class="flex flex-col space-y-1">
+        <label class="text-xs">Source of Funds</label>
+        <Dropdown
+          @update:model-value="
+            (value) => (userInput.sourceOfFunds = value.value)
+          "
+          :options="supportedWallets"
+          :model-value="getSourceOfFunds(userInput.sourceOfFunds)"
+          display-field="name"
+          placeholder="Select source of funds"
         />
       </div>
       <div class="flex flex-col space-y-1">

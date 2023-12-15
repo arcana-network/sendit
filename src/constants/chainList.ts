@@ -64,4 +64,6 @@ export const testnetChainFaucets = {
   80001: "https://mumbaifaucet.com",
 };
 
+export const gaslessChains = [137];
+
 export default chains;

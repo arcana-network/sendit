@@ -1,14 +1,20 @@
 <script setup lang="ts">
-import GaslessAnnouncementModal from "@/components/GaslessAnnouncementModal.vue";
+// import GaslessAnnouncementModal from "@/components/GaslessAnnouncementModal.vue";
 import { ref } from "vue";
+import { truncateAddress } from "@/utils/truncateAddress";
+import useAuthStore from "@/stores/auth";
+import BuyTokens from "@/components/BuyTokens.vue";
 
 const wallets = ref([] as any[]);
-const isSmartContractWalletCreated = ref(false);
+const isSmartContractWalletCreated = ref(true);
+const showBuyModal = ref(false);
+const buyModalDetails = ref({} as any);
+const authStore = useAuthStore();
 
 wallets.value = [
   {
     name: "My Ethereum Wallet",
-    address: "0x1234567890",
+    address: authStore.walletAddress,
     title: "User Owned Wallet",
     description:
       "This is your primary wallet. Send and receive tokens between any wallets.",
@@ -20,7 +26,7 @@ wallets.value = [
   },
   {
     name: "My Smart Wallet",
-    address: "0x1234567890",
+    address: authStore.walletAddress,
     title: "Smart Contract Wallet",
     description:
       "Send and receive tokens between any SendIt Smart Wallets without paying gas fees on Polygon POS.",
@@ -31,6 +37,14 @@ wallets.value = [
     },
   },
 ];
+
+function handleBuy(wallet) {
+  console.log(wallet);
+  showBuyModal.value = true;
+  buyModalDetails.value = {
+    address: wallet.address,
+  };
+}
 </script>
 
 <template>
@@ -56,7 +70,9 @@ wallets.value = [
         }}</span>
         <div class="flex justify-between text-[0.75rem] text-philippine-gray">
           <span>{{ wallet.title }}</span>
-          <span>{{ wallet.address }}</span>
+          <span :title="wallet.address">{{
+            truncateAddress(wallet.address)
+          }}</span>
         </div>
         <div class="text-[0.75rem] text-[#d8d8d8] mt-4">
           {{ wallet.description }}
@@ -65,20 +81,25 @@ wallets.value = [
         <div class="flex gap-2 px-[1.25rem] mt-[1rem]">
           <button
             v-if="wallet.buttons.deposit"
-            class="flex flex-grow flex-col justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full"
+            class="flex flex-grow flex-col gap-1 justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full"
           >
+            <img src="@/assets/images/icons/deposit.svg" alt="deposit" />
             Deposit
           </button>
           <button
             v-if="wallet.buttons.withdraw"
-            class="flex flex-grow flex-col justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full"
+            disabled
+            class="flex flex-grow flex-col gap-1 justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
+            <img src="@/assets/images/icons/withdraw.svg" alt="deposit" />
             Withdraw
           </button>
           <button
             v-if="wallet.buttons.buy"
-            class="flex flex-grow flex-col justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full"
+            class="flex flex-grow flex-col gap-1 justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full"
+            @click.stop="handleBuy(wallet)"
           >
+            <img src="@/assets/images/icons/buy.svg" alt="deposit" />
             Buy
           </button>
         </div>
@@ -105,6 +126,11 @@ wallets.value = [
         </button>
       </div>
     </div>
-    <GaslessAnnouncementModal />
+    <!-- <GaslessAnnouncementModal /> -->
+    <BuyTokens
+      v-if="showBuyModal"
+      :address="buyModalDetails.address"
+      @dismiss="showBuyModal = false"
+    />
   </div>
 </template>

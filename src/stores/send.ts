@@ -14,6 +14,7 @@ type SendStoreKind = {
     chain: string | number;
     token: string;
     amount: number | null;
+    sourceOfFunds: "" | "scw" | "eoa";
   };
   supportedChains: {
     chain_id: number | string;
@@ -44,6 +45,7 @@ const useSendStore = defineStore("send", {
         chain: "",
         token: "",
         amount: null,
+        sourceOfFunds: "",
       },
       supportedChains: [],
       requestInput: {
@@ -64,6 +66,7 @@ const useSendStore = defineStore("send", {
       const { chains } = (await conn.sendMessage(SOCKET_IDS.GET_CHAINS)) as {
         chains: any[];
       };
+      console.log({ chains });
       this.supportedChains = chains.map((chain) => {
         return {
           ...chain,
@@ -80,6 +83,7 @@ const useSendStore = defineStore("send", {
         chain: "",
         token: "",
         amount: null,
+        sourceOfFunds: "",
       };
     },
     resetRequestInput() {
