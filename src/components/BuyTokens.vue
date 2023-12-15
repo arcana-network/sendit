@@ -71,10 +71,10 @@ function handleBuy() {
 <template>
   <Overlay>
     <div
-      class="max-w-[360px] w-screen bg-eerie-black rounded-[10px] border-1 border-jet flex flex-col relative p-[1.75rem] gap-4"
+      class="max-w-[360px] w-screen bg-eerie-black rounded-[10px] border-1 border-jet flex flex-col relative p-4 gap-4"
     >
       <div class="flex flex-col gap-4 relative justify-center">
-        <button class="absolute -right-5 -top-5" @click="emit('dismiss')">
+        <button class="absolute -right-3 -top-3" @click="emit('dismiss')">
           <img src="@/assets/images/icons/close.svg" alt="close" />
         </button>
         <span class="uppercase font-bold text-[1.5rem] text-[#545454]"
@@ -102,7 +102,7 @@ function handleBuy() {
         <div class="flex flex-col space-y-1">
           <label class="text-xs">Amount</label>
           <input
-            class="input disabled:opacity-60"
+            class="input disabled:opacity-60 text-"
             type="number"
             v-model="userInput.amount"
           />

@@ -4,12 +4,15 @@ import { ref } from "vue";
 import { truncateAddress } from "@/utils/truncateAddress";
 import useAuthStore from "@/stores/auth";
 import BuyTokens from "@/components/BuyTokens.vue";
+import DepositTokens from "@/components/DepositTokens.vue";
 
 const wallets = ref([] as any[]);
 const isSmartContractWalletCreated = ref(true);
 const showBuyModal = ref(false);
 const buyModalDetails = ref({} as any);
 const authStore = useAuthStore();
+const showDepositModal = ref(true);
+const depositModalDetails = ref({} as any);
 
 wallets.value = [
   {
@@ -23,6 +26,7 @@ wallets.value = [
       withdraw: true,
       buy: true,
     },
+    accountType: "eoa",
   },
   {
     name: "My Smart Wallet",
@@ -35,6 +39,7 @@ wallets.value = [
       withdraw: true,
       buy: true,
     },
+    accountType: "scw",
   },
 ];
 
@@ -42,6 +47,14 @@ function handleBuy(wallet) {
   showBuyModal.value = true;
   buyModalDetails.value = {
     address: wallet.address,
+  };
+}
+
+function handleDeposit(wallet) {
+  showDepositModal.value = true;
+  depositModalDetails.value = {
+    address: wallet.address,
+    accountType: wallet.accountType,
   };
 }
 </script>
@@ -81,6 +94,7 @@ function handleBuy(wallet) {
           <button
             v-if="wallet.buttons.deposit"
             class="flex flex-grow flex-col gap-1 justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full"
+            @click.stop="handleDeposit(wallet)"
           >
             <img src="@/assets/images/icons/deposit.svg" alt="deposit" />
             Deposit
@@ -130,6 +144,12 @@ function handleBuy(wallet) {
       v-if="showBuyModal"
       :address="buyModalDetails.address"
       @dismiss="showBuyModal = false"
+    />
+    <DepositTokens
+      v-if="showDepositModal"
+      :address="depositModalDetails.address"
+      :account-type="depositModalDetails.accountType"
+      @dismiss="showDepositModal = false"
     />
   </div>
 </template>
