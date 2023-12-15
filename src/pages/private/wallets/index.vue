@@ -39,7 +39,6 @@ wallets.value = [
 ];
 
 function handleBuy(wallet) {
-  console.log(wallet);
   showBuyModal.value = true;
   buyModalDetails.value = {
     address: wallet.address,

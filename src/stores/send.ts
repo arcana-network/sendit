@@ -66,7 +66,6 @@ const useSendStore = defineStore("send", {
       const { chains } = (await conn.sendMessage(SOCKET_IDS.GET_CHAINS)) as {
         chains: any[];
       };
-      console.log({ chains });
       this.supportedChains = chains.map((chain) => {
         return {
           ...chain,
