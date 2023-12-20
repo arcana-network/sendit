@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import Overlay from "@/components/overlay.vue";
 import Dropdown from "@/components/lib/dropdown.vue";
-import { gaslessChains } from "@/constants/chainList";
 import useSendStore from "@/stores/send";
-import { reactive, computed } from "vue";
-import { requestableTokens } from "@/constants/requestableTokens";
+import { reactive, computed, onBeforeMount } from "vue";
 // import useAuthStore from "@/stores/auth";
 import { useQRCode } from "@vueuse/integrations/useQRCode";
+import { ref } from "vue";
+import { fetchAllTokenBalances } from "@/services/ankr.service";
+import useUserStore from "@/stores/user";
 
 type DepositTokenProps = {
   address: string;
@@ -21,18 +22,45 @@ const qrcode = useQRCode(props.address, {
   margin: 2,
   width: 240,
 });
+const allAssets = ref([] as any[]);
+const allGaslessAssets = ref([] as any[]);
+const userStore = useUserStore();
 
-const gaslessChainsList = computed(() =>
-  sendStore.supportedChains.filter((chain) =>
-    gaslessChains.includes(Number(chain.chain_id))
-  )
-);
-
-const supportedTokens = computed(() => {
-  return requestableTokens[userInput.chain]
-    ? requestableTokens[userInput.chain].map((token) => token.symbol)
-    : [];
+const chainsList = computed(() => {
+  return sendStore.supportedChains.filter(
+    (chain) => chain.gasless_enabled || chain.chain_id == "80001"
+  );
 });
+
+async function fetchAssets() {
+  allAssets.value = await fetchAllTokenBalances(userStore.address);
+  allGaslessAssets.value = await fetchAllTokenBalances(
+    userStore.gaslessAddress
+  );
+}
+
+const selectedTypeAssets = computed(() => {
+  return getChainAssets(userInput.chain);
+});
+
+function getSelectedChainInfo(chainId) {
+  //@ts-ignore
+  return chainsList.value.find(
+    (chain) => Number(chain.chain_id) === Number(chainId)
+  );
+}
+
+function getChainAssets(chainId) {
+  const chain = getSelectedChainInfo(chainId);
+  if (chain) {
+    const assets =
+      props.accountType === "scw" ? allGaslessAssets.value : allAssets.value;
+    return (
+      assets.filter((asset) => asset.blockchain === chain.blockchain) || []
+    );
+  }
+  return [];
+}
 
 const fundSources = computed(() => {
   const sources = ["External Wallet"];
@@ -52,7 +80,7 @@ const userInput = reactive({
 });
 
 function getChain(chainId) {
-  return gaslessChainsList.value.find((chain) => chain.chain_id === chainId);
+  return chainsList.value.find((chain) => chain.chain_id === chainId);
 }
 
 function isExternalWallet() {
@@ -62,6 +90,18 @@ function isExternalWallet() {
 function handleDeposit() {
   emit("dismiss");
 }
+
+function getSelectedAssets(contractAddress: string) {
+  return selectedTypeAssets.value.find(
+    (asset) =>
+      //@ts-ignore
+      asset.contractAddress === contractAddress
+  );
+}
+
+onBeforeMount(async () => {
+  await fetchAssets();
+});
 </script>
 
 <template>
@@ -90,9 +130,10 @@ function handleDeposit() {
         >
           <label class="text-xs">Source Chain</label>
           <Dropdown
-            @update:model-value="(value) => (userInput.token = value)"
-            :options="supportedTokens"
-            :model-value="userInput.token"
+            @update:model-value="(value) => (userInput.chain = value.chain_id)"
+            :options="chainsList"
+            display-field="name"
+            :model-value="getChain(userInput.chain)"
             placeholder="Select Chain"
           />
         </div>
@@ -102,9 +143,12 @@ function handleDeposit() {
         >
           <label class="text-xs">Token</label>
           <Dropdown
-            @update:model-value="(value) => (userInput.token = value)"
-            :options="supportedTokens"
-            :model-value="userInput.token"
+            @update:model-value="
+              (value) => (userInput.token = value.contractAddress)
+            "
+            :options="selectedTypeAssets"
+            :model-value="getSelectedAssets(userInput.token)"
+            display-field="tokenSymbol"
             placeholder="Select Chain"
           />
         </div>

@@ -21,6 +21,7 @@ type SendStoreKind = {
     name: string;
     blockchain: string;
     sendit_contract: string;
+    gasless_enabled: boolean;
   }[];
   requestInput: {
     requestId: string;

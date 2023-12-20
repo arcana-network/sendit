@@ -1,61 +1,100 @@
 <script setup lang="ts">
 // import GaslessAnnouncementModal from "@/components/GaslessAnnouncementModal.vue";
-import { ref } from "vue";
+import { onBeforeMount, ref, computed, watch } from "vue";
 import { truncateAddress } from "@/utils/truncateAddress";
-import useAuthStore from "@/stores/auth";
 import BuyTokens from "@/components/BuyTokens.vue";
 import DepositTokens from "@/components/DepositTokens.vue";
+import { fetchAllTokenBalances } from "@/services/ankr.service";
+import { ChainNames } from "@/constants/chainList";
+import { Decimal } from "decimal.js";
+import useUserStore from "@/stores/user";
+import useLoaderStore from "@/stores/loader";
+import { useToast } from "vue-toastification";
 
+const userStore = useUserStore();
 const wallets = ref([] as any[]);
-const isSmartContractWalletCreated = ref(true);
+const isSmartContractWalletCreated = computed(() => userStore.gaslessOptedIn);
 const showBuyModal = ref(false);
 const buyModalDetails = ref({} as any);
-const authStore = useAuthStore();
-const showDepositModal = ref(true);
+const showDepositModal = ref(false);
 const depositModalDetails = ref({} as any);
+const loaderStore = useLoaderStore();
+const toast = useToast();
+const gaslesschains = ["polygon_mumbai"];
 
-wallets.value = [
-  {
-    name: "My Ethereum Wallet",
-    address: authStore.walletAddress,
-    title: "User Owned Wallet",
-    description:
-      "This is your primary wallet. Send and receive tokens between any wallets.",
-    buttons: {
-      deposit: true,
-      withdraw: true,
-      buy: true,
-    },
-    accountType: "eoa",
+const scwWallet = {
+  name: "My Smart Wallet",
+  address: () => userStore.gaslessAddress,
+  title: "Smart Contract Wallet",
+  description:
+    "Send and receive tokens between any SendIt Smart Wallets without paying gas fees on Polygon POS.",
+  buttons: {
+    deposit: true,
+    withdraw: true,
+    buy: true,
   },
-  {
-    name: "My Smart Wallet",
-    address: authStore.walletAddress,
-    title: "Smart Contract Wallet",
-    description:
-      "Send and receive tokens between any SendIt Smart Wallets without paying gas fees on Polygon POS.",
-    buttons: {
-      deposit: true,
-      withdraw: true,
-      buy: true,
-    },
-    accountType: "scw",
+  accountType: "scw",
+};
+
+const eoaWallet = {
+  name: "My Ethereum Wallet",
+  address: () => userStore.address,
+  title: "User Owned Wallet",
+  description:
+    "This is your primary wallet. Send and receive tokens between any wallets.",
+  buttons: {
+    deposit: true,
+    withdraw: true,
+    buy: true,
   },
-];
+  accountType: "eoa",
+};
+
+wallets.value.push(eoaWallet);
+
+if (isSmartContractWalletCreated.value) {
+  wallets.value.push(scwWallet);
+}
 
 function handleBuy(wallet) {
   showBuyModal.value = true;
   buyModalDetails.value = {
-    address: wallet.address,
+    address: wallet.address(),
   };
 }
 
 function handleDeposit(wallet) {
   showDepositModal.value = true;
   depositModalDetails.value = {
-    address: wallet.address,
+    address: wallet.address(),
     accountType: wallet.accountType,
   };
+}
+
+onBeforeMount(async () => {
+  wallets.value[0].assets = await fetchAllTokenBalances(userStore.address);
+  wallets.value[1].assets = (
+    await fetchAllTokenBalances(userStore.gaslessAddress)
+  ).filter((asset) => gaslesschains.includes(asset.blockchain));
+});
+
+watch(isSmartContractWalletCreated, () => {
+  wallets.value.push(scwWallet);
+});
+
+async function createSCWWallet() {
+  loaderStore.showLoader(
+    "CREATING SMART WALLET",
+    "Hang tight! Your Smart Contract Wallet with amazing new features such as gasless transactions is being created."
+  );
+
+  try {
+    const res = await userStore.createGaslessWallet();
+  } catch (e) {
+    toast.error("Something went wrong. Please try again.");
+  } finally {
+    loaderStore.hideLoader();
+  }
 }
 </script>
 
@@ -82,14 +121,38 @@ function handleDeposit(wallet) {
         }}</span>
         <div class="flex justify-between text-[0.75rem] text-philippine-gray">
           <span>{{ wallet.title }}</span>
-          <span :title="wallet.address">{{
-            truncateAddress(wallet.address)
+          <span :title="wallet.address()">{{
+            truncateAddress(wallet.address())
           }}</span>
         </div>
         <div class="text-[0.75rem] text-[#d8d8d8] mt-4">
           {{ wallet.description }}
         </div>
-        <div class="bg-[#151515] rounded-[10px] h-[10rem] mt-4"></div>
+        <div
+          class="bg-[#151515] rounded-[10px] h-[10rem] overflow-y-auto mt-4 p-1"
+        >
+          <div
+            v-for="asset in wallet.assets"
+            :key="JSON.stringify(asset)"
+            class="p-2 flex rounded-[10px] hover:bg-[#383838] select-none text-[0.75rem] text-white mb-2 asset gap-3 items-center"
+          >
+            <img :src="asset.thumbnail" class="w-5 h-5" />
+            <div class="flex flex-col">
+              <span class="font-[400] text-[14px]">{{
+                asset.tokenSymbol
+              }}</span>
+              <span class="text-[10px] text-[#8d8d8d]">{{
+                ChainNames[asset.blockchain]
+              }}</span>
+            </div>
+            <div class="ml-auto text-[14px]">
+              {{ new Decimal(asset.balance).toDecimalPlaces(6) }}
+            </div>
+            <button class="asset-button">
+              <img src="@/assets/images/icons/arrow-right.svg" alt="arrow" />
+            </button>
+          </div>
+        </div>
         <div class="flex gap-2 px-[1.25rem] mt-[1rem]">
           <button
             v-if="wallet.buttons.deposit"
@@ -134,6 +197,7 @@ function handleDeposit(wallet) {
         </div>
         <button
           class="p-[0.5rem] rounded-[5px] bg-white text-black uppercase font-bold text-[0.875rem] mt-[0.75rem]"
+          @click.stop="createSCWWallet"
         >
           Setup this wallet now
         </button>
@@ -153,3 +217,12 @@ function handleDeposit(wallet) {
     />
   </div>
 </template>
+
+<style scoped>
+.asset-button {
+  opacity: 0;
+}
+.asset:where(:hover, :focus-visible) .asset-button {
+  opacity: 1;
+}
+</style>

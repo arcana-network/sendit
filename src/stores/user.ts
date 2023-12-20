@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { useConnection } from "@/stores/connection";
 import activePiniaInstance from "@/stores";
 import { SOCKET_IDS } from "@/constants/socket-ids";
+import { ethers } from "ethers";
 
 const conn = useConnection(activePiniaInstance);
 
@@ -17,6 +18,8 @@ type User = {
   xpBreakdown: XPBreakdown;
   address: string;
   followedOnTwitter: boolean;
+  gaslessOptedIn: boolean;
+  gaslessAddress: string;
 };
 
 const useUserStore = defineStore("user", {
@@ -28,6 +31,8 @@ const useUserStore = defineStore("user", {
       address: "",
       followedOnTwitter: false,
       xpBreakdown: {},
+      gaslessOptedIn: false,
+      gaslessAddress: "",
     } as User),
   actions: {
     async fetchUserPointsAndRank() {
@@ -35,6 +40,14 @@ const useUserStore = defineStore("user", {
         SOCKET_IDS.GET_PROFILE,
         null
       )) as any;
+      this.gaslessOptedIn = response.gasless_opted_in || false;
+      if (this.gaslessOptedIn) {
+        const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
+          chain_id: 137,
+          address: Buffer.from(ethers.getBytes(this.address)),
+        });
+        this.gaslessAddress = ethers.hexlify(res.scw_address);
+      }
       const xpBreakdown = (await conn.sendMessage(
         SOCKET_IDS.GET_XP_BREAKDOWN,
         null
@@ -54,6 +67,10 @@ const useUserStore = defineStore("user", {
       this.followedOnTwitter = response.followed_on_twitter;
       // this.points = response.points;
       this.rank = response.global_rank ?? 0;
+    },
+    async createGaslessWallet() {
+      await conn.sendMessage(SOCKET_IDS.OPT_IN_GASLESS, null);
+      this.gaslessOptedIn = true;
     },
   },
 });

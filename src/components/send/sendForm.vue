@@ -7,15 +7,13 @@ import {
   type Ref,
   onBeforeMount,
   onBeforeUnmount,
+  ComputedRef,
 } from "vue";
 import sendVia from "@/constants/sendVia";
 import useSendStore from "@/stores/send";
 import useAuthStore from "@/stores/auth";
 import useLoaderStore from "@/stores/loader";
-import {
-  getAccountBalance,
-  getNativeTokenBalances,
-} from "@/services/ankr.service.ts";
+import { fetchAllTokenBalances } from "@/services/ankr.service.ts";
 import useArcanaAuth from "@/use/arcanaAuth";
 import {
   nativeTokenTransfer,
@@ -35,6 +33,7 @@ import { GAS_SUPPORTED_CHAINS } from "@/constants/socket-ids";
 import { Decimal } from "decimal.js";
 import copyToClipboard from "@/utils/copyToClipboard";
 import { switchChain } from "@/use/switchChain";
+import useUserStore from "@/stores/user";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -42,16 +41,15 @@ const INSUFFICIENT_FUNDS = "INSUFFICIENT_FUNDS";
 const SELF_TX_ERROR = "self-transactions are not permitted";
 let assetInterval: NodeJS.Timer;
 const refreshIconAnimating = ref(false);
-const supportedWallets = ref([] as any[]);
 
-supportedWallets.value = [
-  {
-    name: "My Smart Wallet",
-    value: "scw",
-  },
+const supportedWallets = [
   {
     name: "My Ethereum Wallet",
     value: "eoa",
+  },
+  {
+    name: "My Smart Wallet",
+    value: "scw",
   },
 ];
 
@@ -72,7 +70,7 @@ onBeforeUnmount(() => {
 const sendStore = useSendStore();
 const authStore = useAuthStore();
 const loadStore = useLoaderStore();
-const chainAssets: Ref<any[]> = computed(() => {
+const chainAssets: ComputedRef<any[]> = computed(() => {
   return getChainAssets(userInput.value.chain);
 });
 const tokenBalance = ref(0);
@@ -84,10 +82,20 @@ const hasTwitterError = ref(false);
 const isEmailDisposable = ref(false);
 const hasStartedTyping = ref(false);
 const allAssets: Ref<any[]> = ref([]);
+const allGaslessAssets: Ref<any[]> = ref([]);
 const isBalanceFetching = ref(false);
+const userStore = useUserStore();
 
 sendStore.resetUserInput();
 const { userInput, supportedChains } = toRefs(sendStore);
+const filteredChains = computed(() => {
+  if (userInput.value.sourceOfFunds === "scw") {
+    return supportedChains.value.filter(
+      (chain) => chain.gasless_enabled || chain.chain_id == "80001"
+    );
+  }
+  return supportedChains.value;
+});
 
 const isEmailValid = computed(() => {
   if (userInput.value.medium === "mail") {
@@ -112,7 +120,7 @@ function getSelectedChainInfo(chainId) {
 }
 
 function getSourceOfFunds(fundValue) {
-  return supportedWallets.value.find((fund) => fund.value === fundValue);
+  return supportedWallets.find((fund) => fund.value === fundValue);
 }
 
 function getSelectedAssets(contractAddress: string) {
@@ -126,9 +134,11 @@ function getSelectedAssets(contractAddress: string) {
 function getChainAssets(chainId) {
   const chain = getSelectedChainInfo(chainId);
   if (chain) {
-    return allAssets.value.filter(
-      (asset) => asset.blockchain === chain.blockchain
-    );
+    const assets =
+      userInput.value.sourceOfFunds === "scw"
+        ? allGaslessAssets.value
+        : allAssets.value;
+    return assets.filter((asset) => asset.blockchain === chain.blockchain);
   }
   return [];
 }
@@ -136,51 +146,15 @@ function getChainAssets(chainId) {
 async function fetchAssets() {
   try {
     isBalanceFetching.value = true;
-    const walletAddress = authStore.walletAddress;
-    let nativeAssets = [] as any[];
-    const nativeData = await getNativeTokenBalances(walletAddress);
-    if (nativeData?.length) {
-      nativeAssets = nativeData?.map((asset) => {
-        const address = "NATIVE";
-        return {
-          ...asset,
-          contractAddress: address,
-          name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
-        };
-      });
-    }
-    allAssets.value = [...nativeAssets];
-    loadStore.hideLoader();
-    findFallbackBalanceInAnkr(walletAddress, nativeAssets);
+    allAssets.value = await fetchAllTokenBalances(userStore.address);
+    allGaslessAssets.value = await fetchAllTokenBalances(
+      userStore.gaslessAddress
+    );
   } catch (error) {
     console.error(error);
   } finally {
     isBalanceFetching.value = false;
   }
-}
-
-async function findFallbackBalanceInAnkr(walletAddress, nativeAssets) {
-  const data = await getAccountBalance(walletAddress, [
-    "eth",
-    "polygon",
-    "arbitrum",
-    "bsc",
-  ]);
-  let erc20Assets = [] as any[];
-  if (data?.result?.assets?.length) {
-    erc20Assets = data?.result?.assets
-      .map((asset) => {
-        const address =
-          asset.tokenType === "NATIVE" ? "NATIVE" : asset.contractAddress;
-        return {
-          ...asset,
-          contractAddress: address,
-          name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
-        };
-      })
-      .filter((asset) => asset.tokenType !== "NATIVE");
-  }
-  allAssets.value = [...nativeAssets, ...erc20Assets];
 }
 
 function messageArcana(
@@ -246,6 +220,31 @@ async function proceed() {
     toast.error("Please select a chain to continue");
     return;
   }
+  const currentAccountType = await authStore.provider.request({
+    method: "_arcana_getAccountType",
+  });
+  if (currentAccountType !== userInput.value.sourceOfFunds) {
+    try {
+      loadStore.showLoader(
+        "Switching Account Type...",
+        `Switching to ${
+          userInput.value.sourceOfFunds === "scw"
+            ? "Smart Contract Wallet"
+            : "User Owned Wallet"
+        }. Please approve the transaction on your wallet to switch the account type.`
+      );
+      await authStore.provider.request({
+        method: "_arcana_switchAccountType",
+        params: {
+          type: userInput.value.sourceOfFunds,
+        },
+      });
+    } catch (e) {
+      console.error(e);
+      userInput.value.sourceOfFunds = currentAccountType;
+      toast.error("Switching account type rejected by user");
+    }
+  }
   if (!hasUserRejectedChainSwitching) {
     loadStore.showLoader(
       "Sending tokens...",
@@ -295,7 +294,9 @@ async function proceed() {
               senderPublicKey,
               arcanaProvider,
               amount,
-              feeData
+              feeData,
+              userInput.value.sourceOfFunds === "scw",
+              userInput.value.chain
             )
           : await erc20TokenTransfer(
               senderPublicKey,
@@ -303,7 +304,9 @@ async function proceed() {
               amount,
               //@ts-ignore
               userInput.value.token,
-              feeData
+              feeData,
+              userInput.value.sourceOfFunds === "scw",
+              userInput.value.chain
             );
       loadStore.showLoader("Generating SendIt link...");
       const { hash, to } = tx;
@@ -442,7 +445,15 @@ watch(
 );
 
 const disableTokenInput = computed(() => {
-  return !userInput.value.chain && !chainAssets.value.length;
+  return (
+    !userInput.value.chain ||
+    !userInput.value.sourceOfFunds ||
+    !chainAssets.value.length
+  );
+});
+
+const disableChainsInput = computed(() => {
+  return !userInput.value.sourceOfFunds || !filteredChains.value.length;
 });
 
 const disableSubmit = computed(() => {
@@ -508,7 +519,11 @@ function getTokenModelValue(tokenAddress) {
 }
 
 async function copyWalletAddress() {
-  await copyToClipboard(authStore.walletAddress);
+  const address =
+    userInput.value.sourceOfFunds === "scw"
+      ? userStore.gaslessAddress
+      : userStore.address;
+  await copyToClipboard(address);
   toast.success("Wallet address copied");
 }
 </script>
@@ -581,16 +596,6 @@ async function copyWalletAddress() {
         </div>
       </div>
       <div class="flex flex-col space-y-1">
-        <label class="text-xs">Chain</label>
-        <Dropdown
-          @update:model-value="(value) => (userInput.chain = value.chain_id)"
-          :options="supportedChains"
-          :model-value="getSelectedChainInfo(userInput.chain)"
-          display-field="name"
-          placeholder="Select Chain"
-        />
-      </div>
-      <div class="flex flex-col space-y-1">
         <label class="text-xs">Source of Funds</label>
         <Dropdown
           @update:model-value="
@@ -600,6 +605,17 @@ async function copyWalletAddress() {
           :model-value="getSourceOfFunds(userInput.sourceOfFunds)"
           display-field="name"
           placeholder="Select source of funds"
+        />
+      </div>
+      <div class="flex flex-col space-y-1">
+        <label class="text-xs">Chain</label>
+        <Dropdown
+          @update:model-value="(value) => (userInput.chain = value.chain_id)"
+          :options="filteredChains"
+          :model-value="getSelectedChainInfo(userInput.chain)"
+          display-field="name"
+          placeholder="Select Chain"
+          :disabled="disableChainsInput"
         />
       </div>
       <div class="flex flex-col space-y-1">
@@ -660,7 +676,9 @@ async function copyWalletAddress() {
             <span
               >Your wallet address is:
               <span class="text-[12px]">{{
-                authStore.walletAddress
+                userInput.sourceOfFunds === "scw"
+                  ? userStore.gaslessAddress
+                  : userStore.address
               }}</span></span
             >
             <button

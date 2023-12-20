@@ -93,6 +93,7 @@ async function getNativeTokenBalances(walletAddress: string) {
       balance: new Decimal(eth.data.result)
         .mul(Decimal.pow(10, -18))
         .toString(),
+      thumbnail: "https://ethereum.org/static/eth-glyph-colored.svg",
     },
     {
       tokenType: "NATIVE",
@@ -101,6 +102,7 @@ async function getNativeTokenBalances(walletAddress: string) {
       balance: new Decimal(polygon.data.result)
         .mul(Decimal.pow(10, -18))
         .toString(),
+      thumbnail: "https://ankrscan.io/assets/blockchains/polygon.svg",
     },
     {
       tokenType: "NATIVE",
@@ -109,6 +111,7 @@ async function getNativeTokenBalances(walletAddress: string) {
       balance: new Decimal(polygon_mumbai.data.result)
         .mul(Decimal.pow(10, -18))
         .toString(),
+      thumbnail: "https://ankrscan.io/assets/blockchains/polygon.svg",
     },
     {
       tokenType: "NATIVE",
@@ -117,6 +120,7 @@ async function getNativeTokenBalances(walletAddress: string) {
       balance: new Decimal(arbitrum.data.result)
         .mul(Decimal.pow(10, -18))
         .toString(),
+      thumbnail: "https://ankrscan.io/assets/blockchains/arbitrum.svg",
     },
     {
       tokenType: "NATIVE",
@@ -125,6 +129,7 @@ async function getNativeTokenBalances(walletAddress: string) {
       balance: new Decimal(bsc.data.result)
         .mul(Decimal.pow(10, -18))
         .toString(),
+      thumbnail: "https://ankrscan.io/assets/blockchains/binance.svg",
     },
     {
       tokenType: "NATIVE",
@@ -133,6 +138,7 @@ async function getNativeTokenBalances(walletAddress: string) {
       balance: new Decimal(bsc_testnet_chapel.data.result)
         .mul(Decimal.pow(10, -18))
         .toString(),
+      thumbnail: "https://ankrscan.io/assets/blockchains/binance.svg",
     },
     {
       tokenType: "NATIVE",
@@ -141,8 +147,50 @@ async function getNativeTokenBalances(walletAddress: string) {
       balance: new Decimal(opbnb_mainnet.data.result)
         .mul(Decimal.pow(10, -18))
         .toString(),
+      thumbnail: "https://ankrscan.io/assets/blockchains/binance.svg",
     },
   ];
 }
 
-export { getAccountBalance, fetchRewards, getNativeTokenBalances };
+async function fetchAllTokenBalances(walletAddress: string) {
+  let nativeAssets = [] as any[];
+  const nativeData = await getNativeTokenBalances(walletAddress);
+  if (nativeData?.length) {
+    nativeAssets = nativeData?.map((asset) => {
+      const address = "NATIVE";
+      return {
+        ...asset,
+        contractAddress: address,
+        name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
+      };
+    });
+  }
+  const data = await getAccountBalance(walletAddress, [
+    "eth",
+    "polygon",
+    "arbitrum",
+    "bsc",
+  ]);
+  let erc20Assets = [] as any[];
+  if (data?.result?.assets?.length) {
+    erc20Assets = data?.result?.assets
+      .map((asset) => {
+        const address =
+          asset.tokenType === "NATIVE" ? "NATIVE" : asset.contractAddress;
+        return {
+          ...asset,
+          contractAddress: address,
+          name: `${asset.tokenSymbol || "Unknown"}-${asset.tokenType}`,
+        };
+      })
+      .filter((asset) => asset.tokenType !== "NATIVE");
+  }
+  return [...erc20Assets, ...nativeAssets];
+}
+
+export {
+  getAccountBalance,
+  fetchRewards,
+  getNativeTokenBalances,
+  fetchAllTokenBalances,
+};
