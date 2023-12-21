@@ -56,6 +56,7 @@ const supportedWallets = [
 async function handleRefresh() {
   refreshIconAnimating.value = true;
   await fetchAssets();
+  tokenBalance.value = getSelectedAssets(userInput.value.token)?.balance || 0;
   refreshIconAnimating.value = false;
 }
 

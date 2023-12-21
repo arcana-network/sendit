@@ -35,7 +35,7 @@ const useUserStore = defineStore("user", {
       gaslessAddress: "",
     } as User),
   actions: {
-    async fetchUserPointsAndRank() {
+    async fetchGaslessInfo() {
       const response = (await conn.sendMessage(
         SOCKET_IDS.GET_PROFILE,
         null
@@ -48,6 +48,13 @@ const useUserStore = defineStore("user", {
         });
         this.gaslessAddress = ethers.hexlify(res.scw_address);
       }
+    },
+    async fetchUserPointsAndRank() {
+      await this.fetchGaslessInfo();
+      const response = (await conn.sendMessage(
+        SOCKET_IDS.GET_PROFILE,
+        null
+      )) as any;
       const xpBreakdown = (await conn.sendMessage(
         SOCKET_IDS.GET_XP_BREAKDOWN,
         null
@@ -71,6 +78,7 @@ const useUserStore = defineStore("user", {
     async createGaslessWallet() {
       await conn.sendMessage(SOCKET_IDS.OPT_IN_GASLESS, null);
       this.gaslessOptedIn = true;
+      await this.fetchGaslessInfo();
     },
   },
 });
