@@ -10,6 +10,7 @@ import { Decimal } from "decimal.js";
 import useUserStore from "@/stores/user";
 import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
+import useAuthStore from "@/stores/auth";
 
 const userStore = useUserStore();
 const wallets = ref([] as any[]);
@@ -21,6 +22,7 @@ const depositModalDetails = ref({} as any);
 const loaderStore = useLoaderStore();
 const toast = useToast();
 const gaslesschains = ["polygon_mumbai"];
+const authStore = useAuthStore();
 
 const scwWallet = {
   name: "My Smart Wallet",
@@ -52,7 +54,7 @@ const eoaWallet = {
 
 wallets.value.push(eoaWallet);
 
-if (isSmartContractWalletCreated.value) {
+if (isSmartContractWalletCreated.value && authStore.loggedInWith === "") {
   wallets.value.push(scwWallet);
 }
 
@@ -89,7 +91,7 @@ async function createSCWWallet() {
   );
 
   try {
-    const res = await userStore.createGaslessWallet();
+    await userStore.createGaslessWallet();
   } catch (e) {
     toast.error("Something went wrong. Please try again.");
   } finally {
@@ -182,7 +184,7 @@ async function createSCWWallet() {
       </div>
       <div
         class="bg-[#0e0e0e] border border-[#666] rounded-[10px] w-full max-w-[20rem] flex flex-col p-6"
-        v-if="!isSmartContractWalletCreated"
+        v-if="!isSmartContractWalletCreated && authStore.loggedInWith === ''"
       >
         <img
           class="mx-auto max-w-[12rem]"

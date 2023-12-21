@@ -70,16 +70,18 @@ onMounted(() => {
 });
 
 async function switchToEOA() {
-  const currentAccountType = await authStore.provider.request({
-    method: "_arcana_getAccountType",
-  });
-  if (currentAccountType !== "eoa") {
-    await authStore.provider.request({
-      method: "_arcana_switchAccountType",
-      params: {
-        type: "eoa",
-      },
+  if (authStore.loggedInWith === "") {
+    const currentAccountType = await authStore.provider.request({
+      method: "_arcana_getAccountType",
     });
+    if (currentAccountType !== "eoa") {
+      await authStore.provider.request({
+        method: "_arcana_switchAccountType",
+        params: {
+          type: "eoa",
+        },
+      });
+    }
   }
 }
 
