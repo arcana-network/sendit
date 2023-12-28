@@ -42,16 +42,21 @@ const SELF_TX_ERROR = "self-transactions are not permitted";
 let assetInterval: NodeJS.Timer;
 const refreshIconAnimating = ref(false);
 
-const supportedWallets = [
-  {
-    name: "My Ethereum Wallet",
-    value: "eoa",
-  },
-  {
-    name: "My Smart Wallet",
-    value: "scw",
-  },
-];
+const supportedWallets = computed(() => {
+  const wallets = [
+    {
+      name: "User Owned Wallet",
+      value: "eoa",
+    },
+  ];
+  if (userStore.gaslessOptedIn) {
+    wallets.push({
+      name: "Smart Contract Wallet",
+      value: "scw",
+    });
+  }
+  return wallets;
+});
 
 async function handleRefresh() {
   refreshIconAnimating.value = true;
@@ -121,7 +126,7 @@ function getSelectedChainInfo(chainId) {
 }
 
 function getSourceOfFunds(fundValue) {
-  return supportedWallets.find((fund) => fund.value === fundValue);
+  return supportedWallets.value.find((fund) => fund.value === fundValue);
 }
 
 function getSelectedAssets(contractAddress: string) {
@@ -600,7 +605,12 @@ async function copyWalletAddress() {
         <label class="text-xs">Source of Funds</label>
         <Dropdown
           @update:model-value="
-            (value) => (userInput.sourceOfFunds = value.value)
+            (value) => (
+              (userInput.sourceOfFunds = value.value),
+              (userInput.chain = ''),
+              (userInput.token = ''),
+              (userInput.amount = 0)
+            )
           "
           :options="supportedWallets"
           :model-value="getSourceOfFunds(userInput.sourceOfFunds)"

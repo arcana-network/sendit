@@ -1,7 +1,42 @@
 <script setup lang="ts">
 import Overlay from "@/components/overlay.vue";
+import useLoaderStore from "@/stores/loader";
+import useUserStore from "@/stores/user";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
 
 const emits = defineEmits(["dismiss"]);
+const dontShowAgain = ref(false);
+const loaderStore = useLoaderStore();
+const userStore = useUserStore();
+const toast = useToast();
+const router = useRouter();
+
+function handleDismiss() {
+  if (dontShowAgain.value) {
+    localStorage.setItem("SENDIT_HIDE_GASLESS_ANNOUNCEMENT", "1");
+  }
+  emits("dismiss");
+}
+
+async function handleGaslessSetup() {
+  loaderStore.showLoader(
+    "CREATING SMART WALLET",
+    "Hang tight! Your Smart Contract Wallet with amazing new features such as gasless transactions is being created."
+  );
+
+  try {
+    await userStore.createGaslessWallet();
+    router.push({ name: "Wallets" });
+    emits("dismiss");
+  } catch (e) {
+    toast.error("Something went wrong. Please try again.");
+    console.error(e);
+  } finally {
+    loaderStore.hideLoader();
+  }
+}
 </script>
 
 <template>
@@ -12,7 +47,7 @@ const emits = defineEmits(["dismiss"]);
       <div
         class="flex flex-row-reverse flex-wrap gap-4 relative items-center justify-center"
       >
-        <button class="absolute -right-5 -top-5" @click="emits('dismiss')">
+        <button class="absolute -right-5 -top-5" @click="handleDismiss">
           <img src="@/assets/images/icons/close.svg" alt="close" />
         </button>
         <img
@@ -33,6 +68,7 @@ const emits = defineEmits(["dismiss"]);
           >
           <button
             class="p-[0.5rem] rounded-[5px] bg-white text-black uppercase font-bold text-[0.875rem] mt-[0.75rem]"
+            @click.stop="handleGaslessSetup"
           >
             Setup this wallet now
           </button>
@@ -42,6 +78,7 @@ const emits = defineEmits(["dismiss"]);
               class="bg-transparent"
               style="accent-color: white"
               id="dont-show-again"
+              v-model="dontShowAgain"
             />
             <label
               class="text-[#b6b6b6] text-[0.625rem] select-none"

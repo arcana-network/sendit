@@ -17,6 +17,10 @@ type FeeData = {
   maxPriorityFeePerGas: string;
 };
 
+function isWalletAddress(address: string) {
+  return address.length === 42 && address.startsWith("0x");
+}
+
 async function nativeTokenTransfer(
   publickey: string,
   provider: EthereumProvider,
@@ -27,7 +31,9 @@ async function nativeTokenTransfer(
 ) {
   const web3Provider = new BrowserProvider(provider);
   const wallet = await web3Provider.getSigner();
-  const receiverWalletAddress = computeAddress(`0x${publickey}`);
+  const receiverWalletAddress = isWalletAddress(publickey)
+    ? publickey
+    : computeAddress(`0x${publickey}`);
   let gaslessAddress = "";
   if (isGasless) {
     const conn = useConnection();
@@ -77,7 +83,9 @@ async function erc20TokenTransfer(
 ) {
   const web3Provider = new BrowserProvider(provider);
   const wallet = await web3Provider.getSigner();
-  const receiverWalletAddress = computeAddress(`0x${publickey}`);
+  const receiverWalletAddress = isWalletAddress(publickey)
+    ? publickey
+    : computeAddress(`0x${publickey}`);
   if (wallet.address === receiverWalletAddress) throw new Error(SELF_TX_ERROR);
   const tokenContract = new Contract(tokenAddress, erc20Abi, wallet);
   let tokenDecimals: number;

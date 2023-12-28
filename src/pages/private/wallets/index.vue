@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// import GaslessAnnouncementModal from "@/components/GaslessAnnouncementModal.vue";
 import { onBeforeMount, ref, computed, watch } from "vue";
 import { truncateAddress } from "@/utils/truncateAddress";
 import BuyTokens from "@/components/BuyTokens.vue";
@@ -21,7 +20,7 @@ const showDepositModal = ref(false);
 const depositModalDetails = ref({} as any);
 const loaderStore = useLoaderStore();
 const toast = useToast();
-const gaslesschains = ["polygon_mumbai"];
+const gaslesschains = ["polygon", "polygon_mumbai"];
 const authStore = useAuthStore();
 
 const scwWallet = {
@@ -96,6 +95,17 @@ async function createSCWWallet() {
     toast.error("Something went wrong. Please try again.");
   } finally {
     loaderStore.hideLoader();
+  }
+}
+
+async function handleDepositSuccess() {
+  showDepositModal.value = false;
+  if (depositModalDetails.value.accountType === "eoa") {
+    wallets.value[0].assets = await fetchAllTokenBalances(userStore.address);
+  } else {
+    wallets.value[1].assets = (
+      await fetchAllTokenBalances(userStore.gaslessAddress)
+    ).filter((asset) => gaslesschains.includes(asset.blockchain));
   }
 }
 </script>
@@ -205,7 +215,6 @@ async function createSCWWallet() {
         </button>
       </div>
     </div>
-    <!-- <GaslessAnnouncementModal /> -->
     <BuyTokens
       v-if="showBuyModal"
       :address="buyModalDetails.address"
@@ -216,6 +225,7 @@ async function createSCWWallet() {
       :address="depositModalDetails.address"
       :account-type="depositModalDetails.accountType"
       @dismiss="showDepositModal = false"
+      @success="handleDepositSuccess"
     />
   </div>
 </template>

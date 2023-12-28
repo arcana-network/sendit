@@ -3,21 +3,37 @@ import Overlay from "@/components/overlay.vue";
 import Dropdown from "@/components/lib/dropdown.vue";
 import useSendStore from "@/stores/send";
 import { reactive, computed, onBeforeMount } from "vue";
-// import useAuthStore from "@/stores/auth";
 import { useQRCode } from "@vueuse/integrations/useQRCode";
 import { ref } from "vue";
 import { fetchAllTokenBalances } from "@/services/ankr.service";
 import useUserStore from "@/stores/user";
+import useLoaderStore from "@/stores/loader";
+import useAuthStore from "@/stores/auth";
+import chains from "@/constants/chainList";
+import { useToast } from "vue-toastification";
+import {
+  nativeTokenTransfer,
+  erc20TokenTransfer,
+  type FeeData,
+} from "@/services/send.service";
+import { hexlify } from "ethers";
+import { GAS_SUPPORTED_CHAINS } from "@/constants/socket-ids";
+import { switchChain } from "@/use/switchChain";
+import { useConnection } from "@/stores/connection";
+import { SOCKET_IDS } from "@/constants/socket-ids";
 
 type DepositTokenProps = {
   address: string;
   accountType: "eoa" | "scw";
 };
 
-const emit = defineEmits(["dismiss"]);
+const emit = defineEmits(["dismiss", "success"]);
+const loaderStore = useLoaderStore();
+const authStore = useAuthStore();
 const sendStore = useSendStore();
+const conn = useConnection();
+const toast = useToast();
 const props = defineProps<DepositTokenProps>();
-// const authStore = useAuthStore();
 const qrcode = useQRCode(props.address, {
   margin: 2,
   width: 240,
@@ -76,7 +92,7 @@ const userInput = reactive({
   sourceOfFunds: "",
   chain: "",
   token: "",
-  amount: "",
+  amount: 0,
 });
 
 function getChain(chainId) {
@@ -87,8 +103,124 @@ function isExternalWallet() {
   return userInput.sourceOfFunds === "External Wallet";
 }
 
-function handleDeposit() {
-  emit("dismiss");
+function isSmartContractWallet() {
+  return userInput.sourceOfFunds === "Smart Contract Wallet";
+}
+
+function isEoaWallet() {
+  return userInput.sourceOfFunds === "User Owned Wallet";
+}
+
+async function handleDeposit() {
+  loaderStore.showLoader(
+    "DEPOSITING TOKENS",
+    "Hang tight! Your tokens are being deposited."
+  );
+  let hasUserRejectedChainSwitching = false;
+  if (userInput.chain !== "") {
+    const chainId = await authStore.provider.request({
+      method: "eth_chainId",
+    });
+    if (Number(chainId) !== Number(userInput.chain)) {
+      loaderStore.showLoader(
+        "Switching chain...",
+        `Switch to ${
+          chains[Number(userInput.chain)].name
+        } chain before sending tokens`
+      );
+      try {
+        await switchChain(userInput.chain as string);
+      } catch (e) {
+        hasUserRejectedChainSwitching = true;
+      }
+    }
+  } else {
+    toast.error("Please select a chain to continue");
+    return;
+  }
+  const currentAccountType = await authStore.provider.request({
+    method: "_arcana_getAccountType",
+  });
+  const sourceOfFunds = isSmartContractWallet()
+    ? "scw"
+    : isEoaWallet()
+    ? "eoa"
+    : "";
+  if (sourceOfFunds && currentAccountType !== sourceOfFunds) {
+    try {
+      loaderStore.showLoader(
+        "Switching Account Type...",
+        `Switching to ${
+          sourceOfFunds === "scw"
+            ? "Smart Contract Wallet"
+            : "User Owned Wallet"
+        }. Please approve the transaction on your wallet to switch the account type.`
+      );
+      await authStore.provider.request({
+        method: "_arcana_switchAccountType",
+        params: {
+          type: sourceOfFunds,
+        },
+      });
+    } catch (e) {
+      console.error(e);
+      toast.error("Switching account type rejected by user");
+    }
+  }
+  if (!hasUserRejectedChainSwitching) {
+    loaderStore.showLoader(
+      "DEPOSITING TOKENS",
+      "Hang tight! Your tokens are being deposited."
+    );
+    try {
+      const arcanaProvider = authStore.provider;
+      const amount = userInput.amount;
+      const chainId = userInput.chain;
+      let feeData: FeeData | null = null;
+      if (GAS_SUPPORTED_CHAINS.includes(Number(chainId))) {
+        const gasStation: any = await conn.sendMessage(
+          SOCKET_IDS.GET_GAS_STATION,
+          {
+            chain_id: chainId,
+          }
+        );
+        feeData = {
+          maxFeePerGas: hexlify(gasStation.max_fee),
+          maxPriorityFeePerGas: hexlify(gasStation.max_priority_fee),
+        };
+      }
+      userInput.token === "NATIVE"
+        ? await nativeTokenTransfer(
+            props.accountType === "eoa"
+              ? userStore.address
+              : userStore.gaslessAddress,
+            arcanaProvider,
+            amount,
+            feeData,
+            userInput.sourceOfFunds === "scw",
+            userInput.chain
+          )
+        : await erc20TokenTransfer(
+            props.accountType === "eoa"
+              ? userStore.address
+              : userStore.gaslessAddress,
+            arcanaProvider,
+            amount,
+            //@ts-ignore
+            userInput.value.token,
+            feeData,
+            userInput.sourceOfFunds === "scw",
+            userInput.chain
+          );
+      toast.success("Tokens deposited successfully");
+      emit("success");
+    } catch (e) {
+      console.error(e);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      loaderStore.hideLoader();
+    }
+  }
 }
 
 function getSelectedAssets(contractAddress: string) {

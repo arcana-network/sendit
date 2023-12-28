@@ -90,63 +90,69 @@ async function getNativeTokenBalances(walletAddress: string) {
       tokenType: "NATIVE",
       tokenSymbol: "ETH",
       blockchain: "eth",
-      balance: new Decimal(eth.data.result)
-        .mul(Decimal.pow(10, -18))
-        .toString(),
+      balance: eth.data.result
+        ? new Decimal(eth.data.result).mul(Decimal.pow(10, -18)).toString()
+        : 0,
       thumbnail: "https://ethereum.org/static/eth-glyph-colored.svg",
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "MATIC",
       blockchain: "polygon",
-      balance: new Decimal(polygon.data.result)
-        .mul(Decimal.pow(10, -18))
-        .toString(),
+      balance: polygon.data.result
+        ? new Decimal(polygon.data.result).mul(Decimal.pow(10, -18)).toString()
+        : 0,
       thumbnail: "https://ankrscan.io/assets/blockchains/polygon.svg",
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "MATIC",
       blockchain: "polygon_mumbai",
-      balance: new Decimal(polygon_mumbai.data.result)
-        .mul(Decimal.pow(10, -18))
-        .toString(),
+      balance: polygon_mumbai.data.result
+        ? new Decimal(polygon_mumbai.data.result)
+            .mul(Decimal.pow(10, -18))
+            .toString()
+        : 0,
       thumbnail: "https://ankrscan.io/assets/blockchains/polygon.svg",
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "ETH",
       blockchain: "arbitrum",
-      balance: new Decimal(arbitrum.data.result)
-        .mul(Decimal.pow(10, -18))
-        .toString(),
+      balance: arbitrum.data.result
+        ? new Decimal(arbitrum.data.result).mul(Decimal.pow(10, -18)).toString()
+        : 0,
       thumbnail: "https://ankrscan.io/assets/blockchains/arbitrum.svg",
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "BNB",
       blockchain: "bsc",
-      balance: new Decimal(bsc.data.result)
-        .mul(Decimal.pow(10, -18))
-        .toString(),
+      balance: bsc.data.result
+        ? new Decimal(bsc.data.result).mul(Decimal.pow(10, -18)).toString()
+        : 0,
       thumbnail: "https://ankrscan.io/assets/blockchains/binance.svg",
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "tBNB",
       blockchain: "bsc_testnet_chapel",
-      balance: new Decimal(bsc_testnet_chapel.data.result)
-        .mul(Decimal.pow(10, -18))
-        .toString(),
+      balance: bsc_testnet_chapel.data.result
+        ? new Decimal(bsc_testnet_chapel.data.result)
+            .mul(Decimal.pow(10, -18))
+            .toString()
+        : 0,
       thumbnail: "https://ankrscan.io/assets/blockchains/binance.svg",
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "BNB",
       blockchain: "opbnb",
-      balance: new Decimal(opbnb_mainnet.data.result)
-        .mul(Decimal.pow(10, -18))
-        .toString(),
+      balance: opbnb_mainnet.data.result
+        ? new Decimal(opbnb_mainnet.data.result)
+            .mul(Decimal.pow(10, -18))
+            .toString()
+        : 0,
       thumbnail: "https://ankrscan.io/assets/blockchains/binance.svg",
     },
   ];
