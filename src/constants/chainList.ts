@@ -76,4 +76,14 @@ export enum ChainNames {
   "opbnb" = "opBNB Mainnet",
 }
 
+export enum ChainIds {
+  "eth" = 1,
+  "polygon" = 137,
+  "polygon_mumbai" = 80001,
+  "arbitrum" = 42161,
+  "bsc" = 56,
+  "bsc_testnet_chapel" = 97,
+  "opbnb" = 204,
+}
+
 export default chains;

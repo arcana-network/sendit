@@ -10,6 +10,7 @@ import useUserStore from "@/stores/user";
 import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
 import useAuthStore from "@/stores/auth";
+import { router } from "@/router";
 
 const userStore = useUserStore();
 const wallets = ref([] as any[]);
@@ -73,10 +74,15 @@ function handleDeposit(wallet) {
 }
 
 onBeforeMount(async () => {
+  loaderStore.showLoader(
+    "Loading wallets",
+    "Loading your wallets and fetching balances."
+  );
   wallets.value[0].assets = await fetchAllTokenBalances(userStore.address);
   wallets.value[1].assets = (
     await fetchAllTokenBalances(userStore.gaslessAddress)
   ).filter((asset) => gaslesschains.includes(asset.blockchain));
+  loaderStore.hideLoader();
 });
 
 watch(isSmartContractWalletCreated, () => {
@@ -107,6 +113,17 @@ async function handleDepositSuccess() {
       await fetchAllTokenBalances(userStore.gaslessAddress)
     ).filter((asset) => gaslesschains.includes(asset.blockchain));
   }
+}
+
+function handleSendToken(asset: any, accountType: string) {
+  router.push({
+    name: "Send",
+    query: {
+      sourceOfFunds: accountType,
+      token: asset.contractAddress,
+      blockchain: asset.blockchain,
+    },
+  });
 }
 </script>
 
@@ -160,7 +177,10 @@ async function handleDepositSuccess() {
             <div class="ml-auto text-[14px]">
               {{ new Decimal(asset.balance).toDecimalPlaces(6) }}
             </div>
-            <button class="asset-button">
+            <button
+              class="asset-button"
+              @click="handleSendToken(asset, wallet.accountType)"
+            >
               <img src="@/assets/images/icons/arrow-right.svg" alt="arrow" />
             </button>
           </div>

@@ -27,13 +27,14 @@ import { SOCKET_IDS, TOKEN_TYPES } from "@/constants/socket-ids";
 import { isValidEmail, isValidTwitterHandle } from "@/utils/validation";
 import { normaliseEmail, normaliseTwitterHandle } from "@/utils/normalise";
 import Dropdown from "@/components/lib/dropdown.vue";
-import chains, { testnetChains } from "@/constants/chainList";
+import chains, { testnetChains, ChainIds } from "@/constants/chainList";
 import { hexlify } from "ethers";
 import { GAS_SUPPORTED_CHAINS } from "@/constants/socket-ids";
 import { Decimal } from "decimal.js";
 import copyToClipboard from "@/utils/copyToClipboard";
 import { switchChain } from "@/use/switchChain";
 import useUserStore from "@/stores/user";
+import { useRoute, useRouter } from "vue-router";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -41,6 +42,8 @@ const INSUFFICIENT_FUNDS = "INSUFFICIENT_FUNDS";
 const SELF_TX_ERROR = "self-transactions are not permitted";
 let assetInterval: NodeJS.Timer;
 const refreshIconAnimating = ref(false);
+const route = useRoute();
+const router = useRouter();
 
 const supportedWallets = computed(() => {
   const wallets = [
@@ -66,7 +69,20 @@ async function handleRefresh() {
 }
 
 onBeforeMount(async () => {
+  loadStore.showLoader("Fetching assets...");
   await fetchAssets();
+  const query = route.query;
+  if (query.blockchain) {
+    userInput.value.chain = ChainIds[query.blockchain as string];
+  }
+  if (query.sourceOfFunds) {
+    userInput.value.sourceOfFunds =
+      query.sourceOfFunds as typeof userInput.value.sourceOfFunds;
+  }
+  if (query.token) {
+    userInput.value.token = query.token as typeof userInput.value.token;
+  }
+  loadStore.hideLoader();
 });
 
 onBeforeUnmount(() => {
@@ -348,6 +364,7 @@ async function proceed() {
       sendRes.token = getCurrency(chainId);
       fetchAssets();
       resetAll();
+      router.replace({ name: "Send", query: {} });
       emits("transaction-successful", sendRes);
     } catch (error: any) {
       console.error(error);
@@ -407,7 +424,7 @@ watch(
       const chainId = await authStore.provider.request({
         method: "eth_chainId",
       });
-      if (selectedChainId !== oldChain) {
+      if (selectedChainId !== oldChain && !route.query.token) {
         userInput.value.token = "";
       }
       if (Number(chainId) !== Number(selectedChainId)) {
