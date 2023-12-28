@@ -42,7 +42,6 @@ async function nativeTokenTransfer(
         chain_id: chain_id,
         address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
       });
-      console.log(res);
       if (res.opted_in) {
         gaslessAddress = ethers.hexlify(res.scw_address);
         if (gaslessAddress === userStore.gaslessAddress)
@@ -69,7 +68,10 @@ async function nativeTokenTransfer(
   if (confirmed == null) {
     throw new Error("Invalid transaction");
   }
-  return confirmed;
+  return {
+    ...confirmed,
+    to: gaslessAddress || receiverWalletAddress,
+  };
 }
 
 const erc20Abi = [
@@ -134,7 +136,7 @@ async function erc20TokenTransfer(
     throw new Error("Invalid transaction");
   }
 
-  return { hash: confirmed.hash, to: receiverWalletAddress };
+  return { hash: confirmed.hash, to: gaslessAddress || receiverWalletAddress };
 }
 
 type RequestedNativeTokenTransferData = {
