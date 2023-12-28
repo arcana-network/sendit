@@ -37,14 +37,19 @@ async function nativeTokenTransfer(
   let gaslessAddress = "";
   if (isGasless) {
     const conn = useConnection();
-    const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
-      chain_id: chain_id,
-      address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
-    });
-    if (res.opted_in) {
-      gaslessAddress = ethers.hexlify(res.scw_address);
-      if (gaslessAddress === userStore.gaslessAddress)
-        throw new Error(SELF_TX_ERROR);
+    try {
+      const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
+        chain_id: chain_id,
+        address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
+      });
+      console.log(res);
+      if (res.opted_in) {
+        gaslessAddress = ethers.hexlify(res.scw_address);
+        if (gaslessAddress === userStore.gaslessAddress)
+          throw new Error(SELF_TX_ERROR);
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
   if (wallet.address === receiverWalletAddress) throw new Error(SELF_TX_ERROR);
@@ -87,6 +92,23 @@ async function erc20TokenTransfer(
     ? publickey
     : computeAddress(`0x${publickey}`);
   if (wallet.address === receiverWalletAddress) throw new Error(SELF_TX_ERROR);
+  let gaslessAddress = "";
+  if (isGasless) {
+    const conn = useConnection();
+    try {
+      const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
+        chain_id: chain_id,
+        address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
+      });
+      if (res.opted_in) {
+        gaslessAddress = ethers.hexlify(res.scw_address);
+        if (gaslessAddress === userStore.gaslessAddress)
+          throw new Error(SELF_TX_ERROR);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
   const tokenContract = new Contract(tokenAddress, erc20Abi, wallet);
   let tokenDecimals: number;
   const decimalAmount = new Decimal(amount);
@@ -96,7 +118,7 @@ async function erc20TokenTransfer(
     tokenDecimals = 0;
   }
   const ptx = await tokenContract.transfer.populateTransaction(
-    receiverWalletAddress,
+    gaslessAddress || receiverWalletAddress,
     decimalAmount.mul(Decimal.pow(10, tokenDecimals)).toString()
   );
   ptx.from = await wallet.getAddress();
