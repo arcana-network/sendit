@@ -79,9 +79,11 @@ onBeforeMount(async () => {
     "Loading your wallets and fetching balances."
   );
   wallets.value[0].assets = await fetchAllTokenBalances(userStore.address);
-  wallets.value[1].assets = (
-    await fetchAllTokenBalances(userStore.gaslessAddress)
-  ).filter((asset) => gaslesschains.includes(asset.blockchain));
+  if (wallets.value[1]) {
+    wallets.value[1].assets = (
+      await fetchAllTokenBalances(userStore.gaslessAddress)
+    ).filter((asset) => gaslesschains.includes(asset.blockchain));
+  }
   loaderStore.hideLoader();
 });
 

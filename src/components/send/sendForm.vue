@@ -221,6 +221,7 @@ function getCurrency(chainId: string | number) {
 async function proceed() {
   loadStore.showLoader("Sending tokens...");
   let hasUserRejectedChainSwitching = false;
+  let hasUserRejectedAccountTypeSwitching = false;
   if (userInput.value.chain !== "") {
     const chainId = await authStore.provider.request({
       method: "eth_chainId",
@@ -242,32 +243,35 @@ async function proceed() {
     toast.error("Please select a chain to continue");
     return;
   }
-  const currentAccountType = await authStore.provider.request({
-    method: "_arcana_getAccountType",
-  });
-  if (currentAccountType !== userInput.value.sourceOfFunds) {
-    try {
-      loadStore.showLoader(
-        "Switching Account Type...",
-        `Switching to ${
-          userInput.value.sourceOfFunds === "scw"
-            ? "Smart Contract Wallet"
-            : "User Owned Wallet"
-        }. Please approve the transaction on your wallet to switch the account type.`
-      );
-      await authStore.provider.request({
-        method: "_arcana_switchAccountType",
-        params: {
-          type: userInput.value.sourceOfFunds,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-      userInput.value.sourceOfFunds = currentAccountType;
-      toast.error("Switching account type rejected by user");
+  if (authStore.loggedInWith === "") {
+    const currentAccountType = await authStore.provider.request({
+      method: "_arcana_getAccountType",
+    });
+    if (currentAccountType !== userInput.value.sourceOfFunds) {
+      try {
+        loadStore.showLoader(
+          "Switching Account Type...",
+          `Switching to ${
+            userInput.value.sourceOfFunds === "scw"
+              ? "Smart Contract Wallet"
+              : "User Owned Wallet"
+          }. Please approve the transaction on your wallet to switch the account type.`
+        );
+        await authStore.provider.request({
+          method: "_arcana_switchAccountType",
+          params: {
+            type: userInput.value.sourceOfFunds,
+          },
+        });
+      } catch (e) {
+        console.error(e);
+        userInput.value.sourceOfFunds = currentAccountType;
+        toast.error("Switching account type rejected by user");
+        hasUserRejectedAccountTypeSwitching = true;
+      }
     }
   }
-  if (!hasUserRejectedChainSwitching) {
+  if (!hasUserRejectedChainSwitching && !hasUserRejectedAccountTypeSwitching) {
     loadStore.showLoader(
       "Sending tokens...",
       `Sending ${new Decimal(
@@ -404,9 +408,15 @@ async function proceed() {
     }
   } else {
     loadStore.hideLoader();
-    toast.error(
-      "Switching chain rejected by user. Cannot proceed with this transaction."
-    );
+    if (hasUserRejectedAccountTypeSwitching) {
+      toast.error(
+        "Switching account type rejected by user. Cannot proceed with this transaction."
+      );
+    } else {
+      toast.error(
+        "Switching chain rejected by user. Cannot proceed with this transaction."
+      );
+    }
   }
 }
 
