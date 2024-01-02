@@ -134,11 +134,11 @@ async function fetchAssets() {
       });
     }
     allAssets.value = [...nativeAssets];
-    loadStore.hideLoader();
-    findFallbackBalanceInAnkr(walletAddress, nativeAssets);
+    await findFallbackBalanceInAnkr(walletAddress, nativeAssets);
   } catch (error) {
     console.error(error);
   } finally {
+    loadStore.hideLoader();
     isBalanceFetching.value = false;
   }
 }
