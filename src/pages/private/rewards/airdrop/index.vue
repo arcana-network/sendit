@@ -154,8 +154,7 @@ async function handleClaim(phaseId: PhaseIds) {
     return;
   }
   try {
-    const airdropData = await conn.sendMessage(socketId);
-    console.log({ airdropData });
+    await conn.sendMessage(socketId);
     airdropPhases[phaseIndex].dropDetails.claimStatus = ClaimStatus.init;
     airdropPhases[phaseIndex].dropDetails.isVerified = true;
   } catch (e: any) {

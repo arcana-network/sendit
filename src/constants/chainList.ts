@@ -64,4 +64,26 @@ export const testnetChainFaucets = {
   80001: "https://mumbaifaucet.com",
 };
 
+export const gaslessChains = [137];
+
+export enum ChainNames {
+  "eth" = "Ethereum",
+  "polygon" = "Polygon PoS",
+  "polygon_mumbai" = "Polygon Mumbai",
+  "arbitrum" = "Arbitrum One",
+  "bsc" = "BNB Smart Chain",
+  "bsc_testnet_chapel" = "BNB Smart Chain Testnet",
+  "opbnb" = "opBNB Mainnet",
+}
+
+export enum ChainIds {
+  "eth" = 1,
+  "polygon" = 137,
+  "polygon_mumbai" = 80001,
+  "arbitrum" = 42161,
+  "bsc" = 56,
+  "bsc_testnet_chapel" = 97,
+  "opbnb" = 204,
+}
+
 export default chains;

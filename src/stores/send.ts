@@ -14,12 +14,14 @@ type SendStoreKind = {
     chain: string | number;
     token: string;
     amount: number | null;
+    sourceOfFunds: "" | "scw" | "eoa";
   };
   supportedChains: {
     chain_id: number | string;
     name: string;
     blockchain: string;
     sendit_contract: string;
+    gasless_enabled: boolean;
   }[];
   requestInput: {
     requestId: string;
@@ -44,6 +46,7 @@ const useSendStore = defineStore("send", {
         chain: "",
         token: "",
         amount: null,
+        sourceOfFunds: "",
       },
       supportedChains: [],
       requestInput: {
@@ -80,6 +83,7 @@ const useSendStore = defineStore("send", {
         chain: "",
         token: "",
         amount: null,
+        sourceOfFunds: "",
       };
     },
     resetRequestInput() {
