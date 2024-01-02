@@ -64,6 +64,7 @@ const showRequestInvalidPopup = ref(false);
 const requestInvalidPopupType = ref("");
 const isBannerClosed = ref(false);
 const showGaslessAnnouncementModal = ref(false);
+const inviteId = route.query.inviteId as string;
 
 loaderStore.showLoader("Initializing...");
 
@@ -92,6 +93,7 @@ async function connectSocket() {
   const account: SocketConnectionAccount = {
     verifier: authStore.userInfo.loginType,
     verifier_id: authStore.userInfo.id,
+    invite_id: inviteId ? Number(inviteId) : 0,
   };
   await conn.initialize(
     // @ts-ignore
