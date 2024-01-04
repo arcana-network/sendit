@@ -145,4 +145,27 @@ async function getNativeTokenBalances(walletAddress: string) {
   ];
 }
 
-export { getAccountBalance, fetchRewards, getNativeTokenBalances };
+async function getBicoBalance(walletAddress) {
+  const BicoContract = "0xF17e65822b568B3903685a7c9F496CF7656Cc6C2";
+  const payload = {
+    jsonrpc: "2.0",
+    method: "eth_call",
+    params: [
+      {
+        to: BicoContract,
+        data: `0x70a08231000000000000000000000000${walletAddress.slice(2)}`,
+      },
+      "latest",
+    ],
+    id: 1,
+  };
+  const { data } = await axios.post(chains[1].rpc_url, payload);
+  return data.result;
+}
+
+export {
+  getAccountBalance,
+  fetchRewards,
+  getNativeTokenBalances,
+  getBicoBalance,
+};
