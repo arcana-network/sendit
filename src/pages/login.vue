@@ -30,6 +30,10 @@ const verifier = query.verifier as string;
 const verifierId = query.verifierId as string;
 const requestId = query.requestId as string;
 
+const isDiamondHandsAirdropCampaign = computed(() => {
+  return query.campaign === "diamond-hands-airdrop";
+});
+
 if (verifier === "passwordless" && verifierId) {
   passwordlessEmailId.value = verifierId;
 }
@@ -183,7 +187,10 @@ async function onConnectToOkxWallet() {
                 Sign-in using any of these methods to get started
               </p>
             </header>
-            <section class="space-y-3 w-full flex flex-col items-start">
+            <section
+              v-if="!isDiamondHandsAirdropCampaign"
+              class="space-y-3 w-full flex flex-col items-start"
+            >
               <span
                 v-if="!verifier || requestId"
                 class="text-xs text-philippine-gray"
@@ -251,7 +258,10 @@ async function onConnectToOkxWallet() {
               </div>
             </section>
             <section
-              v-if="!verifier || verifier === 'passwordless'"
+              v-if="
+                (!verifier || verifier === 'passwordless') &&
+                !isDiamondHandsAirdropCampaign
+              "
               class="space-y-3 w-full flex flex-col items-start"
             >
               <span class="text-xs text-philippine-gray">Email Address</span>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AirdropPhase1 from "@/assets/images/airdrop-phase-1.png";
+import DiamondHandsAirdrop from "@/assets/images/diamond-hands-airdrop.png";
 import { truncateAddress } from "@/utils/truncateAddress";
 import AirdropVerification from "@/components/AirdropVerification.vue";
 import AirdropSuccess from "@/components/AirdropVerificationSuccess.vue";
@@ -12,6 +13,9 @@ import useUserStore from "@/stores/user";
 import dayjs from "dayjs";
 import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
+import useAuthStore from "@/stores/auth";
+import { useRoute } from "vue-router";
+import { getBicoBalance } from "@/services/ankr.service";
 
 const accountVerificationModal = ref({
   verify: false,
@@ -25,6 +29,8 @@ const loaderStore = useLoaderStore();
 const verificationFailMsg = ref("");
 const toast = useToast();
 const selectedAirdropPhase = ref({} as any);
+const authStore = useAuthStore();
+const route = useRoute();
 
 enum ClaimStatus {
   init = "Claim Initiated",
@@ -41,6 +47,7 @@ enum PhaseStatus {
 enum PhaseIds {
   ph1,
   ph2,
+  dha,
 }
 
 const claimFailedReason = {
@@ -131,6 +138,44 @@ onBeforeMount(async () => {
         claimFailedReason: claimFailedReason[data.twitter_errors],
       },
     });
+    if (
+      authStore.loggedInWith !== "" ||
+      route.query.campaign === "diamond-hands-airdrop"
+    ) {
+      const res = await getBicoBalance(user.address);
+      const bico = new Decimal(res).div(Decimal.pow(10, 9));
+      const xar = bico.greaterThanOrEqualTo(1000) ? 250 : 0;
+      airdropPhases.unshift({
+        phase: {
+          name: "Diamond Hands",
+          image: DiamondHandsAirdrop,
+          status: PhaseStatus.ongoing,
+          id: PhaseIds.dha,
+        },
+        dropDetails: {
+          walletAddress: user.address,
+          bico: bico.toString(),
+          xar,
+          distributionDates: {
+            start: dayjs(
+              data.diamond_hands?.distribution_start || new Date()
+            ).format("DD MMM YYYY"),
+            end: dayjs(
+              data.diamond_hands?.distribution_end || new Date()
+            ).format("DD MMM YYYY"),
+          },
+          isVerified: data.twitter_verified,
+          claimStatus: data.diamond_hands?.claimed
+            ? ClaimStatus.init
+            : data.twitter_verified && data.twitter_errors
+            ? ClaimStatus.failed
+            : data.twitter_verified
+            ? ClaimStatus.verified
+            : false,
+          claimFailedReason: claimFailedReason[data.twitter_errors],
+        },
+      });
+    }
   } finally {
     loaderStore.hideLoader();
   }
@@ -139,7 +184,9 @@ onBeforeMount(async () => {
 async function handleClaim(phaseId: PhaseIds) {
   loaderStore.showLoader("Claiming airdrop...");
   const socketId =
-    phaseId === PhaseIds.ph1
+    phaseId === PhaseIds.dha
+      ? SOCKET_IDS.CLAIM_DIAMOND_HANDS_AIRDROP
+      : phaseId === PhaseIds.ph1
       ? SOCKET_IDS.CLAIM_PHASE_1
       : SOCKET_IDS.CLAIM_PHASE_2;
   const phaseIndex = airdropPhases.findIndex(
@@ -199,12 +246,12 @@ function handleVerificationSuccess() {
             class="w-full h-[150px] object-cover object-center z-[1] opacity-85"
           />
           <div
-            class="absolute inset-0 flex justify-center items-center z-[2] airdrop-card-bg font-[700] text-4.5xl uppercase text-[#f7f7f7d9]"
+            class="absolute inset-0 flex justify-center items-center text-center z-[2] airdrop-card-bg font-[700] text-4.5xl uppercase text-[#f7f7f7d9]"
           >
             {{ airdropPhase.phase.name }}
           </div>
         </div>
-        <div class="flex flex-col">
+        <div class="flex flex-col h-full">
           <div class="flex flex-col gap-1 p-4">
             <span class="font-[700] text-sm uppercase">Drop Details</span>
             <div class="text-xs flex">
@@ -215,7 +262,16 @@ function handleVerificationSuccess() {
                 truncateAddress(airdropPhase.dropDetails.walletAddress)
               }}</span>
             </div>
-            <div class="text-xs flex">
+            <div
+              class="text-xs flex"
+              v-if="airdropPhase.phase.id === PhaseIds.dha"
+            >
+              <span class="text-philippine-gray w-[16ch] shrink-0"
+                >BICO Tokens:</span
+              >
+              <span>{{ airdropPhase.dropDetails.bico }}</span>
+            </div>
+            <div class="text-xs flex" v-else>
               <span class="text-philippine-gray w-[16ch] shrink-0"
                 >XP Gained:</span
               >
@@ -269,7 +325,7 @@ function handleVerificationSuccess() {
           </div>
           <button
             v-if="!airdropPhase.dropDetails.isVerified"
-            class="btn-submit rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
+            class="btn-submit mt-auto rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
             @click.stop="
               accountVerificationModal.verify = true;
               selectedAirdropPhase = airdropPhase;
@@ -286,7 +342,7 @@ function handleVerificationSuccess() {
               !airdropPhase.dropDetails.claimStatus ||
               airdropPhase.dropDetails.claimStatus === ClaimStatus.verified
             "
-            class="btn-submit rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
+            class="btn-submit mt-auto rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
             @click.stop="handleClaim(airdropPhase.phase.id)"
             :disabled="airdropPhase.phase.status !== PhaseStatus.ongoing"
           >
