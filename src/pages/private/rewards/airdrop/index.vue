@@ -5,6 +5,7 @@ import { truncateAddress } from "@/utils/truncateAddress";
 import AirdropVerification from "@/components/AirdropVerification.vue";
 import AirdropSuccess from "@/components/AirdropVerificationSuccess.vue";
 import AirdropFailed from "@/components/AirdropVerificationFailed.vue";
+import DiamondHandsAirdropFailed from "@/components/DiamondHandsAirdropFailed.vue";
 import { onBeforeMount, reactive, ref } from "vue";
 import { useConnection } from "@/stores/connection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
@@ -31,6 +32,8 @@ const toast = useToast();
 const selectedAirdropPhase = ref({} as any);
 const authStore = useAuthStore();
 const route = useRoute();
+const isDiamondHandAirdropFailed = ref(false);
+const diamondHandError = ref(0);
 
 enum ClaimStatus {
   init = "Claim Initiated",
@@ -151,6 +154,8 @@ onBeforeMount(async () => {
           image: DiamondHandsAirdrop,
           status: PhaseStatus.ongoing,
           id: PhaseIds.dha,
+          eligibility:
+            "1,000 BICO tokens or 1 Bico Early Adopter NFT required on both claim and distribution dates.",
         },
         dropDetails: {
           walletAddress: user.address,
@@ -160,9 +165,14 @@ onBeforeMount(async () => {
             start: dayjs(
               data.diamond_hands?.distribution_start || new Date()
             ).format("DD MMM YYYY"),
-            end: dayjs(
-              data.diamond_hands?.distribution_end || new Date()
-            ).format("DD MMM YYYY"),
+          },
+          claimDates: {
+            start: dayjs(data.diamond_hands?.claim_start || new Date()).format(
+              "DD MMM YYYY"
+            ),
+            end: dayjs(data.diamond_hands?.claim_end || new Date()).format(
+              "DD MMM YYYY"
+            ),
           },
           isVerified: data.twitter_verified,
           claimStatus: data.diamond_hands?.claimed
@@ -207,7 +217,12 @@ async function handleClaim(phaseId: PhaseIds) {
     airdropPhases[phaseIndex].dropDetails.isVerified = true;
   } catch (e: any) {
     console.log(e);
-    toast.error(e.message);
+    if (phaseId === PhaseIds.dha) {
+      isDiamondHandAirdropFailed.value = true;
+      diamondHandError.value = e.code;
+    } else {
+      toast.error(e.message);
+    }
   } finally {
     loaderStore.hideLoader();
   }
@@ -254,6 +269,12 @@ function handleVerificationSuccess() {
         <div class="flex flex-col h-full">
           <div class="flex flex-col gap-1 p-4">
             <span class="font-[700] text-sm uppercase">Drop Details</span>
+            <div v-if="airdropPhase.phase.eligibility" class="text-xs flex">
+              <span class="text-philippine-gray w-[16ch] shrink-0"
+                >Eligibility:</span
+              >
+              <span>{{ airdropPhase.phase.eligibility }}</span>
+            </div>
             <div class="text-xs flex">
               <span class="text-philippine-gray w-[16ch] shrink-0"
                 >Wallet Address:</span
@@ -286,13 +307,29 @@ function handleVerificationSuccess() {
               >
               <span v-else>-</span>
             </div>
+            <div
+              class="text-xs flex"
+              v-if="airdropPhase.dropDetails.claimDates?.start"
+            >
+              <span class="text-philippine-gray w-[16ch] shrink-0"
+                >Claim Date:</span
+              >
+              <span>
+                {{ airdropPhase.dropDetails.claimDates.start }}
+                -
+                {{ airdropPhase.dropDetails.claimDates.end }}
+              </span>
+            </div>
             <div class="text-xs flex">
               <span class="text-philippine-gray w-[16ch] shrink-0"
                 >Distribution Date:</span
               >
               <span>
-                {{ airdropPhase.dropDetails.distributionDates.start }} -
-                {{ airdropPhase.dropDetails.distributionDates.end }}
+                {{ airdropPhase.dropDetails.distributionDates.start }}
+                <span v-if="airdropPhase.dropDetails.distributionDates.end"
+                  >-
+                  {{ airdropPhase.dropDetails.distributionDates.end }}
+                </span>
               </span>
             </div>
             <div
@@ -383,6 +420,14 @@ function handleVerificationSuccess() {
         accountVerificationModal.failed = false;
         handleVerificationFailed(verificationFailMsg);
         verificationFailMsg = '';
+      "
+    />
+    <DiamondHandsAirdropFailed
+      v-if="isDiamondHandAirdropFailed"
+      :reason="diamondHandError"
+      @dismiss="
+        isDiamondHandAirdropFailed = false;
+        diamondHandError = 0;
       "
     />
   </div>
