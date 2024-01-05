@@ -148,11 +148,16 @@ onBeforeMount(async () => {
       const res = await getBicoBalance(user.address);
       const bico = new Decimal(res).div(Decimal.pow(10, 9));
       const xar = bico.greaterThanOrEqualTo(1000) ? 250 : 0;
+      const status =
+        dayjs().isBefore(data.diamond_hands?.claim_start) ||
+        dayjs().isAfter(data.diamond_hands?.claim_end)
+          ? PhaseStatus.upcoming
+          : PhaseStatus.ongoing;
       airdropPhases.unshift({
         phase: {
           name: "Diamond Hands",
           image: DiamondHandsAirdrop,
-          status: PhaseStatus.ongoing,
+          status,
           id: PhaseIds.dha,
           eligibility:
             "1,000 BICO tokens or 1 Bico Early Adopter NFT required on both claim and distribution dates.",
@@ -261,7 +266,7 @@ function handleVerificationSuccess() {
             class="w-full h-[150px] object-cover object-center z-[1] opacity-85"
           />
           <div
-            class="absolute inset-0 flex justify-center items-center text-center z-[2] airdrop-card-bg font-[700] text-4.5xl uppercase text-[#f7f7f7d9]"
+            class="absolute inset-0 flex justify-center items-center text-center z-[2] airdrop-card-bg font-[700] text-4xl uppercase text-[#f7f7f7d9]"
           >
             {{ airdropPhase.phase.name }}
           </div>

@@ -27,7 +27,7 @@ const failureMessage = computed(() => {
   if (props.reason === FailureCodes.inactive) {
     return "The airdrop is not active at the moment. The airdrop will be active from Jan 08, 2024 to Jan 12, 2024.";
   } else if (props.reason === FailureCodes.ineligible) {
-    return "The connected wallet must hold 1000 BICO tokens or the early adopter NFT to claim $XAR. Please come back and try again during the claim window if you think the wallet is eligible.";
+    return "The connected wallet must hold 1000 BICO tokens or 1 Bico Early Adopter NFT to claim $XAR. Please come back and try again during the claim window if you think the wallet is eligible.";
   }
 });
 </script>
