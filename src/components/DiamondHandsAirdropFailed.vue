@@ -10,7 +10,7 @@ type VerificationFailedProps = {
 
 enum FailureCodes {
   inactive = 1,
-  ineligible = 5,
+  ineligible = 3,
 }
 
 const props = defineProps<VerificationFailedProps>();
