@@ -263,6 +263,9 @@ watch(
         await onWalletConnect();
       }
       loaderStore.hideLoader();
+      if (route.query.campaign === "diamond-hands-airdrop") {
+        return router.replace({ name: "Airdrop" });
+      }
       router.replace({ name: "Send", query: { ...route.query } });
     }
   }
