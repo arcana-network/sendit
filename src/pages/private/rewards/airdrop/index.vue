@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AirdropPhase1 from "@/assets/images/airdrop-phase-1.png";
-import DiamondHandsAirdrop from "@/assets/images/diamond-hands-airdrop.png";
+import DiamondHandsAirdrop from "@/assets/images/diamond-hands-airdrop.jpg";
 import { truncateAddress } from "@/utils/truncateAddress";
 import AirdropVerification from "@/components/AirdropVerification.vue";
 import AirdropSuccess from "@/components/AirdropVerificationSuccess.vue";
@@ -79,7 +79,7 @@ onBeforeMount(async () => {
     const data = await conn.sendMessage(SOCKET_IDS.GET_AIRDROP_INFO);
     airdropPhases.push({
       phase: {
-        name: "Phase 1",
+        name: "Sendit Drop Phase 1",
         image: AirdropPhase1,
         status: PhaseStatus.ongoing,
         id: PhaseIds.ph1,
@@ -111,7 +111,7 @@ onBeforeMount(async () => {
     });
     airdropPhases.push({
       phase: {
-        name: "Phase 2",
+        name: "Sendit Drop Phase 2",
         image: AirdropPhase1,
         status: PhaseStatus.upcoming,
         id: PhaseIds.ph2,
@@ -266,7 +266,11 @@ function handleVerificationSuccess() {
             class="w-full h-[150px] object-cover object-center z-[1] opacity-85"
           />
           <div
-            class="absolute inset-0 flex justify-center items-center text-center z-[2] airdrop-card-bg font-[700] text-4xl uppercase text-[#f7f7f7d9]"
+            class="absolute inset-0 flex justify-center items-center text-center z-[2] font-[700] text-4xl uppercase text-[#f7f7f7d9]"
+            :class="{
+              'airdrop-card-bg': airdropPhase.phase.id !== PhaseIds.dha,
+              '-mt-3': airdropPhase.phase.id === PhaseIds.dha,
+            }"
           >
             {{ airdropPhase.phase.name }}
           </div>
