@@ -180,14 +180,7 @@ onBeforeMount(async () => {
             ),
           },
           isVerified: data.twitter_verified,
-          claimStatus: data.diamond_hands?.claimed
-            ? ClaimStatus.init
-            : data.twitter_verified && data.twitter_errors
-            ? ClaimStatus.failed
-            : data.twitter_verified
-            ? ClaimStatus.verified
-            : false,
-          claimFailedReason: claimFailedReason[data.twitter_errors],
+          claimStatus: data.diamond_hands?.claimed ? ClaimStatus.init : false,
         },
       });
     }
@@ -359,7 +352,9 @@ function handleVerificationSuccess() {
                   'text-[#eeb113]':
                     airdropPhase.dropDetails.claimStatus === ClaimStatus.init,
                   'text-[#ff4264]':
-                    airdropPhase.dropDetails.claimStatus === ClaimStatus.failed,
+                    airdropPhase.dropDetails.claimStatus ===
+                      ClaimStatus.failed &&
+                    airdropPhase.phase.id !== PhaseIds.dha,
                 }"
               >
                 {{
