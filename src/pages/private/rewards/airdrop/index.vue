@@ -370,7 +370,10 @@ function handleVerificationSuccess() {
             </div>
           </div>
           <button
-            v-if="!airdropPhase.dropDetails.isVerified"
+            v-if="
+              !airdropPhase.dropDetails.isVerified &&
+              airdropPhase.phase.id !== PhaseIds.dha
+            "
             class="btn-submit mt-auto rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
             @click.stop="
               accountVerificationModal.verify = true;
@@ -386,7 +389,8 @@ function handleVerificationSuccess() {
           <button
             v-else-if="
               !airdropPhase.dropDetails.claimStatus ||
-              airdropPhase.dropDetails.claimStatus === ClaimStatus.verified
+              airdropPhase.dropDetails.claimStatus === ClaimStatus.verified ||
+              airdropPhase.phase.id === PhaseIds.dha
             "
             class="btn-submit mt-auto rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
             @click.stop="handleClaim(airdropPhase.phase.id)"
