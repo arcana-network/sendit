@@ -37,21 +37,22 @@ async function nativeTokenTransfer(
   let gaslessAddress = "";
   if (isGasless) {
     const conn = useConnection();
-    try {
-      const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
-        chain_id: chain_id,
-        address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
-      });
-      if (res.opted_in) {
-        gaslessAddress = ethers.hexlify(res.scw_address);
-        if (gaslessAddress === userStore.gaslessAddress)
-          throw new Error(SELF_TX_ERROR);
-      }
-    } catch (e) {
-      console.log(e);
+    const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
+      chain_id: chain_id,
+      address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
+    });
+    console.log(res);
+    if (res.opted_in) {
+      gaslessAddress = ethers.hexlify(res.scw_address);
+      if (
+        gaslessAddress?.toLowerCase() ===
+        userStore.gaslessAddress?.toLowerCase()
+      )
+        throw new Error(SELF_TX_ERROR);
     }
   }
-  if (wallet.address === receiverWalletAddress) throw new Error(SELF_TX_ERROR);
+  if (wallet.address?.toLowerCase() === receiverWalletAddress?.toLowerCase())
+    throw new Error(SELF_TX_ERROR);
   const decimalAmount = new Decimal(amount);
   const rawTx: any = {
     type: 2,
@@ -93,22 +94,22 @@ async function erc20TokenTransfer(
   const receiverWalletAddress = isWalletAddress(publickey)
     ? publickey
     : computeAddress(`0x${publickey}`);
-  if (wallet.address === receiverWalletAddress) throw new Error(SELF_TX_ERROR);
+  if (wallet.address?.toLowerCase() === receiverWalletAddress?.toLowerCase())
+    throw new Error(SELF_TX_ERROR);
   let gaslessAddress = "";
   if (isGasless) {
     const conn = useConnection();
-    try {
-      const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
-        chain_id: chain_id,
-        address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
-      });
-      if (res.opted_in) {
-        gaslessAddress = ethers.hexlify(res.scw_address);
-        if (gaslessAddress === userStore.gaslessAddress)
-          throw new Error(SELF_TX_ERROR);
-      }
-    } catch (e) {
-      console.log(e);
+    const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
+      chain_id: chain_id,
+      address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
+    });
+    if (res.opted_in) {
+      gaslessAddress = ethers.hexlify(res.scw_address);
+      if (
+        gaslessAddress?.toLowerCase() ===
+        userStore.gaslessAddress?.toLowerCase()
+      )
+        throw new Error(SELF_TX_ERROR);
     }
   }
   const tokenContract = new Contract(tokenAddress, erc20Abi, wallet);

@@ -110,13 +110,28 @@ const userStore = useUserStore();
 
 sendStore.resetUserInput();
 const { userInput, supportedChains } = toRefs(sendStore);
-const filteredChains = computed(() => {
-  if (userInput.value.sourceOfFunds === "scw") {
-    return supportedChains.value.filter(
-      (chain) => chain.gasless_enabled || chain.chain_id == "80001"
-    );
-  }
-  return supportedChains.value;
+// const filteredChains = computed(() => {
+//   if (userInput.value.sourceOfFunds === "scw") {
+//     return supportedChains.value.filter(
+//       (chain) => chain.gasless_enabled || chain.chain_id == "80001"
+//     );
+//   }
+//   return supportedChains.value;
+// });
+const filteredWallets = computed(() => {
+  if (userInput.value.chain === "") return [];
+  return supportedWallets.value.filter((wallet) => {
+    console.log(wallet);
+    if (wallet.value === "eoa") return true;
+    if (wallet.value === "scw") {
+      const chain = getSelectedChainInfo(userInput.value.chain);
+      console.log(chain);
+      if (chain) {
+        return chain.gasless_enabled || chain.chain_id == "80001";
+      }
+      return false;
+    }
+  });
 });
 
 const isEmailValid = computed(() => {
@@ -486,7 +501,7 @@ const disableTokenInput = computed(() => {
 });
 
 const disableChainsInput = computed(() => {
-  return !userInput.value.sourceOfFunds || !filteredChains.value.length;
+  return !userInput.value.chain;
 });
 
 const disableSubmit = computed(() => {
@@ -629,38 +644,46 @@ async function copyWalletAddress() {
         </div>
       </div>
       <div class="flex flex-col space-y-1">
+        <label class="text-xs">Chain</label>
+        <Dropdown
+          @update:model-value="
+            (value) => (
+              (userInput.chain = value.chain_id),
+              (userInput.sourceOfFunds = ''),
+              (userInput.token = ''),
+              (userInput.amount = 0)
+            )
+          "
+          :options="supportedChains"
+          :model-value="getSelectedChainInfo(userInput.chain)"
+          display-field="name"
+          placeholder="Select Chain"
+        />
+      </div>
+      <div class="flex flex-col space-y-1">
         <label class="text-xs">Source of Funds</label>
         <Dropdown
           @update:model-value="
             (value) => (
               (userInput.sourceOfFunds = value.value),
-              (userInput.chain = ''),
               (userInput.token = ''),
               (userInput.amount = 0)
             )
           "
-          :options="supportedWallets"
+          :options="filteredWallets"
           :model-value="getSourceOfFunds(userInput.sourceOfFunds)"
           display-field="name"
-          placeholder="Select source of funds"
-        />
-      </div>
-      <div class="flex flex-col space-y-1">
-        <label class="text-xs">Chain</label>
-        <Dropdown
-          @update:model-value="(value) => (userInput.chain = value.chain_id)"
-          :options="filteredChains"
-          :model-value="getSelectedChainInfo(userInput.chain)"
-          display-field="name"
-          placeholder="Select Chain"
           :disabled="disableChainsInput"
+          placeholder="Select source of funds"
         />
       </div>
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Token</label>
         <Dropdown
           @update:model-value="
-            (value) => (userInput.token = value.contractAddress)
+            (value) => (
+              (userInput.token = value.contractAddress), (userInput.amount = 0)
+            )
           "
           :options="chainAssets"
           display-field="name"
