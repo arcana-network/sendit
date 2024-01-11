@@ -4,9 +4,28 @@ import AppFooter from "@/components/layout/AppFooter.vue";
 import { useConnection } from "@/stores/connection";
 import { ref } from "vue";
 import { RouterLink } from "vue-router";
+import useUserStore from "@/stores/user";
 
 const conn = useConnection();
 const isBannerClosed = ref(false);
+const userStore = useUserStore();
+
+function getLink() {
+  if (userStore.gaslessOptedIn) {
+    return {
+      name: "Send",
+      query: {
+        sourceOfFunds: "scw",
+        token: "NATIVE",
+        blockchain: "polygon",
+      },
+    };
+  } else {
+    return {
+      name: "Wallets",
+    };
+  }
+}
 </script>
 
 <template>
@@ -17,16 +36,7 @@ const isBannerClosed = ref(false);
     >
       <div class="items-baseline flex-wrap justify-center mr-3">
         Send $MATIC without paying gas fees.
-        <RouterLink
-          :to="{
-            name: 'Send',
-            query: {
-              sourceOfFunds: 'scw',
-              token: 'NATIVE',
-              blockchain: 'polygon',
-            },
-          }"
-          class="font-bold uppercase"
+        <RouterLink :to="getLink()" class="font-bold uppercase"
           >Learn&nbsp;more</RouterLink
         >
       </div>

@@ -11,6 +11,7 @@ import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
 import useAuthStore from "@/stores/auth";
 import { router } from "@/router";
+import { useRoute } from "vue-router";
 
 const userStore = useUserStore();
 const wallets = ref([] as any[]);
@@ -24,6 +25,20 @@ const toast = useToast();
 const gaslesschains = ["polygon", "polygon_mumbai"];
 const authStore = useAuthStore();
 const isFirstTimeGasless = ref(false);
+const route = useRoute();
+
+if (route.query.optin === "1") {
+  isFirstTimeGasless.value = true;
+}
+
+watch(
+  () => route.query,
+  () => {
+    if (route.query.optin === "1") {
+      isFirstTimeGasless.value = true;
+    }
+  }
+);
 
 const scwWallet = {
   name: "My Smart Wallet",
@@ -120,20 +135,14 @@ async function handleDepositSuccess() {
 }
 
 function handleSendToken(asset: any, accountType: string) {
-  if (userStore.gaslessOptedIn) {
-    router.push({
-      name: "Send",
-      query: {
-        sourceOfFunds: accountType,
-        token: asset.contractAddress,
-        blockchain: asset.blockchain,
-      },
-    });
-  } else {
-    router.push({
-      name: "Wallets",
-    });
-  }
+  router.push({
+    name: "Send",
+    query: {
+      sourceOfFunds: accountType,
+      token: asset.contractAddress,
+      blockchain: asset.blockchain,
+    },
+  });
 }
 </script>
 
