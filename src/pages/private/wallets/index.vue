@@ -3,6 +3,7 @@ import { onBeforeMount, ref, computed, watch } from "vue";
 import { truncateAddress } from "@/utils/truncateAddress";
 import BuyTokens from "@/components/BuyTokens.vue";
 import DepositTokens from "@/components/DepositTokens.vue";
+import WithdrawTokens from "@/components/WithdrawTokens.vue";
 import { fetchAllTokenBalances } from "@/services/ankr.service";
 import { ChainNames } from "@/constants/chainList";
 import { Decimal } from "decimal.js";
@@ -246,6 +247,11 @@ function handleSendToken(asset: any, accountType: string) {
       :account-type="depositModalDetails.accountType"
       @dismiss="showDepositModal = false"
       @success="handleDepositSuccess"
+    />
+    <WithdrawTokens
+      v-if="showWithdrawModal"
+      :address="withdrawModalDetails.address"
+      @dismiss="showWithdrawModal = false"
     />
   </div>
 </template>
