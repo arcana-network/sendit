@@ -17,6 +17,7 @@ import { useToast } from "vue-toastification";
 import useAuthStore from "@/stores/auth";
 import { useRoute } from "vue-router";
 import { getBicoBalance } from "@/services/ankr.service";
+import { hexlify } from "ethers";
 
 const accountVerificationModal = ref({
   verify: false,
@@ -145,8 +146,18 @@ onBeforeMount(async () => {
       authStore.loggedInWith !== "" ||
       route.query.campaign === "diamond-hands-airdrop"
     ) {
-      const res = await getBicoBalance(user.address);
-      const bico = new Decimal(res).div(Decimal.pow(10, 9));
+      const balance = hexlify(
+        data.diamond_hands_eligibility_report.bico_balance
+      );
+      const nftBalance = hexlify(
+        data.diamond_hands_eligibility_report.bcr_balance
+      );
+      const bico =
+        balance === "0x"
+          ? new Decimal(0)
+          : new Decimal(balance).div(Decimal.pow(10, 18));
+      const bicoNFT =
+        balance === "0x" ? new Decimal(0) : new Decimal(nftBalance);
       const xar = bico.greaterThanOrEqualTo(1000) ? 250 : 0;
       const status =
         dayjs().isBefore(data.diamond_hands?.claim_start) ||
@@ -165,6 +176,8 @@ onBeforeMount(async () => {
         dropDetails: {
           walletAddress: user.address,
           bico: bico.toString(),
+          bicoNFT: bicoNFT.toString(),
+          isEligible: data.diamond_hands_eligibility_report.eligible,
           xar,
           distributionDates: {
             start: dayjs(
@@ -294,6 +307,15 @@ function handleVerificationSuccess() {
               >
               <span>{{ airdropPhase.dropDetails.bico }}</span>
             </div>
+            <div
+              class="text-xs flex"
+              v-if="airdropPhase.phase.id === PhaseIds.dha"
+            >
+              <span class="text-philippine-gray w-[16ch] shrink-0"
+                >BICO NFTs:</span
+              >
+              <span>{{ airdropPhase.dropDetails.bicoNFT }}</span>
+            </div>
             <div class="text-xs flex" v-else>
               <span class="text-philippine-gray w-[16ch] shrink-0"
                 >XP Gained:</span
@@ -389,7 +411,10 @@ function handleVerificationSuccess() {
             "
             class="btn-submit mt-auto rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
             @click.stop="handleClaim(airdropPhase.phase.id)"
-            :disabled="airdropPhase.phase.status !== PhaseStatus.ongoing"
+            :disabled="
+              airdropPhase.phase.status !== PhaseStatus.ongoing ||
+              !airdropPhase.dropDetails.isEligible
+            "
           >
             Claim Now
             <img
