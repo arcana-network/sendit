@@ -120,14 +120,20 @@ async function handleDepositSuccess() {
 }
 
 function handleSendToken(asset: any, accountType: string) {
-  router.push({
-    name: "Send",
-    query: {
-      sourceOfFunds: accountType,
-      token: asset.contractAddress,
-      blockchain: asset.blockchain,
-    },
-  });
+  if (userStore.gaslessOptedIn) {
+    router.push({
+      name: "Send",
+      query: {
+        sourceOfFunds: accountType,
+        token: asset.contractAddress,
+        blockchain: asset.blockchain,
+      },
+    });
+  } else {
+    router.push({
+      name: "Wallets",
+    });
+  }
 }
 </script>
 
