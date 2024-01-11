@@ -16,7 +16,6 @@ import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
 import useAuthStore from "@/stores/auth";
 import { useRoute } from "vue-router";
-import { getBicoBalance } from "@/services/ankr.service";
 import { hexlify } from "ethers";
 
 const accountVerificationModal = ref({
