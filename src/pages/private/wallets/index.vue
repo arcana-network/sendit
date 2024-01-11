@@ -23,6 +23,7 @@ const loaderStore = useLoaderStore();
 const toast = useToast();
 const gaslesschains = ["polygon", "polygon_mumbai"];
 const authStore = useAuthStore();
+const isFirstTimeGasless = ref(false);
 
 const scwWallet = {
   name: "My Smart Wallet",
@@ -99,6 +100,7 @@ async function createSCWWallet() {
 
   try {
     await userStore.createGaslessWallet();
+    isFirstTimeGasless.value = true;
   } catch (e) {
     toast.error("Something went wrong. Please try again.");
   } finally {
@@ -143,7 +145,7 @@ function handleSendToken(asset: any, accountType: string) {
       class="flex gap-5 flex-wrap bg-eerie-black rounded-[10px] border border-jet mx-8 my-5 p-4"
     >
       <div
-        class="bg-[#0e0e0e] border border-[#666] rounded-[10px] w-full max-w-[20rem] flex flex-col p-3"
+        class="relative bg-[#0e0e0e] border border-[#666] rounded-[10px] w-full max-w-[20rem] flex flex-col p-3"
         v-for="wallet in wallets"
         :key="wallet"
       >
@@ -212,6 +214,34 @@ function handleSendToken(asset: any, accountType: string) {
             <img src="@/assets/images/icons/buy.svg" alt="deposit" />
             Buy
           </button>
+        </div>
+        <div
+          v-if="wallet.accountType === 'scw' && isFirstTimeGasless"
+          class="absolute -right-[90px] max-md:right-0 w-[100px] max-md:w-[36px]"
+        >
+          <img
+            class="absolute top-[30px] max-md:-scale-x-[1] max-md:rotate-[90deg] max-md:top-[8px] max-md:-left-[80px]"
+            src="@/assets/images/wallet-tutor-arrow-1.svg"
+          />
+          <span
+            class="absolute capitalize font-caveat left-[50px] w-max max-md:-left-[56px] max-md:-top-[16px] text-[14px] md:text-[22px]"
+            style="font-weight: 400"
+            >Your new wallet</span
+          >
+        </div>
+        <div
+          v-if="wallet.accountType === 'scw' && isFirstTimeGasless"
+          class="absolute bottom-[10px] left-[20px] max-md:left-[30px] w-[30px] max-md:w-[16px]"
+        >
+          <img
+            class="absolute left-[40px]"
+            src="@/assets/images/wallet-tutor-arrow-2.svg"
+          />
+          <span
+            class="absolute font-caveat left-[80px] top-[30px] max-md:left-[60px] max-md:top-[12px] w-max text-[14px] md:text-[22px]"
+            style="font-weight: 400"
+            >Click deposit to start</span
+          >
         </div>
       </div>
       <div
