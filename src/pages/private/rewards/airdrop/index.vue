@@ -156,8 +156,11 @@ onBeforeMount(async () => {
           ? new Decimal(0)
           : new Decimal(balance).div(Decimal.pow(10, 18));
       const bicoNFT =
-        balance === "0x" ? new Decimal(0) : new Decimal(nftBalance);
-      const xar = bico.greaterThanOrEqualTo(1000) ? 250 : 0;
+        nftBalance === "0x" ? new Decimal(0) : new Decimal(nftBalance);
+      const xar =
+        bico.greaterThanOrEqualTo(1000) || bicoNFT.greaterThanOrEqualTo(1)
+          ? 250
+          : 0;
       const status =
         dayjs().isBefore(data.diamond_hands?.claim_start) ||
         dayjs().isAfter(data.diamond_hands?.claim_end)
