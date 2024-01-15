@@ -265,7 +265,11 @@ function handleVerificationSuccess() {
       >
         <div
           class="absolute inset-0 bg-[#111111c2] z-[10] flex justify-center items-center text-center"
-          v-if="airdropPhase.phase.status === PhaseStatus.closed"
+          v-if="
+            airdropPhase.phase.status === PhaseStatus.closed &&
+            airdropPhase.dropDetails.claimStatus !== ClaimStatus.complete &&
+            airdropPhase.dropDetails.claimStatus !== ClaimStatus.init
+          "
         >
           <span class="text-[24px] font-bold text-[#f7f7f7a6] uppercase"
             >Closed</span
