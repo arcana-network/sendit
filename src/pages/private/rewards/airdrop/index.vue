@@ -162,7 +162,7 @@ onBeforeMount(async () => {
         dayjs().isAfter(data.diamond_hands?.claim_end)
           ? PhaseStatus.closed
           : PhaseStatus.ongoing;
-      airdropPhases.unshift({
+      airdropPhases.push({
         phase: {
           name: "Diamond Hands",
           image: DiamondHandsAirdrop,
