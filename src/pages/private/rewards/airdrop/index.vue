@@ -45,6 +45,7 @@ enum ClaimStatus {
 enum PhaseStatus {
   ongoing,
   upcoming,
+  closed,
 }
 
 enum PhaseIds {
@@ -79,9 +80,36 @@ onBeforeMount(async () => {
     const data = await conn.sendMessage(SOCKET_IDS.GET_AIRDROP_INFO);
     airdropPhases.push({
       phase: {
-        name: "Sendit Drop Phase 1",
+        name: "Sendit Drop Phase 2",
         image: AirdropPhase1,
         status: PhaseStatus.ongoing,
+        id: PhaseIds.ph2,
+      },
+      dropDetails: {
+        walletAddress: user.address,
+        xp: user.points,
+        xar: data.ph2.eligible_xar
+          ? new Decimal(data.ph2.eligible_xar).toDecimalPlaces(9).toString()
+          : null,
+        distributionDates: {
+          desc: "3 to 6 months post TGE",
+        },
+        isVerified: data.twitter_verified,
+        claimStatus: data.ph2?.claimed
+          ? ClaimStatus.init
+          : data.twitter_verified && data.twitter_errors
+          ? ClaimStatus.failed
+          : data.twitter_verified
+          ? ClaimStatus.verified
+          : false,
+        claimFailedReason: claimFailedReason[data.twitter_errors],
+      },
+    });
+    airdropPhases.push({
+      phase: {
+        name: "Sendit Drop Phase 1",
+        image: AirdropPhase1,
+        status: PhaseStatus.closed,
         id: PhaseIds.ph1,
       },
       dropDetails: {
@@ -100,38 +128,6 @@ onBeforeMount(async () => {
         },
         isVerified: data.twitter_verified,
         claimStatus: data.ph1?.claimed
-          ? ClaimStatus.init
-          : data.twitter_verified && data.twitter_errors
-          ? ClaimStatus.failed
-          : data.twitter_verified
-          ? ClaimStatus.verified
-          : false,
-        claimFailedReason: claimFailedReason[data.twitter_errors],
-      },
-    });
-    airdropPhases.push({
-      phase: {
-        name: "Sendit Drop Phase 2",
-        image: AirdropPhase1,
-        status: PhaseStatus.upcoming,
-        id: PhaseIds.ph2,
-      },
-      dropDetails: {
-        walletAddress: user.address,
-        xp: user.points,
-        xar: data.ph2.eligible_xar
-          ? new Decimal(data.ph2.eligible_xar).toDecimalPlaces(9).toString()
-          : null,
-        distributionDates: {
-          start: dayjs(data.ph2?.distribution_start || new Date()).format(
-            "DD MMM YYYY"
-          ),
-          end: dayjs(data.ph2?.distribution_end || new Date()).format(
-            "DD MMM YYYY"
-          ),
-        },
-        isVerified: data.twitter_verified,
-        claimStatus: data.ph2?.claimed
           ? ClaimStatus.init
           : data.twitter_verified && data.twitter_errors
           ? ClaimStatus.failed
@@ -164,7 +160,7 @@ onBeforeMount(async () => {
       const status =
         dayjs().isBefore(data.diamond_hands?.claim_start) ||
         dayjs().isAfter(data.diamond_hands?.claim_end)
-          ? PhaseStatus.upcoming
+          ? PhaseStatus.closed
           : PhaseStatus.ongoing;
       airdropPhases.unshift({
         phase: {
@@ -265,8 +261,16 @@ function handleVerificationSuccess() {
       <div
         v-for="airdropPhase in airdropPhases"
         :key="JSON.stringify(airdropPhase.phase)"
-        class="flex flex-col w-full max-w-[400px] rounded-[10px] overflow-hidden bg-[#171717]"
+        class="relative isolate flex flex-col w-full max-w-[400px] rounded-[10px] overflow-hidden bg-[#171717]"
       >
+        <div
+          class="absolute inset-0 bg-[#111111c2] z-[10] flex justify-center items-center text-center"
+          v-if="airdropPhase.phase.status === PhaseStatus.closed"
+        >
+          <span class="text-[24px] font-bold text-[#f7f7f7a6] uppercase"
+            >Closed</span
+          >
+        </div>
         <div class="relative">
           <img
             :src="airdropPhase.phase.image"
@@ -350,7 +354,10 @@ function handleVerificationSuccess() {
               <span class="text-philippine-gray w-[16ch] shrink-0"
                 >Distribution Date:</span
               >
-              <span>
+              <span v-if="airdropPhase.dropDetails.distributionDates.desc">{{
+                airdropPhase.dropDetails.distributionDates.desc
+              }}</span>
+              <span v-else>
                 {{ airdropPhase.dropDetails.distributionDates.start }}
                 <span v-if="airdropPhase.dropDetails.distributionDates.end"
                   >-
@@ -391,7 +398,8 @@ function handleVerificationSuccess() {
           <button
             v-if="
               !airdropPhase.dropDetails.isVerified &&
-              airdropPhase.phase.id !== PhaseIds.dha
+              airdropPhase.phase.id !== PhaseIds.dha &&
+              airdropPhase.phase.status !== PhaseStatus.closed
             "
             class="btn-submit mt-auto rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
             @click.stop="
@@ -407,15 +415,17 @@ function handleVerificationSuccess() {
           </button>
           <button
             v-else-if="
-              !airdropPhase.dropDetails.claimStatus ||
-              airdropPhase.dropDetails.claimStatus === ClaimStatus.verified ||
-              airdropPhase.phase.id === PhaseIds.dha
+              (!airdropPhase.dropDetails.claimStatus ||
+                airdropPhase.dropDetails.claimStatus === ClaimStatus.verified ||
+                airdropPhase.phase.id === PhaseIds.dha) &&
+              airdropPhase.phase.status !== PhaseStatus.closed
             "
             class="btn-submit mt-auto rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
             @click.stop="handleClaim(airdropPhase.phase.id)"
             :disabled="
               airdropPhase.phase.status !== PhaseStatus.ongoing ||
-              !airdropPhase.dropDetails.isEligible
+              (airdropPhase.phase.id === PhaseIds.dha &&
+                !airdropPhase.dropDetails.isEligible)
             "
           >
             Claim Now
