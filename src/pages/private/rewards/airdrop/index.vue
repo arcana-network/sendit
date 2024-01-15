@@ -16,7 +16,7 @@ import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
 import useAuthStore from "@/stores/auth";
 import { useRoute } from "vue-router";
-import { getBicoBalance } from "@/services/ankr.service";
+import { hexlify } from "ethers";
 
 const accountVerificationModal = ref({
   verify: false,
@@ -45,6 +45,7 @@ enum ClaimStatus {
 enum PhaseStatus {
   ongoing,
   upcoming,
+  closed,
 }
 
 enum PhaseIds {
@@ -79,9 +80,36 @@ onBeforeMount(async () => {
     const data = await conn.sendMessage(SOCKET_IDS.GET_AIRDROP_INFO);
     airdropPhases.push({
       phase: {
-        name: "Sendit Drop Phase 1",
+        name: "Sendit Drop Phase 2",
         image: AirdropPhase1,
         status: PhaseStatus.ongoing,
+        id: PhaseIds.ph2,
+      },
+      dropDetails: {
+        walletAddress: user.address,
+        xp: user.points,
+        xar: data.ph2.eligible_xar
+          ? new Decimal(data.ph2.eligible_xar).toDecimalPlaces(9).toString()
+          : null,
+        distributionDates: {
+          desc: "3 to 6 months post TGE",
+        },
+        isVerified: data.twitter_verified,
+        claimStatus: data.ph2?.claimed
+          ? ClaimStatus.init
+          : data.twitter_verified && data.twitter_errors
+          ? ClaimStatus.failed
+          : data.twitter_verified
+          ? ClaimStatus.verified
+          : false,
+        claimFailedReason: claimFailedReason[data.twitter_errors],
+      },
+    });
+    airdropPhases.push({
+      phase: {
+        name: "Sendit Drop Phase 1",
+        image: AirdropPhase1,
+        status: PhaseStatus.closed,
         id: PhaseIds.ph1,
       },
       dropDetails: {
@@ -109,49 +137,30 @@ onBeforeMount(async () => {
         claimFailedReason: claimFailedReason[data.twitter_errors],
       },
     });
-    airdropPhases.push({
-      phase: {
-        name: "Sendit Drop Phase 2",
-        image: AirdropPhase1,
-        status: PhaseStatus.upcoming,
-        id: PhaseIds.ph2,
-      },
-      dropDetails: {
-        walletAddress: user.address,
-        xp: user.points,
-        xar: data.ph2.eligible_xar
-          ? new Decimal(data.ph2.eligible_xar).toDecimalPlaces(9).toString()
-          : null,
-        distributionDates: {
-          start: dayjs(data.ph2?.distribution_start || new Date()).format(
-            "DD MMM YYYY"
-          ),
-          end: dayjs(data.ph2?.distribution_end || new Date()).format(
-            "DD MMM YYYY"
-          ),
-        },
-        isVerified: data.twitter_verified,
-        claimStatus: data.ph2?.claimed
-          ? ClaimStatus.init
-          : data.twitter_verified && data.twitter_errors
-          ? ClaimStatus.failed
-          : data.twitter_verified
-          ? ClaimStatus.verified
-          : false,
-        claimFailedReason: claimFailedReason[data.twitter_errors],
-      },
-    });
     if (
       authStore.loggedInWith !== "" ||
       route.query.campaign === "diamond-hands-airdrop"
     ) {
-      const res = await getBicoBalance(user.address);
-      const bico = new Decimal(res).div(Decimal.pow(10, 9));
-      const xar = bico.greaterThanOrEqualTo(1000) ? 250 : 0;
+      const balance = hexlify(
+        data.diamond_hands_eligibility_report.bico_balance
+      );
+      const nftBalance = hexlify(
+        data.diamond_hands_eligibility_report.bcr_balance
+      );
+      const bico =
+        balance === "0x"
+          ? new Decimal(0)
+          : new Decimal(balance).div(Decimal.pow(10, 18));
+      const bicoNFT =
+        nftBalance === "0x" ? new Decimal(0) : new Decimal(nftBalance);
+      const xar =
+        bico.greaterThanOrEqualTo(1000) || bicoNFT.greaterThanOrEqualTo(1)
+          ? 250
+          : 0;
       const status =
         dayjs().isBefore(data.diamond_hands?.claim_start) ||
         dayjs().isAfter(data.diamond_hands?.claim_end)
-          ? PhaseStatus.upcoming
+          ? PhaseStatus.closed
           : PhaseStatus.ongoing;
       airdropPhases.unshift({
         phase: {
@@ -165,6 +174,8 @@ onBeforeMount(async () => {
         dropDetails: {
           walletAddress: user.address,
           bico: bico.toString(),
+          bicoNFT: bicoNFT.toString(),
+          isEligible: data.diamond_hands_eligibility_report.eligible,
           xar,
           distributionDates: {
             start: dayjs(
@@ -250,8 +261,16 @@ function handleVerificationSuccess() {
       <div
         v-for="airdropPhase in airdropPhases"
         :key="JSON.stringify(airdropPhase.phase)"
-        class="flex flex-col w-full max-w-[400px] rounded-[10px] overflow-hidden bg-[#171717]"
+        class="relative isolate flex flex-col w-full max-w-[400px] rounded-[10px] overflow-hidden bg-[#171717]"
       >
+        <div
+          class="absolute inset-0 bg-[#111111c2] z-[10] flex justify-center items-center text-center"
+          v-if="airdropPhase.phase.status === PhaseStatus.closed"
+        >
+          <span class="text-[24px] font-bold text-[#f7f7f7a6] uppercase"
+            >Closed</span
+          >
+        </div>
         <div class="relative">
           <img
             :src="airdropPhase.phase.image"
@@ -294,6 +313,15 @@ function handleVerificationSuccess() {
               >
               <span>{{ airdropPhase.dropDetails.bico }}</span>
             </div>
+            <div
+              class="text-xs flex"
+              v-if="airdropPhase.phase.id === PhaseIds.dha"
+            >
+              <span class="text-philippine-gray w-[16ch] shrink-0"
+                >BICO NFTs:</span
+              >
+              <span>{{ airdropPhase.dropDetails.bicoNFT }}</span>
+            </div>
             <div class="text-xs flex" v-else>
               <span class="text-philippine-gray w-[16ch] shrink-0"
                 >XP Gained:</span
@@ -326,7 +354,10 @@ function handleVerificationSuccess() {
               <span class="text-philippine-gray w-[16ch] shrink-0"
                 >Distribution Date:</span
               >
-              <span>
+              <span v-if="airdropPhase.dropDetails.distributionDates.desc">{{
+                airdropPhase.dropDetails.distributionDates.desc
+              }}</span>
+              <span v-else>
                 {{ airdropPhase.dropDetails.distributionDates.start }}
                 <span v-if="airdropPhase.dropDetails.distributionDates.end"
                   >-
@@ -367,7 +398,8 @@ function handleVerificationSuccess() {
           <button
             v-if="
               !airdropPhase.dropDetails.isVerified &&
-              airdropPhase.phase.id !== PhaseIds.dha
+              airdropPhase.phase.id !== PhaseIds.dha &&
+              airdropPhase.phase.status !== PhaseStatus.closed
             "
             class="btn-submit mt-auto rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
             @click.stop="
@@ -383,13 +415,18 @@ function handleVerificationSuccess() {
           </button>
           <button
             v-else-if="
-              !airdropPhase.dropDetails.claimStatus ||
-              airdropPhase.dropDetails.claimStatus === ClaimStatus.verified ||
-              airdropPhase.phase.id === PhaseIds.dha
+              (!airdropPhase.dropDetails.claimStatus ||
+                airdropPhase.dropDetails.claimStatus === ClaimStatus.verified ||
+                airdropPhase.phase.id === PhaseIds.dha) &&
+              airdropPhase.phase.status !== PhaseStatus.closed
             "
             class="btn-submit mt-auto rounded-t-none text-xs font-bold uppercase p-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
             @click.stop="handleClaim(airdropPhase.phase.id)"
-            :disabled="airdropPhase.phase.status !== PhaseStatus.ongoing"
+            :disabled="
+              airdropPhase.phase.status !== PhaseStatus.ongoing ||
+              (airdropPhase.phase.id === PhaseIds.dha &&
+                !airdropPhase.dropDetails.isEligible)
+            "
           >
             Claim Now
             <img
