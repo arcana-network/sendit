@@ -93,7 +93,7 @@ async function getNativeTokenBalances(walletAddress: string) {
       balance: eth.data.result
         ? new Decimal(eth.data.result).mul(Decimal.pow(10, -18)).toString()
         : 0,
-      thumbnail: "https://ethereum.org/static/eth-glyph-colored.svg",
+      thumbnail: "https://ethereum.org/assets/svgs/eth-glyph-colored.svg",
     },
     {
       tokenType: "NATIVE",

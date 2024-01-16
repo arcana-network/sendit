@@ -1,31 +1,48 @@
 <script setup lang="ts">
 import Overlay from "@/components/overlay.vue";
 import Dropdown from "@/components/lib/dropdown.vue";
-import { gaslessChains } from "@/constants/chainList";
-import useSendStore from "@/stores/send";
+import chains from "@/constants/chainList";
 import { reactive, computed } from "vue";
-import { requestableTokens } from "@/constants/requestableTokens";
 import useAuthStore from "@/stores/auth";
+import { getCurrencies, generateTransakUrl } from "@/services/transak.service";
+import useUserStore from "@/stores/user";
 
 type BuyTokenProps = {
   address: string;
 };
 
 const emit = defineEmits(["dismiss"]);
-const sendStore = useSendStore();
 const props = defineProps<BuyTokenProps>();
 const authStore = useAuthStore();
+const userStore = useUserStore();
+const accountType = computed(() => {
+  if (props.address.toLowerCase() === userStore.address.toLowerCase()) {
+    return "eoa";
+  }
+  return "scw";
+});
 
-const gaslessChainsList = computed(() =>
-  sendStore.supportedChains.filter((chain) =>
-    gaslessChains.includes(Number(chain.chain_id))
-  )
+const buyChainsList = computed(() =>
+  getCurrencies("buy", accountType.value)
+    .map((chain) => {
+      return {
+        chain_id: chain.chain,
+        name: chains[Number(chain.chain)].name,
+        networkName: chain.networkName,
+      };
+    })
+    .reduce((acc, curr) => {
+      if (!acc.find((chain) => chain.chain_id === curr.chain_id)) {
+        acc.push(curr);
+      }
+      return acc;
+    }, [] as any[])
 );
 
 const supportedTokens = computed(() => {
-  return requestableTokens[userInput.chain]
-    ? requestableTokens[userInput.chain].map((token) => token.symbol)
-    : [];
+  return getCurrencies("buy", accountType.value)
+    .filter((chain) => Number(chain.chain) === Number(userInput.chain))
+    .map((chain) => chain.symbol);
 });
 
 const userInput = reactive({
@@ -35,33 +52,20 @@ const userInput = reactive({
 });
 
 function getChain(chainId) {
-  return gaslessChainsList.value.find((chain) => chain.chain_id === chainId);
-}
-
-function getTransakNetwork(chainId) {
-  if (chainId === 137) {
-    return "polygon";
-  }
-  return "";
+  return buyChainsList.value.find((chain) => chain.chain_id === chainId);
 }
 
 function handleBuy() {
-  const Transak =
-    import.meta.env.VITE_TRANSAK_ENV === "STAGING"
-      ? "https://global-stg.transak.com"
-      : "https://global.transak.com";
-
-  const transakUrl = new URL(Transak);
-  transakUrl.searchParams.append(
-    "apiKey",
-    import.meta.env.VITE_TRANSAK_API_KEY
-  );
-  transakUrl.searchParams.append("walletAddress", props.address);
-  transakUrl.searchParams.append("email", authStore.userInfo.email || "");
-  transakUrl.searchParams.append("network", getTransakNetwork(userInput.chain));
-  transakUrl.searchParams.append("themeColor", "#262626");
-  transakUrl.searchParams.append("cryptoCurrencyCode", userInput.token);
-  transakUrl.searchParams.append("defaultCryptoAmount", userInput.amount);
+  const transakUrl = generateTransakUrl({
+    address: props.address,
+    chain: buyChainsList.value.find(
+      (chain) => Number(chain.chain_id) === Number(userInput.chain)
+    ).networkName,
+    token: userInput.token,
+    amount: userInput.amount,
+    email: authStore.userInfo.email,
+    mode: "buy",
+  });
 
   window.open(transakUrl.toString(), "_blank");
   emit("dismiss");
@@ -84,7 +88,7 @@ function handleBuy() {
           <label class="text-xs">Chain</label>
           <Dropdown
             @update:model-value="(value) => (userInput.chain = value.chain_id)"
-            :options="gaslessChainsList"
+            :options="buyChainsList"
             :model-value="getChain(userInput.chain)"
             display-field="name"
             placeholder="Select Chain"
@@ -97,6 +101,7 @@ function handleBuy() {
             :options="supportedTokens"
             :model-value="userInput.token"
             placeholder="Select Chain"
+            :disabled="!userInput.chain"
           />
         </div>
         <div class="flex flex-col space-y-1">
@@ -105,6 +110,7 @@ function handleBuy() {
             class="input disabled:opacity-60 text-"
             type="number"
             v-model="userInput.amount"
+            :disabled="!userInput.token"
           />
         </div>
         <div class="flex justify-center pt-4">
