@@ -82,7 +82,7 @@ const fundSources = computed(() => {
   const sources = ["External Wallet"];
   if (props.accountType === "scw") {
     sources.push("User Owned Wallet");
-  } else {
+  } else if (authStore.loggedInWith === "") {
     sources.push("Smart Contract Wallet");
   }
   return sources;

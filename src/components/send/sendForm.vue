@@ -68,6 +68,23 @@ async function handleRefresh() {
   refreshIconAnimating.value = false;
 }
 
+watch(
+  () => route.query,
+  () => {
+    const query = route.query;
+    if (query.blockchain) {
+      userInput.value.chain = ChainIds[query.blockchain as string];
+    }
+    if (query.sourceOfFunds) {
+      userInput.value.sourceOfFunds =
+        query.sourceOfFunds as typeof userInput.value.sourceOfFunds;
+    }
+    if (query.token) {
+      userInput.value.token = query.token as typeof userInput.value.token;
+    }
+  }
+);
+
 onBeforeMount(async () => {
   loadStore.showLoader("Fetching assets...");
   await fetchAssets();
@@ -110,13 +127,28 @@ const userStore = useUserStore();
 
 sendStore.resetUserInput();
 const { userInput, supportedChains } = toRefs(sendStore);
-const filteredChains = computed(() => {
-  if (userInput.value.sourceOfFunds === "scw") {
-    return supportedChains.value.filter(
-      (chain) => chain.gasless_enabled || chain.chain_id == "80001"
-    );
-  }
-  return supportedChains.value;
+// const filteredChains = computed(() => {
+//   if (userInput.value.sourceOfFunds === "scw") {
+//     return supportedChains.value.filter(
+//       (chain) => chain.gasless_enabled || chain.chain_id == "80001"
+//     );
+//   }
+//   return supportedChains.value;
+// });
+const filteredWallets = computed(() => {
+  if (userInput.value.chain === "") return [];
+  return supportedWallets.value.filter((wallet) => {
+    console.log(wallet);
+    if (wallet.value === "eoa") return true;
+    if (wallet.value === "scw") {
+      const chain = getSelectedChainInfo(userInput.value.chain);
+      console.log(chain);
+      if (chain) {
+        return chain.gasless_enabled || chain.chain_id == "80001";
+      }
+      return false;
+    }
+  });
 });
 
 const isEmailValid = computed(() => {
@@ -221,6 +253,7 @@ function getCurrency(chainId: string | number) {
 async function proceed() {
   loadStore.showLoader("Sending tokens...");
   let hasUserRejectedChainSwitching = false;
+  let hasUserRejectedAccountTypeSwitching = false;
   if (userInput.value.chain !== "") {
     const chainId = await authStore.provider.request({
       method: "eth_chainId",
@@ -242,32 +275,35 @@ async function proceed() {
     toast.error("Please select a chain to continue");
     return;
   }
-  const currentAccountType = await authStore.provider.request({
-    method: "_arcana_getAccountType",
-  });
-  if (currentAccountType !== userInput.value.sourceOfFunds) {
-    try {
-      loadStore.showLoader(
-        "Switching Account Type...",
-        `Switching to ${
-          userInput.value.sourceOfFunds === "scw"
-            ? "Smart Contract Wallet"
-            : "User Owned Wallet"
-        }. Please approve the transaction on your wallet to switch the account type.`
-      );
-      await authStore.provider.request({
-        method: "_arcana_switchAccountType",
-        params: {
-          type: userInput.value.sourceOfFunds,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-      userInput.value.sourceOfFunds = currentAccountType;
-      toast.error("Switching account type rejected by user");
+  if (authStore.loggedInWith === "") {
+    const currentAccountType = await authStore.provider.request({
+      method: "_arcana_getAccountType",
+    });
+    if (currentAccountType !== userInput.value.sourceOfFunds) {
+      try {
+        loadStore.showLoader(
+          "Switching Account Type...",
+          `Switching to ${
+            userInput.value.sourceOfFunds === "scw"
+              ? "Smart Contract Wallet"
+              : "User Owned Wallet"
+          }. Please approve the transaction on your wallet to switch the account type.`
+        );
+        await authStore.provider.request({
+          method: "_arcana_switchAccountType",
+          params: {
+            type: userInput.value.sourceOfFunds,
+          },
+        });
+      } catch (e) {
+        console.error(e);
+        userInput.value.sourceOfFunds = currentAccountType;
+        toast.error("Switching account type rejected by user");
+        hasUserRejectedAccountTypeSwitching = true;
+      }
     }
   }
-  if (!hasUserRejectedChainSwitching) {
+  if (!hasUserRejectedChainSwitching && !hasUserRejectedAccountTypeSwitching) {
     loadStore.showLoader(
       "Sending tokens...",
       `Sending ${new Decimal(
@@ -404,9 +440,15 @@ async function proceed() {
     }
   } else {
     loadStore.hideLoader();
-    toast.error(
-      "Switching chain rejected by user. Cannot proceed with this transaction."
-    );
+    if (hasUserRejectedAccountTypeSwitching) {
+      toast.error(
+        "Switching account type rejected by user. Cannot proceed with this transaction."
+      );
+    } else {
+      toast.error(
+        "Switching chain rejected by user. Cannot proceed with this transaction."
+      );
+    }
   }
 }
 
@@ -476,7 +518,7 @@ const disableTokenInput = computed(() => {
 });
 
 const disableChainsInput = computed(() => {
-  return !userInput.value.sourceOfFunds || !filteredChains.value.length;
+  return !userInput.value.chain;
 });
 
 const disableSubmit = computed(() => {
@@ -619,38 +661,46 @@ async function copyWalletAddress() {
         </div>
       </div>
       <div class="flex flex-col space-y-1">
+        <label class="text-xs">Chain</label>
+        <Dropdown
+          @update:model-value="
+            (value) => (
+              (userInput.chain = value.chain_id),
+              (userInput.sourceOfFunds = ''),
+              (userInput.token = ''),
+              (userInput.amount = 0)
+            )
+          "
+          :options="supportedChains"
+          :model-value="getSelectedChainInfo(userInput.chain)"
+          display-field="name"
+          placeholder="Select Chain"
+        />
+      </div>
+      <div class="flex flex-col space-y-1">
         <label class="text-xs">Source of Funds</label>
         <Dropdown
           @update:model-value="
             (value) => (
               (userInput.sourceOfFunds = value.value),
-              (userInput.chain = ''),
               (userInput.token = ''),
               (userInput.amount = 0)
             )
           "
-          :options="supportedWallets"
+          :options="filteredWallets"
           :model-value="getSourceOfFunds(userInput.sourceOfFunds)"
           display-field="name"
-          placeholder="Select source of funds"
-        />
-      </div>
-      <div class="flex flex-col space-y-1">
-        <label class="text-xs">Chain</label>
-        <Dropdown
-          @update:model-value="(value) => (userInput.chain = value.chain_id)"
-          :options="filteredChains"
-          :model-value="getSelectedChainInfo(userInput.chain)"
-          display-field="name"
-          placeholder="Select Chain"
           :disabled="disableChainsInput"
+          placeholder="Select source of funds"
         />
       </div>
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Token</label>
         <Dropdown
           @update:model-value="
-            (value) => (userInput.token = value.contractAddress)
+            (value) => (
+              (userInput.token = value.contractAddress), (userInput.amount = 0)
+            )
           "
           :options="chainAssets"
           display-field="name"

@@ -16,6 +16,7 @@
     "@vueuse/integrations": "^10.7.0",
     "@wagmi/core": "^1.4.3",
     "@web3modal/wagmi": "^3.0.2",
+    "aarc-sdk": "^0.2.0-beta.3",
     "async-mutex": "^0.4.0",
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",

@@ -28,7 +28,7 @@ async function handleGaslessSetup() {
 
   try {
     await userStore.createGaslessWallet();
-    router.push({ name: "Wallets" });
+    router.push({ name: "Wallets", query: { optin: 1 } });
     emits("dismiss");
   } catch (e) {
     toast.error("Something went wrong. Please try again.");
