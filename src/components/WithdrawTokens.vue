@@ -7,12 +7,12 @@ import useAuthStore from "@/stores/auth";
 import { getCurrencies, generateTransakUrl } from "@/services/transak.service";
 import useUserStore from "@/stores/user";
 
-type BuyTokenProps = {
+type WithdrawTokenProps = {
   address: string;
 };
 
 const emit = defineEmits(["dismiss"]);
-const props = defineProps<BuyTokenProps>();
+const props = defineProps<WithdrawTokenProps>();
 const authStore = useAuthStore();
 const userStore = useUserStore();
 const accountType = computed(() => {
@@ -22,8 +22,8 @@ const accountType = computed(() => {
   return "scw";
 });
 
-const buyChainsList = computed(() =>
-  getCurrencies("buy", accountType.value)
+const withdrawChainsList = computed(() =>
+  getCurrencies("sell", accountType.value)
     .map((chain) => {
       return {
         chain_id: chain.chain,
@@ -40,7 +40,7 @@ const buyChainsList = computed(() =>
 );
 
 const supportedTokens = computed(() => {
-  return getCurrencies("buy", accountType.value)
+  return getCurrencies("sell", accountType.value)
     .filter((chain) => Number(chain.chain) === Number(userInput.chain))
     .map((chain) => chain.symbol);
 });
@@ -52,19 +52,19 @@ const userInput = reactive({
 });
 
 function getChain(chainId) {
-  return buyChainsList.value.find((chain) => chain.chain_id === chainId);
+  return withdrawChainsList.value.find((chain) => chain.chain_id === chainId);
 }
 
-function handleBuy() {
+function handleSell() {
   const transakUrl = generateTransakUrl({
     address: props.address,
-    chain: buyChainsList.value.find(
+    chain: withdrawChainsList.value.find(
       (chain) => Number(chain.chain_id) === Number(userInput.chain)
     ).networkName,
     token: userInput.token,
     amount: userInput.amount,
     email: authStore.userInfo.email,
-    mode: "buy",
+    mode: "sell",
   });
 
   window.open(transakUrl.toString(), "_blank");
@@ -82,13 +82,13 @@ function handleBuy() {
           <img src="@/assets/images/icons/close.svg" alt="close" />
         </button>
         <span class="uppercase font-bold text-[1.5rem] text-[#545454]"
-          >Purchase Details</span
+          >Withdraw Details</span
         >
         <div class="flex flex-col space-y-1">
           <label class="text-xs">Chain</label>
           <Dropdown
             @update:model-value="(value) => (userInput.chain = value.chain_id)"
-            :options="buyChainsList"
+            :options="withdrawChainsList"
             :model-value="getChain(userInput.chain)"
             display-field="name"
             placeholder="Select Chain"
@@ -117,7 +117,7 @@ function handleBuy() {
           <button
             type="submit"
             class="w-full text-sm btn btn-submit"
-            @click.stop="handleBuy"
+            @click.stop="handleSell"
           >
             Proceed
           </button>

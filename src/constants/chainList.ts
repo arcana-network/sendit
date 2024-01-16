@@ -86,4 +86,9 @@ export enum ChainIds {
   "opbnb" = 204,
 }
 
+export const SupportedChainIdsForAccounts = {
+  eoa: [1, 137, 80001, 42161, 56, 97, 204],
+  scw: [137, 80001],
+};
+
 export default chains;

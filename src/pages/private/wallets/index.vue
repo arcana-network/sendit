@@ -3,6 +3,7 @@ import { onBeforeMount, ref, computed, watch } from "vue";
 import { truncateAddress } from "@/utils/truncateAddress";
 import BuyTokens from "@/components/BuyTokens.vue";
 import DepositTokens from "@/components/DepositTokens.vue";
+import WithdrawTokens from "@/components/WithdrawTokens.vue";
 import { fetchAllTokenBalances } from "@/services/ankr.service";
 import { ChainNames } from "@/constants/chainList";
 import { Decimal } from "decimal.js";
@@ -11,6 +12,7 @@ import useLoaderStore from "@/stores/loader";
 import { useToast } from "vue-toastification";
 import useAuthStore from "@/stores/auth";
 import { router } from "@/router";
+import { getCurrencyCoverage } from "@/services/transak.service";
 import { useRoute } from "vue-router";
 
 const userStore = useUserStore();
@@ -19,7 +21,9 @@ const isSmartContractWalletCreated = computed(() => userStore.gaslessOptedIn);
 const showBuyModal = ref(false);
 const buyModalDetails = ref({} as any);
 const showDepositModal = ref(false);
+const showWithdrawModal = ref(false);
 const depositModalDetails = ref({} as any);
+const withdrawModalDetails = ref({} as any);
 const loaderStore = useLoaderStore();
 const toast = useToast();
 const gaslesschains = ["polygon", "polygon_mumbai"];
@@ -89,6 +93,13 @@ function handleDeposit(wallet) {
   };
 }
 
+function handleWithdraw(wallet) {
+  showWithdrawModal.value = true;
+  withdrawModalDetails.value = {
+    address: wallet.address(),
+  };
+}
+
 onBeforeMount(async () => {
   loaderStore.showLoader(
     "Loading wallets",
@@ -100,6 +111,7 @@ onBeforeMount(async () => {
       await fetchAllTokenBalances(userStore.gaslessAddress)
     ).filter((asset) => gaslesschains.includes(asset.blockchain));
   }
+  await getCurrencyCoverage();
   loaderStore.hideLoader();
 });
 
@@ -215,8 +227,8 @@ function handleSendToken(asset: any, accountType: string) {
           </button>
           <button
             v-if="wallet.buttons.withdraw"
-            disabled
             class="flex flex-grow flex-col gap-1 justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full disabled:opacity-50 disabled:cursor-not-allowed"
+            @click.stop="handleWithdraw(wallet)"
           >
             <img src="@/assets/images/icons/withdraw.svg" alt="deposit" />
             Withdraw
@@ -293,6 +305,11 @@ function handleSendToken(asset: any, accountType: string) {
       :account-type="depositModalDetails.accountType"
       @dismiss="showDepositModal = false"
       @success="handleDepositSuccess"
+    />
+    <WithdrawTokens
+      v-if="showWithdrawModal"
+      :address="withdrawModalDetails.address"
+      @dismiss="showWithdrawModal = false"
     />
   </div>
 </template>
