@@ -87,7 +87,7 @@ onBeforeMount(async () => {
       },
       dropDetails: {
         walletAddress: user.address,
-        xp: user.points,
+        xp: data.ph2?.eligible_xp ?? 0,
         xar: data.ph2.eligible_xar
           ? new Decimal(data.ph2.eligible_xar).toDecimalPlaces(9).toString()
           : null,
