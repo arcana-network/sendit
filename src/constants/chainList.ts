@@ -44,7 +44,7 @@ const chains = {
     blockchain: "bsc_testnet_chapel",
     chain_id: 97,
     rpc_url: "https://rpc.ankr.com/bsc_testnet_chapel",
-    currency: "tBNB",
+    currency: "BNB",
     explorer: "https://testnet.bscscan.com",
   },
   204: {

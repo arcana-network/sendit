@@ -41,7 +41,6 @@ async function nativeTokenTransfer(
       chain_id: chain_id,
       address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
     });
-    console.log(res);
     if (res.opted_in) {
       gaslessAddress = ethers.hexlify(res.scw_address);
       if (

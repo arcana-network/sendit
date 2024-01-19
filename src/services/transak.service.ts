@@ -34,7 +34,8 @@ function getCurrencies(mode: "sell" | "buy", accountType: "eoa" | "scw") {
       )
       .map((r) => ({
         chain: r.network.chainId,
-        address: r.address === ethers.ZeroAddress ? "NATIVE" : r.address,
+        address:
+          !r.address || r.address === ethers.ZeroAddress ? "NATIVE" : r.address,
         symbol: r.symbol,
         networkName: r.network.name,
       })) || []

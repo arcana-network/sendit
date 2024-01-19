@@ -135,7 +135,7 @@ async function getNativeTokenBalances(walletAddress: string) {
     },
     {
       tokenType: "NATIVE",
-      tokenSymbol: "tBNB",
+      tokenSymbol: "BNB",
       blockchain: "bsc_testnet_chapel",
       balance: bsc_testnet_chapel.data.result
         ? new Decimal(bsc_testnet_chapel.data.result)
