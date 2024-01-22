@@ -119,12 +119,7 @@ onBeforeMount(async () => {
           .toDecimalPlaces(9)
           .toString(),
         distributionDates: {
-          start: dayjs(data.ph1?.distribution_start || new Date()).format(
-            "DD MMM YYYY"
-          ),
-          end: dayjs(data.ph1?.distribution_end || new Date()).format(
-            "DD MMM YYYY"
-          ),
+          desc: "1 to 3 months post TGE",
         },
         isVerified: data.twitter_verified,
         claimStatus: data.ph1?.claimed
