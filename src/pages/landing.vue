@@ -26,7 +26,7 @@ const LandingFooter = defineAsyncComponent(
   () => import("@/components/landing/LandingFooter.vue")
 );
 
-const isBannerClosed = ref(false);
+const isBannerClosed = ref(true);
 </script>
 
 <template>
