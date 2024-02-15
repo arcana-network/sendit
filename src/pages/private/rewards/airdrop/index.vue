@@ -82,7 +82,7 @@ onBeforeMount(async () => {
       phase: {
         name: "Sendit Drop Phase 2",
         image: AirdropPhase1,
-        status: PhaseStatus.ongoing,
+        status: PhaseStatus.closed,
         id: PhaseIds.ph2,
       },
       dropDetails: {
@@ -152,16 +152,16 @@ onBeforeMount(async () => {
         bico.greaterThanOrEqualTo(1000) || bicoNFT.greaterThanOrEqualTo(1)
           ? 250
           : 0;
-      const status =
-        dayjs().isBefore(data.diamond_hands?.claim_start) ||
-        dayjs().isAfter(data.diamond_hands?.claim_end)
-          ? PhaseStatus.closed
-          : PhaseStatus.ongoing;
+      // const status =
+      //   dayjs().isBefore(data.diamond_hands?.claim_start) ||
+      //   dayjs().isAfter(data.diamond_hands?.claim_end)
+      //     ? PhaseStatus.closed
+      //     : PhaseStatus.ongoing;
       airdropPhases.push({
         phase: {
           name: "Diamond Hands",
           image: DiamondHandsAirdrop,
-          status,
+          status: PhaseStatus.closed,
           id: PhaseIds.dha,
           eligibility:
             "1,000 BICO tokens or 1 Bico Early Adopter NFT required on both claim and distribution dates.",
