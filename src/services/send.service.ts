@@ -36,18 +36,24 @@ async function nativeTokenTransfer(
     : computeAddress(`0x${publickey}`);
   let gaslessAddress = "";
   if (isGasless) {
-    const conn = useConnection();
-    const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
-      chain_id: chain_id,
-      address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
-    });
-    if (res.opted_in) {
-      gaslessAddress = ethers.hexlify(res.scw_address);
-      if (
-        gaslessAddress?.toLowerCase() ===
-        userStore.gaslessAddress?.toLowerCase()
-      )
-        throw new Error(SELF_TX_ERROR);
+    try {
+      const conn = useConnection();
+      const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
+        chain_id: chain_id,
+        address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
+      });
+      if (res.opted_in) {
+        gaslessAddress = ethers.hexlify(res.scw_address);
+        if (
+          gaslessAddress?.toLowerCase() ===
+          userStore.gaslessAddress?.toLowerCase()
+        )
+          throw new Error(SELF_TX_ERROR);
+      }
+    } catch (e) {
+      console.error(
+        "User not found on SendIt, sending tokens to his Regular Wallet"
+      );
     }
   }
   if (wallet.address?.toLowerCase() === receiverWalletAddress?.toLowerCase())
