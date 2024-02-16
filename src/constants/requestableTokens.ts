@@ -89,7 +89,7 @@ export const requestableTokens = {
   ],
   97: [
     {
-      symbol: "tBNB",
+      symbol: "BNB",
       tokenType: "NATIVE",
       address: "NATIVE",
       decimals: 18,

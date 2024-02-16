@@ -166,7 +166,9 @@ watch(
   border-top: 0;
   border-radius: 0 0 10px 10px;
   opacity: 0;
-  transition: all 0.5s;
+  transition: all 0.3s;
+  padding: 8px;
+  background: #272727;
 }
 
 .custom-select.open .custom-options {
@@ -178,18 +180,19 @@ watch(
 .custom-option {
   position: relative;
   display: block;
-  padding: 0.875rem 2rem;
+  padding: 0.5rem 1rem;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
   color: var(--text-grey);
   cursor: pointer;
-  background: linear-gradient(143.36deg, #0f0f0f -4.7%, #000 115.05%);
   transition: all 0.2s;
+  border: 1px solid transparent;
+  border-radius: 5px;
 }
 
 .custom-option:hover {
-  color: var(--text-white);
+  border: 1px solid white;
 }
 
 .custom-option.selected {

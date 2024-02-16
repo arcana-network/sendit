@@ -6,7 +6,7 @@ const nativeUnitMapping = {
   80001: "MATIC",
   42161: "ETH",
   56: "BNB",
-  97: "tBNB",
+  97: "BNB",
   204: "BNB",
 };
 

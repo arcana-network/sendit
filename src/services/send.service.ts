@@ -3,6 +3,12 @@ import { BrowserProvider, computeAddress, Contract, ethers } from "ethers";
 import { Decimal } from "decimal.js";
 import senditRequestAbi from "@/abis/sendit-request.abi.json";
 import erc20ABI from "@/abis/erc20.abi.json";
+import { useConnection } from "@/stores/connection";
+import { SOCKET_IDS } from "@/constants/socket-ids";
+import useUserStore from "@/stores/user";
+import store from "@/stores";
+
+const userStore = useUserStore(store);
 
 const SELF_TX_ERROR = "self-transactions are not permitted";
 
@@ -11,20 +17,45 @@ type FeeData = {
   maxPriorityFeePerGas: string;
 };
 
+function isWalletAddress(address: string) {
+  return address.length === 42 && address.startsWith("0x");
+}
+
 async function nativeTokenTransfer(
   publickey: string,
   provider: EthereumProvider,
   amount: number,
-  feeData: FeeData | null
+  feeData: FeeData | null,
+  isGasless?: boolean,
+  chain_id?: string | number
 ) {
   const web3Provider = new BrowserProvider(provider);
   const wallet = await web3Provider.getSigner();
-  const receiverWalletAddress = computeAddress(`0x${publickey}`);
-  if (wallet.address === receiverWalletAddress) throw new Error(SELF_TX_ERROR);
+  const receiverWalletAddress = isWalletAddress(publickey)
+    ? publickey
+    : computeAddress(`0x${publickey}`);
+  let gaslessAddress = "";
+  if (isGasless) {
+    const conn = useConnection();
+    const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
+      chain_id: chain_id,
+      address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
+    });
+    if (res.opted_in) {
+      gaslessAddress = ethers.hexlify(res.scw_address);
+      if (
+        gaslessAddress?.toLowerCase() ===
+        userStore.gaslessAddress?.toLowerCase()
+      )
+        throw new Error(SELF_TX_ERROR);
+    }
+  }
+  if (wallet.address?.toLowerCase() === receiverWalletAddress?.toLowerCase())
+    throw new Error(SELF_TX_ERROR);
   const decimalAmount = new Decimal(amount);
   const rawTx: any = {
     type: 2,
-    to: receiverWalletAddress,
+    to: gaslessAddress || receiverWalletAddress,
     value: decimalAmount.mul(Decimal.pow(10, 18)).ceil().toHexadecimal(),
   };
   if (feeData) {
@@ -37,7 +68,10 @@ async function nativeTokenTransfer(
   if (confirmed == null) {
     throw new Error("Invalid transaction");
   }
-  return confirmed;
+  return {
+    ...confirmed,
+    to: gaslessAddress || receiverWalletAddress,
+  };
 }
 
 const erc20Abi = [
@@ -50,12 +84,33 @@ async function erc20TokenTransfer(
   provider: EthereumProvider,
   amount: number,
   tokenAddress: string,
-  feeData: FeeData | null
+  feeData: FeeData | null,
+  isGasless?: boolean,
+  chain_id?: string | number
 ) {
   const web3Provider = new BrowserProvider(provider);
   const wallet = await web3Provider.getSigner();
-  const receiverWalletAddress = computeAddress(`0x${publickey}`);
-  if (wallet.address === receiverWalletAddress) throw new Error(SELF_TX_ERROR);
+  const receiverWalletAddress = isWalletAddress(publickey)
+    ? publickey
+    : computeAddress(`0x${publickey}`);
+  if (wallet.address?.toLowerCase() === receiverWalletAddress?.toLowerCase())
+    throw new Error(SELF_TX_ERROR);
+  let gaslessAddress = "";
+  if (isGasless) {
+    const conn = useConnection();
+    const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
+      chain_id: chain_id,
+      address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
+    });
+    if (res.opted_in) {
+      gaslessAddress = ethers.hexlify(res.scw_address);
+      if (
+        gaslessAddress?.toLowerCase() ===
+        userStore.gaslessAddress?.toLowerCase()
+      )
+        throw new Error(SELF_TX_ERROR);
+    }
+  }
   const tokenContract = new Contract(tokenAddress, erc20Abi, wallet);
   let tokenDecimals: number;
   const decimalAmount = new Decimal(amount);
@@ -65,7 +120,7 @@ async function erc20TokenTransfer(
     tokenDecimals = 0;
   }
   const ptx = await tokenContract.transfer.populateTransaction(
-    receiverWalletAddress,
+    gaslessAddress || receiverWalletAddress,
     decimalAmount.mul(Decimal.pow(10, tokenDecimals)).toString()
   );
   ptx.from = await wallet.getAddress();
@@ -81,7 +136,7 @@ async function erc20TokenTransfer(
     throw new Error("Invalid transaction");
   }
 
-  return { hash: confirmed.hash, to: receiverWalletAddress };
+  return { hash: confirmed.hash, to: gaslessAddress || receiverWalletAddress };
 }
 
 type RequestedNativeTokenTransferData = {

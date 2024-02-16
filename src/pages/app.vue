@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import GaslessAnnouncementModal from "@/components/GaslessAnnouncementModal.vue";
 import { computed, onMounted, ref, watch, defineAsyncComponent } from "vue";
 import useArcanaAuth from "@/use/arcanaAuth";
 import useLoaderStore from "@/stores/loader";
@@ -62,6 +63,7 @@ const requestPopupData = ref({} as any);
 const showRequestInvalidPopup = ref(false);
 const requestInvalidPopupType = ref("");
 const isBannerClosed = ref(true);
+const showGaslessAnnouncementModal = ref(false);
 const inviteId = route.query.inviteId as string;
 
 loaderStore.showLoader("Initializing...");
@@ -70,7 +72,24 @@ onMounted(() => {
   initAuth();
 });
 
+async function switchToEOA() {
+  if (authStore.loggedInWith === "") {
+    const currentAccountType = await authStore.provider.request({
+      method: "_arcana_getAccountType",
+    });
+    if (currentAccountType !== "eoa") {
+      await authStore.provider.request({
+        method: "_arcana_switchAccountType",
+        params: {
+          type: "eoa",
+        },
+      });
+    }
+  }
+}
+
 async function connectSocket() {
+  await switchToEOA();
   const account: SocketConnectionAccount = {
     verifier: authStore.userInfo.loginType,
     verifier_id: authStore.userInfo.id,
@@ -248,6 +267,16 @@ watch(
       ) {
         authStore.provider.on("disconnect", onWalletDisconnect);
       }
+      const isGaslessAnnouncementHidden =
+        localStorage.getItem("SENDIT_HIDE_GASLESS_ANNOUNCEMENT") === "1";
+      if (
+        !isGaslessAnnouncementHidden &&
+        !userStore.gaslessOptedIn &&
+        authStore.loggedInWith === "" &&
+        authStore.isLoggedIn
+      ) {
+        showGaslessAnnouncementModal.value = true;
+      }
       loaderStore.hideLoader();
     }
   }
@@ -398,11 +427,6 @@ function handleExpiryDismiss() {
       v-if="faucetFundsReceived"
       @dismiss="faucetFundsReceived = false"
     />
-    <ReceiverMessage
-      v-if="!faucetFundsReceived && showReceivedCryptoMessage"
-      @dismiss="showReceivedCryptoMessage = false"
-      @tweet-shoutout="handleShoutout"
-    />
     <TweetVerify
       v-if="showTweetVerificationModal"
       :xp="5"
@@ -426,6 +450,19 @@ function handleExpiryDismiss() {
       @accept="handleRequestAccept"
       @reject="handleRequestReject"
       @dismiss="showRequestPopup = false"
+    />
+    <GaslessAnnouncementModal
+      v-if="showGaslessAnnouncementModal"
+      @dismiss="showGaslessAnnouncementModal = false"
+    />
+    <ReceiverMessage
+      v-if="
+        !showGaslessAnnouncementModal &&
+        !faucetFundsReceived &&
+        showReceivedCryptoMessage
+      "
+      @dismiss="showReceivedCryptoMessage = false"
+      @tweet-shoutout="handleShoutout"
     />
   </main>
 </template>

@@ -44,7 +44,7 @@ const chains = {
     blockchain: "bsc_testnet_chapel",
     chain_id: 97,
     rpc_url: "https://rpc.ankr.com/bsc_testnet_chapel",
-    currency: "tBNB",
+    currency: "BNB",
     explorer: "https://testnet.bscscan.com",
   },
   204: {
@@ -62,6 +62,33 @@ export const testnetChains = [80001, 97];
 export const testnetChainFaucets = {
   97: "https://testnet.binance.org/faucet-smart",
   80001: "https://mumbaifaucet.com",
+};
+
+export const gaslessChains = [137];
+
+export enum ChainNames {
+  "eth" = "Ethereum",
+  "polygon" = "Polygon PoS",
+  "polygon_mumbai" = "Polygon Mumbai",
+  "arbitrum" = "Arbitrum One",
+  "bsc" = "BNB Smart Chain",
+  "bsc_testnet_chapel" = "BNB Smart Chain Testnet",
+  "opbnb" = "opBNB Mainnet",
+}
+
+export enum ChainIds {
+  "eth" = 1,
+  "polygon" = 137,
+  "polygon_mumbai" = 80001,
+  "arbitrum" = 42161,
+  "bsc" = 56,
+  "bsc_testnet_chapel" = 97,
+  "opbnb" = 204,
+}
+
+export const SupportedChainIdsForAccounts = {
+  eoa: [1, 137, 80001, 42161, 56, 97, 204],
+  scw: [137, 80001],
 };
 
 export default chains;

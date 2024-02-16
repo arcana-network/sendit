@@ -48,6 +48,11 @@ const routes: RouteRecordRaw[] = [
               import("@/pages/private/transaction/request/index.vue"),
           },
           {
+            name: "Wallets",
+            path: "wallets",
+            component: () => import("@/pages/private/wallets/index.vue"),
+          },
+          {
             name: "History",
             path: "transaction/history",
             component: () =>
