@@ -292,6 +292,9 @@ watch(
         await onWalletConnect();
       }
       loaderStore.hideLoader();
+      if (route.query.campaign === "diamond-hands-airdrop") {
+        return router.replace({ name: "Airdrop" });
+      }
       router.replace({ name: "Send", query: { ...route.query } });
     }
   }
@@ -405,20 +408,13 @@ function handleExpiryDismiss() {
         v-if="!isBannerClosed"
       >
         <div class="items-baseline flex-wrap justify-center mr-3">
-          $XAR Public Sale is Live on Republic
+          $XAR Public Sale Successfully Closed
           <a
             href="https://republic.com/arcana/"
             target="_blank"
             rel="noopener"
             class="btn-submit py-1 px-2 rounded-md font-bold border-none"
-            >Visit&nbsp;Republic</a
-          >
-          &nbsp;&nbsp;<a
-            class="underline cursor-pointer underline-offset-[4px] font-[500]"
-            href="https://t.me/ArcanaNetwork"
-            target="blank"
-            rel="noopener"
-            >Need help?</a
+            >View&nbsp;Republic</a
           >
         </div>
         <button class="absolute right-4" @click.stop="isBannerClosed = true">

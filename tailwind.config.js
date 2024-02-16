@@ -23,6 +23,7 @@ export default {
       },
       fontSize: {
         "3.5xl": "32px",
+        "4xl": "40px",
         "4.5xl": "48px",
       },
       borderWidth: {
