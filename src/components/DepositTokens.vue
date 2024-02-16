@@ -9,7 +9,7 @@ import { fetchAllTokenBalances } from "@/services/ankr.service";
 import useUserStore from "@/stores/user";
 import useLoaderStore from "@/stores/loader";
 import useAuthStore from "@/stores/auth";
-import chains from "@/constants/chainList";
+import chains, { ChainIds } from "@/constants/chainList";
 import { useToast } from "vue-toastification";
 import {
   nativeTokenTransfer,
@@ -48,6 +48,25 @@ const chainsList = computed(() => {
   );
 });
 
+const selectedTokenBalance = computed(() => {
+  if (userInput.sourceOfFunds === "scw") {
+    return (
+      allGaslessAssets.value.find(
+        (asset) =>
+          ChainIds[asset.blockchain] == userInput.chain &&
+          asset.contractAddress === userInput.token
+      )?.balance || 0
+    );
+  }
+  return (
+    allAssets.value.find(
+      (asset) =>
+        ChainIds[asset.blockchain] == userInput.chain &&
+        asset.contractAddress === userInput.token
+    )?.balance || 0
+  );
+});
+
 async function fetchAssets() {
   allAssets.value = await fetchAllTokenBalances(userStore.address);
   allGaslessAssets.value = await fetchAllTokenBalances(
@@ -81,9 +100,9 @@ function getChainAssets(chainId) {
 const fundSources = computed(() => {
   const sources = ["External Wallet"];
   if (props.accountType === "scw") {
-    sources.push("User Owned Wallet");
+    sources.push("Regular Account");
   } else if (authStore.loggedInWith === "") {
-    sources.push("Smart Contract Wallet");
+    sources.push("Smart Account");
   }
   return sources;
 });
@@ -294,6 +313,10 @@ onBeforeMount(async () => {
             type="number"
             v-model="userInput.amount"
           />
+          <span class="flex-grow text-right text-xs">
+            Balance:
+            {{ selectedTokenBalance }}
+          </span>
         </div>
         <div v-if="isExternalWallet()" class="flex flex-col space-y-1">
           <label class="text-xs">Wallet address</label>
@@ -322,10 +345,29 @@ onBeforeMount(async () => {
           v-if="isExternalWallet()"
           class="flex items-center gap-2 bg-[#313131] p-[0.625rem] rounded-[5px]"
         >
-          <img src="@/assets/images/icons/info-circle.svg" />
-          <span class="text-[10px] text-[#8d8d8d]"
+          <img
+            src="@/assets/images/icons/info-circle-yellow.svg"
+            class="w-5 h-5"
+          />
+          <span class="text-[10px] text-[#EEB113]"
             >Only transfer tokens using the ‘Polygon POS’ chain. All other
             transfers will be lost.</span
+          >
+        </div>
+        <div
+          v-if="
+            props.accountType === 'scw' &&
+            userInput.sourceOfFunds === 'Regular Account'
+          "
+          class="flex items-center gap-2 bg-[#313131] p-[0.625rem] rounded-[5px]"
+        >
+          <img
+            src="@/assets/images/icons/info-circle-yellow.svg"
+            class="w-5 h-5"
+          />
+          <span class="text-[10px] text-[#EEB113]"
+            >You will be charged gas fees for moving funds from your Regular
+            Account to your Smart Account.</span
           >
         </div>
         <div

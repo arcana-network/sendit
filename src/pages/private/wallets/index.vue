@@ -45,11 +45,11 @@ watch(
 );
 
 const scwWallet = {
-  name: "My Smart Wallet",
+  name: "Smart Account",
   address: () => userStore.gaslessAddress,
-  title: "Smart Contract Wallet",
+  title: "SCW operated by Smart Contract",
   description:
-    "Send and receive tokens between any SendIt Smart Wallets without paying gas fees on Polygon POS.",
+    "Transact between any SendIt Smart Accounts without gas fees on Polygon POS",
   buttons: {
     deposit: true,
     withdraw: true,
@@ -59,9 +59,9 @@ const scwWallet = {
 };
 
 const eoaWallet = {
-  name: "My Ethereum Wallet",
+  name: "Regular Account",
   address: () => userStore.address,
-  title: "User Owned Wallet",
+  title: "EOA Owned by You",
   description:
     "This is your primary wallet. Send and receive tokens between any wallets.",
   buttons: {
@@ -172,22 +172,29 @@ function handleSendToken(asset: any, accountType: string) {
       class="flex gap-5 flex-wrap bg-eerie-black rounded-[10px] border border-jet mx-8 my-5 p-4"
     >
       <div
-        class="relative bg-[#0e0e0e] border border-[#666] rounded-[10px] w-full max-w-[20rem] flex flex-col p-3"
+        class="relative bg-[#0e0e0e] border border-[#666] rounded-[10px] w-full max-w-[21rem] flex flex-col p-3"
         v-for="wallet in wallets"
         :key="wallet"
       >
-        <span class="text-[1.25rem] font-bold text-[#d8d8d8]">{{
-          wallet.name
-        }}</span>
-        <div class="flex justify-between text-[0.75rem] text-philippine-gray">
+        <div class="flex items-center gap-2">
+          <span class="text-[1.25rem] font-bold text-[#d8d8d8]">{{
+            wallet.name
+          }}</span>
+          <img
+            src="@/assets/images/icons/info.svg"
+            :title="wallet.description"
+            class="w-[14px] h-[14px] cursor-pointer"
+          />
+        </div>
+        <div class="flex justify-between text-[12px] text-philippine-gray">
           <span>{{ wallet.title }}</span>
           <span :title="wallet.address()">{{
             truncateAddress(wallet.address())
           }}</span>
         </div>
-        <div class="text-[0.75rem] text-[#d8d8d8] mt-4">
+        <!-- <div class="text-[0.75rem] text-[#d8d8d8] mt-4">
           {{ wallet.description }}
-        </div>
+        </div> -->
         <div
           class="bg-[#151515] rounded-[10px] h-[10rem] overflow-y-auto mt-4 p-1"
         >
@@ -216,30 +223,30 @@ function handleSendToken(asset: any, accountType: string) {
             </button>
           </div>
         </div>
-        <div class="flex gap-2 px-[1.25rem] mt-[1rem]">
+        <div class="flex gap-2 mt-[1rem]">
           <button
             v-if="wallet.buttons.deposit"
-            class="flex flex-grow flex-col gap-1 justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full"
+            class="flex flex-grow flex-col gap-1 justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full text-[10px]"
             @click.stop="handleDeposit(wallet)"
           >
             <img src="@/assets/images/icons/deposit.svg" alt="deposit" />
-            Deposit
+            Deposit Crypto
           </button>
           <button
             v-if="wallet.buttons.withdraw"
-            class="flex flex-grow flex-col gap-1 justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full disabled:opacity-50 disabled:cursor-not-allowed"
+            class="flex flex-grow flex-col gap-1 justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full text-[10px]"
             @click.stop="handleWithdraw(wallet)"
           >
             <img src="@/assets/images/icons/withdraw.svg" alt="deposit" />
-            Withdraw
+            Withdraw Fiat
           </button>
           <button
             v-if="wallet.buttons.buy"
-            class="flex flex-grow flex-col gap-1 justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full"
+            class="flex flex-grow flex-col gap-1 justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full text-[10px]"
             @click.stop="handleBuy(wallet)"
           >
             <img src="@/assets/images/icons/buy.svg" alt="deposit" />
-            Buy
+            Buy Crypto
           </button>
         </div>
         <div

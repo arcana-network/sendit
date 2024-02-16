@@ -55,7 +55,7 @@ async function handleGaslessSetup() {
           src="@/assets/images/illustration-icons/gasless-img.png"
         />
         <div class="flex flex-col max-w-[300px]">
-          <span class="text-[#d8d8d8] text-[1.25rem] font-bold"
+          <span class="text-[#d8d8d8] text-[1.25rem] font-bold capitalize"
             >SendIt, Now without gas fees!</span
           >
           <span class="text-[#b6b6b6] text-[14px]"
@@ -67,10 +67,10 @@ async function handleGaslessSetup() {
             cheapest!</span
           >
           <button
-            class="p-[0.5rem] rounded-[5px] bg-white text-black uppercase font-bold text-[0.875rem] mt-[0.75rem]"
+            class="py-[0.5rem] px-[1rem] rounded-[5px] bg-white text-black uppercase font-bold text-[0.875rem] mt-[0.75rem] w-max"
             @click.stop="handleGaslessSetup"
           >
-            Setup this wallet now
+            SETUP A GASLESS WALLET NOW
           </button>
           <div class="flex gap-1 items-center mt-[0.625rem]">
             <input

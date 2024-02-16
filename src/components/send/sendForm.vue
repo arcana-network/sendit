@@ -48,13 +48,13 @@ const router = useRouter();
 const supportedWallets = computed(() => {
   const wallets = [
     {
-      name: "User Owned Wallet",
+      name: "Regular Account",
       value: "eoa",
     },
   ];
   if (userStore.gaslessOptedIn) {
     wallets.push({
-      name: "Smart Contract Wallet",
+      name: "Smart Account",
       value: "scw",
     });
   }
@@ -138,11 +138,9 @@ const { userInput, supportedChains } = toRefs(sendStore);
 const filteredWallets = computed(() => {
   if (userInput.value.chain === "") return [];
   return supportedWallets.value.filter((wallet) => {
-    console.log(wallet);
     if (wallet.value === "eoa") return true;
     if (wallet.value === "scw") {
       const chain = getSelectedChainInfo(userInput.value.chain);
-      console.log(chain);
       if (chain) {
         return chain.gasless_enabled || chain.chain_id == "80001";
       }

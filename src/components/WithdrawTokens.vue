@@ -36,9 +36,9 @@ const toast = useToast();
 const isTokensSent = ref(false);
 
 onBeforeMount(async () => {
-  loaderStore.showLoader("Fetching Balances");
+  // loaderStore.showLoader("Fetching Balances");
   assets.value = await fetchAllTokenBalances(props.address);
-  loaderStore.hideLoader();
+  // loaderStore.hideLoader();
 });
 
 const withdrawChainsList = computed(() =>
