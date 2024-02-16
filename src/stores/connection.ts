@@ -55,12 +55,14 @@ class Connection {
   >();
   private mutex = new Mutex();
   public emitter = new EventEmitter();
+  private signerAddress: string;
 
   constructor(signer: JsonRpcSigner, account: Account) {
     this.state = ConnectionState.NOT_CONNECTED;
     // this.provider = provider
     this.signer = signer;
     this.account = account;
+    this.signerAddress = "";
 
     this.sendMessage = this.sendMessage.bind(this);
   }
@@ -104,9 +106,12 @@ class Connection {
   }
 
   public async onOpen() {
+    if (!this.signerAddress) {
+      this.signerAddress = await this.signer.getAddress();
+    }
     this.socket.send(
       msgpack({
-        addr: getBytes(await this.signer.getAddress()),
+        addr: getBytes(this.signerAddress),
         ...this.account,
       })
     );
