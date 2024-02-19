@@ -100,7 +100,7 @@ function handleBuy() {
             @update:model-value="(value) => (userInput.token = value)"
             :options="supportedTokens"
             :model-value="userInput.token"
-            placeholder="Select Chain"
+            placeholder="Select Token"
             :disabled="!userInput.chain"
           />
         </div>

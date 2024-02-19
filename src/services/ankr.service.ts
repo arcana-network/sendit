@@ -24,6 +24,7 @@ async function getAccountBalance(walletAddress: string, blockchain: string[]) {
       onlyWhitelisted: true,
       pageSize: 50,
       pageToken: null,
+      forceFetch: true,
     },
     id: 1,
   };

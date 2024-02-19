@@ -159,8 +159,11 @@ async function handleSend() {
 }
 
 function handleReset() {
-  loaderStore.showLoader("Sending Tokens to Transak");
   isSellClicked.value = false;
+  userInput.amount = "";
+  userInput.chain = "";
+  userInput.token = "";
+  sellAddress.value = "";
 }
 
 watch(
@@ -231,7 +234,7 @@ watch(
             @update:model-value="(value) => (userInput.token = value)"
             :options="supportedTokens"
             :model-value="userInput.token"
-            placeholder="Select Chain"
+            placeholder="Select Token"
             :disabled="!userInput.chain || isSellClicked"
           />
         </div>
