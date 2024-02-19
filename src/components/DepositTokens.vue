@@ -216,7 +216,7 @@ async function handleDeposit() {
             arcanaProvider,
             amount,
             feeData,
-            userInput.sourceOfFunds === "scw",
+            false,
             userInput.chain
           )
         : await erc20TokenTransfer(
@@ -228,7 +228,7 @@ async function handleDeposit() {
             //@ts-ignore
             userInput.value.token,
             feeData,
-            userInput.sourceOfFunds === "scw",
+            false,
             userInput.chain
           );
       toast.success("Tokens deposited successfully");
@@ -300,7 +300,7 @@ onBeforeMount(async () => {
             :options="selectedTypeAssets"
             :model-value="getSelectedAssets(userInput.token)"
             display-field="tokenSymbol"
-            placeholder="Select Chain"
+            placeholder="Select Token"
           />
         </div>
         <div
