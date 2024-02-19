@@ -68,10 +68,14 @@ const selectedTokenBalance = computed(() => {
 });
 
 async function fetchAssets() {
-  allAssets.value = await fetchAllTokenBalances(userStore.address);
-  allGaslessAssets.value = await fetchAllTokenBalances(
-    userStore.gaslessAddress
-  );
+  loaderStore.showLoader("Fetching Balances");
+  if (props.accountType === "scw")
+    allAssets.value = await fetchAllTokenBalances(userStore.address);
+  else
+    allGaslessAssets.value = await fetchAllTokenBalances(
+      userStore.gaslessAddress
+    );
+  loaderStore.hideLoader();
 }
 
 const selectedTypeAssets = computed(() => {
@@ -89,7 +93,7 @@ function getChainAssets(chainId) {
   const chain = getSelectedChainInfo(chainId);
   if (chain) {
     const assets =
-      props.accountType === "scw" ? allGaslessAssets.value : allAssets.value;
+      props.accountType === "eoa" ? allGaslessAssets.value : allAssets.value;
     return (
       assets.filter((asset) => asset.blockchain === chain.blockchain) || []
     );
@@ -217,7 +221,8 @@ async function handleDeposit() {
             amount,
             feeData,
             false,
-            userInput.chain
+            userInput.chain,
+            true
           )
         : await erc20TokenTransfer(
             props.accountType === "eoa"
@@ -226,10 +231,11 @@ async function handleDeposit() {
             arcanaProvider,
             amount,
             //@ts-ignore
-            userInput.value.token,
+            userInput.token,
             feeData,
             false,
-            userInput.chain
+            userInput.chain,
+            true
           );
       toast.success("Tokens deposited successfully");
       emit("success");

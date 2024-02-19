@@ -27,7 +27,8 @@ async function nativeTokenTransfer(
   amount: number,
   feeData: FeeData | null,
   isGasless?: boolean,
-  chain_id?: string | number
+  chain_id?: string | number,
+  isDeposit?: boolean
 ) {
   const web3Provider = new BrowserProvider(provider);
   const wallet = await web3Provider.getSigner();
@@ -56,7 +57,10 @@ async function nativeTokenTransfer(
       );
     }
   }
-  if (wallet.address?.toLowerCase() === receiverWalletAddress?.toLowerCase())
+  if (
+    !isDeposit &&
+    wallet.address?.toLowerCase() === receiverWalletAddress?.toLowerCase()
+  )
     throw new Error(SELF_TX_ERROR);
   const decimalAmount = new Decimal(amount);
   const rawTx: any = {
@@ -92,14 +96,18 @@ async function erc20TokenTransfer(
   tokenAddress: string,
   feeData: FeeData | null,
   isGasless?: boolean,
-  chain_id?: string | number
+  chain_id?: string | number,
+  isDeposit?: boolean
 ) {
   const web3Provider = new BrowserProvider(provider);
   const wallet = await web3Provider.getSigner();
   const receiverWalletAddress = isWalletAddress(publickey)
     ? publickey
     : computeAddress(`0x${publickey}`);
-  if (wallet.address?.toLowerCase() === receiverWalletAddress?.toLowerCase())
+  if (
+    !isDeposit &&
+    wallet.address?.toLowerCase() === receiverWalletAddress?.toLowerCase()
+  )
     throw new Error(SELF_TX_ERROR);
   let gaslessAddress = "";
   if (isGasless) {
