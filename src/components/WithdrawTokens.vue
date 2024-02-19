@@ -13,6 +13,7 @@ import {
   nativeTokenTransfer,
   erc20TokenTransfer,
 } from "@/services/send.service";
+import { switchChain } from "@/use/switchChain";
 
 type WithdrawTokenProps = {
   address: string;
@@ -124,6 +125,63 @@ async function handleSend() {
     return;
   }
   loaderStore.showLoader("Sending Tokens to Transak");
+  let hasUserRejectedChainSwitching = false;
+  let hasUserRejectedAccountTypeSwitching = false;
+  if (userInput.chain !== "") {
+    const chainId = await authStore.provider.request({
+      method: "eth_chainId",
+    });
+    if (Number(chainId) !== Number(userInput.chain)) {
+      loaderStore.showLoader(
+        "Switching chain...",
+        `Switch to ${
+          chains[Number(userInput.chain)].name
+        } chain before sending tokens`
+      );
+      try {
+        await switchChain(userInput.chain as string);
+      } catch (e) {
+        hasUserRejectedChainSwitching = true;
+      }
+    }
+  } else {
+    toast.error("Please select a chain to continue");
+    return;
+  }
+  if (authStore.loggedInWith === "") {
+    const currentAccountType = await authStore.provider.request({
+      method: "_arcana_getAccountType",
+    });
+    if (currentAccountType !== accountType.value) {
+      try {
+        loaderStore.showLoader(
+          "Switching Account Type...",
+          `Switching to ${
+            accountType.value === "scw"
+              ? "Smart Contract Wallet"
+              : "User Owned Wallet"
+          }. Please approve the transaction on your wallet to switch the account type.`
+        );
+        await authStore.provider.request({
+          method: "_arcana_switchAccountType",
+          params: {
+            type: accountType.value,
+          },
+        });
+      } catch (e) {
+        console.error(e);
+        toast.error("Switching account type rejected by user");
+        hasUserRejectedAccountTypeSwitching = true;
+      }
+    }
+  }
+  if (hasUserRejectedChainSwitching || hasUserRejectedAccountTypeSwitching) {
+    loaderStore.hideLoader();
+    hasUserRejectedChainSwitching
+      ? toast.error("Switching chain  rejected by user")
+      : toast.error("Switching account type rejected by user");
+    return;
+  }
   try {
     const sendToken = assets.value.find(
       (asset) =>
