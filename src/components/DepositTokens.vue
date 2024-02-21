@@ -127,11 +127,11 @@ function isExternalWallet() {
 }
 
 function isSmartContractWallet() {
-  return userInput.sourceOfFunds === "Smart Contract Wallet";
+  return userInput.sourceOfFunds === "Smart Account";
 }
 
 function isEoaWallet() {
-  return userInput.sourceOfFunds === "User Owned Wallet";
+  return userInput.sourceOfFunds === "Regular Account";
 }
 
 async function handleDeposit() {
