@@ -2,16 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
 @font-face {
   font-family: "Onest";
-  src: url("@/assets/fonts/onest/WOFF/OnestRegular1602-hint.woff") format("woff");
+  src: url("@/assets/fonts/onest/WOFF/OnestRegular1602-hint.woff")
+    format("woff");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Onest";
-  src: url("@/assets/fonts/onest/WOFF/OnestExtraBold1602-hint.woff") format("woff");
+  src: url("@/assets/fonts/onest/WOFF/OnestExtraBold1602-hint.woff")
+    format("woff");
   font-weight: 800;
   font-style: normal;
 }
@@ -45,13 +54,13 @@
 }
 
 .font-caveat {
-  font-family: 'Caveat', cursive;
+  font-family: "Caveat", cursive;
   font-weight: 700;
   color: #fd7132;
 }
 
 .font-syne {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 700;
 }
 
@@ -118,7 +127,7 @@ body {
   padding: 1.5rem 1rem !important;
   font-family: Onest, sans-serif !important;
   text-overflow: ellipsis !important;
-  background-color: #1F1F1F !important;
+  background-color: #1f1f1f !important;
   border-radius: 10px !important;
   border: 1px solid #363636 !important;
   align-items: center !important;
@@ -139,23 +148,23 @@ body {
 }
 
 .Vue-Toastification__toast--success .Vue-Toastification__icon {
-  color: #15AC65 !important;
+  color: #15ac65 !important;
 }
 
 .Vue-Toastification__toast--success .Vue-Toastification__progress-bar {
-  background-color: #15AC65 !important;
+  background-color: #15ac65 !important;
 }
 
 .Vue-Toastification__toast--error .Vue-Toastification__icon {
-  color: #FF4264 !important;
+  color: #ff4264 !important;
 }
 
 .Vue-Toastification__toast--error .Vue-Toastification__progress-bar {
-  background-color: #FF4264 !important;
+  background-color: #ff4264 !important;
 }
 
 .landing-section-title {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 700;
   font-size: 1.25rem;
   line-height: 1.5rem;
