@@ -100,6 +100,7 @@ export enum ChainNames {
   "bsc_testnet_chapel" = "BNB Smart Chain Testnet",
   "opbnb" = "opBNB Mainnet",
   "linea" = "Linea",
+  "linea_testnet" = "Linea Goerli",
 }
 
 export enum ChainIds {
@@ -111,6 +112,7 @@ export enum ChainIds {
   "bsc_testnet_chapel" = 97,
   "opbnb" = 204,
   "linea" = 59144,
+  "linea_testnet" = 59140,
 }
 
 export const SupportedChainIdsForAccounts = {
