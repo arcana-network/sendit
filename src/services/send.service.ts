@@ -69,7 +69,7 @@ async function nativeTokenTransfer(
     value: decimalAmount.mul(Decimal.pow(10, 18)).ceil().toHexadecimal(),
   };
   if (feeData) {
-    rawTx.gasLimit = 21000n;
+    // rawTx.gasLimit = 21000n;
     rawTx.maxFeePerGas = feeData.maxFeePerGas;
     rawTx.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas;
   }

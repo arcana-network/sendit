@@ -26,6 +26,7 @@ export async function switchChain(chainId) {
               },
               rpcUrls: [chainDetails.rpc_url],
               blockExplorerUrls: [chainDetails.explorer],
+              iconUrls: [chainDetails.icon_url],
             },
           ],
         });
