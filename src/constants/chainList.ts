@@ -2,7 +2,8 @@ const chains = {
   1: {
     name: "Ethereum",
     chain_id: 1,
-    rpc_url: "https://rpc.ankr.com/eth",
+    rpc_url:
+      "https://eth-mainnet.blastapi.io/7c12fa10-4e46-4810-bf66-6b3148119501",
     blockchain: "eth",
     currency: "ETH",
     explorer: "https://etherscan.io",
@@ -11,7 +12,8 @@ const chains = {
   137: {
     name: "Polygon",
     chain_id: 137,
-    rpc_url: "https://rpc.ankr.com/polygon",
+    rpc_url:
+      "https://polygon-mainnet.blastapi.io/7c12fa10-4e46-4810-bf66-6b3148119501",
     blockchain: "polygon",
     currency: "MATIC",
     explorer: "https://polygonscan.com",
@@ -20,7 +22,8 @@ const chains = {
   80001: {
     name: "Polygon Mumbai",
     chain_id: 80001,
-    rpc_url: "https://rpc.ankr.com/polygon_mumbai",
+    rpc_url:
+      "https://polygon-testnet.blastapi.io/7c12fa10-4e46-4810-bf66-6b3148119501",
     blockchain: "polygon_mumbai",
     currency: "MATIC",
     explorer: "https://mumbai.polygonscan.com",
@@ -30,7 +33,8 @@ const chains = {
     name: "Arbitrum One",
     blockchain: "arbitrum",
     chain_id: 42161,
-    rpc_url: "https://rpc.ankr.com/arbitrum",
+    rpc_url:
+      "https://arbitrum-one.blastapi.io/7c12fa10-4e46-4810-bf66-6b3148119501",
     currency: "ETH",
     explorer: "https://arbiscan.io",
     icon_url: "https://icons.llamao.fi/icons/chains/rsz_arbitrum.jpg",
@@ -39,7 +43,8 @@ const chains = {
     name: "BNB Smart Chain",
     blockchain: "bsc",
     chain_id: 56,
-    rpc_url: "https://rpc.ankr.com/bsc",
+    rpc_url:
+      "https://bsc-mainnet.blastapi.io/7c12fa10-4e46-4810-bf66-6b3148119501",
     currency: "BNB",
     explorer: "https://bscscan.com",
     icon_url: "https://icons.llamao.fi/icons/chains/rsz_binance.jpg",
@@ -48,7 +53,8 @@ const chains = {
     name: "BNB Smart Chain Testnet",
     blockchain: "bsc_testnet_chapel",
     chain_id: 97,
-    rpc_url: "https://rpc.ankr.com/bsc_testnet_chapel",
+    rpc_url:
+      "https://bsc-testnet.blastapi.io/7c12fa10-4e46-4810-bf66-6b3148119501",
     currency: "BNB",
     explorer: "https://testnet.bscscan.com",
     icon_url: "https://icons.llamao.fi/icons/chains/rsz_binance.jpg",
@@ -65,7 +71,8 @@ const chains = {
   59144: {
     name: "Linea",
     chain_id: 59144,
-    rpc_url: "https://1rpc.io/linea",
+    rpc_url:
+      "https://linea-mainnet.blastapi.io/7c12fa10-4e46-4810-bf66-6b3148119501",
     blockchain: "linea",
     currency: "ETH",
     explorer: "https://lineascan.build",
@@ -74,7 +81,8 @@ const chains = {
   59140: {
     name: "Linea Goerli",
     chain_id: 59140,
-    rpc_url: "https://rpc.goerli.linea.build",
+    rpc_url:
+      "https://linea-goerli.blastapi.io/7c12fa10-4e46-4810-bf66-6b3148119501",
     blockchain: "linea_testnet",
     currency: "ETH",
     explorer: "https://goerli.lineascan.build",
