@@ -74,7 +74,7 @@
 }
 
 html {
-  background-color: #0e0e0e;
+  background-color: #0c0c0d;
   scroll-behavior: smooth;
 }
 
@@ -82,7 +82,7 @@ body {
   font-family: Onest, sans-serif;
   color: #ffffff;
   min-height: 100vh;
-  background-color: #0e0e0e;
+  background-color: #0c0c0d;
 }
 
 #app {

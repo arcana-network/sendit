@@ -95,6 +95,8 @@ async function handlePasswordlessLogin() {
         class="md:hidden relative top-0 left-0 right-0 h-[812px] md:h-[1059px] object-cover object-center w-full z-[2]" />
       <img src="@/assets/images/landing/here-sendit-1441.png"
         class="max-md:hidden relative top-0 left-0 right-0 h-[915px] md:h-[1025px] object-cover object-center w-full z-[2]" />
+      <img src="@/assets/images/landing/bg-bottom.png"
+        class="absolute bottom-0 z-[4]" />
     </div>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <template>
   <div class="relative pt-20 pb-20">
-    <div class="landing-container md:px-4 mt-[4rem] md:mt-[8rem] ">
-      <div class="p-[1.25rem] md:p-[3.75rem] rounded-[0.625rem] md:rounded-[1.875rem]  bg-[rgb(49,49,49)]/25 z-[1]"
+    <div class="landing-container mt-[4rem] md:mt-[8rem] ">
+      <div class="ml-[4.5rem] p-[1.25rem] md:p-[3.75rem] rounded-[0.625rem] md:rounded-[1.875rem]  bg-[rgb(20,20,20)]/60 z-[1] w-[1000px]"
         style="
           border: 4px solid rgb(26,26,27,0.5);
         ">
@@ -20,7 +20,7 @@
     </div>
     <img class="absolute z-[-1] -top-[280%] right-0 md:hidden" src="@/assets/images/landing/tagline-bg-375w.png"
       loading="lazy" />
-    <img class="absolute z-[-1] -top-[40%] right-0 h-[160vh] max-md:hidden"
+    <img class="absolute z-[-1] -top-[60%] -right-[130px] h-[175vh] max-md:hidden"
       src="@/assets/images/landing/cloud-elephant.png" loading="lazy" />
   </div>
 </template>

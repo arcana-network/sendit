@@ -1,70 +1,36 @@
 <template>
   <div class="relative">
     <div class="landing-container mt-[4rem] md:mt-[8rem]" id="why-sendit">
-      <h3 class="earn-section-title text-center mb-[2rem] md:mb-[3rem]">
-        Why Use <span class="font-bold">SendIt?</span>
+      <h3 class="flex flex-row justify-center earn-section-title text-center mb-[2rem] md:mb-[3rem] gap-3 pb-10">
+        Why Use
+        <span class="flex flex-row font-bold gap-5">
+          SendIt
+          <img src="@/assets/images/landing/question-mark.png"></span>
       </h3>
       <div class="grid gap-3 md:gap-6" style="
           grid-template-areas:
             'why-sendit-2 why-sendit-2'
             'why-sendit-3 why-sendit-4';
         ">
-        <!-- <div>
-        <div>
-          <h4>People roll their eyes if you mention Web3</h4>
-          <p>
-            Don’t explain crypto, show them the convenience. Just send them some
-            crypto using SendIt!
-          </p>
-        </div>
-        <img
-          src="@/assets/images/landing/why-sendit-1-111w.png"
-          srcset="
-            @/assets/images/landing/why-sendit-1-111w.png 111w,
-            @/assets/images/landing/why-sendit-1-344w.png 344w
-          "
-          sizes="(max-width: 767px) 111px, 344px"
-          alt="People roll their eyes if you mention Web3"
-          loading="lazy"
-        />
-        <img
-            src="@/assets/images/landing/why-sendit-bg-81w.svg"
-            loading="lazy"
-            class="z-[-1] absolute top-0 md:hidden"
-          />
-          <img
-            src="@/assets/images/landing/why-sendit-bg-557w.svg"
-            loading="lazy"
-            class="z-[-1] absolute top-0 max-md:hidden"
-          />
-      </div> -->
         <div
-          class="border border-solid border-[#363636] bg-[#0e0e0e] rounded-[5px] md:rounded-[10px] flex justify-between overflow-hidden"
+          class="border border-solid border-[#363636] bg-[#141414]/60 rounded-[25px] md:rounded-[30px] flex justify-between overflow-hidden"
           style="grid-area: why-sendit-2">
+          <div class="relative isolate flex justify-center items-center md:w-[1300px]">
+            <img src="@/assets/gifs/sendit-email.gif" loading="lazy" />
+          </div>
           <div class="flex flex-col gap-[0.3rem] md:gap-[1rem] p-[0.75rem] md:p-[2rem]">
-            <h4 class="font-[500] text-[10px] md:text-[24px]">
-              People are scared they’ll make mistakes with wallet addresses
-            </h4>
+            <h4 class="font-[500] text-[10px] md:text-[24px] pt-10">
+              Nothing cryptic, just email </h4>
             <p class="text-[#c4c4c4] text-[8px] md:text-[20px]">
-              With SendIt, people can send money just using email addresses.
-              What could be simpler?
+              With SendIt, there is no need for long, scary wallet addresses, just use emails to send crypto and be sure
+              it reached the right person!
             </p>
           </div>
-          <div class="relative isolate flex justify-center items-center md:w-[502px]">
-            <img src="@/assets/images/landing/why-sendit-2-156w.png" srcset="
-                @/assets/images/landing/why-sendit-2-156w.png 156w,
-                @/assets/images/landing/why-sendit-2-502w.png 502w
-              " sizes="(max-width: 767px) 156px, 502px"
-              alt="People are scared they’ll make mistakes with wallet addresses" loading="lazy" />
-            <img src="@/assets/images/landing/why-sendit-bg-81w.svg" loading="lazy"
-              class="z-[-1] max-w-max absolute top-0 md:hidden" />
-            <img src="@/assets/images/landing/why-sendit-bg-557w.svg" loading="lazy"
-              class="z-[-1] max-w-max absolute top-0 max-md:hidden" />
-          </div>
         </div>
         <div
-          class="border border-solid border-[#363636] bg-[#0e0e0e] rounded-[5px] md:rounded-[10px] flex flex-col p-[0.75rem] md:p-[2rem] justify-between"
+          class="border border-solid border-[#363636] bg-[#141414]/60 rounded-[25px] md:rounded-[30px] flex flex-col justify-evenly"
           style="grid-area: why-sendit-3; padding-bottom: 0">
+            <img src="@/assets/gifs/social-logins.gif" loading="lazy"  />
           <div class="flex flex-col gap-[0.3rem] md:gap-[1rem]">
             <h4 class="font-[500] text-[10px] md:text-[24px]">
               The Crypto learning curve scares people
@@ -75,20 +41,11 @@
               ideas at their own pace.
             </p>
           </div>
-          <div class="relative isolate flex justify-center items-center h-[81px] md:h-[292px]">
-            <img src="@/assets/images/landing/why-sendit-3-66w.png" srcset="
-                @/assets/images/landing/why-sendit-3-66w.png   66w,
-                @/assets/images/landing/why-sendit-3-241w.png 241w
-              " sizes="(max-width: 767px) 66px, 241px" alt="The Crypto learning curve scares people" loading="lazy" />
-            <img src="@/assets/images/landing/why-sendit-bg-81w.svg" loading="lazy"
-              class="z-[-1] absolute top-0 md:hidden" />
-            <img src="@/assets/images/landing/why-sendit-bg-557w.svg" loading="lazy"
-              class="z-[-1] absolute top-0 max-md:hidden" />
-          </div>
         </div>
         <div
-          class="border border-solid border-[#363636] bg-[#0e0e0e] rounded-[5px] md:rounded-[10px] flex flex-col p-[0.75rem] md:p-[2rem] justify-between"
-          style="grid-area: why-sendit-4; padding-bottom: 0">
+          class="border border-solid border-[#363636] bg-[#141414]/60 rounded-[25px] md:rounded-[30px] flex flex-col justify-evenly"
+          style="grid-area: why-sendit-4;">
+            <img src="@/assets/gifs/success.gif" loading="lazy" />
           <div class="flex flex-col gap-[0.3rem] md:gap-[1rem]">
             <h4 class="font-[500] text-[10px] md:text-[24px]">
               Metamask is difficult to navigate
@@ -99,26 +56,12 @@
               familiar to users. SendIt does that.
             </p>
           </div>
-          <div class="relative isolate flex justify-center items-center h-[81px] md:h-[292px]">
-            <img src="@/assets/images/landing/why-sendit-4-70w.png" srcset="
-                @/assets/images/landing/why-sendit-4-70w.png   70w,
-                @/assets/images/landing/why-sendit-4-242w.png 242w
-              " sizes="(max-width: 767px) 70px, 242px" alt="People roll their eyes if you mention Web3"
-              loading="lazy" />
-            <img src="@/assets/images/landing/why-sendit-bg-81w.svg" loading="lazy"
-              class="z-[-1] absolute top-0 md:hidden" />
-            <img src="@/assets/images/landing/why-sendit-bg-557w.svg" loading="lazy"
-              class="z-[-1] absolute top-0 max-md:hidden" />
-          </div>
         </div>
       </div>
     </div>
     <img class="absolute z-[-1] bottom-[5%] left-0 md:hidden" src="@/assets/images/landing/why-sendit-bg-266w.png"
       loading="lazy" />
-    <img
-      class="absolute z-[-1] top-[65%] -left-[10%] max-md:hidden"
-      src="@/assets/images/landing/planet1.svg"
-      loading="lazy"
-    />
+    <img class="absolute z-[-1] top-[65%] -left-[10%] max-md:hidden" src="@/assets/images/landing/planet1.svg"
+      loading="lazy" />
   </div>
 </template>
