@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import { Vue3Lottie } from 'vue3-lottie'
-import SenditJSON from '@/assets/images/landing/sendit.mp4.lottie.json'
+// import { Vue3Lottie } from 'vue3-lottie'
+// import SenditJSON from '@/assets/images/landing/sendit.mp4.lottie.json'
 
 const currentSlide = ref(1);
 const totalSlides = 4;
-let carouselTimer: NodeJS.Timer;
+let carouselTimer: NodeJS.Timer | undefined;
 const carouselInterval = 4000;
 
 function nextSlide() {
@@ -23,7 +23,7 @@ function startAutoCarousel() {
 }
 
 function stopAutoCarousel() {
-  clearInterval(carouselTimer);
+  clearInterval(carouselTimer as unknown as number);
 }
 
 onMounted(() => {
@@ -57,7 +57,7 @@ onBeforeUnmount(() => {
           </div>
         </h3>
       </div>
-      <Vue3Lottie :animationData="SenditJSON" style="width: 1000px; height: 1000px;" />
+      <!-- <Vue3Lottie :animationData="SenditJSON" style="width: 1000px; height: 1000px;" /> -->
       <img src="@/assets/gifs/Discover.gif" style="width: 1000px; height: 1000px;" />
       <div class="flex gap-[2.88rem] max-md:justify-center">
         <img src="@/assets/images/landing/how-does-it-work-1.png" loading="lazy"
