@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import store from "@/stores";
 import { Buffer } from "buffer";
 import Toast from "vue-toastification";
+import Vue3Lottie from "vue3-lottie";
 
 import "vue-toastification/dist/index.css";
 import "@fontsource/caveat/700.css";
@@ -32,4 +33,5 @@ const app = createApp(App);
 app.use(store);
 app.use(router);
 app.use(Toast, toastOptions);
+app.use(Vue3Lottie)
 app.mount("#app");

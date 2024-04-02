@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import LandingNumbers from "./LandingNumbers.vue";
+import { Vue3Lottie } from 'vue3-lottie'
+import SenditJSON from '@/assets/images/landing/sendit.mp4.lottie.json'
 
 const currentSlide = ref(1);
 const totalSlides = 4;
@@ -56,6 +57,8 @@ onBeforeUnmount(() => {
           </div>
         </h3>
       </div>
+      <Vue3Lottie :animationData="SenditJSON" style="width: 1000px; height: 1000px;" />
+      <img src="@/assets/gifs/Discover.gif" style="width: 1000px; height: 1000px;" />
       <div class="flex gap-[2.88rem] max-md:justify-center">
         <img src="@/assets/images/landing/how-does-it-work-1.png" loading="lazy"
           class="max-md:transition-all max-md:duration-500 max-md:ease-in-out" :class="{
@@ -84,8 +87,8 @@ onBeforeUnmount(() => {
             'bg-[#f7f7f7] w-[10px] h-[10px]': currentSlide === i,
           }" @click.stop="currentSlide = i"></button>
       </div>
-      <img class="absolute z-[-1] top-[160%] left-0 h-[300px] max-md:hidden"
-        src="@/assets/images/landing/cloud-how.png" loading="lazy" />
+      <img class="absolute z-[-1] top-[160%] left-0 h-[300px] max-md:hidden" src="@/assets/images/landing/cloud-how.png"
+        loading="lazy" />
     </div>
   </div>
 </template>
