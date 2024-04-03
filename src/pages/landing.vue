@@ -34,7 +34,7 @@ const isBannerClosed = ref(true);
     <div class="items-baseline flex-wrap justify-center mr-3">
       $XAR Public Sale Successfully Closed
       <a href="https://republic.com/arcana/" target="_blank" rel="noopener"
-        class="btn-submit py-1 px-2 rounded-md font-bold border-none">View&nbsp;Republic</a>
+        class="btn-submit py-1 px-2 rounded-md font-bold-onest border-none">View&nbsp;Republic</a>
     </div>
     <button class="absolute right-4" @click.stop="isBannerClosed = true">
       <img src="@/assets/images/icons/close.svg" alt="close" />

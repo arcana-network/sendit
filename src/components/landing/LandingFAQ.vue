@@ -36,7 +36,7 @@ const faqs = [
       <h3 class="flex">
 
         <div class="relative">
-          <span class="faq-section-title relative"><span class="font-bold">Frequently&nbsp;</span></span>
+          <span class="faq-section-title relative"><span class="font-bold-onest">Frequently&nbsp;</span></span>
           <img src="@/assets/images/landing/faq-underlined.png" class="max-md:w-[96px]" />
         </div>
         <span class="faq-section-title">Asked Questions</span>
@@ -63,9 +63,9 @@ const faqs = [
           </DisclosureButton>
           <DisclosurePanel class="faq-section-description pb-[1.4rem] pr-[1.4rem] max-w-[950px]">
             Reach out to us via
-            <a href="https://discord.gg/6g7fQvEpdy" target="_blank" class="font-bold text-white">Discord</a>,
-            <a href="https://t.me/ArcanaNetwork" target="_blank" class="font-bold text-white">Telegram</a>, or
-            <a href="mailto:support@arcana.network" target="_blank" class="font-bold text-white">Mail</a>.
+            <a href="https://discord.gg/6g7fQvEpdy" target="_blank" class="font-bold-onest text-white">Discord</a>,
+            <a href="https://t.me/ArcanaNetwork" target="_blank" class="font-bold-onest text-white">Telegram</a>, or
+            <a href="mailto:support@arcana.network" target="_blank" class="font-bold-onest text-white">Mail</a>.
           </DisclosurePanel>
         </Disclosure>
       </div>

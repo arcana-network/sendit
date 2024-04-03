@@ -42,7 +42,7 @@
           </ul>
         </nav>
         <div class="flex flex-col gap-2 md:gap-4 max-md:w-full">
-          <span class="uppercase font-bold text-white">Follow us on</span>
+          <span class="uppercase font-bold-onest text-white">Follow us on</span>
           <div class="flex gap-5 max-md:justify-center">
             <a href="https://discord.gg/6g7fQvEpdy" target="_blank"><img src="@/assets/images/landing/icons/discord.svg"
                 alt="Join Arcana Network on Discord" loading="lazy" class="h-[20px]" /></a>

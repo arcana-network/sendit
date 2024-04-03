@@ -60,13 +60,13 @@
 }
 
 .syne {
-  font-family: "Onest", sans-serif;
+  font-family: "Syne", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
 }
 
-.font-bold {
+.font-bold-onest {
   font-family: "Onest", sans-serif;
   font-optical-sizing: auto;
   font-weight: 700;

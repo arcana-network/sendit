@@ -48,7 +48,7 @@ async function handlePasswordlessLogin() {
       class="landing-container absolute z-[10] -top-[60px] h-full max-h-screen w-full flex flex-col justify-center items-center left-1/2 transform -translate-x-1/2">
 
       <h1 class="syne landing-section-title max-md:max-w-[200px] text-center">
-        Send Crypto <span class="font-one font-bold">Over Email</span>
+        Send Crypto <span class="font-one font-bold-onest">Over Email</span>
       </h1>
       <p class="landing-section-subtitle max-w-[800px] text-center max-md:mt-5 md:mt-10">
         This is the simplest way to send crypto to anyone even if they don’t

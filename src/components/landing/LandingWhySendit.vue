@@ -3,7 +3,7 @@
     <div class="landing-container mt-[4rem] md:mt-[8rem]" id="why-sendit">
       <h3 class="flex md:flex-row justify-center earn-section-title text-center mb-[2rem] md:mb-[3rem] gap-2 md:gap-3 pb-10">
         Why Use
-        <span class="flex flex-row font-bold gap-2 md:gap-5">
+        <span class="flex flex-row font-bold-onest gap-2 md:gap-5">
           SendIt
           <img src="@/assets/images/landing/question-mark.png"></span>
       </h3>

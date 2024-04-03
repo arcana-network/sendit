@@ -5,7 +5,7 @@
       <div class=" flex flex-row items-center gap-10 -ml-5">
         <img src="@/assets/images/landing/users.svg" alt="Users signed up" class="h-100" />
         <div class="flex flex-col items-start gap-1">
-          <span class="font-bold text-[20px] md:text-[40px] leading-[1.5]">500K+</span>
+          <span class="font-bold-onest text-[20px] md:text-[40px] leading-[1.5]">500K+</span>
           <span class="text-[#c4c4c4] text-[8px] md:text-[20px]">Users Signed Up</span>
         </div>
       </div>
@@ -15,7 +15,7 @@
       <div class="flex flex-row items-center gap-10 -ml-5">
         <img src="@/assets/images/landing/transactions.svg" alt="Transactions Sent" class="h-100" />
         <div class="flex flex-col items-start gap-1">
-          <span class="font-bold text-[20px] md:text-[40px] leading-[1.5]">3M+</span>
+          <span class="font-bold-onest text-[20px] md:text-[40px] leading-[1.5]">3M+</span>
           <span class="text-[#c4c4c4] text-[8px] md:text-[20px] text-center">Transactions Sent</span>
         </div>
       </div>

@@ -3,7 +3,7 @@
     <div class="flex justify-center">
       <h3 class="max-md:hidden flex">
         <div class="relative">
-          <span class="earn-section-title"><span class="font-bold">Earn XP&nbsp;</span></span>
+          <span class="earn-section-title"><span class="font-bold-onest">Earn XP&nbsp;</span></span>
           <img src="@/assets/images/landing/faq-underlined.png" class="absolute top-full pt-3" />
         </div>
         <span class="earn-section-title">for Using SendIt</span>
