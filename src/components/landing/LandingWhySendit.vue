@@ -19,9 +19,9 @@
             <img src="@/assets/gifs/sendit-email.gif" loading="lazy" class="hidden md:block" />
           </div>
           <div class="flex flex-col gap-[0.3rem] md:gap-[1rem] p-[0.75rem] md:p-[2rem]">
-            <h4 class="font-[500] text-[36px] md:text-[24px] md:pt-10">
-              Nothing cryptic, just email.</h4>
-            <p class="text-[#c4c4c4] text-[20px] md:text-[20px]">
+            <h4 class="font-[500] text-[36px] md:text-[24px] md:pt-10 text-center md:text-left">
+              Nothing cryptic, just email</h4>
+            <p class="text-[#c4c4c4] text-[20px] md:text-[20px] text-center md:text-left">
               With SendIt, there is no need for long, scary wallet addresses, just use emails to send crypto and be sure
               it reached the right person!
             </p>
