@@ -58,7 +58,7 @@ async function handlePasswordlessLogin() {
         class="relative flex gap-2 md:gap-4 md:border md:border-solid md:border-[#8d8d8d] md:bg-transparent md:p-1 md:rounded-[25px] max-md:mt-5 md:mt-10"
         @submit.prevent="handlePasswordlessLogin">
         <input placeholder="someone@example.com"
-          class="md:bg-transparent max-md:rounded-[5px] h-[40px] px-2 w-[200px] md:w-[300px] text-[12px] md:text-[14px] text-white placeholder:text-[#8d8d8d]"
+          class="md:bg-transparent max-md:rounded-[5px] h-[40px] px-3 w-[200px] md:w-[300px] text-[12px] md:text-[14px] text-black placeholder:text-[#8d8d8d]"
           style="outline: none" v-model.trim="email" />
         <div class="relative flex items-center justify-center w-[80px] md:w-[120px] h-[40px]">
           <button
@@ -66,10 +66,10 @@ async function handlePasswordlessLogin() {
             :disabled="loaderStore.show">
             Sign Up!
           </button>
-          <img class="absolute top-[125%] md:top-[130%] left-0 h-[30px] md:h-[50px]"
+          <img class="absolute top-[125%] md:top-[130%] left-0 h-[50px] md:h-[50px]"
             src="@/assets/images/landing/try-it-out-vector-pointer.svg" />
           <span
-            class="font-caveat text-[1.5rem] md:text-[2.25rem] absolute w-max top-[125%] md:top-[175%] -left-[230%] md:-left-[250%]">Sign-up
+            class="font-caveat text-[1.5rem] md:text-[2.25rem] absolute w-max top-[200%] md:top-[175%] -left-[250%] md:-left-[250%]">Sign-up
             now, get 50XP!</span>
         </div>
       </form>

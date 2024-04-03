@@ -10,8 +10,8 @@
           <div class="flex items-center">
             <img src="@/assets/images/landing/apostrophe-open-outline.svg" class="h-2 md:h-4 -mt-2 md:-mt-6" />
             <img src="@/assets/images/landing/apostrophe-open-outline.svg" class="h-2 md:h-4 -mt-2 md:-mt-6" />
-            <span class="earn-section-title max-md:text-[2rem] md:text-[3.5rem]">&nbsp;Email + Crypto =&nbsp;</span>
-            <img src="@/assets/images/landing/SendIt-text.svg" class="h-6 md:h-9" alt="SendIt" />
+            <span class="earn-section-title max-md:text-[1rem] md:text-[3.5rem]">&nbsp;Email + Crypto =&nbsp;</span>
+            <img src="@/assets/images/landing/SendIt-text.svg" class="h-3 md:h-9" alt="SendIt" />
             <span>&nbsp;&nbsp;</span>
             <img src="@/assets/images/landing/apostrophe-close-outline.svg" class="h-2 md:h-4 -mt-2 md:-mt-6" />
             <img src="@/assets/images/landing/apostrophe-close-outline.svg" class="h-2 md:h-4 -mt-2 md:-mt-6" />

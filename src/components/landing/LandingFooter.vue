@@ -23,10 +23,11 @@
           </a>
           <a href="https://arcana.network" target="_blank" class="text-white text-[0.9rem]">Made with love by Arcana
             Network</a>
-          <a href="#" target="_blank"
-            class="text-[0.75rem] leading-[1rem] uppercase font-500 border-solid border md:border md:border-solid md:border-[#373736] rounded-[5px] text-center max-md:mt-3 md:mt-5 py-2.5">
-            Product Hunt Actionable Badge
-          </a>
+          <a class="max-md:hidden"
+            href="https://www.producthunt.com/posts/sendit-3?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-sendit&#0045;3"
+            target="_blank" style="width: 225px; height: 50px;" width="250" height="40"><img
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=411941&theme=dark"
+              alt="SendIT - Send&#0032;crypto&#0032;using&#0032;email&#0032;or&#0032;social&#0032;handles | Product Hunt" /></a>
         </div>
         <nav class="flex justify-evenly flex-grow max-md:w-full max-md:justify-around">
           <ul class="flex flex-col gap-4 md:gap-1 text-white">

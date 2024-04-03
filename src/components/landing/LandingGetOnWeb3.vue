@@ -1,7 +1,7 @@
 <template>
   <div id="getonweb3" class="h-[234px] md:h-[571px] relative flex items-center mt-[4rem] md:mt-[8rem]">
     <div class="landing-container flex flex-col items-center gap-4">
-      <h3 class="getonweb3-section-title mb-10">#GetOnWeb3</h3>
+      <h3 class="getonweb3-section-title md:mb-10">#GetOnWeb3</h3>
       <p class="getonweb3-section-description max-w-[688px] text-center">
         There's no better way to inspire others to embrace crypto than by getting them to experience it firsthand. Take charge, empower others, and be at the forefront of the crypto revolution. Together, we'll change the world for
         the better.

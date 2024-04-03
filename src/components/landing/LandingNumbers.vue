@@ -36,7 +36,7 @@
 <style scoped>
 @media (max-width: 768px) {
   .landing-container {
-    flex-direction: row;
+    flex-direction: column;
     gap: 50px;
     align-items: center;
   }

@@ -33,7 +33,7 @@ onBeforeUnmount(() => {
         </a>
       </div>
       <div class="absolute z-[1000] right-[1.25rem] top-0 bottom-0 flex items-center gap-4">
-        <a class="text-[1.5rem] md:text-[0.75rem] leading-[1rem] uppercase font-500 rounded-[25px] md:rounded-[25px] px-5 py-5 md:px-4 md:py-3 cursor-pointer bg-[rgb(54,54,54)]/70 hover:scale-105 transition-colors duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+        <a class="text-[0.95rem] md:text-[0.75rem] leading-[1rem] uppercase font-500 rounded-[25px] md:rounded-[25px] px-5 py-5 md:px-4 md:py-3 cursor-pointer bg-[rgb(54,54,54)]/70 hover:scale-105 transition-colors duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
           href="/app">
           Launch App
         </a>

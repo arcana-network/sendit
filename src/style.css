@@ -313,7 +313,7 @@ body {
     line-height: 3rem;
   }
   .earn-section-title {
-    font-size: 3.75rem;
+    font-size: 3.25rem;
     line-height: 3rem;
   }
   .getonweb3-section-title {
@@ -351,16 +351,16 @@ body {
     line-height: 3rem;
   }
   .earn-section-title {
-    font-size: 2.5rem;
+    font-size: 2rem;
     line-height: 3rem;
   }
   .getonweb3-section-title {
     font-size: 2rem;
-    line-height: 3rem;
+    line-height: 1rem;
   }
 
   .faq-section-title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     line-height: 3rem;
   }
 
@@ -375,7 +375,7 @@ body {
   }
   .getonweb3-section-description {
     font-size: 1rem;
-    line-height: 1.95rem;
+    line-height: 1.25rem;
   }
   .faq-section-description {
     font-size: 1rem;

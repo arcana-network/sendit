@@ -1,13 +1,13 @@
 <template>
   <div class="relative">
     <div class="landing-container mt-[4rem] md:mt-[8rem]" id="why-sendit">
-      <h3 class="flex flex-row justify-center earn-section-title text-center mb-[2rem] md:mb-[3rem] gap-3 pb-10">
+      <h3 class="flex md:flex-row justify-center earn-section-title text-center mb-[2rem] md:mb-[3rem] gap-2 md:gap-3 pb-10">
         Why Use
-        <span class="flex flex-row font-bold gap-5">
+        <span class="flex flex-row font-bold gap-2 md:gap-5">
           SendIt
           <img src="@/assets/images/landing/question-mark.png"></span>
       </h3>
-      <div class="grid gap-3 md:gap-6" style="
+      <div class="flex flex-col md:grid gap-3 md:gap-6" style="
           grid-template-areas:
             'why-sendit-2 why-sendit-2'
             'why-sendit-3 why-sendit-4';
@@ -18,10 +18,10 @@
           <div class="relative isolate flex justify-center items-center md:w-[1300px]">
             <img src="@/assets/gifs/sendit-email.gif" loading="lazy" class="hidden md:block" />
           </div>
-          <div class="flex flex-col gap-[0.3rem] md:gap-[1rem] p-[0.75rem] md:p-[2rem]">
-            <h4 class="font-[500] text-[36px] md:text-[24px] md:pt-10 text-center md:text-left">
+          <div class="flex flex-col gap-[0.3rem] md:gap-[1rem] p-[2rem]">
+            <h4 class="font-[500] text-[20px] md:text-[24px] md:pt-10 text-left">
               Nothing cryptic, just email</h4>
-            <p class="text-[#c4c4c4] text-[20px] md:text-[20px] text-center md:text-left">
+            <p class="text-[#c4c4c4] text-[12px] md:text-[20px] text-left">
               With SendIt, there is no need for long, scary wallet addresses, just use emails to send crypto and be sure
               it reached the right person!
             </p>
