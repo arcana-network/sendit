@@ -37,16 +37,12 @@ onBeforeUnmount(() => {
           href="/app">
           Launch App
         </a>
-        <a class="max-md:hidden rounded-3xl"
+        <a class="w-[200px] h-[50px] p-[5px] max-md:hidden rounded-3xl"
           href="https://www.producthunt.com/posts/sendit-3?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-sendit&#0045;3"
-          target="_blank" style="width: 200px; height: 50px; padding: 5px;" width="200" height="40" padding="5"><img
+          target="_blank"><img
             src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=411941&theme=dark"
             alt="SendIT - Send&#0032;crypto&#0032;using&#0032;email&#0032;or&#0032;social&#0032;handles | Product Hunt"
             class="rounded-3xl" /></a>
-        <!-- <a class="max-md:hidden rounded-3xl bg-white"
-          href="https://www.producthunt.com/posts/sendit-3?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-sendit&#0045;3"
-          target="_blank" style="width: 200px; height: 40px; padding: 10px;" width="200" height="40" padding="30"
-          border-radius="30px"></a> -->
       </div>
     </div>
   </header>

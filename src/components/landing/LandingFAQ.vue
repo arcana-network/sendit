@@ -37,7 +37,7 @@ const faqs = [
 
         <div class="relative">
           <span class="faq-section-title relative"><span class="font-bold">Frequently&nbsp;</span></span>
-          <img src="@/assets/images/landing/faq-underlined.svg" class="max-md:w-[96px]" />
+          <img src="@/assets/images/landing/faq-underlined.png" class="max-md:w-[96px]" />
         </div>
         <span class="faq-section-title">Asked Questions</span>
       </h3>
@@ -45,8 +45,7 @@ const faqs = [
         <Disclosure v-for="faq in faqs" :key="faq.index" class="border-b border-b-solid border-b-[#8d8d8d]" as="div"
           v-slot="{ open }">
           <DisclosureButton
-            class="faq-section-description py-[1.4rem] flex justify-between items-center w-full gap-4"
-            style="color: white">
+            class="faq-section-description py-[1.4rem] flex justify-between items-center w-full gap-4 text-white">
             <span class="text-start">{{ faq.question }}</span>
             <img v-if="open" src="@/assets/images/landing/minus-icon.svg" class="max-md:w-4 max-md:h-4" />
             <img v-else src="@/assets/images/landing/plus-icon.svg" class="max-md:w-4 max-md:h-4" />
@@ -57,8 +56,7 @@ const faqs = [
         </Disclosure>
         <Disclosure as="div" v-slot="{ open }">
           <DisclosureButton
-            class="faq-section-description py-[1.4rem] flex justify-between items-center w-full gap-4"
-            style="color: white">
+            class="faq-section-description py-[1.4rem] flex justify-between items-center w-full gap-4 text-white">
             <span class="text-start">Need more support?</span>
             <img v-if="open" src="@/assets/images/landing/minus-icon.svg" class="max-md:w-4 max-md:h-4" />
             <img v-else src="@/assets/images/landing/plus-icon.svg" class="max-md:w-4 max-md:h-4" />

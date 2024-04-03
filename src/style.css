@@ -60,7 +60,7 @@
 }
 
 .syne {
-  font-family: "Syne", sans-serif;
+  font-family: "Onest", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
@@ -224,22 +224,6 @@ body {
   font-size: 25px;
   line-height: 1.125rem;
   font-weight: 400;
-}
-
-.animate-bounce {
-  animation: bounce 30s infinite;
-
-  @keyframes bounce {
-    0%,
-    100% {
-      transform: translateY(-25%);
-      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-    }
-    50% {
-      transform: translateY(0);
-      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-    }
-  }
 }
 
 @keyframes go-to-linear {

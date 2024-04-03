@@ -48,7 +48,7 @@ async function handlePasswordlessLogin() {
       class="landing-container absolute z-[10] -top-[60px] h-full max-h-screen w-full flex flex-col justify-center items-center left-1/2 transform -translate-x-1/2">
 
       <h1 class="syne landing-section-title max-md:max-w-[200px] text-center">
-        Send Crypto <span class="font-bold">Over Email</span>
+        Send Crypto <span class="font-one font-bold">Over Email</span>
       </h1>
       <p class="landing-section-subtitle max-w-[800px] text-center max-md:mt-5 md:mt-10">
         This is the simplest way to send crypto to anyone even if they don’t
@@ -58,8 +58,8 @@ async function handlePasswordlessLogin() {
         class="relative flex gap-2 md:gap-4 md:border md:border-solid md:border-[#8d8d8d] md:bg-transparent md:p-1 md:rounded-[25px] max-md:mt-5 md:mt-10"
         @submit.prevent="handlePasswordlessLogin">
         <input placeholder="someone@example.com"
-          class="md:bg-transparent max-md:rounded-[5px] h-[40px] px-3 w-[200px] md:w-[300px] text-[12px] md:text-[14px] text-black placeholder:text-[#8d8d8d]"
-          style="outline: none" v-model.trim="email" />
+          class="md:bg-transparent max-md:rounded-[5px] h-[40px] px-3 w-[200px] md:w-[300px] text-[12px] md:text-[14px] text-black placeholder:text-[#8d8d8d] outline-none"
+          v-model.trim="email" />
         <div class="relative flex items-center justify-center w-[80px] md:w-[120px] h-[40px]">
           <button
             class="font-[500] text-[12px] uppercase w-[80px] md:w-[120px] flex items-center justify-center h-[40px] bg-white rounded-[25px] md:rounded-[25px] text-[#3b3b3b]"
@@ -81,19 +81,13 @@ async function handlePasswordlessLogin() {
         class="absolute z-[3] right-[430px] -top-10 md:-top-5 h-[200px] md:h-[200px] bg-blend-darken go-to-linear-animation2" />
       <img src="@/assets/images/landing/planet2.svg"
         class="absolute z-[3] right-0 bottom-[300px] md:bottom-[225px] h-[275px] md:h-[275px] opacity-70 bg-blend-darken go-to-linear-animation" />
-      <div class="h-[456px] absolute top-0 left-0 right-0 z-[4]" style="
-          background: linear-gradient(
-            180deg,
-            #0d0d0d 0%,
-            rgba(0, 0, 0, 0.37) 50.37%,
-            rgba(0, 0, 0, 0) 98.58%
-          );
-        "></div>
+      <div class="h-[456px] absolute top-0 left-0 right-0 z-[4] bg-gradient-to-b from-black via-black to-transparent">
+      </div>
       <img src="@/assets/images/landing/here-sendit-375.png"
         class="md:hidden relative top-0 left-0 right-0 h-[812px] md:h-[1059px] object-cover object-center w-full z-[2]" />
       <img src="@/assets/images/landing/here-sendit-1441.png"
         class="max-md:hidden relative top-0 left-0 right-0 h-[915px] md:h-[1025px] object-cover object-center w-full z-[2]" />
-      <img src="@/assets/images/landing/bg-bottom.png" class="absolute bottom-0 z-[4]" />
+      <img src="@/assets/images/landing/bg-bottom.png" class="absolute -bottom-[10px] z-[4]" />
     </div>
   </div>
 </template>

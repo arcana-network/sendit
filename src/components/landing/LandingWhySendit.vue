@@ -28,9 +28,9 @@
           </div>
         </div>
         <div
-          class="border border-solid border-[#363636] bg-[#141414]/60 rounded-[25px] md:rounded-[30px] flex flex-col justify-evenly"
-          style="grid-area: why-sendit-3; padding-bottom: 0">
-          <img src="@/assets/gifs/social-logins.gif" loading="lazy" style="height: 230px;" class="hidden md:block" />
+          class="border border-solid border-[#363636] bg-[#141414]/60 rounded-[25px] md:rounded-[30px] flex flex-col justify-evenly pb-0"
+          style="grid-area: why-sendit-3;">
+          <img src="@/assets/gifs/social-logins.gif" loading="lazy" class="hidden md:block h-[230px]" />
           <div class="flex flex-col gap-[0.3rem] md:gap-[1rem] py-10 px-7">
             <h4 class="font-[500] text-[20px] md:text-[24px]">
               Zero learning curves </h4>

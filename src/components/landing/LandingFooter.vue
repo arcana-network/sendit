@@ -1,17 +1,8 @@
 <template>
   <footer
-    class="relative rounded-t-[16px] md:rounded-t-[30px] border border-solid border-[#1d1d1c] mt-[4rem] md:mt-[8rem] mr-2 ml-2"
-    style="
-      -webkit-backdrop-filter: blur(50px);
-      backdrop-filter: blur(50px);
-      border-top: 5px solid #181819;
-      border-bottom: none;
-    ">
-    <div class="relative rounded-t-[16px] md:rounded-t-[30px] h-full w-full z-[1] py-[2rem] md:py-[4rem]" style="
-        -webkit-backdrop-filter: blur(50px);
-        backdrop-filter: blur(50px);
-        background-color: #151415;
-      ">
+    class="relative rounded-t-[16px] md:rounded-t-[30px] border border-solid border-[#1d1d1c] mt-[4rem] md:mt-[8rem] mr-2 ml-2 border-t-5 border-b-0">
+    <div
+      class="relative rounded-t-[16px] md:rounded-t-[30px] h-full w-full z-1 py-8 md:py-16 bg-opacity-50 bg-[#151514] backdrop-filter backdrop-blur-2xl">
       <div
         class="landing-container flex max-md:flex-col max-md:gap-5 max-md:items-center md:justify-between max-md:text-center landing-section-description w-full">
         <div class="max-md:w-full flex flex-col max-md:items-center">
@@ -23,9 +14,9 @@
           </a>
           <a href="https://arcana.network" target="_blank" class="text-white text-[0.9rem]">Made with love by Arcana
             Network</a>
-          <a class="max-md:hidden"
+          <a class="max-md:hidden w-225 h-50"
             href="https://www.producthunt.com/posts/sendit-3?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-sendit&#0045;3"
-            target="_blank" style="width: 225px; height: 50px;" width="250" height="40"><img
+            target="_blank"><img
               src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=411941&theme=dark"
               alt="SendIT - Send&#0032;crypto&#0032;using&#0032;email&#0032;or&#0032;social&#0032;handles | Product Hunt" /></a>
         </div>
@@ -54,16 +45,16 @@
           <span class="uppercase font-bold text-white">Follow us on</span>
           <div class="flex gap-5 max-md:justify-center">
             <a href="https://discord.gg/6g7fQvEpdy" target="_blank"><img src="@/assets/images/landing/icons/discord.svg"
-                alt="Join Arcana Network on Discord" loading="lazy" style="height: 20px;" /></a>
+                alt="Join Arcana Network on Discord" loading="lazy" class="h-[20px]" /></a>
             <a href="https://t.me/ArcanaNetwork" target="_blank"><img src="@/assets/images/landing/icons/telegram.svg"
-                alt="Join Arcana Network on Telegram" loading="lazy" style="height: 20px;" /></a>
+                alt="Join Arcana Network on Telegram" loading="lazy" class="h-[20px]" /></a>
 
             <a href="https://www.youtube.com/@ArcanaNetwork" target="_blank"><img
                 src="@/assets/images/landing/icons/youtube.svg" alt="Subscribe to Arcana Network on YouTube"
-                loading="lazy" style="height: 20px;" /></a>
+                loading="lazy" class="h-[20px]" /></a>
             <a href="https://twitter.com/arcananetwork" target="_blank"><img
                 src="@/assets/images/landing/icons/twitter.svg" alt="Follow Arcana Network on Twitter" loading="lazy"
-                style="height: 20px;" /></a>
+                class="h-[20px]" /></a>
           </div>
         </div>
       </div>

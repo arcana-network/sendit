@@ -4,12 +4,12 @@
       <h3 class="max-md:hidden flex">
         <div class="relative">
           <span class="earn-section-title"><span class="font-bold">Earn XP&nbsp;</span></span>
-          <img src="@/assets/images/landing/faq-underlined.svg" class="absolute top-full pt-3" />
+          <img src="@/assets/images/landing/faq-underlined.png" class="absolute top-full pt-3" />
         </div>
         <span class="earn-section-title">for Using SendIt</span>
       </h3>
       <h3 class="earn-section-title md:hidden">
-        Earn XP <span style="color: #fd7132">!</span>
+        <span class="text-[#fd7132]">Earn XP</span>
       </h3>
     </div>
     <div class="flex max-md:flex-col-reverse items-center">

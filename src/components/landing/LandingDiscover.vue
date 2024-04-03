@@ -11,7 +11,8 @@
           </span>
         </h3>
         <br />
-        <p class="faq-section-description max-w-[500px] px-2 md:px-0 max-md:text-center">Discover the straightforward process of
+        <p class="faq-section-description max-w-[500px] px-2 md:px-0 max-md:text-center">Discover the straightforward
+          process of
           sending cryptocurrency via email with SendIt.</p>
         <br />
         <a class="text-[0.75rem] text-black leading-[1rem] uppercase font-500 rounded-[25px] w-[150px] md:w-[150px] md:rounded-[25px] px-2 py-1 md:px-4 md:py-3 cursor-pointer bg-white  transition-colors duration-200 ease-in-out disabled:cursor-not-allowed text-center hide-below-768"
@@ -20,7 +21,7 @@
         </a>
       </div>
       <div class="mt-8 md:mt-0">
-        <img src="@/assets/gifs/Discover.gif" style="width: 100%; height: auto;" />
+        <img src="@/assets/gifs/Discover.gif" class="w-[100%] h-auto" />
       </div>
     </div>
   </div>
