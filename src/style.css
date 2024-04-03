@@ -308,6 +308,10 @@ body {
     font-size: 3.75rem;
     line-height: 3rem;
   }
+  .discover-section-title {
+    font-size: 3.75rem;
+    line-height: 3rem;
+  }
   .earn-section-title {
     font-size: 3.75rem;
     line-height: 3rem;
@@ -338,5 +342,47 @@ body {
   .faq-section-description {
     font-size: 1.25rem;
     line-height: 1.95rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .landing-section-title {
+    font-size: 2rem;
+    line-height: 3rem;
+  }
+  .earn-section-title {
+    font-size: 2.5rem;
+    line-height: 3rem;
+  }
+  .getonweb3-section-title {
+    font-size: 2rem;
+    line-height: 3rem;
+  }
+
+  .faq-section-title {
+    font-size: 1.75rem;
+    line-height: 3rem;
+  }
+
+  .landing-section-subtitle {
+    font-size: 15px;
+    line-height: 1.75rem;
+  }
+
+  .landing-section-description {
+    font-size: 1rem;
+    line-height: 2rem;
+  }
+  .getonweb3-section-description {
+    font-size: 1rem;
+    line-height: 1.95rem;
+  }
+  .faq-section-description {
+    font-size: 1rem;
+    line-height: 1.95rem;
+  }
+  .discover-section-title {
+    font-size: 2rem;
+    line-height: 1rem;
   }
 }

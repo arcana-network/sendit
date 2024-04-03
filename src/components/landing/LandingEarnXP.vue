@@ -12,8 +12,8 @@
         Earn XP <span style="color: #fd7132">!</span>
       </h3>
     </div>
-    <div class="flex max-md:flex-col-reverse md:items-center">
-      <div class="flex flex-col gap-4 mt-[-5rem]">
+    <div class="flex max-md:flex-col-reverse items-center">
+      <div class="flex flex-col gap-4 mt-5 md:mt-[-5rem] ">
         <h4 class="text-[1rem] md:text-[2rem] max-md:text-center">
           Convenience, and Rewards!
         </h4>
@@ -29,7 +29,7 @@
           @/assets/images/landing/earn-xp-horse-300w.png 300w,
           @/assets/images/landing/earn-xp-horse-836w.png 836w
         " sizes="(max-width: 767px) 300px, 836px" loading="lazy" alt="Earn XP for using SendIt"
-        class="md:-mr-[180px] mt-[5rem]" />
+        class="md:-mr-[180px]" />
     </div>
   </div>
 </template>

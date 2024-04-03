@@ -29,7 +29,7 @@
           </a>
         </div>
         <nav class="flex justify-evenly flex-grow max-md:w-full max-md:justify-around">
-          <ul class="flex flex-col gap-1 text-white">
+          <ul class="flex flex-col gap-4 md:gap-1 text-white">
             <li><a href="#why-sendit">Why Sendit?</a></li>
             <li><a href="#how-does-it-work">How does it work?</a></li>
             <li class="max-md:hidden">
@@ -38,7 +38,7 @@
             <li class="md:hidden"><a href="#earn-xp">Earn XP</a></li>
             <li class="max-md:hidden"><a href="#getonweb3">GetOnWeb3</a></li>
           </ul>
-          <ul class="flex flex-col gap-1 md:gap-1 text-white">
+          <ul class="flex flex-col gap-4 md:gap-1 text-white">
             <li class="md:hidden"><a href="#getonweb3">GetOnWeb3</a></li>
             <li>
               <a href="https://github.com/arcana-network/license/blob/main/TERMS.md" target="_blank">Terms of Use</a>
@@ -70,4 +70,27 @@
   </footer>
 </template>
 
-<style scoped></style>
+<style scoped>
+@media (max-width: 767px) {
+  .landing-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .landing-container > div {
+    margin-bottom: 1rem;
+  }
+  .landing-container nav {
+    flex-direction: column;
+    align-items: center;
+  }
+  .landing-container nav ul {
+    margin-bottom: 1rem;
+  }
+  .landing-container nav ul:last-child {
+    margin-bottom: 0;
+  }
+  .landing-container .flex-col.gap-2 {
+    margin-top: 1rem;
+  }
+}
+</style>
