@@ -57,6 +57,6 @@
       </div>
     </div>
     <img class="absolute z-[-1] top-[65%] -left-[10%] max-md:hidden go-to-linear-animation"
-      src="@/assets/images/landing/planet1.svg" loading="lazy" />
+      src="@/assets/images/landing/planet1.png" loading="lazy" />
   </div>
 </template>
