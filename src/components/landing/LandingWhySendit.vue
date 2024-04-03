@@ -30,30 +30,27 @@
         <div
           class="border border-solid border-[#363636] bg-[#141414]/60 rounded-[25px] md:rounded-[30px] flex flex-col justify-evenly"
           style="grid-area: why-sendit-3; padding-bottom: 0">
-            <img src="@/assets/gifs/social-logins.gif" loading="lazy"  />
-          <div class="flex flex-col gap-[0.3rem] md:gap-[1rem]">
+          <img src="@/assets/gifs/social-logins.gif" loading="lazy" style="height: 230px;" />
+          <div class="flex flex-col gap-[0.3rem] md:gap-[1rem] py-10 px-7">
             <h4 class="font-[500] text-[10px] md:text-[24px]">
-              The Crypto learning curve scares people
-            </h4>
+              Zero learning curves </h4>
             <p class="text-[#c4c4c4] text-[8px] md:text-[20px]">
-              With SendIt, a non-custodial wallet is created which can be
-              accessed with Web2 authentication. Users can learn crypto-specific
-              ideas at their own pace.
+              With SendIt, a self-custodial wallet is created which can be accessed with Web2 authentication. Users can
+              learn crypto-specific ideas at their own pace.
             </p>
           </div>
         </div>
         <div
           class="border border-solid border-[#363636] bg-[#141414]/60 rounded-[25px] md:rounded-[30px] flex flex-col justify-evenly"
           style="grid-area: why-sendit-4;">
-            <img src="@/assets/gifs/success.gif" loading="lazy" />
-          <div class="flex flex-col gap-[0.3rem] md:gap-[1rem]">
+          <img src="@/assets/gifs/success.gif" loading="lazy" style="height: 230px;" />
+          <div class="flex flex-col gap-[0.3rem] md:gap-[1rem] py-5 px-7">
             <h4 class="font-[500] text-[10px] md:text-[24px]">
-              Metamask is difficult to navigate
+              Even Metamask is difficult.
             </h4>
             <p class="text-[#c4c4c4] text-[8px] md:text-[20px]">
-              Metamask is good for technically inclined users, mainstream
-              adoption requires the use of Web2 concepts that are already
-              familiar to users. SendIt does that.
+              Metamask is good for technically inclined users, mainstream adoption requires the use of Web2 concepts
+              that are already familiar to users. SendIt does that.
             </p>
           </div>
         </div>

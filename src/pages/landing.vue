@@ -11,9 +11,6 @@ const LandingWhySendit = defineAsyncComponent(
 const LandingSenditTagline = defineAsyncComponent(
   () => import("@/components/landing/LandingSenditTagline.vue")
 );
-// const LandingHowDoesItWork = defineAsyncComponent(
-//   () => import("@/components/landing/LandingHowDoesItWork.vue")
-// );
 const LandingEarnXP = defineAsyncComponent(
   () => import("@/components/landing/LandingEarnXP.vue")
 );
@@ -47,7 +44,6 @@ const isBannerClosed = ref(true);
     <LandingHero /> <!--V2 Done-->
     <LandingNumbers />
     <LandingDiscover />
-    <!-- <LandingHowDoesItWork /> -->
     <LandingSenditTagline />
     <LandingWhySendit />
     <LandingEarnXP /> <!--V2 Done-->
