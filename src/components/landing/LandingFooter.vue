@@ -4,8 +4,8 @@
     <div
       class="relative rounded-t-[16px] md:rounded-t-[30px] h-full w-full z-1 py-8 md:py-16 bg-opacity-50 bg-[#151514] backdrop-filter backdrop-blur-2xl">
       <div
-        class="landing-container flex max-md:flex-col max-md:gap-5 max-md:items-center md:justify-between max-md:text-center landing-section-description w-full">
-        <div class="max-md:w-full flex flex-col max-md:items-center">
+        class="landing-container flex flex-col items-center md:items-start md:flex-row max-md:flex-col max-md:gap-5 max-md:items-center md:justify-between max-md:text-center landing-section-description w-full">
+        <div class="mb-[1px] md:mb-0 max-md:w-full flex flex-col max-md:items-center">
           <a href="/" class="flex">
             <img alt="SendIt" src="@/assets/images/landing/sendit-logomark-30w.png" srcset="
                 @/assets/images/landing/sendit-logomark-30w.png 30w,
@@ -20,8 +20,8 @@
               src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=411941&theme=dark"
               alt="SendIT - Send&#0032;crypto&#0032;using&#0032;email&#0032;or&#0032;social&#0032;handles | Product Hunt" /></a>
         </div>
-        <nav class="flex justify-evenly flex-grow max-md:w-full max-md:justify-around">
-          <ul class="flex flex-col gap-4 md:gap-1 text-white">
+        <nav class="flex flex-col md:flex-row justify-evenly flex-grow max-md:w-full max-md:justify-around items-center md:items-start">
+          <ul class="flex flex-col gap-4 mb-[1rem] md:gap-1 text-white">
             <li><a href="#why-sendit">Why Sendit?</a></li>
             <li><a href="#how-does-it-work">How does it work?</a></li>
             <li class="max-md:hidden">
@@ -61,28 +61,3 @@
     </div>
   </footer>
 </template>
-
-<style scoped>
-@media (max-width: 767px) {
-  .landing-container {
-    flex-direction: column;
-    align-items: center;
-  }
-  .landing-container > div {
-    margin-bottom: 1rem;
-  }
-  .landing-container nav {
-    flex-direction: column;
-    align-items: center;
-  }
-  .landing-container nav ul {
-    margin-bottom: 1rem;
-  }
-  .landing-container nav ul:last-child {
-    margin-bottom: 0;
-  }
-  .landing-container .flex-col.gap-2 {
-    margin-top: 1rem;
-  }
-}
-</style>
