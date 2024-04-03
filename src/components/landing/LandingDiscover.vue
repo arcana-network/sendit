@@ -7,7 +7,7 @@
           <span>
             Works
             <img src="@/assets/images/landing/how-does-it-work-vector-underline.svg"
-              class="md:w-[150px] max-md:w-[47px] absolute left-[400px]" />
+              class="md:w-[150px] max-md:w-[47px] absolute left-[500px]" />
           </span>
         </h3>
         <br />
@@ -24,6 +24,6 @@
       </div>
     </div>
   </div>
-  <img class="absolute z-[-1] top-[165%] -left-[30px] h-[300px] max-md:hidden"
+  <img class="absolute z-[-1] top-[165%] -left-[30px] h-[300px] max-md:hidden go-to-linear-animation"
     src="@/assets/images/landing/cloud-how.png" loading="lazy" />
 </template>

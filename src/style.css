@@ -226,6 +226,83 @@ body {
   font-weight: 400;
 }
 
+.animate-bounce {
+  animation: bounce 30s infinite;
+
+  @keyframes bounce {
+    0%,
+    100% {
+      transform: translateY(-25%);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+      transform: translateY(0);
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+  }
+}
+
+@keyframes go-to-linear {
+  0% {
+    transform: translateY(0%);
+  }
+  25%{
+    transform: translateY(5%);
+  }
+  50% {
+    transform: translateY(-5%);
+  }
+  100% {
+    transform: translateY(0%);
+    animation-duration: calc(5s + 2s * random());
+    animation-timing-function: cubic-bezier(random(), random(), random(), random());
+  }
+}
+
+@keyframes go-to-linear2 {
+  0% {
+    transform: translateY(0%);
+  }
+  50% {
+    transform: translateY(10%);
+  }
+  100% {
+    transform: translateY(0%);
+    animation-duration: calc(5s + 2s * random());
+    animation-timing-function: cubic-bezier(random(), random(), random(), random());
+  }
+}
+
+@keyframes go-to-linear-big {
+  0% {
+    transform: translateY(0%);
+  }
+  25%{
+    transform: translateY(3%);
+  }
+  50% {
+    transform: translateY(-3%);
+  }
+  100% {
+    transform: translateY(0%);
+    animation-duration: calc(5s + 2s * random());
+    animation-timing-function: cubic-bezier(random(), random(), random(), random());
+  }
+}
+
+
+.go-to-linear-animation {
+  animation: go-to-linear 10s linear infinite;
+}
+
+.go-to-linear-animation2 {
+  animation: go-to-linear2 10s linear infinite;
+}
+
+.go-to-linear-animation-big {
+  animation: go-to-linear-big 20s linear infinite;
+}
+
 @media screen and (min-width: 768px) {
   .landing-section-title {
     font-size: 3.75rem;

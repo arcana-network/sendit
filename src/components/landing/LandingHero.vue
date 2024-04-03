@@ -76,11 +76,11 @@ async function handlePasswordlessLogin() {
     </div>
     <div class="relative -z-[1] ">
       <img src="@/assets/images/landing/planet1.svg"
-        class="absolute z-[3] left-20 md:-left-10 top-10 h-[350px] md:h-[350px] bg-blend-darken" />
+        class="absolute z-[3] left-20 md:-left-10 top-10 h-[350px] md:h-[350px] bg-blend-darken go-to-linear-animation" />
       <img src="@/assets/images/landing/planet-cloud-right.svg"
-        class="absolute z-[3] right-[430px] -top-10 md:-top-5 h-[200px] md:h-[200px] bg-blend-darken" />
+        class="absolute z-[3] right-[430px] -top-10 md:-top-5 h-[200px] md:h-[200px] bg-blend-darken go-to-linear-animation2" />
       <img src="@/assets/images/landing/planet2.svg"
-        class="absolute z-[3] right-0 bottom-[300px] md:bottom-[225px] h-[275px] md:h-[275px] opacity-70 bg-blend-darken" />
+        class="absolute z-[3] right-0 bottom-[300px] md:bottom-[225px] h-[275px] md:h-[275px] opacity-70 bg-blend-darken go-to-linear-animation" />
       <div class="h-[456px] absolute top-0 left-0 right-0 z-[4]" style="
           background: linear-gradient(
             180deg,

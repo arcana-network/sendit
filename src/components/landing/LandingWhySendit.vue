@@ -58,7 +58,7 @@
     </div>
     <img class="absolute z-[-1] bottom-[5%] left-0 md:hidden" src="@/assets/images/landing/why-sendit-bg-266w.png"
       loading="lazy" />
-    <img class="absolute z-[-1] top-[65%] -left-[10%] max-md:hidden" src="@/assets/images/landing/planet1.svg"
-      loading="lazy" />
+    <img class="absolute z-[-1] top-[65%] -left-[10%] max-md:hidden go-to-linear-animation"
+      src="@/assets/images/landing/planet1.svg" loading="lazy" />
   </div>
 </template>
