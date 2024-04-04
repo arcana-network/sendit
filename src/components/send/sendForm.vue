@@ -103,7 +103,7 @@ onBeforeMount(async () => {
 });
 
 onBeforeUnmount(() => {
-  clearInterval(assetInterval);
+  clearInterval(assetInterval as unknown as number);
 });
 
 const sendStore = useSendStore();

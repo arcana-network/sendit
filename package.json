@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@arcana/auth": "^1.0.8",
+    "@arcana/auth": "^1.0.11-beta.1",
     "@fontsource/caveat": "^5.0.8",
     "@fontsource/syne": "^5.0.8",
     "@headlessui/vue": "^1.7.15",
@@ -31,7 +31,8 @@
     "vue": "^3.2.47",
     "vue-router": "^4.2.2",
     "vue-toastification": "^2.0.0-rc.5",
-    "vue3-carousel": "^0.3.1"
+    "vue3-carousel": "^0.3.1",
+    "vue3-lottie": "^3.3.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.1.0",
