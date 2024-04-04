@@ -14,10 +14,10 @@
     </div>
     <div class="flex max-md:flex-col-reverse items-center">
       <div class="flex flex-col gap-4 mt-5 md:mt-[-5rem] ">
-        <h4 class="text-[1rem] md:text-[2rem] max-md:text-center">
+        <h4 class="text-[1rem] md:text-[1.5rem] md:ml-5 lg:text-[2rem] max-md:text-center">
           Convenience, and Rewards!
         </h4>
-        <p class="faq-section-description max-w-[500px] max-md:text-center">
+        <p class="faq-section-description md:ml-5 max-w-[500px] md:text-[1rem] lg:text-[1.5rem] max-md:text-center">
           Your ultimate solution for hassle-free crypto transfers. Earn points
           with every transaction while contributing to crypto's mainstream
           adoption. Share SendIt with friends on socials for even more points.
@@ -29,7 +29,7 @@
           @/assets/images/landing/earn-xp-horse-300w.png 300w,
           @/assets/images/landing/earn-xp-horse-836w.png 836w
         " sizes="(max-width: 767px) 300px, 836px" loading="lazy" alt="Earn XP for using SendIt"
-        class="md:-mr-[180px]" />
+        class="md:-mr-[20px]" />
     </div>
   </div>
 </template>

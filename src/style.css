@@ -179,6 +179,17 @@ body {
   line-height: 1.5rem;
 }
 
+.discover-section-title {
+  font-family: "Syne", sans-serif;
+  font-weight: 400;
+  font-size: x-large;
+  line-height: 1rem;
+}
+.discover-bold-section-title {
+  font-weight: 700;
+  font-size: x-large;
+  line-height: 3rem;
+}
 .earn-section-title {
   font-weight: 400;
   font-size: x-large;
@@ -230,7 +241,7 @@ body {
   0% {
     transform: translateY(0%);
   }
-  25%{
+  25% {
     transform: translateY(5%);
   }
   50% {
@@ -239,7 +250,12 @@ body {
   100% {
     transform: translateY(0%);
     animation-duration: calc(5s + 2s * random());
-    animation-timing-function: cubic-bezier(random(), random(), random(), random());
+    animation-timing-function: cubic-bezier(
+      random(),
+      random(),
+      random(),
+      random()
+    );
   }
 }
 
@@ -253,7 +269,12 @@ body {
   100% {
     transform: translateY(0%);
     animation-duration: calc(5s + 2s * random());
-    animation-timing-function: cubic-bezier(random(), random(), random(), random());
+    animation-timing-function: cubic-bezier(
+      random(),
+      random(),
+      random(),
+      random()
+    );
   }
 }
 
@@ -261,7 +282,7 @@ body {
   0% {
     transform: translateY(0%);
   }
-  25%{
+  25% {
     transform: translateY(3%);
   }
   50% {
@@ -270,10 +291,14 @@ body {
   100% {
     transform: translateY(0%);
     animation-duration: calc(5s + 2s * random());
-    animation-timing-function: cubic-bezier(random(), random(), random(), random());
+    animation-timing-function: cubic-bezier(
+      random(),
+      random(),
+      random(),
+      random()
+    );
   }
 }
-
 
 .go-to-linear-animation {
   animation: go-to-linear 10s linear infinite;
@@ -285,48 +310,6 @@ body {
 
 .go-to-linear-animation-big {
   animation: go-to-linear-big 20s linear infinite;
-}
-
-@media screen and (min-width: 768px) {
-  .landing-section-title {
-    font-size: 3.75rem;
-    line-height: 3rem;
-  }
-  .discover-section-title {
-    font-size: 3.75rem;
-    line-height: 3rem;
-  }
-  .earn-section-title {
-    font-size: 3.25rem;
-    line-height: 3rem;
-  }
-  .getonweb3-section-title {
-    font-size: 3.75rem;
-    line-height: 3rem;
-  }
-
-  .faq-section-title {
-    font-size: 2.75rem;
-    line-height: 3rem;
-  }
-
-  .landing-section-subtitle {
-    font-size: 20px;
-    line-height: 1.75rem;
-  }
-
-  .landing-section-description {
-    font-size: 1rem;
-    line-height: 2rem;
-  }
-  .getonweb3-section-description {
-    font-size: 1.25rem;
-    line-height: 1.95rem;
-  }
-  .faq-section-description {
-    font-size: 1.25rem;
-    line-height: 1.95rem;
-  }
 }
 
 @media screen and (max-width: 768px) {
@@ -367,6 +350,115 @@ body {
   }
   .discover-section-title {
     font-size: 2rem;
+    line-height: 2.75rem;
+  }
+  .discover-bold-section-title {
+    font-size: 2rem;
     line-height: 1rem;
+  }
+}
+@media screen and (min-width: 768px) {
+  .landing-section-title {
+    font-size: 3.75rem;
+    line-height: 1rem;
+  }
+  .discover-section-title {
+    font-size: 1.5rem;
+    line-height: 0rem;
+  }
+  .discover-bold-section-title {
+    font-size: 1.4rem;
+    line-height: 1rem;
+  }
+  .discover-section-description {
+    font-size: 15px;
+    line-height: 1.25rem;
+  }
+  .earn-section-title {
+    font-size: 3.25rem;
+    line-height: 3rem;
+  }
+  .getonweb3-section-title {
+    font-size: 3.75rem;
+    line-height: 3rem;
+  }
+
+  .faq-section-title {
+    font-size: 2.75rem;
+    line-height: 3rem;
+  }
+
+  .landing-section-subtitle {
+    font-size: 20px;
+    line-height: 1.75rem;
+  }
+
+  .landing-section-description {
+    font-size: 1rem;
+    line-height: 2rem;
+  }
+  .getonweb3-section-description {
+    font-size: 1.25rem;
+    line-height: 1.95rem;
+  }
+  .faq-section-description {
+    font-size: 1.25rem;
+    line-height: 1.95rem;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .landing-section-title {
+    font-weight: 400;
+    line-height: 3.5rem;
+  }
+  .discover-section-title {
+    font-size: 2.25rem;
+    line-height: 0rem;
+  }
+  .discover-bold-section-title {
+    font-size: 2.25rem;
+    line-height: 1rem;
+  }
+  .discover-section-description {
+    font-size: 20px;
+    line-height: 1.5rem;
+  }
+}
+@media screen and (min-width: 1280px) {
+  .landing-section-title {
+    font-weight: 400;
+    line-height: 3.5rem;
+  }
+  .discover-section-title {
+    font-size: 3.75rem;
+    line-height: 3rem;
+  }
+  .discover-bold-section-title {
+    font-size: 3.5rem;
+    line-height: 1rem;
+  }
+  .discover-section-description {
+    font-size: 25px;
+    line-height: 2rem;
+  }
+}
+
+@media screen and (min-width: 1536px) {
+  .landing-section-title {
+    font-weight: 400;
+    line-height: 3.5rem;
+  }
+  .discover-section-title {
+    font-size: 5.25rem;
+    line-height: 6rem;
+  }
+  .discover-bold-section-title {
+    font-size: 5rem;
+    line-height: 2rem;
+  }
+  .discover-section-description {
+    font-size: 35px;
+    line-height: 2.5rem;
   }
 }

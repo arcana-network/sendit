@@ -28,7 +28,7 @@ const isBannerClosed = ref(true);
 </script>
 
 <template>
-  <div class="bg-[#0E0E0E] h-screen overflow-x-hidden" id="landing-page">
+  <div class="bg-[#000000] h-screen overflow-x-hidden" id="landing-page">
   <div class="relative flex justify-center items-center p-2 bg-[#16AD65] text-[14px] font-[500] px-4 text-center"
     v-if="!isBannerClosed">
     <div class="items-baseline flex-wrap justify-center mr-3">
