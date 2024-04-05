@@ -32,7 +32,7 @@
           class="border border-solid border-[#363636] bg-[#141414]/60 rounded-[25px] md:rounded-[30px] flex flex-col pb-0"
           style="grid-area: why-sendit-3;">
           <img src="@/assets/gifs/social-logins.gif" loading="lazy" class="hidden md:block h-[230px]" />
-          <div class="flex flex-col align-middle gap-[0.3rem] md:gap-[1rem] py-10 px-7">
+          <div class="flex flex-col align-middle gap-[0.3rem] md:gap-4 py-10 px-7">
             <h4 class="font-[500] text-[20px] md:text-[24px]">
               Zero learning curves </h4>
             <p class="text-[#c4c4c4] text-[12px] md:text-[20px]">
