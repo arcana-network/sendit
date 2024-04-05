@@ -21,48 +21,28 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <header
-    class="sticky top-0 py-4 z-[1000] transition-all duration-[500ms] ease-in-out"
-    :class="{
-      'bg-[#0E0E0E]': hasScrolledHeaderHeight,
-      'bg-transparent': !hasScrolledHeaderHeight,
-    }"
-  >
+  <header class="mt-8 z-[1000] transition-all duration-[500ms] ease-in-out bg-transparent">
     <div class="landing-container relative">
       <div class="flex">
-        <a href="/" class="flex">
-          <img
-            alt="SendIt"
-            src="@/assets/images/landing/sendit-logomark-30w.png"
-            srcset="
+        <a href="/" class="flex gap-2 z-1000">
+          <img alt="SendIt" src="@/assets/images/landing/sendit-logomark-30w.png" srcset="
               @/assets/images/landing/sendit-logomark-30w.png 30w,
               @/assets/images/landing/sendit-logomark-49w.png 49w
-            "
-            sizes="(max-width: 767px) 30px, 49px"
-          />
+            " sizes="(max-width: 767px) 30px, 49px" />
           <img src="@/assets/images/landing/SendIt-text.svg" alt="SendIt" />
         </a>
       </div>
-      <div
-        class="absolute z-[10] right-[1.25rem] top-0 bottom-0 flex items-center gap-4"
-      >
-        <a
-          class="text-[0.75rem] leading-[1.125rem] uppercase font-500 border-[#363636] border border-solid rounded-[5px] md:rounded-[10px] px-4 py-2 md:px-6 md:py-3 cursor-pointer hover:bg-[#363636] hover:text-white transition-colors duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
-          href="/app"
-        >
+      <div class="absolute z-[1000] right-[1.25rem] top-0 bottom-0 flex items-center gap-4">
+        <a class="text-[0.95rem] md:text-[0.75rem] 2xl:text-[1rem] leading-[1rem] uppercase font-500 rounded-[25px] md:rounded-[25px] px-6 py-5 md:px-5 md:py-3 cursor-pointer bg-[rgb(54,54,54)]/70 hover:scale-105 transition-colors duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+          href="/app">
           Launch App
         </a>
-        <a
-          class="max-md:hidden"
+        <a class="w-[200px] h-[50px] p-[5px] max-md:hidden rounded-3xl"
           href="https://www.producthunt.com/posts/sendit-3?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-sendit&#0045;3"
-          target="_blank"
-          ><img
+          target="_blank"><img
             src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=411941&theme=dark"
             alt="SendIT - Send&#0032;crypto&#0032;using&#0032;email&#0032;or&#0032;social&#0032;handles | Product Hunt"
-            style="width: 200px; height: 54px"
-            width="200"
-            height="54"
-        /></a>
+            class="rounded-3xl" /></a>
       </div>
     </div>
   </header>
