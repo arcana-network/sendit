@@ -21,8 +21,13 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <header class="mt-8 z-[1000] transition-all duration-[500ms] ease-in-out bg-transparent">
-    <div class="landing-container relative">
+  <header
+    class="mt-8 z-[1000] transition-all duration-[500ms] ease-in-out bg-transparent sticky top-0"
+    :class="{
+    'bg-[#0E0E0E]/90 p-3': hasScrolledHeaderHeight,
+    'bg-transparent': !hasScrolledHeaderHeight,
+  }">
+    <div class=" landing-container relative">
       <div class="flex">
         <a href="/" class="flex gap-2 z-1000">
           <img alt="SendIt" src="@/assets/images/landing/sendit-logomark-30w.png" srcset="

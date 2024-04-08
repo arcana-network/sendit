@@ -20,8 +20,9 @@
               src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=411941&theme=dark"
               alt="SendIT - Send&#0032;crypto&#0032;using&#0032;email&#0032;or&#0032;social&#0032;handles | Product Hunt" /></a>
         </div>
-        <nav class="flex flex-col md:flex-row justify-evenly flex-grow max-md:w-full max-md:justify-around items-center md:items-start">
-          <ul class="flex flex-col gap-4 mb-[1rem] md:gap-1 text-white">
+        <nav
+          class="flex flex-row md:flex-row justify-evenly flex-grow max-md:w-full max-md:justify-around items-center md:items-start">
+          <ul class="flex flex-col gap-2 mb-[1rem] md:gap-1 text-white">
             <li><a href="#why-sendit">Why Sendit?</a></li>
             <li><a href="#how-does-it-work">How does it work?</a></li>
             <li class="max-md:hidden">
@@ -30,7 +31,7 @@
             <li class="md:hidden"><a href="#earn-xp">Earn XP</a></li>
             <li class="max-md:hidden"><a href="#getonweb3">GetOnWeb3</a></li>
           </ul>
-          <ul class="flex flex-col gap-4 md:gap-1 text-white">
+          <ul class="flex flex-col gap-2 mb-[1rem] md:gap-1 text-white">
             <li class="md:hidden"><a href="#getonweb3">GetOnWeb3</a></li>
             <li>
               <a href="https://github.com/arcana-network/license/blob/main/TERMS.md" target="_blank">Terms of Use</a>

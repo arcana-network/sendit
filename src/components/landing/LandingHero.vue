@@ -45,7 +45,7 @@ async function handlePasswordlessLogin() {
 <template>
   <div class="relative -mt-[100px] md:-mt-[100px]">
     <div
-      class="landing-container absolute z-[10] -top-[60px] 2xl:-top-[150px] h-full max-h-screen w-full flex flex-col justify-center items-center left-1/2 transform -translate-x-1/2">
+      class="landing-container absolute z-[10] md:-top-[120px] 2xl:-top-[160px] h-full max-h-screen w-full flex flex-col justify-center items-center left-1/2 transform -translate-x-1/2">
 
       <h1 class="syne landing-section-title md:mt-10 max-md:max-w-[200px] 2xl:text-[4.75rem] text-center">
         Send Crypto <span class="font-one font-bold-onest">Over Email</span>
@@ -55,10 +55,10 @@ async function handlePasswordlessLogin() {
         have a wallet. Don’t believe us? Try it for yourself for free!
       </p>
       <form
-        class="relative flex gap-2 md:gap-4 md:border md:border-solid md:border-[#8d8d8d] md:bg-transparent md:p-1 md:rounded-[25px] max-md:mt-5 md:mt-10"
+        class="relative flex gap-2 md:gap-4 md:border border border-solid border-[#8d8d8d] md:border-solid md:border-[#8d8d8d] md:bg-transparent rounded-[25px] md:p-1 md:rounded-[25px] max-md:mt-5 md:mt-10"
         @submit.prevent="handlePasswordlessLogin">
         <input placeholder="someone@example.com"
-          class="md:bg-transparent max-md:rounded-[5px] h-[40px] px-3 w-[200px] md:w-[300px] text-[12px] md:text-[14px] text-black placeholder:text-[#8d8d8d] outline-none"
+          class="bg-transparent md:bg-transparent max-md:rounded-[5px] h-[40px] px-3 w-[200px] md:w-[300px] text-[12px] md:text-[16px] text-white placeholder:text-[#8d8d8d] outline-none"
           v-model.trim="email" />
         <div class="relative flex items-center justify-center w-[80px] md:w-[120px] h-[40px]">
           <button
