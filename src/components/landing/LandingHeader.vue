@@ -30,9 +30,9 @@ onBeforeUnmount(() => {
     <div class=" landing-container relative">
       <div class="flex">
         <a href="/" class="flex gap-2 z-1000">
-          <img alt="SendIt" src="@/assets/images/landing/sendit-logomark-30w.png" srcset="
-              @/assets/images/landing/sendit-logomark-30w.png 30w,
-              @/assets/images/landing/sendit-logomark-49w.png 49w
+          <img alt="SendIt" src="@/assets/images/landing/sendit-logomark-30w.webp" srcset="
+              @/assets/images/landing/sendit-logomark-30w.webp 30w,
+              @/assets/images/landing/sendit-logomark-49w.webp 49w
             " sizes="(max-width: 767px) 30px, 49px" />
           <img src="@/assets/images/landing/SendIt-text.svg" alt="SendIt" />
         </a>

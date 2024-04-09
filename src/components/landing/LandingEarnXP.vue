@@ -4,7 +4,7 @@
       <h3 class="max-md:hidden flex">
         <div class="relative">
           <span class="earn-section-title"><span class="font-bold-onest">Earn XP&nbsp;</span></span>
-          <img src="@/assets/images/landing/faq-underlined.png" class="absolute top-full pt-3" />
+          <img src="@/assets/images/landing/faq-underlined.webp" class="absolute top-full pt-3" />
         </div>
         <span class="earn-section-title">for Using SendIt</span>
       </h3>
@@ -25,9 +25,9 @@
           our socials for updates on rewards that will melt faces! 🤑🤑🤑
         </p>
       </div>
-      <img src="@/assets/images/landing/earn-xp-horse-300w.png" srcset="
-          @/assets/images/landing/earn-xp-horse-300w.png 300w,
-          @/assets/images/landing/earn-xp-horse-836w.png 836w
+      <img src="@/assets/images/landing/earn-xp-horse-300w.webp" srcset="
+          @/assets/images/landing/earn-xp-horse-300w.webp 300w,
+          @/assets/images/landing/earn-xp-horse-836w.webp 836w
         " sizes="(max-width: 767px) 300px, 836px" loading="lazy" alt="Earn XP for using SendIt"
         class="md:-mr-[20px]" />
     </div>

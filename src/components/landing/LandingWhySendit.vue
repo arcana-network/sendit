@@ -5,7 +5,7 @@
         Why Use
         <span class="flex flex-row font-bold-onest gap-2 md:gap-5">
           SendIt
-          <img src="@/assets/images/landing/question-mark.png"></span>
+          <img src="@/assets/images/landing/question-mark.webp"></span>
       </h3>
       <div class="flex flex-col md:grid gap-3 md:gap-6" style="
           grid-template-areas:
@@ -57,6 +57,6 @@
       </div>
     </div>
     <img class="absolute z-[-1] top-[65%] -left-[10%] md:-left-[5%] md:h-[350px] max-md:hidden go-to-linear-animation"
-      src="@/assets/images/landing/planet1.png" loading="lazy" />
+      src="@/assets/images/landing/planet1.webp" loading="lazy" />
   </div>
 </template>

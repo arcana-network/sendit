@@ -7,9 +7,9 @@
         class="landing-container flex flex-col items-center md:items-start md:flex-row max-md:flex-col max-md:gap-5 max-md:items-center md:justify-between max-md:text-center landing-section-description w-full">
         <div class="mb-[1px] md:mb-0 max-md:w-full flex flex-col max-md:items-center">
           <a href="/" class="flex">
-            <img alt="SendIt" src="@/assets/images/landing/sendit-logomark-30w.png" srcset="
-                @/assets/images/landing/sendit-logomark-30w.png 30w,
-                @/assets/images/landing/sendit-logomark-49w.png 49w
+            <img alt="SendIt" src="@/assets/images/landing/sendit-logomark-30w.webp" srcset="
+                @/assets/images/landing/sendit-logomark-30w.webp 30w,
+                @/assets/images/landing/sendit-logomark-49w.webp 49w
               " sizes="(max-width: 767px) 30px, 49px" />
           </a>
           <a href="https://arcana.network" target="_blank" class="text-white text-[0.9rem]">Made with love by Arcana

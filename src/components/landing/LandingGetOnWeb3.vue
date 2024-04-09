@@ -7,9 +7,9 @@
         the better.
       </p>
     </div>
-    <img src="@/assets/images/landing/get-on-web3-1440w.png" srcset="
-      @/assets/images/landing/get-on-web3-375w.png   575w,
-      @/assets/images/landing/get-on-web3-1440w.png 1440w
+    <img src="@/assets/images/landing/get-on-web3-1440w.webp" srcset="
+      @/assets/images/landing/get-on-web3-375w.webp   575w,
+      @/assets/images/landing/get-on-web3-1440w.webp 1440w
       " sizes="(max-width: 767px) 575px, 1440px" loading="lazy"
       class="object-cover object-center absolute inset-0 z-[-1] w-full h-full filter brightness-75" />
   </div>

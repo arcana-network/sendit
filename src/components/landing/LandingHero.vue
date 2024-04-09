@@ -75,18 +75,18 @@ async function handlePasswordlessLogin() {
       </form>
     </div>
     <div class="relative -z-[1] ">
-      <img src="@/assets/images/landing/hero-bg-top.png" class="absolute top-0 right-0 z-[6] w-full" />
-      <img src="@/assets/images/landing/planet1.png"
+      <img src="@/assets/images/landing/hero-bg-top.webp" class="absolute top-0 right-0 z-[6] w-full" />
+      <img src="@/assets/images/landing/planet1.webp"
         class="absolute z-[6] -left-20 md:-left-10 lg:-left-10 top-10 h-[200px] sm:h-[200px] md:h-[200px] lg:h-[270px] xl:h-[350px] bg-blend-darken go-to-linear-animation" />
-      <img src="@/assets/images/landing/planet-cloud-right.png"
+      <img src="@/assets/images/landing/planet-cloud-right.webp"
         class="absolute z-[5] right-[430px] -top-10 md:-top-5 md:h-[10px] lg:h-[150px] xl:h-[200px] bg-blend-darken go-to-linear-animation2" />
-      <img src="@/assets/images/landing/planet2.png"
+      <img src="@/assets/images/landing/planet2.webp"
         class="absolute z-[3] right-0 bottom-[300px] md:bottom-[225px] h-[150px] md:h-[200px] lg:h-[225px] xl:h-[275px] opacity-70 bg-blend-darken go-to-linear-animation" />
       <div class="h-[456px] absolute top-0 left-0 right-0 z-[4] bg-gradient-to-b from-black via-black to-transparent">
       </div>
-      <img src="@/assets/images/landing/here-sendit-375.png"
+      <img src="@/assets/images/landing/here-sendit-375.webp"
         class="md:hidden relative top-0 left-0 right-0 h-[812px] md:h-[1059px] object-cover object-center w-full z-[2]" />
-      <img src="@/assets/images/landing/hero-sendit-1440.png"
+      <img src="@/assets/images/landing/hero-sendit-1440.webp"
         class="max-md:hidden relative top-0 left-0 right-0 h-[915px] md:h-[1025px] 2xl:h-[1200px] object-cover object-center w-full z-[2]" />
       <!-- <img src="@/assets/images/landing/bg-bottom.png" class="absolute -bottom-[10px] z-[5]" /> -->
     </div>

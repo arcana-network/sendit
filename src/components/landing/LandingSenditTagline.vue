@@ -19,6 +19,6 @@
       </div>
     </div>
     <img class="absolute z-[-1] -top-[60%] -right-[130px] h-[175vh] max-md:hidden go-to-linear-animation"
-      src="@/assets/images/landing/cloud-elephant.png" loading="lazy" />
+      src="@/assets/images/landing/cloud-elephant.webp" loading="lazy" />
   </div>
 </template>

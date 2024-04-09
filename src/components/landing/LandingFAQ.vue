@@ -37,7 +37,7 @@ const faqs = [
 
         <div class="relative">
           <span class="faq-section-title relative"><span class="font-bold-onest">Frequently&nbsp;</span></span>
-          <img src="@/assets/images/landing/faq-underlined.png" class="max-md:w-[96px]" />
+          <img src="@/assets/images/landing/faq-underlined.webp" class="max-md:w-[96px]" />
         </div>
         <span class="faq-section-title">Asked Questions</span>
       </h3>
