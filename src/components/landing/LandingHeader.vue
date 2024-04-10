@@ -24,7 +24,7 @@ onBeforeUnmount(() => {
   <header
     class="mt-8 z-[1000] transition-all duration-[500ms] ease-in-out bg-transparent sticky top-0"
     :class="{
-    'bg-[#0E0E0E]/90 p-3': hasScrolledHeaderHeight,
+    'bg-[#000000]/90 p-3': hasScrolledHeaderHeight,
     'bg-transparent': !hasScrolledHeaderHeight,
   }">
     <div class=" landing-container relative">

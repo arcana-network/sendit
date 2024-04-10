@@ -26,8 +26,8 @@
       </div>
     </div>
   </div>
-  <img class="absolute z-[-1] top-[165%] -left-[30px] md:left-[0] h-[300px] md:h-[200px] max-md:hidden go-to-linear-animation"
-    src="@/assets/images/landing/cloud-how.webp" loading="lazy" />
+  <img class="absolute z-[-1] top-[165%] -left-[30px] md:-left-[150px] h-[300px] md:h-[300px] max-md:hidden go-to-linear-animation"
+    src="@/assets/images/landing/cloud-how2.webp" loading="lazy" />
   <div class="flex justify-center">
     <a class="text-[0.75rem] text-black leading-[1rem] uppercase font-500 rounded-[25px] w-[150px] px-5 py-5 cursor-pointer bg-white  transition-colors duration-200 ease-in-out disabled:cursor-not-allowed text-center hide-above-768"
       href="/app">
