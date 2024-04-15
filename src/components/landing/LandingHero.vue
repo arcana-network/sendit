@@ -55,14 +55,14 @@ async function handlePasswordlessLogin() {
         have a wallet. Don’t believe us? Try it for yourself for free!
       </p>
       <form
-        class="relative flex gap-2 md:gap-4 md:border border border-solid border-[#8d8d8d] md:border-solid md:border-[#8d8d8d] md:bg-transparent rounded-[25px] md:p-1 md:rounded-[25px] max-md:mt-5 md:mt-10"
+        class="relative flex gap-2 md:gap-4 md:border border border-solid border-[#8d8d8d] md:border-solid md:border-[#8d8d8d] md:bg-transparent rounded-[25px] md:p-1 md:rounded-[25px] max-md:mt-5 md:mt-10 hover:border-[#fff]"
         @submit.prevent="handlePasswordlessLogin">
         <input placeholder="someone@example.com"
-          class="bg-transparent md:bg-transparent max-md:rounded-[5px] h-[40px] px-3 w-[200px] md:w-[300px] text-[12px] md:text-[16px] text-white placeholder:text-[#fff]/80 outline-none"
+          class="bg-transparent md:bg-transparent max-md:rounded-[5px] h-[40px] px-3 w-[200px] md:w-[300px] text-xs md:text-base text-white placeholder:text-[#fff]/80 outline-none"
           v-model.trim="email" />
         <div class="relative flex items-center justify-center w-[80px] md:w-[120px] h-[40px]">
           <button
-            class="font-[500] text-[12px] uppercase w-[80px] md:w-[120px] flex items-center justify-center h-[40px] bg-white rounded-[25px] md:rounded-[25px] text-[#3b3b3b]"
+            class="font-[500] text-xs uppercase w-[80px] md:w-[120px] flex items-center justify-center h-[40px] bg-white rounded-[25px] md:rounded-[25px] text-[#3b3b3b]"
             :disabled="loaderStore.show">
             Sign Up!
           </button>

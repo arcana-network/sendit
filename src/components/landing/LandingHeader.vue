@@ -22,11 +22,7 @@ onBeforeUnmount(() => {
 
 <template>
   <header
-    class="mt-8 z-[1000] transition-all duration-[500ms] ease-in-out bg-transparent sticky top-0"
-    :class="{
-    'bg-[#000000]/90 p-3': hasScrolledHeaderHeight,
-    'bg-transparent': !hasScrolledHeaderHeight,
-  }">
+    class="mt-8 z-[1000] transition-all duration-[500ms] ease-in-out bg-transparent top-0">
     <div class=" landing-container relative">
       <div class="flex">
         <a href="/" class="flex gap-2 z-1000">
