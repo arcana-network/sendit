@@ -127,4 +127,35 @@ export const SupportedChainIdsForAccounts = {
   scw: [137],
 };
 
+export const gaslessChains = [137];
+
+export enum ChainNames {
+  "eth" = "Ethereum",
+  "polygon" = "Polygon PoS",
+  "polygon_mumbai" = "Polygon Mumbai",
+  "arbitrum" = "Arbitrum One",
+  "bsc" = "BNB Smart Chain",
+  "bsc_testnet_chapel" = "BNB Smart Chain Testnet",
+  "opbnb" = "opBNB Mainnet",
+  "linea" = "Linea",
+  "linea_testnet" = "Linea Goerli",
+}
+
+export enum ChainIds {
+  "eth" = 1,
+  "polygon" = 137,
+  "polygon_mumbai" = 80001,
+  "arbitrum" = 42161,
+  "bsc" = 56,
+  "bsc_testnet_chapel" = 97,
+  "opbnb" = 204,
+  "linea" = 59144,
+  "linea_testnet" = 59140,
+}
+
+export const SupportedChainIdsForAccounts = {
+  eoa: [1, 137, 80001, 42161, 56, 97, 204],
+  scw: [137, 80001],
+};
+
 export default chains;

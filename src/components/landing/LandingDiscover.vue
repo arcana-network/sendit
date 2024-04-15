@@ -42,6 +42,7 @@
     display: none;
   }
 }
+
 @media (min-width: 767px) {
   .hide-above-768 {
     display: none;
