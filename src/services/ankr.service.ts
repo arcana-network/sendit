@@ -70,7 +70,7 @@ async function getNativeTokenBalances(walletAddress: string) {
   const ankrPromises = [
     axios.post(chains[1].rpc_url, payload),
     axios.post(chains[137].rpc_url, payload),
-    axios.post(chains[80001].rpc_url, payload),
+    axios.post(chains[80002].rpc_url, payload),
     axios.post(chains[42161].rpc_url, payload),
     axios.post(chains[56].rpc_url, payload),
     axios.post(chains[97].rpc_url, payload),
@@ -81,7 +81,7 @@ async function getNativeTokenBalances(walletAddress: string) {
   const [
     eth,
     polygon,
-    polygon_mumbai,
+    polygon_amoy,
     arbitrum,
     bsc,
     bsc_testnet_chapel,
@@ -109,8 +109,8 @@ async function getNativeTokenBalances(walletAddress: string) {
     {
       tokenType: "NATIVE",
       tokenSymbol: "MATIC",
-      blockchain: "polygon_mumbai",
-      balance: new Decimal(polygon_mumbai.data.result)
+      blockchain: "polygon_amoy",
+      balance: new Decimal(polygon_amoy.data.result)
         .mul(Decimal.pow(10, -18))
         .toString(),
     },
