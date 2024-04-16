@@ -180,26 +180,6 @@ async function getNativeTokenBalances(walletAddress: string) {
         : 0,
       thumbnail: chains[59140].icon_url,
     },
-    {
-      tokenType: "NATIVE",
-      tokenSymbol: "ETH",
-      blockchain: "linea",
-      balance: linea.data.result
-        ? new Decimal(linea.data.result).mul(Decimal.pow(10, -18)).toString()
-        : 0,
-      thumbnail: chains[59144].icon_url,
-    },
-    {
-      tokenType: "NATIVE",
-      tokenSymbol: "ETH",
-      blockchain: "linea_testnet",
-      balance: linea_goerli.data.result
-        ? new Decimal(linea_goerli.data.result)
-            .mul(Decimal.pow(10, -18))
-            .toString()
-        : 0,
-      thumbnail: chains[59140].icon_url,
-    },
   ];
 }
 
