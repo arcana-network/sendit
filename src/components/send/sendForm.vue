@@ -511,7 +511,7 @@ watch(
 const disableTokenInput = computed(() => {
   return (
     !userInput.value.chain ||
-    !userInput.value.sourceOfFunds ||
+    // !userInput.value.sourceOfFunds ||
     !chainAssets.value.length
   );
 });
