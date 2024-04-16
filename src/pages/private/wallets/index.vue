@@ -278,7 +278,7 @@ function handleSendToken(asset: any, accountType: string) {
           >
         </div>
       </div>
-      <div
+      <!-- <div
         class="bg-[#0e0e0e] border border-[#666] rounded-[10px] w-full max-w-[20rem] flex flex-col p-6"
         v-if="!isSmartContractWalletCreated && authStore.loggedInWith === ''"
       >
@@ -299,7 +299,7 @@ function handleSendToken(asset: any, accountType: string) {
         >
           Setup this wallet now
         </button>
-      </div>
+      </div> -->
     </div>
     <BuyTokens
       v-if="showBuyModal"
