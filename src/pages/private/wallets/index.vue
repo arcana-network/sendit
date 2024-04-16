@@ -119,21 +119,21 @@ watch(isSmartContractWalletCreated, () => {
   wallets.value.push(scwWallet);
 });
 
-async function createSCWWallet() {
-  loaderStore.showLoader(
-    "CREATING SMART WALLET",
-    "Hang tight! Your Smart Contract Wallet with amazing new features such as gasless transactions is being created."
-  );
+// async function createSCWWallet() {
+//   loaderStore.showLoader(
+//     "CREATING SMART WALLET",
+//     "Hang tight! Your Smart Contract Wallet with amazing new features such as gasless transactions is being created."
+//   );
 
-  try {
-    await userStore.createGaslessWallet();
-    isFirstTimeGasless.value = true;
-  } catch (e) {
-    toast.error("Something went wrong. Please try again.");
-  } finally {
-    loaderStore.hideLoader();
-  }
-}
+//   try {
+//     await userStore.createGaslessWallet();
+//     isFirstTimeGasless.value = true;
+//   } catch (e) {
+//     toast.error("Something went wrong. Please try again.");
+//   } finally {
+//     loaderStore.hideLoader();
+//   }
+// }
 
 async function handleDepositSuccess() {
   showDepositModal.value = false;

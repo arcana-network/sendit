@@ -135,19 +135,19 @@ const { userInput, supportedChains } = toRefs(sendStore);
 //   }
 //   return supportedChains.value;
 // });
-const filteredWallets = computed(() => {
-  if (userInput.value.chain === "") return [];
-  return supportedWallets.value.filter((wallet) => {
-    if (wallet.value === "eoa") return true;
-    if (wallet.value === "scw") {
-      const chain = getSelectedChainInfo(userInput.value.chain);
-      if (chain) {
-        return chain.gasless_enabled || chain.chain_id == "80001";
-      }
-      return false;
-    }
-  });
-});
+// const filteredWallets = computed(() => {
+//   if (userInput.value.chain === "") return [];
+//   return supportedWallets.value.filter((wallet) => {
+//     if (wallet.value === "eoa") return true;
+//     if (wallet.value === "scw") {
+//       const chain = getSelectedChainInfo(userInput.value.chain);
+//       if (chain) {
+//         return chain.gasless_enabled || chain.chain_id == "80001";
+//       }
+//       return false;
+//     }
+//   });
+// });
 
 const isEmailValid = computed(() => {
   if (userInput.value.medium === "mail") {
@@ -171,9 +171,9 @@ function getSelectedChainInfo(chainId) {
   );
 }
 
-function getSourceOfFunds(fundValue) {
-  return supportedWallets.value.find((fund) => fund.value === fundValue);
-}
+// function getSourceOfFunds(fundValue) {
+//   return supportedWallets.value.find((fund) => fund.value === fundValue);
+// }
 
 function getSelectedAssets(contractAddress: string) {
   return chainAssets.value.find(
@@ -516,9 +516,9 @@ const disableTokenInput = computed(() => {
   );
 });
 
-const disableChainsInput = computed(() => {
-  return !userInput.value.chain;
-});
+// const disableChainsInput = computed(() => {
+//   return !userInput.value.chain;
+// });
 
 const disableSubmit = computed(() => {
   return (
