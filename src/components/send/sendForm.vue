@@ -75,10 +75,10 @@ watch(
     if (query.blockchain) {
       userInput.value.chain = ChainIds[query.blockchain as string];
     }
-    if (query.sourceOfFunds) {
-      userInput.value.sourceOfFunds =
-        query.sourceOfFunds as typeof userInput.value.sourceOfFunds;
-    }
+    // if (query.sourceOfFunds) {
+    //   userInput.value.sourceOfFunds =
+    //     query.sourceOfFunds as typeof userInput.value.sourceOfFunds;
+    // }
     if (query.token) {
       userInput.value.token = query.token as typeof userInput.value.token;
     }
@@ -92,10 +92,10 @@ onBeforeMount(async () => {
   if (query.blockchain) {
     userInput.value.chain = ChainIds[query.blockchain as string];
   }
-  if (query.sourceOfFunds) {
-    userInput.value.sourceOfFunds =
-      query.sourceOfFunds as typeof userInput.value.sourceOfFunds;
-  }
+  // if (query.sourceOfFunds) {
+  //   userInput.value.sourceOfFunds =
+  //     query.sourceOfFunds as typeof userInput.value.sourceOfFunds;
+  // }
   if (query.token) {
     userInput.value.token = query.token as typeof userInput.value.token;
   }
@@ -676,7 +676,7 @@ async function copyWalletAddress() {
           placeholder="Select Chain"
         />
       </div>
-      <div class="flex flex-col space-y-1">
+      <!-- <div class="flex flex-col space-y-1">
         <label class="text-xs">Source of Funds</label>
         <Dropdown
           @update:model-value="
@@ -692,7 +692,7 @@ async function copyWalletAddress() {
           :disabled="disableChainsInput"
           placeholder="Select source of funds"
         />
-      </div>
+      </div> -->
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Token</label>
         <Dropdown
