@@ -40,7 +40,8 @@ const useUserStore = defineStore("user", {
         SOCKET_IDS.GET_PROFILE,
         null
       )) as any;
-      this.gaslessOptedIn = response.gasless_opted_in || false;
+      // this.gaslessOptedIn = response.gasless_opted_in || false;
+      this.gaslessOptedIn = false; // hardcode fasle for now, till gasless issue gets fixed
       if (this.gaslessOptedIn) {
         const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
           chain_id: 137,
