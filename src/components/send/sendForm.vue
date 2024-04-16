@@ -278,6 +278,7 @@ async function proceed() {
     const currentAccountType = await authStore.provider.request({
       method: "_arcana_getAccountType",
     });
+    console.log(currentAccountType, userInput.value.sourceOfFunds, "source");
     if (currentAccountType !== userInput.value.sourceOfFunds) {
       try {
         loadStore.showLoader(
