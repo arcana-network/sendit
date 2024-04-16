@@ -45,21 +45,21 @@ const refreshIconAnimating = ref(false);
 const route = useRoute();
 const router = useRouter();
 
-const supportedWallets = computed(() => {
-  const wallets = [
-    {
-      name: "Regular Account",
-      value: "eoa",
-    },
-  ];
-  if (userStore.gaslessOptedIn) {
-    wallets.push({
-      name: "Smart Account",
-      value: "scw",
-    });
-  }
-  return wallets;
-});
+// const supportedWallets = computed(() => {
+//   const wallets = [
+//     {
+//       name: "Regular Account",
+//       value: "eoa",
+//     },
+//   ];
+//   if (userStore.gaslessOptedIn) {
+//     wallets.push({
+//       name: "Smart Account",
+//       value: "scw",
+//     });
+//   }
+//   return wallets;
+// });
 
 async function handleRefresh() {
   refreshIconAnimating.value = true;
