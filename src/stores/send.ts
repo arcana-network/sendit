@@ -46,7 +46,7 @@ const useSendStore = defineStore("send", {
         chain: "",
         token: "",
         amount: null,
-        sourceOfFunds: "",
+        sourceOfFunds: "eoa",
       },
       supportedChains: [],
       requestInput: {
@@ -83,7 +83,7 @@ const useSendStore = defineStore("send", {
         chain: "",
         token: "",
         amount: null,
-        sourceOfFunds: "",
+        sourceOfFunds: "eoa",
       };
     },
     resetRequestInput() {
