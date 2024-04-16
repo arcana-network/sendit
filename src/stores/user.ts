@@ -36,10 +36,10 @@ const useUserStore = defineStore("user", {
     } as User),
   actions: {
     async fetchGaslessInfo() {
-      const response = (await conn.sendMessage(
-        SOCKET_IDS.GET_PROFILE,
-        null
-      )) as any;
+      // const response = (await conn.sendMessage(
+      //   SOCKET_IDS.GET_PROFILE,
+      //   null
+      // )) as any;
       // this.gaslessOptedIn = response.gasless_opted_in || false;
       this.gaslessOptedIn = false; // hardcode fasle for now, till gasless issue gets fixed
       if (this.gaslessOptedIn) {
