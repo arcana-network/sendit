@@ -77,3 +77,4 @@ If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has a
 ## Documentation
 
 SendIt uses Arcana Network Auth SDK under the covers. Check out [Arcana Network documentation](https://docs.arcana.network/) for [Auth SDK Quick Start Guide](https://docs.arcana.network/walletsdk/wallet_qs.html) and [API Reference Guide](https://authsdk-ref-guide.netlify.app).
+# sendit-v2

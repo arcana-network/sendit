@@ -442,6 +442,10 @@ body {
     font-size: 25px;
     line-height: 2rem;
   }
+  .discover-section-description {
+    font-size: 35px;
+    line-height: 2.5rem;
+  }
 }
 
 @media screen and (min-width: 1536px) {
