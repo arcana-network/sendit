@@ -85,13 +85,13 @@ function handleBuy(wallet) {
   };
 }
 
-function handleDeposit(wallet) {
-  showDepositModal.value = true;
-  depositModalDetails.value = {
-    address: wallet.address(),
-    accountType: wallet.accountType,
-  };
-}
+// function handleDeposit(wallet) {
+//   showDepositModal.value = true;
+//   depositModalDetails.value = {
+//     address: wallet.address(),
+//     accountType: wallet.accountType,
+//   };
+// }
 
 function handleWithdraw(wallet) {
   showWithdrawModal.value = true;
