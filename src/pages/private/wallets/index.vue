@@ -224,14 +224,14 @@ function handleSendToken(asset: any, accountType: string) {
           </div>
         </div>
         <div class="flex gap-2 mt-[1rem]">
-          <button
+          <!-- <button
             v-if="wallet.buttons.deposit"
             class="flex flex-grow flex-col gap-1 justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full text-[10px]"
             @click.stop="handleDeposit(wallet)"
           >
             <img src="@/assets/images/icons/deposit.svg" alt="deposit" />
             Deposit Crypto
-          </button>
+          </button> -->
           <button
             v-if="wallet.buttons.withdraw"
             class="flex flex-grow flex-col gap-1 justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full text-[10px]"
