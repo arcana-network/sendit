@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@arcana/auth": "^1.0.11-beta.1",
+    "@arcana/auth": "^1.0.10",
     "@fontsource/caveat": "^5.0.8",
     "@fontsource/syne": "^5.0.8",
     "@headlessui/vue": "^1.7.15",

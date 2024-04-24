@@ -14,6 +14,7 @@ import useWalletConnect from "@/use/walletconnect";
 import type { GetAccountResult, PublicClient } from "@wagmi/core";
 import { normaliseEmail } from "@/utils/normalise";
 import useOkxWallet from "@/use/okxwallet";
+import OTPInput from "@/components/OTPInput.vue";
 
 const arcanaAuth = useArcanaAuth();
 const authStore = useAuthStore();
@@ -24,6 +25,7 @@ const passwordlessEmailId = ref("");
 const toast = useToast();
 const walletConnect = useWalletConnect();
 const okxWallet = useOkxWallet();
+const showOTPInput = ref(false);
 
 const query = route.query;
 const verifier = query.verifier as string;
@@ -74,20 +76,22 @@ async function socialLogin(type: string) {
 
 async function passwordlessLogin() {
   try {
-    loaderStore.showLoader(
-      `Click on the verification mail sent to ${passwordlessEmailId.value}...`
+    showOTPInput.value = true;
+    const authInstance = arcanaAuth.getAuthInstance();
+    const loginState = await authInstance.loginWithOTPStart(
+      normaliseEmail(passwordlessEmailId.value)
     );
-    await arcanaAuth
-      .getAuthInstance()
-      .loginWithLink(normaliseEmail(passwordlessEmailId.value));
-    authStore.provider = arcanaAuth.getProvider();
-    authStore.isLoggedIn = true;
-    authStore.loggedInWith = "";
+    await loginState.begin();
   } catch (e: any) {
     toast.error(e);
-  } finally {
-    loaderStore.hideLoader();
+    showOTPInput.value = false;
   }
+}
+
+async function passwordlessLoginSuccess() {
+  authStore.provider = arcanaAuth.getProvider();
+  authStore.isLoggedIn = true;
+  authStore.loggedInWith = "";
 }
 
 async function onConnectToWalletConnect() {
@@ -290,5 +294,11 @@ async function onConnectToOkxWallet() {
       </div>
       <LandingDescription class="flex-grow" />
     </div>
+    <OTPInput
+      v-if="showOTPInput"
+      @dismiss="showOTPInput = false"
+      @resend="passwordlessLogin"
+      @success="passwordlessLoginSuccess"
+    />
   </div>
 </template>
