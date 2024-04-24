@@ -10,7 +10,7 @@
             <span
               class="max-md:text-[1rem] leading-[3rem] text-[2rem] md:text-[1.75rem] lg:text-[2.25rem] xl:text-[4rem] ">&nbsp;Email
               + Crypto =&nbsp;</span>
-            <img src="@/assets/images/landing/SendIt-text.svg" class="h-4 md:h-5 lg:h-7 xl:h-9" alt="SendIt" />
+            <img src="@/assets/images/landing/SendIt-text.svg" class="h-3 md:h-5 lg:h-7 xl:h-9" alt="SendIt" />
             <span>&nbsp;&nbsp;</span>
             <img src="@/assets/images/landing/apostrophe-close-outline.svg" class="h-2 md:h-4 -mt-2 md:-mt-6" />
             <img src="@/assets/images/landing/apostrophe-close-outline.svg" class="h-2 md:h-4 -mt-2 md:-mt-6" />
@@ -19,6 +19,6 @@
       </div>
     </div>
     <img class="absolute z-[-1] -top-[60%] -right-[130px] h-[175vh] max-md:hidden go-to-linear-animation"
-      src="@/assets/images/landing/cloud-elephant.png" loading="lazy" />
+      src="@/assets/images/landing/cloud-elephant.webp" loading="lazy" />
   </div>
 </template>

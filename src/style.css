@@ -180,15 +180,12 @@ body {
 }
 
 .discover-section-title {
-  font-family: "Syne", sans-serif;
   font-weight: 400;
   font-size: x-large;
-  line-height: 1rem;
 }
 .discover-bold-section-title {
   font-weight: 700;
   font-size: x-large;
-  line-height: 3rem;
 }
 .earn-section-title {
   font-weight: 400;
@@ -371,7 +368,7 @@ body {
     line-height: 1rem;
   }
   .discover-section-description {
-    font-size: 15px;
+    font-size: 1.25rem;
     line-height: 1.25rem;
   }
   .earn-section-title {
@@ -421,7 +418,7 @@ body {
     line-height: 1rem;
   }
   .discover-section-description {
-    font-size: 20px;
+    font-size: 1.25rem;
     line-height: 1.5rem;
   }
 }
@@ -439,7 +436,7 @@ body {
     line-height: 1rem;
   }
   .discover-section-description {
-    font-size: 25px;
+    font-size: 1.25rem;
     line-height: 2rem;
   }
   .discover-section-description {
@@ -462,7 +459,7 @@ body {
     line-height: 2rem;
   }
   .discover-section-description {
-    font-size: 35px;
+    font-size: 1.5rem;
     line-height: 2.5rem;
   }
 }
