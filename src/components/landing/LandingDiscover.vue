@@ -9,6 +9,7 @@
           <span>
             <img src="@/assets/images/landing/how-does-it-work-vector-underline.svg"
               class="md:w-[80px] lg:w-[120px] 2xl:w-[200px] xl:w-[175px] max-md:w-[47px] absolute md:left-[225px] lg:left-[275px] xl:left-[375px] 2xl:left-[475px] hide-below-768" />
+
           </span>
         </div>
 
@@ -16,8 +17,10 @@
         <p class="discover-section-description max-w-[500px] px-2 md:px-0 max-md:text-center text-[#8d8d8d]">Discover
           the easiest way to send crypto via email with SendIt.</p>
         <br />
-        <a class="text-[0.75rem] xl:text-[1rem] 2xl:text-[1.5rem] text-black leading-[1rem] uppercase font-500 rounded-[25px] w-[150px] md:w-[150px] md:rounded-[25px] px-2 py-1 md:px-4 md:py-3 2xl:px-5 2xl:w-[225px] xl:w-[175px] 2xl:py-4 cursor-pointer bg-white  transition-colors duration-200 ease-in-out disabled:cursor-not-allowed text-center hide-below-768"
-          href="/app">
+        <a
+          class="text-[0.75rem] xl:text-[1rem] 2xl:text-[1.5rem] text-black leading-[1rem] uppercase font-500 rounded-[25px] w-[150px] md:w-[150px] md:rounded-[25px] px-2 py-1 md:px-4 md:py-3 2xl:px-5 2xl:w-[225px] xl:w-[175px] 2xl:py-4 cursor-pointer bg-white transition-colors duration-200 ease-in-out disabled:cursor-not-allowed text-center hide-below-768"
+          href="/app"
+        >
           <strong>Explore Now</strong>
         </a>
       </div>
@@ -29,8 +32,10 @@
   <img class="absolute z-[-1] top-[165%] -left-[30px] md:-left-[150px] h-[300px] max-md:hidden go-to-linear-animation"
     src="@/assets/images/landing/cloud-how2.webp" loading="lazy" />
   <div class="flex justify-center">
-    <a class="text-[0.75rem] text-black leading-[1rem] uppercase font-500 rounded-[25px] w-[150px] px-5 py-5 cursor-pointer bg-white  transition-colors duration-200 ease-in-out disabled:cursor-not-allowed text-center hide-above-768"
-      href="/app">
+    <a
+      class="text-[0.75rem] text-black leading-[1rem] uppercase font-500 rounded-[25px] w-[150px] px-5 py-5 cursor-pointer bg-white transition-colors duration-200 ease-in-out disabled:cursor-not-allowed text-center hide-above-768"
+      href="/app"
+    >
       <strong>Explore Now</strong>
     </a>
   </div>

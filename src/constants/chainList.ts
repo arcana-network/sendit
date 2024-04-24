@@ -19,14 +19,13 @@ const chains = {
     explorer: "https://polygonscan.com",
     icon_url: "https://icons.llamao.fi/icons/chains/rsz_polygon.jpg",
   },
-  80001: {
-    name: "Polygon Mumbai",
-    chain_id: 80001,
-    rpc_url:
-      "https://polygon-testnet.blastapi.io/7c12fa10-4e46-4810-bf66-6b3148119501",
-    blockchain: "polygon_mumbai",
+  80002: {
+    name: "Polygon Amoy Testnet",
+    chain_id: 80002,
+    rpc_url: "https://rpc-amoy.polygon.technology",
+    blockchain: "polygon_amoy",
     currency: "MATIC",
-    explorer: "https://mumbai.polygonscan.com",
+    explorer: "https://www.oklink.com/amoy",
     icon_url: "https://icons.llamao.fi/icons/chains/rsz_polygon.jpg",
   },
   42161: {
@@ -90,11 +89,11 @@ const chains = {
   },
 };
 
-export const testnetChains = [80001, 97];
+export const testnetChains = [80002, 97];
 
 export const testnetChainFaucets = {
   97: "https://testnet.binance.org/faucet-smart",
-  80001: "https://mumbaifaucet.com",
+  80002: "https://faucet.polygon.technology",
 };
 
 export const gaslessChains = [137];
@@ -102,7 +101,7 @@ export const gaslessChains = [137];
 export enum ChainNames {
   "eth" = "Ethereum",
   "polygon" = "Polygon PoS",
-  "polygon_mumbai" = "Polygon Mumbai",
+  "polygon_amoy" = "Polygon Amoy Testnet",
   "arbitrum" = "Arbitrum One",
   "bsc" = "BNB Smart Chain",
   "bsc_testnet_chapel" = "BNB Smart Chain Testnet",
@@ -114,7 +113,7 @@ export enum ChainNames {
 export enum ChainIds {
   "eth" = 1,
   "polygon" = 137,
-  "polygon_mumbai" = 80001,
+  "polygon_amoy" = 80002,
   "arbitrum" = 42161,
   "bsc" = 56,
   "bsc_testnet_chapel" = 97,
@@ -124,8 +123,8 @@ export enum ChainIds {
 }
 
 export const SupportedChainIdsForAccounts = {
-  eoa: [1, 137, 80001, 42161, 56, 97, 204],
-  scw: [137, 80001],
+  eoa: [1, 137, 80002, 42161, 56, 97, 204],
+  scw: [137],
 };
 
 export default chains;

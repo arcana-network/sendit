@@ -14,12 +14,14 @@ type SendStoreKind = {
     chain: string | number;
     token: string;
     amount: number | null;
+    sourceOfFunds: "" | "scw" | "eoa";
   };
   supportedChains: {
     chain_id: number | string;
     name: string;
     blockchain: string;
     sendit_contract: string;
+    gasless_enabled: boolean;
   }[];
   requestInput: {
     requestId: string;
@@ -44,6 +46,7 @@ const useSendStore = defineStore("send", {
         chain: "",
         token: "",
         amount: null,
+        sourceOfFunds: "eoa",
       },
       supportedChains: [],
       requestInput: {
@@ -64,14 +67,16 @@ const useSendStore = defineStore("send", {
       const { chains } = (await conn.sendMessage(SOCKET_IDS.GET_CHAINS)) as {
         chains: any[];
       };
-      this.supportedChains = chains.map((chain) => {
-        return {
-          ...chain,
-          sendit_contract: hexlify(chain.sendit_contract),
-          blockchain: chainList[Number(chain.chain_id)].blockchain,
-          name: chainList[Number(chain.chain_id)].name || chain.name,
-        };
-      });
+      this.supportedChains = chains
+        .filter((chain) => chainList[Number(chain.chain_id)]?.blockchain)
+        .map((chain) => {
+          return {
+            ...chain,
+            sendit_contract: hexlify(chain.sendit_contract),
+            blockchain: chainList[Number(chain.chain_id)].blockchain,
+            name: chainList[Number(chain.chain_id)].name || chain.name,
+          };
+        });
     },
     resetUserInput() {
       this.userInput = {
@@ -80,6 +85,7 @@ const useSendStore = defineStore("send", {
         chain: "",
         token: "",
         amount: null,
+        sourceOfFunds: "eoa",
       };
     },
     resetRequestInput() {

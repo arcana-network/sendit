@@ -63,14 +63,14 @@ export const requestableTokens = {
       decimals: 18,
     },
   ],
-  80001: [
-    {
-      symbol: "MATIC",
-      tokenType: "NATIVE",
-      address: "NATIVE",
-      decimals: 18,
-    },
-  ],
+  // 80002: [
+  //   {
+  //     symbol: "MATIC",
+  //     tokenType: "NATIVE",
+  //     address: "NATIVE",
+  //     decimals: 18,
+  //   },
+  // ],
   42161: [
     {
       symbol: "ETH",
@@ -89,7 +89,7 @@ export const requestableTokens = {
   ],
   97: [
     {
-      symbol: "tBNB",
+      symbol: "BNB",
       tokenType: "NATIVE",
       address: "NATIVE",
       decimals: 18,
