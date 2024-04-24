@@ -142,7 +142,8 @@ async function resendOTP() {
             @input="void 0"
             @keydown="handleKeyDown($event, i - 1)"
             @paste.prevent="handlePaste"
-            class="input flex flex-grow justify-center items-center text-center"
+            class="input flex justify-center items-center text-center"
+            style="padding: 0.75rem"
           />
         </div>
         <span
