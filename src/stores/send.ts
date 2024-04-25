@@ -67,14 +67,16 @@ const useSendStore = defineStore("send", {
       const { chains } = (await conn.sendMessage(SOCKET_IDS.GET_CHAINS)) as {
         chains: any[];
       };
-      this.supportedChains = chains.map((chain) => {
-        return {
-          ...chain,
-          sendit_contract: hexlify(chain.sendit_contract),
-          blockchain: chainList[Number(chain.chain_id)].blockchain,
-          name: chainList[Number(chain.chain_id)].name || chain.name,
-        };
-      });
+      this.supportedChains = chains
+        .filter((chain) => chainList[Number(chain.chain_id)]?.blockchain)
+        .map((chain) => {
+          return {
+            ...chain,
+            sendit_contract: hexlify(chain.sendit_contract),
+            blockchain: chainList[Number(chain.chain_id)].blockchain,
+            name: chainList[Number(chain.chain_id)].name || chain.name,
+          };
+        });
     },
     resetUserInput() {
       this.userInput = {

@@ -520,6 +520,10 @@ const disableChainsInput = computed(() => {
   return !userInput.value.chain;
 });
 
+// const disableChainsInput = computed(() => {
+//   return !userInput.value.chain;
+// });
+
 const disableSubmit = computed(() => {
   return (
     !userInput.value.amount ||
@@ -676,6 +680,23 @@ async function copyWalletAddress() {
           placeholder="Select Chain"
         />
       </div>
+      <!-- <div class="flex flex-col space-y-1">
+        <label class="text-xs">Source of Funds</label>
+        <Dropdown
+          @update:model-value="
+            (value) => (
+              (userInput.sourceOfFunds = value.value),
+              (userInput.token = ''),
+              (userInput.amount = 0)
+            )
+          "
+          :options="filteredWallets"
+          :model-value="getSourceOfFunds(userInput.sourceOfFunds)"
+          display-field="name"
+          :disabled="disableChainsInput"
+          placeholder="Select source of funds"
+        />
+      </div> -->
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Source of Funds</label>
         <Dropdown

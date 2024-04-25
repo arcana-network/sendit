@@ -13,7 +13,7 @@ const emit = defineEmits(["close", "shoutout"]);
 const chainSpecificExplorers = {
   56: "https://bscscan.com/",
   97: "https://testnet.bscscan.com/",
-  80001: "https://mumbai.polygonscan.com/",
+  80002: "https://www.oklink.com/amoy",
   137: "https://polygonscan.com/",
   204: "https://opbnbscan.com/",
 };
