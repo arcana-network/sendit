@@ -4,22 +4,13 @@ import {
   mainnet,
   polygon,
   sepolia,
-  polygonMumbai,
   arbitrum,
   bsc,
   bscTestnet,
-} from "@wagmi/core/chains";
+} from "viem/chains";
 
 function useWalletConnect() {
-  const chains = [
-    mainnet,
-    polygon,
-    sepolia,
-    polygonMumbai,
-    arbitrum,
-    bsc,
-    bscTestnet,
-  ];
+  const chains = [mainnet, polygon, sepolia, arbitrum, bsc, bscTestnet];
   const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
   const featuredWallets = {
     okx: "971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709",
