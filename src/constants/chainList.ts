@@ -19,6 +19,15 @@ const chains = {
     explorer: "https://polygonscan.com",
     icon_url: "https://icons.llamao.fi/icons/chains/rsz_polygon.jpg",
   },
+  80001: {
+    name: "Polygon Mumbai Testnet",
+    chain_id: 80001,
+    rpc_url: "/",
+    blockchain: "polygon_mumbai",
+    currency: "MATIC",
+    explorer: "https://mumbai.polygonscan.com",
+    icon_url: "https://icons.llamao.fi/icons/chains/rsz_polygon.jpg",
+  },
   80002: {
     name: "Polygon Amoy Testnet",
     chain_id: 80002,
@@ -108,6 +117,7 @@ export enum ChainNames {
   "opbnb" = "opBNB Mainnet",
   "linea" = "Linea",
   "linea_testnet" = "Linea Goerli",
+  "polygon_mumbai" = "Polygon Mumbai Testnet",
 }
 
 export enum ChainIds {
@@ -120,6 +130,7 @@ export enum ChainIds {
   "opbnb" = 204,
   "linea" = 59144,
   "linea_testnet" = 59140,
+  "polygon_mumbai" = 80001,
 }
 
 export const SupportedChainIdsForAccounts = {

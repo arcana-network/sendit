@@ -113,9 +113,11 @@ async function getNativeTokenBalances(walletAddress: string) {
       tokenType: "NATIVE",
       tokenSymbol: "MATIC",
       blockchain: "polygon_amoy",
-      balance: new Decimal(polygon_amoy.data.result)
-        .mul(Decimal.pow(10, -18))
-        .toString(),
+      balance: polygon_amoy.data.result
+        ? new Decimal(polygon_amoy.data.result)
+            .mul(Decimal.pow(10, -18))
+            .toString()
+        : 0,
     },
     {
       tokenType: "NATIVE",
