@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, ref, defineAsyncComponent } from "vue";
+import { ref, defineAsyncComponent } from "vue";
 
 import navMenu from "@/constants/navMenu.ts";
 import { useClickOutside } from "@/use/clickOutside";
-import useUserStore from "@/stores/user";
+// import useUserStore from "@/stores/user";
 // import useRewardsStore from "@/stores/rewards";
 import useNotificationStore from "@/stores/notification";
 import AppInvite from "@/components/AppInvite.vue";
@@ -25,7 +25,7 @@ type HeaderProps = {
 const props = defineProps<HeaderProps>();
 const route = useRoute();
 
-const userStore = useUserStore();
+// const userStore = useUserStore();
 // const rewardsStore = useRewardsStore();
 const notificationStore = useNotificationStore();
 
@@ -75,26 +75,26 @@ function handleInvite() {
   showProfile.value = false;
 }
 
-const stats = computed(() => {
-  return [
-    {
-      label: "Global Rank",
-      value: userStore.rank,
-    },
-    {
-      label: "Total XP",
-      value: userStore.points,
-    },
-    {
-      label: "Referral XP",
-      value: userStore.xpBreakdown?.referreePoints ?? 0,
-    },
-    // {
-    //   label: "My Rewards",
-    //   value: rewardsStore.rewards.length,
-    // },
-  ];
-});
+// const stats = computed(() => {
+//   return [
+//     {
+//       label: "Global Rank",
+//       value: userStore.rank,
+//     },
+//     {
+//       label: "Total XP",
+//       value: userStore.points,
+//     },
+//     {
+//       label: "Referral XP",
+//       value: userStore.xpBreakdown?.referreePoints ?? 0,
+//     },
+//     // {
+//     //   label: "My Rewards",
+//     //   value: rewardsStore.rewards.length,
+//     // },
+//   ];
+// });
 </script>
 
 <template>
@@ -127,15 +127,15 @@ const stats = computed(() => {
               {{ menu.label }}
             </router-link>
           </nav>
-          <router-link
+          <!-- <router-link
             v-if="!props.hideNav"
             :to="{ name: 'Airdrop' }"
             class="text-cornflower-blue text-xs font-normal bg-[#293c5f] rounded-[5px] p-1"
             >Airdrop Live!</router-link
-          >
+          > -->
         </div>
         <div v-if="!props.hideNav" class="flex items-center gap-5">
-          <div class="flex gap-3 max-md:hidden">
+          <!-- <div class="flex gap-3 max-md:hidden">
             <div
               class="flex items-center gap-2 p-2.5 border-1 border-jet rounded-xl"
               v-for="stat in stats"
@@ -144,7 +144,7 @@ const stats = computed(() => {
               <span class="text-xs">{{ stat.label }}</span>
               <span class="text-xl">{{ stat.value }}</span>
             </div>
-          </div>
+          </div> -->
           <div class="gap-3 flex items-center">
             <a href="mailto:support@arcana.network">Help</a>
             <button class="relative" @click.stop="toggleNotifications">
@@ -203,7 +203,7 @@ const stats = computed(() => {
         </div>
       </div>
     </header>
-    <div
+    <!-- <div
       v-if="!props.hideUserData"
       class="border-b-1 border-jet md:hidden py-2 flex justify-center"
     >
@@ -217,7 +217,7 @@ const stats = computed(() => {
           <span class="text-xl">{{ stat.value }}</span>
         </div>
       </div>
-    </div>
+    </div> -->
     <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
   </div>
 </template>

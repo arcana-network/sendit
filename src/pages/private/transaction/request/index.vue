@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import "vue3-carousel/dist/carousel.css";
-import { ref, onBeforeMount, computed, onBeforeUnmount } from "vue";
+import { ref, onBeforeMount, onBeforeUnmount } from "vue";
 import RequestForm from "@/components/request/requestForm.vue";
 import useRequestStore from "@/stores/request";
 import RequestSuccess from "@/components/request/success.vue";
-import { EARN_XP, MONDAY_REWARDS, TUESDAY_REWARDS } from "@/constants/rewards";
-import RewardsCard from "@/components/rewards-card.vue";
+// import { EARN_XP, MONDAY_REWARDS, TUESDAY_REWARDS } from "@/constants/rewards";
+// import RewardsCard from "@/components/rewards-card.vue";
 import AppInvite from "@/components/AppInvite.vue";
 import useUserStore from "@/stores/user";
 import TwitterFollowVerify from "@/components/TwitterFollowVerify.vue";
-import { Carousel, Slide, Navigation } from "vue3-carousel";
+// import { Carousel, Slide, Navigation } from "vue3-carousel";
 import { hexlify } from "ethers";
-import dayjs from "dayjs";
+// import dayjs from "dayjs";
 
 const requestStore = useRequestStore();
 const showSuccessMessage = ref(false);
@@ -26,21 +26,21 @@ const showFollowVerify = ref({
   type: "",
 });
 const userStore = useUserStore();
-const rewardCards = ref([] as typeof EARN_XP);
+// const rewardCards = ref([] as typeof EARN_XP);
 const requestSymbol = ref("");
 const requestAmount = ref("");
 const rewardsInterval = ref(null as any);
-const currentDayOfWeek = ref(dayjs().day());
+// const currentDayOfWeek = ref(dayjs().day());
 
-const displayableRewards = computed(() => {
-  if ([1, 3].includes(currentDayOfWeek.value)) {
-    return [...MONDAY_REWARDS, ...rewardCards.value];
-  } else if ([2, 4].includes(currentDayOfWeek.value)) {
-    return [...TUESDAY_REWARDS, ...rewardCards.value];
-  } else {
-    return [...rewardCards.value];
-  }
-});
+// const displayableRewards = computed(() => {
+//   if ([1, 3].includes(currentDayOfWeek.value)) {
+//     return [...MONDAY_REWARDS, ...rewardCards.value];
+//   } else if ([2, 4].includes(currentDayOfWeek.value)) {
+//     return [...TUESDAY_REWARDS, ...rewardCards.value];
+//   } else {
+//     return [...rewardCards.value];
+//   }
+// });
 
 function handleTxSuccess(data) {
   showSuccessMessage.value = true;
@@ -63,19 +63,19 @@ async function handleSuccessModalClose() {
   resetUserInput();
 }
 
-function OpenVerifyFollow() {
-  showFollowVerify.value.show = true;
-  showFollowVerify.value.type = "twitter";
-}
+// function OpenVerifyFollow() {
+//   showFollowVerify.value.show = true;
+//   showFollowVerify.value.type = "twitter";
+// }
 
 onBeforeMount(async () => {
   await userStore.fetchUserPointsAndRank();
-  rewardCards.value = EARN_XP.filter((item) =>
-    userStore.followedOnTwitter ? item.medium !== "twitter" : true
-  );
-  rewardsInterval.value = setInterval(() => {
-    currentDayOfWeek.value = dayjs().day();
-  }, 1000 * 60);
+  // rewardCards.value = EARN_XP.filter((item) =>
+  //   userStore.followedOnTwitter ? item.medium !== "twitter" : true
+  // );
+  // rewardsInterval.value = setInterval(() => {
+  //   currentDayOfWeek.value = dayjs().day();
+  // }, 1000 * 60);
 });
 
 onBeforeUnmount(() => {
@@ -103,7 +103,7 @@ onBeforeUnmount(() => {
   >
     <RequestForm @transaction-successful="handleTxSuccess" />
   </div>
-  <Carousel
+  <!-- <Carousel
     wrap-around
     pause-autoplay-on-hover
     :autoplay="3000"
@@ -121,9 +121,9 @@ onBeforeUnmount(() => {
     <template #addons>
       <Navigation />
     </template>
-  </Carousel>
-  <span class="text-xs text-philippine-gray max-w-[720px] mb-5 px-4 mx-auto"
+  </Carousel> -->
+  <!-- <span class="text-xs text-philippine-gray max-w-[720px] mb-5 px-4 mx-auto"
     >* Note: Earn Send XP for up to 50 transactions daily; no limits on 10%
     bonus XP.</span
-  >
+  > -->
 </template>
