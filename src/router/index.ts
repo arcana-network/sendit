@@ -67,7 +67,7 @@ const routes: RouteRecordRaw[] = [
             name: "Rewards",
             path: "rewards",
             component: () => import("@/pages/private/rewards/index.vue"),
-            redirect: { name: "Earn XP" },
+            redirect: { name: "My Rewards" },
             children: [
               {
                 name: "My Rewards",
@@ -75,12 +75,12 @@ const routes: RouteRecordRaw[] = [
                 component: () =>
                   import("@/pages/private/rewards/my-rewards/index.vue"),
               },
-              {
-                name: "Earn XP",
-                path: "earn",
-                component: () =>
-                  import("@/pages/private/rewards/earn/index.vue"),
-              },
+              // {
+              //   name: "Earn XP",
+              //   path: "earn",
+              //   component: () =>
+              //     import("@/pages/private/rewards/earn/index.vue"),
+              // },
               {
                 name: "Airdrop",
                 path: "airdrop",
