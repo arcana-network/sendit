@@ -68,7 +68,11 @@ const useSendStore = defineStore("send", {
         chains: any[];
       };
       this.supportedChains = chains
-        .filter((chain) => chainList[Number(chain.chain_id)]?.blockchain)
+        .filter(
+          (chain) =>
+            chainList[Number(chain.chain_id)]?.blockchain &&
+            Number(chain.chain_id) !== 80001
+        )
         .map((chain) => {
           return {
             ...chain,
