@@ -133,7 +133,7 @@ export enum ChainIds {
 
 export const SupportedChainIdsForAccounts = {
   eoa: [1, 137, 80002, 42161, 56, 97, 204],
-  scw: [137],
+  scw: [137, 80002],
 };
 
 export const gaslessChains = [137];
