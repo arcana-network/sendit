@@ -118,6 +118,7 @@ async function getNativeTokenBalances(walletAddress: string) {
             .mul(Decimal.pow(10, -18))
             .toString()
         : 0,
+      thumbnail: "https://ankrscan.io/assets/blockchains/polygon.svg",
     },
     {
       tokenType: "NATIVE",

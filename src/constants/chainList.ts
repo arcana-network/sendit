@@ -34,7 +34,7 @@ const chains = {
     rpc_url: "https://rpc-amoy.polygon.technology",
     blockchain: "polygon_amoy",
     currency: "MATIC",
-    explorer: "https://www.oklink.com/amoy",
+    explorer: "https://amoy.polygonscan.com",
     icon_url: "https://icons.llamao.fi/icons/chains/rsz_polygon.jpg",
   },
   42161: {
