@@ -9,7 +9,7 @@ import { ChainNames } from "@/constants/chainList";
 import { Decimal } from "decimal.js";
 import useUserStore from "@/stores/user";
 import useLoaderStore from "@/stores/loader";
-// import { useToast } from "vue-toastification";
+import { useToast } from "vue-toastification";
 import useAuthStore from "@/stores/auth";
 import { router } from "@/router";
 import { getCurrencyCoverage } from "@/services/transak.service";
@@ -25,7 +25,7 @@ const showWithdrawModal = ref(false);
 const depositModalDetails = ref({} as any);
 const withdrawModalDetails = ref({} as any);
 const loaderStore = useLoaderStore();
-// const toast = useToast();
+const toast = useToast();
 const gaslesschains = ["polygon", "polygon_mumbai"];
 const authStore = useAuthStore();
 const isFirstTimeGasless = ref(false);
@@ -85,13 +85,13 @@ function handleBuy(wallet) {
   };
 }
 
-// function handleDeposit(wallet) {
-//   showDepositModal.value = true;
-//   depositModalDetails.value = {
-//     address: wallet.address(),
-//     accountType: wallet.accountType,
-//   };
-// }
+function handleDeposit(wallet) {
+  showDepositModal.value = true;
+  depositModalDetails.value = {
+    address: wallet.address(),
+    accountType: wallet.accountType,
+  };
+}
 
 function handleWithdraw(wallet) {
   showWithdrawModal.value = true;
@@ -119,21 +119,21 @@ watch(isSmartContractWalletCreated, () => {
   wallets.value.push(scwWallet);
 });
 
-// async function createSCWWallet() {
-//   loaderStore.showLoader(
-//     "CREATING SMART WALLET",
-//     "Hang tight! Your Smart Contract Wallet with amazing new features such as gasless transactions is being created."
-//   );
+async function createSCWWallet() {
+  loaderStore.showLoader(
+    "CREATING SMART WALLET",
+    "Hang tight! Your Smart Contract Wallet with amazing new features such as gasless transactions is being created."
+  );
 
-//   try {
-//     await userStore.createGaslessWallet();
-//     isFirstTimeGasless.value = true;
-//   } catch (e) {
-//     toast.error("Something went wrong. Please try again.");
-//   } finally {
-//     loaderStore.hideLoader();
-//   }
-// }
+  try {
+    await userStore.createGaslessWallet();
+    isFirstTimeGasless.value = true;
+  } catch (e) {
+    toast.error("Something went wrong. Please try again.");
+  } finally {
+    loaderStore.hideLoader();
+  }
+}
 
 async function handleDepositSuccess() {
   showDepositModal.value = false;
@@ -224,14 +224,14 @@ function handleSendToken(asset: any, accountType: string) {
           </div>
         </div>
         <div class="flex gap-2 mt-[1rem]">
-          <!-- <button
+          <button
             v-if="wallet.buttons.deposit"
             class="flex flex-grow flex-col gap-1 justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full text-[10px]"
             @click.stop="handleDeposit(wallet)"
           >
             <img src="@/assets/images/icons/deposit.svg" alt="deposit" />
             Deposit Crypto
-          </button> -->
+          </button>
           <button
             v-if="wallet.buttons.withdraw"
             class="flex flex-grow flex-col gap-1 justify-center items-center p-[0.5rem] bg-[#222] rounded-[10px] text-white text-[0.75rem] w-full text-[10px]"
@@ -278,7 +278,7 @@ function handleSendToken(asset: any, accountType: string) {
           >
         </div>
       </div>
-      <!-- <div
+      <div
         class="bg-[#0e0e0e] border border-[#666] rounded-[10px] w-full max-w-[20rem] flex flex-col p-6"
         v-if="!isSmartContractWalletCreated && authStore.loggedInWith === ''"
       >
@@ -299,7 +299,7 @@ function handleSendToken(asset: any, accountType: string) {
         >
           Setup this wallet now
         </button>
-      </div> -->
+      </div>
     </div>
     <BuyTokens
       v-if="showBuyModal"
