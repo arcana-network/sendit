@@ -44,7 +44,7 @@ const userStore = useUserStore();
 
 const chainsList = computed(() => {
   return sendStore.supportedChains.filter(
-    (chain) => chain.gasless_enabled || chain.chain_id == "80001"
+    (chain) => chain.gasless_enabled && Number(chain.chain_id) !== 80001
   );
 });
 
