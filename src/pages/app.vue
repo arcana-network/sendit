@@ -275,7 +275,7 @@ watch(
         authStore.loggedInWith === "" &&
         authStore.isLoggedIn
       ) {
-        showGaslessAnnouncementModal.value = false; // hardcode fasle for now, till gasless issue gets fixed
+        showGaslessAnnouncementModal.value = true;
       }
       loaderStore.hideLoader();
     }

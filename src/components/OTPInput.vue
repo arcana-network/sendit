@@ -87,7 +87,6 @@ async function submitOTP() {
   hasOTPError.value = false;
   try {
     loader.showLoader("Verifying the OTP...");
-    console.log(arcanaAuth.getAuthInstance());
     await arcanaAuth.getAuthInstance().loginWithOTPComplete(otp.value);
     emit("success");
     emit("dismiss");

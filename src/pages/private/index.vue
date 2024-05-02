@@ -2,35 +2,35 @@
 import AppHeader from "@/components/layout/AppHeader.vue";
 import AppFooter from "@/components/layout/AppFooter.vue";
 import { useConnection } from "@/stores/connection";
-// import { ref } from "vue";
-// import { RouterLink } from "vue-router";
-// import useUserStore from "@/stores/user";
+import { ref } from "vue";
+import { RouterLink } from "vue-router";
+import useUserStore from "@/stores/user";
 
 const conn = useConnection();
-// const isBannerClosed = ref(false);
-// const userStore = useUserStore();
+const isBannerClosed = ref(false);
+const userStore = useUserStore();
 
-// function getLink() {
-//   if (userStore.gaslessOptedIn) {
-//     return {
-//       name: "Send",
-//       query: {
-//         sourceOfFunds: "scw",
-//         token: "NATIVE",
-//         blockchain: "polygon",
-//       },
-//     };
-//   } else {
-//     return {
-//       name: "Wallets",
-//     };
-//   }
-// }
+function getLink() {
+  if (userStore.gaslessOptedIn) {
+    return {
+      name: "Send",
+      query: {
+        sourceOfFunds: "scw",
+        token: "NATIVE",
+        blockchain: "polygon",
+      },
+    };
+  } else {
+    return {
+      name: "Wallets",
+    };
+  }
+}
 </script>
 
 <template>
   <div class="h-full flex flex-col min-h-screen">
-    <!-- <div
+    <div
       class="relative flex justify-center items-center p-2 bg-[#16AD65] text-[14px] font-[500] px-4 text-center"
       v-if="!isBannerClosed"
     >
@@ -43,7 +43,7 @@ const conn = useConnection();
       <button class="absolute right-4" @click.stop="isBannerClosed = true">
         <img src="@/assets/images/icons/close.svg" alt="close" />
       </button>
-    </div> -->
+    </div>
     <AppHeader class="sticky top-0 z-[999]" id="header" />
     <div class="flex flex-col flex-1 h-full private-page">
       <div class="flex flex-col flex-1 container">

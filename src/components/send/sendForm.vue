@@ -45,21 +45,21 @@ const refreshIconAnimating = ref(false);
 const route = useRoute();
 const router = useRouter();
 
-// const supportedWallets = computed(() => {
-//   const wallets = [
-//     {
-//       name: "Regular Account",
-//       value: "eoa",
-//     },
-//   ];
-//   if (userStore.gaslessOptedIn) {
-//     wallets.push({
-//       name: "Smart Account",
-//       value: "scw",
-//     });
-//   }
-//   return wallets;
-// });
+const supportedWallets = computed(() => {
+  const wallets = [
+    {
+      name: "Regular Account",
+      value: "eoa",
+    },
+  ];
+  if (userStore.gaslessOptedIn) {
+    wallets.push({
+      name: "Smart Account",
+      value: "scw",
+    });
+  }
+  return wallets;
+});
 
 async function handleRefresh() {
   refreshIconAnimating.value = true;
@@ -75,10 +75,10 @@ watch(
     if (query.blockchain) {
       userInput.value.chain = ChainIds[query.blockchain as string];
     }
-    // if (query.sourceOfFunds) {
-    //   userInput.value.sourceOfFunds =
-    //     query.sourceOfFunds as typeof userInput.value.sourceOfFunds;
-    // }
+    if (query.sourceOfFunds) {
+      userInput.value.sourceOfFunds =
+        query.sourceOfFunds as typeof userInput.value.sourceOfFunds;
+    }
     if (query.token) {
       userInput.value.token = query.token as typeof userInput.value.token;
     }
@@ -92,10 +92,10 @@ onBeforeMount(async () => {
   if (query.blockchain) {
     userInput.value.chain = ChainIds[query.blockchain as string];
   }
-  // if (query.sourceOfFunds) {
-  //   userInput.value.sourceOfFunds =
-  //     query.sourceOfFunds as typeof userInput.value.sourceOfFunds;
-  // }
+  if (query.sourceOfFunds) {
+    userInput.value.sourceOfFunds =
+      query.sourceOfFunds as typeof userInput.value.sourceOfFunds;
+  }
   if (query.token) {
     userInput.value.token = query.token as typeof userInput.value.token;
   }
@@ -135,19 +135,19 @@ const { userInput, supportedChains } = toRefs(sendStore);
 //   }
 //   return supportedChains.value;
 // });
-// const filteredWallets = computed(() => {
-//   if (userInput.value.chain === "") return [];
-//   return supportedWallets.value.filter((wallet) => {
-//     if (wallet.value === "eoa") return true;
-//     if (wallet.value === "scw") {
-//       const chain = getSelectedChainInfo(userInput.value.chain);
-//       if (chain) {
-//         return chain.gasless_enabled || chain.chain_id == "80001";
-//       }
-//       return false;
-//     }
-//   });
-// });
+const filteredWallets = computed(() => {
+  if (userInput.value.chain === "") return [];
+  return supportedWallets.value.filter((wallet) => {
+    if (wallet.value === "eoa") return true;
+    if (wallet.value === "scw") {
+      const chain = getSelectedChainInfo(userInput.value.chain);
+      if (chain) {
+        return chain.gasless_enabled || chain.chain_id == "80001";
+      }
+      return false;
+    }
+  });
+});
 
 const isEmailValid = computed(() => {
   if (userInput.value.medium === "mail") {
@@ -171,9 +171,9 @@ function getSelectedChainInfo(chainId) {
   );
 }
 
-// function getSourceOfFunds(fundValue) {
-//   return supportedWallets.value.find((fund) => fund.value === fundValue);
-// }
+function getSourceOfFunds(fundValue) {
+  return supportedWallets.value.find((fund) => fund.value === fundValue);
+}
 
 function getSelectedAssets(contractAddress: string) {
   return chainAssets.value.find(
@@ -278,7 +278,6 @@ async function proceed() {
     const currentAccountType = await authStore.provider.request({
       method: "_arcana_getAccountType",
     });
-    userInput.value.sourceOfFunds = currentAccountType;
     if (currentAccountType !== userInput.value.sourceOfFunds) {
       try {
         loadStore.showLoader(
@@ -512,9 +511,13 @@ watch(
 const disableTokenInput = computed(() => {
   return (
     !userInput.value.chain ||
-    // !userInput.value.sourceOfFunds ||
+    !userInput.value.sourceOfFunds ||
     !chainAssets.value.length
   );
+});
+
+const disableChainsInput = computed(() => {
+  return !userInput.value.chain;
 });
 
 // const disableChainsInput = computed(() => {
@@ -694,6 +697,23 @@ async function copyWalletAddress() {
           placeholder="Select source of funds"
         />
       </div> -->
+      <div class="flex flex-col space-y-1">
+        <label class="text-xs">Source of Funds</label>
+        <Dropdown
+          @update:model-value="
+            (value) => (
+              (userInput.sourceOfFunds = value.value),
+              (userInput.token = ''),
+              (userInput.amount = 0)
+            )
+          "
+          :options="filteredWallets"
+          :model-value="getSourceOfFunds(userInput.sourceOfFunds)"
+          display-field="name"
+          :disabled="disableChainsInput"
+          placeholder="Select source of funds"
+        />
+      </div>
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Token</label>
         <Dropdown

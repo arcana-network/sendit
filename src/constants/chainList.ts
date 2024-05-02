@@ -34,7 +34,7 @@ const chains = {
     rpc_url: "https://rpc-amoy.polygon.technology",
     blockchain: "polygon_amoy",
     currency: "MATIC",
-    explorer: "https://www.oklink.com/amoy",
+    explorer: "https://amoy.polygonscan.com",
     icon_url: "https://icons.llamao.fi/icons/chains/rsz_polygon.jpg",
   },
   42161: {
@@ -105,8 +105,6 @@ export const testnetChainFaucets = {
   80002: "https://faucet.polygon.technology",
 };
 
-export const gaslessChains = [137];
-
 export enum ChainNames {
   "eth" = "Ethereum",
   "polygon" = "Polygon PoS",
@@ -137,5 +135,7 @@ export const SupportedChainIdsForAccounts = {
   eoa: [1, 137, 80002, 42161, 56, 97, 204],
   scw: [137],
 };
+
+export const gaslessChains = [137];
 
 export default chains;
