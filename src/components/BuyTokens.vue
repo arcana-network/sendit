@@ -32,6 +32,7 @@ const buyChainsList = computed(() =>
       };
     })
     .reduce((acc, curr) => {
+      console.log({ curr });
       if (!acc.find((chain) => chain.chain_id === curr.chain_id)) {
         acc.push(curr);
       }
