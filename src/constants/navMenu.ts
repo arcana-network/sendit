@@ -16,10 +16,6 @@ const navMenu = [
     label: "History",
   },
   {
-    routeName: "Leaderboard",
-    label: "Leaderboard",
-  },
-  {
     routeName: "Rewards",
     label: "Rewards",
   },
