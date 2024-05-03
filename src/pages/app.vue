@@ -16,7 +16,7 @@ import useWalletConnect from "@/use/walletconnect";
 import ReceiverMessage from "@/components/ReceiverMessage.vue";
 import RequestTokensMessage from "@/components/RequestTokensMessage.vue";
 import { SOCKET_IDS } from "@/constants/socket-ids";
-import TweetVerify from "@/components/TweetVerify.vue";
+// import TweetVerify from "@/components/TweetVerify.vue";
 import {
   Connection,
   useConnection,
@@ -427,12 +427,12 @@ function handleExpiryDismiss() {
       v-if="faucetFundsReceived"
       @dismiss="faucetFundsReceived = false"
     />
-    <TweetVerify
+    <!-- <TweetVerify
       v-if="showTweetVerificationModal"
       :xp="5"
       :hash="tweetHash"
       @close="showTweetVerificationModal = false"
-    />
+    /> -->
     <NotWhiteListed
       v-if="isNotWhitelisted && !hasBalance"
       @go-back="handleNoAccessBack"

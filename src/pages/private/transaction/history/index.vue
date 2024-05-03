@@ -5,7 +5,7 @@ import { SOCKET_IDS } from "@/constants/socket-ids";
 import dayjs from "dayjs";
 import { ethers, getBytes } from "ethers";
 import { composeAndSendTweet } from "@/utils/tweet";
-import TweetVerify from "@/components/TweetVerify.vue";
+// import TweetVerify from "@/components/TweetVerify.vue";
 import { hexlify, formatUnits } from "ethers";
 import { nativeUnitMapping } from "@/constants/unitMapping.ts";
 import useUserStore from "@/stores/user";
@@ -387,9 +387,7 @@ function isTarget(record) {
     <div class="flex flex-col p-8 max-lg:px-4">
       <span class="text-3.5xl">Transaction History</span>
       <span class="text-sm text-philippine-gray max-w-[720px]"
-        >All your previously completed transactions are listed below. You can
-        use this page to give us a shout-out and earn points for past
-        transactions if you hadn’t done so already!</span
+        >All your previously completed transactions are listed below!</span
       >
     </div>
     <div
@@ -406,7 +404,7 @@ function isTarget(record) {
         <div class="leaderboard-table-header-item">Fulfilled By</div>
         <div class="leaderboard-table-header-item">Sendit Link</div>
         <div class="leaderboard-table-header-item">Tx Status</div>
-        <div class="leaderboard-table-header-item">Points</div>
+        <!-- <div class="leaderboard-table-header-item">Points</div> -->
         <div class="leaderboard-table-header-item">Action</div>
       </div>
       <div class="grid md:hidden py-4 px-6 uppercase font-bold text-xs">
@@ -491,10 +489,10 @@ function isTarget(record) {
               >
                 {{ record.txStatus }}
               </div>
-              <div v-if="record.points" class="leaderboard-table-row-item">
+              <!-- <div v-if="record.points" class="leaderboard-table-row-item">
                 {{ record.points }}
               </div>
-              <div v-else class="leaderboard-table-row-item">-</div>
+              <div v-else class="leaderboard-table-row-item">-</div> -->
               <div
                 v-if="record.isPendingRequest"
                 class="leaderboard-table-row-item flex items-start gap-2"
@@ -619,10 +617,10 @@ function isTarget(record) {
                   <img src="@/assets/images/icons/copy.svg" />
                 </button>
               </div>
-              <div v-if="record.points" class="text-xs ellipsis">
+              <!-- <div v-if="record.points" class="text-xs ellipsis">
                 <span class="text-philippine-gray">Points Earned:</span>&nbsp;
                 <span class="font-bold">{{ record.points }}</span>
-              </div>
+              </div> -->
               <div class="text-xs ellipsis">
                 <span class="text-philippine-gray"
                   ><span v-if="record.date">{{ record.date }}</span></span
@@ -674,12 +672,12 @@ function isTarget(record) {
         No transactions found.
       </div>
     </div>
-    <TweetVerify
+    <!-- <TweetVerify
       v-if="showTweetVerificationModal"
       @close="showTweetVerificationModal = false"
       :xp="5"
       :hash="tweetVerificationHash"
-    />
+    /> -->
   </div>
 </template>
 

@@ -5,7 +5,7 @@ import SendForm from "@/components/send/sendForm.vue";
 import useSendStore from "@/stores/send";
 import SendSuccess from "@/components/send/success.vue";
 import RequestSendSuccess from "@/components/send/requestSuccess.vue";
-import TweetVerify from "@/components/TweetVerify.vue";
+// import TweetVerify from "@/components/TweetVerify.vue";
 import { composeAndSendTweet } from "@/utils/tweet";
 // import { EARN_XP, MONDAY_REWARDS, TUESDAY_REWARDS } from "@/constants/rewards";
 // import RewardsCard from "@/components/rewards-card.vue";
@@ -154,12 +154,12 @@ onBeforeUnmount(() => {
     @shoutout="handleShoutout"
     @close="handleSuccessModalClose"
   />
-  <TweetVerify
+  <!-- <TweetVerify
     v-if="showTweetVerificationModal"
     :xp="5"
     :hash="txHash"
     @close="showTweetVerificationModal = false"
-  />
+  /> -->
   <AppInvite v-if="showInvitePopup" @close="showInvitePopup = false" />
   <TwitterFollowVerify
     v-if="showFollowVerify.show"
