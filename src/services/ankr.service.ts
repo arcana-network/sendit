@@ -89,95 +89,115 @@ async function getNativeTokenBalances(walletAddress: string) {
     opbnb_mainnet,
     linea,
     linea_goerli,
-  ] = await Promise.all(ankrPromises);
+  ] = await Promise.allSettled(ankrPromises);
   return [
     {
       tokenType: "NATIVE",
       tokenSymbol: "ETH",
       blockchain: "eth",
-      balance: eth.data.result
-        ? new Decimal(eth.data.result).mul(Decimal.pow(10, -18)).toString()
-        : 0,
+      balance:
+        eth.status === "fulfilled" && eth.value.data.result
+          ? new Decimal(eth.value.data.result)
+              .mul(Decimal.pow(10, -18))
+              .toString()
+          : 0,
       thumbnail: "https://ethereum.org/assets/svgs/eth-glyph-colored.svg",
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "MATIC",
       blockchain: "polygon",
-      balance: polygon.data.result
-        ? new Decimal(polygon.data.result).mul(Decimal.pow(10, -18)).toString()
-        : 0,
+      balance:
+        polygon.status === "fulfilled" && polygon.value.data.result
+          ? new Decimal(polygon.value.data.result)
+              .mul(Decimal.pow(10, -18))
+              .toString()
+          : 0,
       thumbnail: "https://ankrscan.io/assets/blockchains/polygon.svg",
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "MATIC",
       blockchain: "polygon_amoy",
-      balance: polygon_amoy.data.result
-        ? new Decimal(polygon_amoy.data.result)
-            .mul(Decimal.pow(10, -18))
-            .toString()
-        : 0,
+      balance:
+        polygon_amoy.status === "fulfilled" && polygon_amoy.value.data.result
+          ? new Decimal(polygon_amoy.value.data.result)
+              .mul(Decimal.pow(10, -18))
+              .toString()
+          : 0,
       thumbnail: "https://ankrscan.io/assets/blockchains/polygon.svg",
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "ETH",
       blockchain: "arbitrum",
-      balance: arbitrum.data.result
-        ? new Decimal(arbitrum.data.result).mul(Decimal.pow(10, -18)).toString()
-        : 0,
+      balance:
+        arbitrum.status === "fulfilled" && arbitrum.value.data.result
+          ? new Decimal(arbitrum.value.data.result)
+              .mul(Decimal.pow(10, -18))
+              .toString()
+          : 0,
       thumbnail: "https://ankrscan.io/assets/blockchains/arbitrum.svg",
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "BNB",
       blockchain: "bsc",
-      balance: bsc.data.result
-        ? new Decimal(bsc.data.result).mul(Decimal.pow(10, -18)).toString()
-        : 0,
+      balance:
+        bsc.status === "fulfilled" && bsc.value.data.result
+          ? new Decimal(bsc.value.data.result)
+              .mul(Decimal.pow(10, -18))
+              .toString()
+          : 0,
       thumbnail: "https://ankrscan.io/assets/blockchains/binance.svg",
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "BNB",
       blockchain: "bsc_testnet_chapel",
-      balance: bsc_testnet_chapel.data.result
-        ? new Decimal(bsc_testnet_chapel.data.result)
-            .mul(Decimal.pow(10, -18))
-            .toString()
-        : 0,
+      balance:
+        bsc_testnet_chapel.status === "fulfilled" &&
+        bsc_testnet_chapel.value.data.result
+          ? new Decimal(bsc_testnet_chapel.value.data.result)
+              .mul(Decimal.pow(10, -18))
+              .toString()
+          : 0,
       thumbnail: "https://ankrscan.io/assets/blockchains/binance.svg",
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "BNB",
       blockchain: "opbnb",
-      balance: opbnb_mainnet.data.result
-        ? new Decimal(opbnb_mainnet.data.result)
-            .mul(Decimal.pow(10, -18))
-            .toString()
-        : 0,
+      balance:
+        opbnb_mainnet.status === "fulfilled" && opbnb_mainnet.value.data.result
+          ? new Decimal(opbnb_mainnet.value.data.result)
+              .mul(Decimal.pow(10, -18))
+              .toString()
+          : 0,
       thumbnail: "https://ankrscan.io/assets/blockchains/binance.svg",
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "ETH",
       blockchain: "linea",
-      balance: linea.data.result
-        ? new Decimal(linea.data.result).mul(Decimal.pow(10, -18)).toString()
-        : 0,
+      balance:
+        linea.status === "fulfilled" && linea.value.data.result
+          ? new Decimal(linea.value.data.result)
+              .mul(Decimal.pow(10, -18))
+              .toString()
+          : 0,
       thumbnail: chains[59144].icon_url,
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "ETH",
       blockchain: "linea_testnet",
-      balance: linea_goerli.data.result
-        ? new Decimal(linea_goerli.data.result)
-            .mul(Decimal.pow(10, -18))
-            .toString()
-        : 0,
+      balance:
+        linea_goerli.status === "fulfilled" && linea_goerli.value.data.result
+          ? new Decimal(linea_goerli.value.data.result)
+              .mul(Decimal.pow(10, -18))
+              .toString()
+          : 0,
       thumbnail: chains[59140].icon_url,
     },
   ];
