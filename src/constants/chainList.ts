@@ -71,7 +71,7 @@ const chains = {
     name: "opBNB Mainnet",
     chain_id: 204,
     blockchain: "opbnb",
-    rpc_url: "https://1rpc.io/opbnb",
+    rpc_url: "https://opbnb-rpc.publicnode.com",
     currency: "BNB",
     explorer: "https://opbnbscan.com/",
     icon_url: "https://icons.llamao.fi/icons/chains/rsz_binance.jpg",
