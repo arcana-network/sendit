@@ -11,8 +11,6 @@ const ANKR_SERVICE = axios.create({
   baseURL: URL,
 });
 
-let publicRpcId = 0;
-
 async function getAccountBalance(walletAddress: string, blockchain: string[]) {
   const payload = {
     jsonrpc: "2.0",
@@ -62,145 +60,105 @@ async function fetchRewards(walletAddress: string) {
 }
 
 async function getNativeTokenBalances(walletAddress: string) {
-  const payload = {
-    method: "eth_getBalance",
-    params: [walletAddress, "latest"],
-    id: publicRpcId++,
-    jsonrpc: "2.0",
-  };
-  const ankrPromises = [
-    axios.post(chains[1].rpc_url, payload),
-    axios.post(chains[137].rpc_url, payload),
-    axios.post(chains[80002].rpc_url, payload),
-    axios.post(chains[42161].rpc_url, payload),
-    axios.post(chains[56].rpc_url, payload),
-    axios.post(chains[97].rpc_url, payload),
-    axios.post(chains[204].rpc_url, payload),
-    axios.post(chains[59144].rpc_url, payload),
-    axios.post(chains[59140].rpc_url, payload),
-  ];
-  const [
-    eth,
-    polygon,
-    polygon_amoy,
-    arbitrum,
-    bsc,
-    bsc_testnet_chapel,
-    opbnb_mainnet,
-    linea,
-    linea_goerli,
-  ] = await Promise.allSettled(ankrPromises);
-  return [
+  return Promise.all([
     {
       tokenType: "NATIVE",
       tokenSymbol: "ETH",
       blockchain: "eth",
-      balance:
-        eth.status === "fulfilled" && eth.value.data.result
-          ? new Decimal(eth.value.data.result)
-              .mul(Decimal.pow(10, -18))
-              .toString()
-          : 0,
+      chainID: 1,
       thumbnail: "https://ethereum.org/assets/svgs/eth-glyph-colored.svg",
+      balance: 0,
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "MATIC",
       blockchain: "polygon",
-      balance:
-        polygon.status === "fulfilled" && polygon.value.data.result
-          ? new Decimal(polygon.value.data.result)
-              .mul(Decimal.pow(10, -18))
-              .toString()
-          : 0,
+      chainID: 137,
       thumbnail: "https://ankrscan.io/assets/blockchains/polygon.svg",
+      balance: 0,
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "MATIC",
       blockchain: "polygon_amoy",
-      balance:
-        polygon_amoy.status === "fulfilled" && polygon_amoy.value.data.result
-          ? new Decimal(polygon_amoy.value.data.result)
-              .mul(Decimal.pow(10, -18))
-              .toString()
-          : 0,
+      chainID: 80002,
       thumbnail: "https://ankrscan.io/assets/blockchains/polygon.svg",
+      balance: 0,
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "ETH",
       blockchain: "arbitrum",
-      balance:
-        arbitrum.status === "fulfilled" && arbitrum.value.data.result
-          ? new Decimal(arbitrum.value.data.result)
-              .mul(Decimal.pow(10, -18))
-              .toString()
-          : 0,
+      chainID: 42161,
       thumbnail: "https://ankrscan.io/assets/blockchains/arbitrum.svg",
+      balance: 0,
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "BNB",
       blockchain: "bsc",
-      balance:
-        bsc.status === "fulfilled" && bsc.value.data.result
-          ? new Decimal(bsc.value.data.result)
-              .mul(Decimal.pow(10, -18))
-              .toString()
-          : 0,
+      chainID: 56,
       thumbnail: "https://ankrscan.io/assets/blockchains/binance.svg",
+      balance: 0,
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "BNB",
       blockchain: "bsc_testnet_chapel",
-      balance:
-        bsc_testnet_chapel.status === "fulfilled" &&
-        bsc_testnet_chapel.value.data.result
-          ? new Decimal(bsc_testnet_chapel.value.data.result)
-              .mul(Decimal.pow(10, -18))
-              .toString()
-          : 0,
+      chainID: 97,
       thumbnail: "https://ankrscan.io/assets/blockchains/binance.svg",
+      balance: 0,
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "BNB",
       blockchain: "opbnb",
-      balance:
-        opbnb_mainnet.status === "fulfilled" && opbnb_mainnet.value.data.result
-          ? new Decimal(opbnb_mainnet.value.data.result)
-              .mul(Decimal.pow(10, -18))
-              .toString()
-          : 0,
+      chainID: 204,
       thumbnail: "https://ankrscan.io/assets/blockchains/binance.svg",
+      balance: 0,
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "ETH",
       blockchain: "linea",
-      balance:
-        linea.status === "fulfilled" && linea.value.data.result
-          ? new Decimal(linea.value.data.result)
-              .mul(Decimal.pow(10, -18))
-              .toString()
-          : 0,
+      chainID: 59144,
       thumbnail: chains[59144].icon_url,
+      balance: 0,
     },
     {
       tokenType: "NATIVE",
       tokenSymbol: "ETH",
       blockchain: "linea_testnet",
-      balance:
-        linea_goerli.status === "fulfilled" && linea_goerli.value.data.result
-          ? new Decimal(linea_goerli.value.data.result)
-              .mul(Decimal.pow(10, -18))
-              .toString()
-          : 0,
+      chainID: 59140,
       thumbnail: chains[59140].icon_url,
+      balance: 0,
     },
-  ];
+  ].map(async (entry: {
+    tokenType: string,
+    tokenSymbol: string,
+    blockchain: string,
+    chainID: number,
+    thumbnail: string,
+    balance: string | number,
+  }) => {
+    const payload = {
+      method: "eth_getBalance",
+      params: [walletAddress, "latest"],
+      id: 1,
+      jsonrpc: "2.0",
+    };
+    try {
+      const resp = await axios.post(chains[entry.chainID].rpc_url, payload)
+      if (resp.data.result) {
+        entry.balance = new Decimal(resp.data.result)
+            .mul(Decimal.pow(10, -18))
+            .toString()
+      }
+    } catch (e) {
+      console.error('Caught error while fetching balance:', e, entry)
+    }
+    return entry
+  }))
 }
 
 async function fetchAllTokenBalances(walletAddress: string) {
