@@ -126,8 +126,16 @@ async function proceed() {
       if (userInput.value.address === authStore.userInfo.address) {
         throw SELF_TX_ERROR;
       }
+      const selectedToken =
+        userInput.value.token === "NATIVE"
+          ? {
+              decimals: 18,
+            }
+          : getTokenModelValue(userInput.value.token);
       const amount = serializeDecimal(
-        new Decimal(userInput.value.amount || 0).mul(Decimal.pow(10, 18))
+        new Decimal(userInput.value.amount || 0).mul(
+          Decimal.pow(10, selectedToken.decimals)
+        )
       );
       const selectedChain = getSelectedChainInfo(userInput.value.chain);
       const response = await requestStore.sendRequest({
