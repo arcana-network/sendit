@@ -27,7 +27,7 @@ onBeforeMount(() => {
   const r = requestableTokens[props.data.chain_id].find((token) =>
     tokenAddr === ethers.ZeroAddress
       ? token.address === "NATIVE"
-      : token.address === tokenAddr
+      : token.address.toLowerCase() === tokenAddr
   );
   reactiveData.symbol = r.symbol;
   reactiveData.decimals = r.decimals;

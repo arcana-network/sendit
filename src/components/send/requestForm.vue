@@ -85,19 +85,20 @@ onMounted(async () => {
     const ethersContract = new ethers.Contract(
       requestInput.value.token,
       erc20ABI,
-      authStore.provider
+      new ethers.BrowserProvider(authStore.provider, 'any')
     );
-    const [symbol, decimals, balance] = await Promise.all([
+    const [symbol, _decimals, balance] = await Promise.all([
       ethersContract.symbol(),
       ethersContract.decimals(),
       ethersContract.balanceOf(userStore.address),
     ]);
+    const decimals = Number(_decimals) // completely safe since it's an uint8
     tokenSymbol.value = symbol;
     tokenDecimals.value = decimals;
-    tokenBalance.value = new Decimal(balance)
+    tokenBalance.value = new Decimal(balance.toString()) // it is a bigint, Decimal doesn't support bigint right now
       .div(Decimal.pow(10, decimals))
       .toString();
-    tokenBalanceInUnits.value = new Decimal(balance).toNumber();
+    tokenBalanceInUnits.value = new Decimal(balance.toString()).toNumber();
   }
   displayAmount.value = new Decimal(requestInput.value.amount as number)
     .div(Decimal.pow(10, tokenDecimals.value))
