@@ -7,6 +7,7 @@ import { BrowserProvider, getBytes, randomBytes, hashMessage } from "ethers";
 import type { Eip1193Provider, JsonRpcSigner } from "ethers";
 import { pack as msgpack, unpack as msgunpack } from "msgpackr";
 import { Mutex } from "async-mutex";
+import useLoaderStore from "@/stores/loader";
 
 enum ConnectionState {
   NOT_CONNECTED,
@@ -155,7 +156,11 @@ class Connection {
     switch (this.state) {
       case ConnectionState.NOT_CONNECTED: {
         const hash = hashMessage(data.message);
-
+        const loader = useLoaderStore();
+        loader.showLoader(
+          "Signing in...",
+          "Sign message in the wallet to continue."
+        );
         const existingPairStr = localStorage.getItem(
           Connection.MESSAGE_HASH_KEY
         );
@@ -181,6 +186,7 @@ class Connection {
             sig: getBytes(sig),
           })
         );
+        loader.showLoader("Fetching user data...");
         this.state = ConnectionState.CONNECTED_UNAUTHORIZED;
         break;
       }
