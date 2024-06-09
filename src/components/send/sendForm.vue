@@ -346,10 +346,14 @@ async function proceed() {
           maxPriorityFeePerGas: hexlify(gasStation.max_priority_fee),
         };
       }
-      const nonce = await getNonceForArcanaSponsorship(
-        authStore.userInfo.address
-      );
-      console.log(nonce, "nonce");
+      if (userInput.value.sourceOfFunds === "scw") {
+        const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
+          chain_id: userInput.value.chain,
+        });
+        console.log(res, "res");
+        const nonce = await getNonceForArcanaSponsorship(res.scw_address);
+        console.log(nonce, "nonce");
+      }
       const tx =
         userInput.value.token === "NATIVE"
           ? await nativeTokenTransfer(
