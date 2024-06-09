@@ -36,7 +36,7 @@ async function getNonceForArcanaSponsorship(
     ],
     arcanaAuth.getProvider() as unknown as JsonRpcProvider
   );
-
+  console.log(address, "getNonceForArcanaSponsorship");
   return await c.getNonce(address, 0);
 }
 
