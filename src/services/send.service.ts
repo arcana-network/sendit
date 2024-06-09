@@ -7,6 +7,8 @@ import { useConnection } from "@/stores/connection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import useUserStore from "@/stores/user";
 import store from "@/stores";
+import getNonceForArcanaSponsorship from "@/utils/getNonceForArcanaSponsorship";
+import chains from "@/constants/chainList";
 
 const userStore = useUserStore(store);
 
@@ -43,6 +45,12 @@ async function nativeTokenTransfer(
         chain_id: chain_id,
         address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
       });
+      console.log(res.scw_address, chains[chain_id as string].rpc_url);
+      const nonce = await getNonceForArcanaSponsorship(
+        res.scw_address,
+        chains[chain_id as string].rpc_url
+      );
+      console.log(nonce);
       if (res.opted_in) {
         gaslessAddress = ethers.hexlify(res.scw_address);
         if (
