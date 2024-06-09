@@ -605,7 +605,7 @@ async function copyWalletAddress() {
   <div
     class="w-full max-w-[450px] space-y-4 border-1 border-jet p-4 rounded-md bg-eerie-black"
   >
-    <h1 class="uppercase font-bold">Send Tokens</h1>
+    <h1 class="uppercase font-bold">Send</h1>
     <hr class="border-0 border-b border-solid border-[#363636] -mx-4" />
     <div class="space-y-1">
       <h2 class="text-xs">Send Via</h2>
