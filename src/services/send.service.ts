@@ -38,11 +38,10 @@ async function nativeTokenTransfer(
     ? publickey
     : computeAddress(`0x${publickey}`);
   let gaslessAddress = "";
-  let res = { scw_address: "", opted_in: false };
   if (isGasless) {
     try {
       const conn = useConnection();
-      res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
+      const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
         chain_id: chain_id,
         address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
       });
@@ -71,12 +70,19 @@ async function nativeTokenTransfer(
     to: gaslessAddress || receiverWalletAddress,
     value: decimalAmount.mul(Decimal.pow(10, 18)).ceil().toHexadecimal(),
   };
-  console.log(res, chains[chain_id as string].rpc_url, "send-native");
-  const nonce = await getNonceForArcanaSponsorship(
-    res.scw_address,
-    chains[chain_id as string].rpc_url
-  );
-  console.log(nonce, nonce.toString(), "send-nonce");
+  if (isGasless) {
+    const conn = useConnection();
+    const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
+      chain_id: chain_id,
+      address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
+    });
+    console.log(res, "send-res", chain_id, chains[chain_id as string].rpc_url);
+    const nonce = await getNonceForArcanaSponsorship(
+      res.scw_address,
+      chains[chain_id as string].rpc_url
+    );
+    console.log(nonce, nonce.toString(), "send-nonce");
+  }
   if (feeData) {
     // rawTx.gasLimit = 21000n;
     rawTx.maxFeePerGas = feeData.maxFeePerGas;
