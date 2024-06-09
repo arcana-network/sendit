@@ -35,7 +35,6 @@ import copyToClipboard from "@/utils/copyToClipboard";
 import { switchChain } from "@/use/switchChain";
 import useUserStore from "@/stores/user";
 import { useRoute, useRouter } from "vue-router";
-import getNonceForArcanaSponsorship from "@/utils/getNonceForArcanaSponsorship.ts";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -345,18 +344,6 @@ async function proceed() {
           maxFeePerGas: hexlify(gasStation.max_fee),
           maxPriorityFeePerGas: hexlify(gasStation.max_priority_fee),
         };
-      }
-      if (userInput.value.sourceOfFunds === "scw") {
-        // const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
-        //   chain_id: userInput.value.chain,
-
-        // });
-        // console.log(res, "res");
-        const nonce = await getNonceForArcanaSponsorship(
-          "0xB6963038669a82b949e5716C458152B87E8cedea",
-          chains[Number(chainId)].rpc_url
-        );
-        console.log(nonce, "nonce");
       }
       const tx =
         userInput.value.token === "NATIVE"

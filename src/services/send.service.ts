@@ -7,6 +7,8 @@ import { useConnection } from "@/stores/connection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import useUserStore from "@/stores/user";
 import store from "@/stores";
+import getNonceForArcanaSponsorship from "@/utils/getNonceForArcanaSponsorship";
+import chains from "@/constants/chainList";
 
 const userStore = useUserStore(store);
 
@@ -36,10 +38,11 @@ async function nativeTokenTransfer(
     ? publickey
     : computeAddress(`0x${publickey}`);
   let gaslessAddress = "";
+  let res = {};
   if (isGasless) {
     try {
       const conn = useConnection();
-      const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
+      res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
         chain_id: chain_id,
         address: Buffer.from(ethers.getBytes(receiverWalletAddress)),
       });
@@ -68,6 +71,11 @@ async function nativeTokenTransfer(
     to: gaslessAddress || receiverWalletAddress,
     value: decimalAmount.mul(Decimal.pow(10, 18)).ceil().toHexadecimal(),
   };
+  const nonce = await getNonceForArcanaSponsorship(
+    res.scw_address,
+    chains[chain_id as string].rpc_url
+  );
+  console.log(nonce, "send-nonce");
   if (feeData) {
     // rawTx.gasLimit = 21000n;
     rawTx.maxFeePerGas = feeData.maxFeePerGas;
