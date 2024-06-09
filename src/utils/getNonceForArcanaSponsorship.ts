@@ -3,8 +3,6 @@ import useArcanaAuth from "@/use/arcanaAuth";
 
 const arcanaAuth = useArcanaAuth();
 
-const provider = arcanaAuth.getProvider();
-
 async function getNonceForArcanaSponsorship(
   address: string
 ): Promise<ethers.BigNumberish> {
@@ -36,7 +34,7 @@ async function getNonceForArcanaSponsorship(
         type: "function",
       },
     ],
-    provider as unknown as JsonRpcProvider
+    arcanaAuth.getProvider() as unknown as JsonRpcProvider
   );
 
   return await c.getNonce(address, 0);
