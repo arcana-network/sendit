@@ -35,6 +35,7 @@ import copyToClipboard from "@/utils/copyToClipboard";
 import { switchChain } from "@/use/switchChain";
 import useUserStore from "@/stores/user";
 import { useRoute, useRouter } from "vue-router";
+import getNonceForArcanaSponsorship from "@/utils/getNonceForArcanaSponsorship.ts";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
@@ -345,6 +346,10 @@ async function proceed() {
           maxPriorityFeePerGas: hexlify(gasStation.max_priority_fee),
         };
       }
+      const nonce = await getNonceForArcanaSponsorship(
+        authStore.userInfo.address
+      );
+      console.log(nonce, "nonce");
       const tx =
         userInput.value.token === "NATIVE"
           ? await nativeTokenTransfer(
@@ -680,23 +685,6 @@ async function copyWalletAddress() {
           placeholder="Select Chain"
         />
       </div>
-      <!-- <div class="flex flex-col space-y-1">
-        <label class="text-xs">Source of Funds</label>
-        <Dropdown
-          @update:model-value="
-            (value) => (
-              (userInput.sourceOfFunds = value.value),
-              (userInput.token = ''),
-              (userInput.amount = 0)
-            )
-          "
-          :options="filteredWallets"
-          :model-value="getSourceOfFunds(userInput.sourceOfFunds)"
-          display-field="name"
-          :disabled="disableChainsInput"
-          placeholder="Select source of funds"
-        />
-      </div> -->
       <div class="flex flex-col space-y-1">
         <label class="text-xs">Source of Funds</label>
         <Dropdown
