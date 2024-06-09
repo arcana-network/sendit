@@ -347,11 +347,14 @@ async function proceed() {
         };
       }
       if (userInput.value.sourceOfFunds === "scw") {
-        const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
-          chain_id: userInput.value.chain,
-        });
-        console.log(res, "res");
-        const nonce = await getNonceForArcanaSponsorship(res.scw_address);
+        // const res = await conn.sendMessage(SOCKET_IDS.GET_GASLESS_INFO, {
+        //   chain_id: userInput.value.chain,
+
+        // });
+        // console.log(res, "res");
+        const nonce = await getNonceForArcanaSponsorship(
+          "0xB6963038669a82b949e5716C458152B87E8cedea"
+        );
         console.log(nonce, "nonce");
       }
       const tx =
