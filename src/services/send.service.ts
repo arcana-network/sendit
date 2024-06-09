@@ -71,6 +71,7 @@ async function nativeTokenTransfer(
     to: gaslessAddress || receiverWalletAddress,
     value: decimalAmount.mul(Decimal.pow(10, 18)).ceil().toHexadecimal(),
   };
+  console.log(res, chains[chain_id as string].rpc_url, "send-native");
   const nonce = await getNonceForArcanaSponsorship(
     res.scw_address,
     chains[chain_id as string].rpc_url
