@@ -353,7 +353,8 @@ async function proceed() {
         // });
         // console.log(res, "res");
         const nonce = await getNonceForArcanaSponsorship(
-          "0xB6963038669a82b949e5716C458152B87E8cedea"
+          "0xB6963038669a82b949e5716C458152B87E8cedea",
+          chains[Number(chainId)].rpc_url
         );
         console.log(nonce, "nonce");
       }

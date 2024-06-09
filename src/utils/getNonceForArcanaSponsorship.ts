@@ -1,10 +1,8 @@
-import { ethers, JsonRpcProvider } from "ethers";
-import useArcanaAuth from "@/use/arcanaAuth";
-
-const arcanaAuth = useArcanaAuth();
+import { ethers, WebSocketProvider } from "ethers";
 
 async function getNonceForArcanaSponsorship(
-  address: string
+  address: string,
+  rpcURL: string
 ): Promise<ethers.BigNumberish> {
   const c = new ethers.Contract(
     "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
@@ -34,9 +32,8 @@ async function getNonceForArcanaSponsorship(
         type: "function",
       },
     ],
-    arcanaAuth.getProvider() as unknown as JsonRpcProvider
+    new WebSocketProvider(rpcURL)
   );
-  console.log(address, "getNonceForArcanaSponsorship");
   return await c.getNonce(address, 0);
 }
 
