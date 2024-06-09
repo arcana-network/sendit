@@ -38,7 +38,7 @@ async function nativeTokenTransfer(
     ? publickey
     : computeAddress(`0x${publickey}`);
   let gaslessAddress = "";
-  let res = {};
+  let res = { scw_address: "", opted_in: false };
   if (isGasless) {
     try {
       const conn = useConnection();
@@ -75,7 +75,7 @@ async function nativeTokenTransfer(
     res.scw_address,
     chains[chain_id as string].rpc_url
   );
-  console.log(nonce, "send-nonce");
+  console.log(nonce, nonce.toString(), "send-nonce");
   if (feeData) {
     // rawTx.gasLimit = 21000n;
     rawTx.maxFeePerGas = feeData.maxFeePerGas;
