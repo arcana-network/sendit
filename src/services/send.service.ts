@@ -12,13 +12,10 @@ import erc20ABI from "@/abis/erc20.abi.json";
 import { useConnection } from "@/stores/connection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import useUserStore from "@/stores/user";
-import useAuthStore from "@/stores/auth";
 import store from "@/stores";
 import { scwInstance } from "@/utils/scw";
 
 const userStore = useUserStore(store);
-const authStore = useAuthStore(store);
-const userInfo = authStore.userInfo;
 
 const SELF_TX_ERROR = "self-transactions are not permitted";
 
