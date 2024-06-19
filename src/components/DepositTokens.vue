@@ -21,12 +21,15 @@ import { GAS_SUPPORTED_CHAINS } from "@/constants/socket-ids";
 import { switchChain } from "@/use/switchChain";
 import { useConnection } from "@/stores/connection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
+import { initSCW, scwInstance } from "@/utils/scw";
+import getNonceForArcanaSponsorship from "@/utils/getNonceForArcanaSponsorship";
 
 type DepositTokenProps = {
   address: string;
   accountType: "eoa" | "scw";
 };
 
+const ARCANA_APP_ADDRESS = import.meta.env.VITE_ARCANA_APP_ADDRESS;
 const emit = defineEmits(["dismiss", "success"]);
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
@@ -134,6 +137,22 @@ function isEoaWallet() {
   return userInput.sourceOfFunds === "Regular Account";
 }
 
+async function initSCWsdk() {
+  const currentAccountType = await authStore.provider.request({
+    method: "_arcana_getAccountType",
+  });
+  if (currentAccountType === "scw") {
+    await authStore.provider.request({
+      method: "_arcana_switchAccountType",
+      params: {
+        type: "eoa",
+      },
+    });
+  }
+  //@ts-ignore
+  await initSCW(ARCANA_APP_ADDRESS, window.arcana.provider);
+}
+
 async function handleDeposit() {
   loaderStore.showLoader(
     "DEPOSITING TOKENS",
@@ -212,6 +231,11 @@ async function handleDeposit() {
           maxPriorityFeePerGas: hexlify(gasStation.max_priority_fee),
         };
       }
+      const rpc_url = chains[Number(chainId)].rpc_url;
+      await initSCWsdk();
+      const nonce = Number(
+        await getNonceForArcanaSponsorship(scwInstance.scwAddress, rpc_url)
+      );
       userInput.token === "NATIVE"
         ? await nativeTokenTransfer(
             props.accountType === "eoa"
@@ -220,6 +244,7 @@ async function handleDeposit() {
             arcanaProvider,
             amount,
             feeData,
+            nonce,
             false,
             userInput.chain,
             true
@@ -233,6 +258,7 @@ async function handleDeposit() {
             //@ts-ignore
             userInput.token,
             feeData,
+            nonce,
             false,
             userInput.chain,
             true
