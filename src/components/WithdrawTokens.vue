@@ -14,11 +14,14 @@ import {
   erc20TokenTransfer,
 } from "@/services/send.service";
 import { switchChain } from "@/use/switchChain";
+import { initSCW, scwInstance } from "@/utils/scw";
+import getNonceForArcanaSponsorship from "@/utils/getNonceForArcanaSponsorship";
 
 type WithdrawTokenProps = {
   address: string;
 };
 
+const ARCANA_APP_ADDRESS = import.meta.env.VITE_ARCANA_APP_ADDRESS;
 const emit = defineEmits(["dismiss"]);
 const props = defineProps<WithdrawTokenProps>();
 const authStore = useAuthStore();
@@ -80,6 +83,22 @@ const userInput = reactive({
 
 function getChain(chainId) {
   return withdrawChainsList.value.find((chain) => chain.chain_id === chainId);
+}
+
+async function initSCWsdk() {
+  const currentAccountType = await authStore.provider.request({
+    method: "_arcana_getAccountType",
+  });
+  if (currentAccountType === "scw") {
+    await authStore.provider.request({
+      method: "_arcana_switchAccountType",
+      params: {
+        type: "eoa",
+      },
+    });
+  }
+  //@ts-ignore
+  await initSCW(ARCANA_APP_ADDRESS, window.arcana.provider);
 }
 
 function handleSell() {
@@ -188,12 +207,21 @@ async function handleSend() {
         ChainIds[asset.blockchain] == userInput.chain &&
         asset.tokenSymbol === userInput.token
     );
+    const chainId = await authStore.provider.request({
+      method: "eth_chainId",
+    });
+    const rpc_url = chains[Number(chainId)].rpc_url;
+    await initSCWsdk();
+    const nonce = Number(
+      await getNonceForArcanaSponsorship(scwInstance.scwAddress, rpc_url)
+    );
     if (sendToken?.tokenType === "NATIVE") {
       await nativeTokenTransfer(
         sellAddress.value,
         authStore.provider,
         Number(userInput.amount),
-        null
+        null,
+        nonce
       );
     } else {
       await erc20TokenTransfer(
@@ -201,7 +229,8 @@ async function handleSend() {
         authStore.provider,
         Number(userInput.amount),
         sendToken.contractAddress,
-        null
+        null,
+        nonce
       );
     }
     toast.success(
