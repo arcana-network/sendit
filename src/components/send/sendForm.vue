@@ -143,6 +143,7 @@ async function initSCWsdk() {
       },
     });
   }
+  //@ts-ignore
   await initSCW(ARCANA_APP_ADDRESS, window.arcana.provider);
 }
 
