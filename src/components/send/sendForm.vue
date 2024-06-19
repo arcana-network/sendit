@@ -35,11 +35,14 @@ import copyToClipboard from "@/utils/copyToClipboard";
 import { switchChain } from "@/use/switchChain";
 import useUserStore from "@/stores/user";
 import { useRoute, useRouter } from "vue-router";
+import { initSCW, scwInstance } from "@/utils/scw.ts";
+import getNonceForArcanaSponsorship from "@/utils/getNonceForArcanaSponsorship";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
 const INSUFFICIENT_FUNDS = "INSUFFICIENT_FUNDS";
 const SELF_TX_ERROR = "self-transactions are not permitted";
+const ARCANA_APP_ADDRESS = import.meta.env.VITE_ARCANA_APP_ADDRESS;
 let assetInterval: NodeJS.Timer;
 const refreshIconAnimating = ref(false);
 const route = useRoute();
@@ -127,14 +130,22 @@ const userStore = useUserStore();
 
 sendStore.resetUserInput();
 const { userInput, supportedChains } = toRefs(sendStore);
-// const filteredChains = computed(() => {
-//   if (userInput.value.sourceOfFunds === "scw") {
-//     return supportedChains.value.filter(
-//       (chain) => chain.gasless_enabled || chain.chain_id == "80001"
-//     );
-//   }
-//   return supportedChains.value;
-// });
+
+async function initSCWsdk() {
+  const currentAccountType = await authStore.provider.request({
+    method: "_arcana_getAccountType",
+  });
+  if (currentAccountType === "scw") {
+    await authStore.provider.request({
+      method: "_arcana_switchAccountType",
+      params: {
+        type: "eoa",
+      },
+    });
+  }
+  await initSCW(ARCANA_APP_ADDRESS, window.arcana.provider);
+}
+
 const filteredWallets = computed(() => {
   if (userInput.value.chain === "") return [];
   return supportedWallets.value.filter((wallet) => {
@@ -345,6 +356,11 @@ async function proceed() {
           maxPriorityFeePerGas: hexlify(gasStation.max_priority_fee),
         };
       }
+      const rpc_url = chains[Number(chainId)].rpc_url;
+      await initSCWsdk();
+      const nonce = Number(
+        await getNonceForArcanaSponsorship(scwInstance.scwAddress, rpc_url)
+      );
       const tx =
         userInput.value.token === "NATIVE"
           ? await nativeTokenTransfer(
@@ -352,6 +368,7 @@ async function proceed() {
               arcanaProvider,
               amount,
               feeData,
+              nonce,
               userInput.value.sourceOfFunds === "scw",
               userInput.value.chain
             )
@@ -362,6 +379,7 @@ async function proceed() {
               //@ts-ignore
               userInput.value.token,
               feeData,
+              nonce,
               userInput.value.sourceOfFunds === "scw",
               userInput.value.chain
             );
@@ -810,7 +828,7 @@ async function copyWalletAddress() {
           @click.prevent="proceed"
           type="submit"
           class="w-full text-sm btn btn-submit"
-          :disabled="disableSubmit"
+          :disabled="false"
           :class="{ 'opacity-50': disableSubmit }"
         >
           Send It
