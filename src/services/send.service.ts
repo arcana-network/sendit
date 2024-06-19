@@ -177,7 +177,7 @@ async function erc20TokenTransfer(
     ptx.maxFeePerGas = BigInt(feeData.maxFeePerGas);
     ptx.maxPriorityFeePerGas = BigInt(feeData.maxPriorityFeePerGas);
   }
-  if (isGasless && nonce && nonce < 15) {
+  if (isGasless && nonce < 15) {
     const abi = [
       "function transfer(address recipient, uint256 amount) returns (bool)",
     ];
