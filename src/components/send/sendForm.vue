@@ -242,6 +242,7 @@ function messageArcana(
     to_verifier,
     type,
   };
+  console.log({ message });
   return conn.sendMessage(SOCKET_IDS.SEND_TX, message);
 }
 
@@ -398,7 +399,7 @@ async function proceed() {
       const toVerifier =
         userInput.value.medium === "twitter" ? "twitter" : "passwordless";
       //@ts-ignore
-      console.log({ fromEmail, toEmail, fromVerifier, toVerifier });
+      console.log({ to, hash, fromEmail, toEmail, fromVerifier, toVerifier });
       const sendRes = (await messageArcana(
         hash,
         to,
