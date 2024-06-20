@@ -102,6 +102,7 @@ async function nativeTokenTransfer(
     const confirmed = await tx.wait();
     return {
       ...confirmed,
+      hash: confirmed.userOpHash,
       to: gaslessAddress || receiverWalletAddress,
     };
   } else {
@@ -199,6 +200,7 @@ async function erc20TokenTransfer(
     const confirmed = await tx.wait();
     return {
       ...confirmed,
+      hash: confirmed.userOpHash,
       to: gaslessAddress || receiverWalletAddress,
     };
   }
