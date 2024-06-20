@@ -362,6 +362,7 @@ async function proceed() {
       const nonce = Number(
         await getNonceForArcanaSponsorship(scwInstance.scwAddress, rpc_url)
       );
+      console.log(nonce, "nonce-sendform");
       const tx =
         userInput.value.token === "NATIVE"
           ? await nativeTokenTransfer(
