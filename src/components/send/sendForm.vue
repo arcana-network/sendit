@@ -132,12 +132,17 @@ sendStore.resetUserInput();
 const { userInput, supportedChains } = toRefs(sendStore);
 
 async function initSCWsdk() {
-  await authStore.provider.request({
-    method: "_arcana_switchAccountType",
-    params: {
-      type: "eoa",
-    },
+  const currentAccountType = await authStore.provider.request({
+    method: "_arcana_getAccountType",
   });
+  if (currentAccountType === "scw") {
+    await authStore.provider.request({
+      method: "_arcana_switchAccountType",
+      params: {
+        type: "eoa",
+      },
+    });
+  }
   //@ts-ignore
   await initSCW(ARCANA_APP_ADDRESS, window.arcana.provider);
 }
