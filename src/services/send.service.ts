@@ -102,7 +102,7 @@ async function nativeTokenTransfer(
     const confirmed = await tx.wait();
     return {
       ...confirmed,
-      hash: confirmed.userOpHash,
+      hash: confirmed.receipt.transactionHash,
       to: gaslessAddress || receiverWalletAddress,
     };
   } else {
