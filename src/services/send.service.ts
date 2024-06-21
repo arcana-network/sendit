@@ -110,7 +110,7 @@ async function nativeTokenTransfer(
         };
         resolve(true);
         // waiting for 2 seconds to get the transaction minted
-      }, 2000);
+      }, 10000);
     });
     return response;
   } else {
