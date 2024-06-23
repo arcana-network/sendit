@@ -266,6 +266,7 @@ async function proceed() {
   loadStore.showLoader("Sending tokens...");
   let hasUserRejectedChainSwitching = false;
   let hasUserRejectedAccountTypeSwitching = false;
+  let nonce;
   if (userInput.value.chain !== "") {
     const chainId = await authStore.provider.request({
       method: "eth_chainId",
@@ -291,7 +292,30 @@ async function proceed() {
     const currentAccountType = await authStore.provider.request({
       method: "_arcana_getAccountType",
     });
-    if (currentAccountType !== userInput.value.sourceOfFunds) {
+    if (
+      (currentAccountType === "scw" || currentAccountType === "eoa") &&
+      userInput.value.sourceOfFunds === "scw"
+    ) {
+      try {
+        const rpc_url = chains[Number(userInput.value.chain)].rpc_url;
+        await initSCWsdk();
+        nonce = Number(
+          await getNonceForArcanaSponsorship(scwInstance.scwAddress, rpc_url)
+        );
+        if (nonce > 15) {
+          await authStore.provider.request({
+            method: "_arcana_switchAccountType",
+            params: {
+              type: "scw",
+            },
+          });
+        }
+      } catch (e) {
+        console.error(e);
+        toast.error("Switching account type rejected by user");
+        hasUserRejectedAccountTypeSwitching = true;
+      }
+    } else if (currentAccountType !== userInput.value.sourceOfFunds) {
       try {
         loadStore.showLoader(
           "Switching Account Type...",
@@ -358,12 +382,6 @@ async function proceed() {
           maxPriorityFeePerGas: hexlify(gasStation.max_priority_fee),
         };
       }
-      const rpc_url = chains[Number(chainId)].rpc_url;
-      await initSCWsdk();
-      const nonce = Number(
-        await getNonceForArcanaSponsorship(scwInstance.scwAddress, rpc_url)
-      );
-      console.log(nonce, "nonce-sendform");
       const tx =
         userInput.value.token === "NATIVE"
           ? await nativeTokenTransfer(
