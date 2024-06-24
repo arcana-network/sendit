@@ -217,7 +217,6 @@ async function fetchAssets() {
   } catch (error) {
     console.error(error);
   } finally {
-    loadStore.hideLoader();
     isBalanceFetching.value = false;
   }
 }
