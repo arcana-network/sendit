@@ -99,8 +99,7 @@ const chains = {
   421614: {
     name: "Arbitrum Sepolia",
     chain_id: 421614,
-    rpc_url:
-      "https://rpc.ankr.com/arbitrum_sepolia/7c12fa10-4e46-4810-bf66-6b3148119501",
+    rpc_url: "https://rpc.ankr.com/arbitrum_sepolia/",
     blockchain: "arbitrum_sepolia",
     currency: "ETH",
     explorer: "https://sepolia.arbiscan.io",
