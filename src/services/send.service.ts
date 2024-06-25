@@ -99,20 +99,12 @@ async function nativeTokenTransfer(
       mode: "ARCANA",
       calculateGasLimits: true,
     });
-    let response = {};
-    await new Promise((resolve) => {
-      setTimeout(async () => {
-        const confirmed = await tx.wait();
-        response = {
-          ...confirmed,
-          hash: confirmed.receipt.transactionHash,
-          to: gaslessAddress || receiverWalletAddress,
-        };
-        resolve(true);
-        // waiting for 2 seconds to get the transaction minted
-      }, 10000);
-    });
-    return response;
+    const confirmed = await tx.wait(10);
+    return {
+      ...confirmed,
+      hash: confirmed.receipt.transactionHash,
+      to: gaslessAddress || receiverWalletAddress,
+    };
   } else {
     const tx = await wallet.sendTransaction(rawTx);
     const confirmed = await tx.wait(4);
