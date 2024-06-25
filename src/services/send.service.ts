@@ -99,7 +99,7 @@ async function nativeTokenTransfer(
       mode: "ARCANA",
       calculateGasLimits: true,
     });
-    const confirmed = await tx.wait(4);
+    const confirmed = await tx.wait();
     return {
       ...confirmed,
       hash: confirmed.receipt.transactionHash,
