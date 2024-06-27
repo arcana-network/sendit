@@ -118,13 +118,14 @@ async function nativeTokenTransfer(
     });
     const transactionData = await tx.wait();
     await new Promise(function (resolve) {
-      setInterval(async () => {
+      const intervalId = setInterval(async () => {
         const status = await checkIfTransactionConfirmed(
           chain_id,
           transactionData.userOpHash
         );
         console.log(status, "status");
         if (status.state === "CONFIRMED") {
+          clearInterval(intervalId);
           resolve(true);
         }
       }, 1000);
