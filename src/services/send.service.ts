@@ -14,6 +14,7 @@ import { SOCKET_IDS } from "@/constants/socket-ids";
 import useUserStore from "@/stores/user";
 import store from "@/stores";
 import { scwInstance } from "@/utils/scw";
+import axios from "axios";
 
 const userStore = useUserStore(store);
 
@@ -26,6 +27,22 @@ type FeeData = {
 
 function isWalletAddress(address: string) {
   return address.length === 42 && address.startsWith("0x");
+}
+
+async function checkIfTransactionConfirmed(chainId, userOpHash) {
+  try {
+    const URL = `https://bundler.biconomy.io/api/v2/${chainId}/cJPK7B3ru.kj908Yuj-89hY-45ic-lRe5-6877flTvjy561`;
+    const payload = {
+      method: "biconomy_getUserOperationStatus",
+      params: [userOpHash],
+      id: 1693369916,
+      jsonrpc: "2.0",
+    };
+    const res = await axios.post(URL, payload);
+    return res.data.result;
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 async function nativeTokenTransfer(
@@ -99,10 +116,22 @@ async function nativeTokenTransfer(
       mode: "ARCANA",
       calculateGasLimits: true,
     });
-    const confirmed = await tx.wait();
+    const transactionData = await tx.wait();
+    await new Promise(function (resolve) {
+      setInterval(async () => {
+        const status = await checkIfTransactionConfirmed(
+          chain_id,
+          transactionData.userOpHash
+        );
+        console.log(status, "status");
+        if (status.state === "CONFIRMED") {
+          resolve(true);
+        }
+      }, 1000);
+    });
     return {
-      ...confirmed,
-      hash: confirmed.receipt.transactionHash,
+      ...transactionData,
+      hash: transactionData.receipt.transactionHash,
       to: gaslessAddress || receiverWalletAddress,
     };
   } else {
