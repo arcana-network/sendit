@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@arcana/auth": "^1.0.11-beta.1",
+    "@arcana/scw": "^0.0.37",
     "@fontsource/caveat": "^5.0.8",
     "@fontsource/syne": "^5.0.8",
     "@headlessui/vue": "^1.7.15",

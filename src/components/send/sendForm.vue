@@ -35,11 +35,14 @@ import copyToClipboard from "@/utils/copyToClipboard";
 import { switchChain } from "@/use/switchChain";
 import useUserStore from "@/stores/user";
 import { useRoute, useRouter } from "vue-router";
+import { initSCW, scwInstance } from "@/utils/scw.ts";
+import getNonceForArcanaSponsorship from "@/utils/getNonceForArcanaSponsorship";
 
 const emits = defineEmits(["transaction-successful"]);
 const ACTION_REJECTED = "ACTION_REJECTED";
 const INSUFFICIENT_FUNDS = "INSUFFICIENT_FUNDS";
 const SELF_TX_ERROR = "self-transactions are not permitted";
+const ARCANA_APP_ADDRESS = import.meta.env.VITE_ARCANA_APP_ADDRESS;
 let assetInterval: NodeJS.Timer;
 const refreshIconAnimating = ref(false);
 const route = useRoute();
@@ -127,14 +130,23 @@ const userStore = useUserStore();
 
 sendStore.resetUserInput();
 const { userInput, supportedChains } = toRefs(sendStore);
-// const filteredChains = computed(() => {
-//   if (userInput.value.sourceOfFunds === "scw") {
-//     return supportedChains.value.filter(
-//       (chain) => chain.gasless_enabled || chain.chain_id == "80001"
-//     );
-//   }
-//   return supportedChains.value;
-// });
+
+async function initSCWsdk() {
+  const currentAccountType = await authStore.provider.request({
+    method: "_arcana_getAccountType",
+  });
+  if (currentAccountType === "scw") {
+    await authStore.provider.request({
+      method: "_arcana_switchAccountType",
+      params: {
+        type: "eoa",
+      },
+    });
+  }
+  //@ts-ignore
+  await initSCW(ARCANA_APP_ADDRESS, window.arcana.provider);
+}
+
 const filteredWallets = computed(() => {
   if (userInput.value.chain === "") return [];
   return supportedWallets.value.filter((wallet) => {
@@ -205,7 +217,6 @@ async function fetchAssets() {
   } catch (error) {
     console.error(error);
   } finally {
-    loadStore.hideLoader();
     isBalanceFetching.value = false;
   }
 }
@@ -230,6 +241,7 @@ function messageArcana(
     to_verifier,
     type,
   };
+  console.log({ message });
   return conn.sendMessage(SOCKET_IDS.SEND_TX, message);
 }
 
@@ -253,6 +265,7 @@ async function proceed() {
   loadStore.showLoader("Sending tokens...");
   let hasUserRejectedChainSwitching = false;
   let hasUserRejectedAccountTypeSwitching = false;
+  let nonce;
   if (userInput.value.chain !== "") {
     const chainId = await authStore.provider.request({
       method: "eth_chainId",
@@ -278,7 +291,30 @@ async function proceed() {
     const currentAccountType = await authStore.provider.request({
       method: "_arcana_getAccountType",
     });
-    if (currentAccountType !== userInput.value.sourceOfFunds) {
+    if (
+      (currentAccountType === "scw" || currentAccountType === "eoa") &&
+      userInput.value.sourceOfFunds === "scw"
+    ) {
+      try {
+        const rpc_url = chains[Number(userInput.value.chain)].rpc_url;
+        await initSCWsdk();
+        nonce = Number(
+          await getNonceForArcanaSponsorship(scwInstance.scwAddress, rpc_url)
+        );
+        if (nonce > 15) {
+          await authStore.provider.request({
+            method: "_arcana_switchAccountType",
+            params: {
+              type: "scw",
+            },
+          });
+        }
+      } catch (e) {
+        console.error(e);
+        toast.error("Switching account type rejected by user");
+        hasUserRejectedAccountTypeSwitching = true;
+      }
+    } else if (currentAccountType !== userInput.value.sourceOfFunds) {
       try {
         loadStore.showLoader(
           "Switching Account Type...",
@@ -352,6 +388,7 @@ async function proceed() {
               arcanaProvider,
               amount,
               feeData,
+              nonce,
               userInput.value.sourceOfFunds === "scw",
               userInput.value.chain
             )
@@ -362,9 +399,11 @@ async function proceed() {
               //@ts-ignore
               userInput.value.token,
               feeData,
+              nonce,
               userInput.value.sourceOfFunds === "scw",
               userInput.value.chain
             );
+      console.log(tx, "tx-tx");
       loadStore.showLoader("Generating SendIt link...");
       const { hash, to } = tx;
       if (to == null) {
@@ -377,6 +416,7 @@ async function proceed() {
       const toVerifier =
         userInput.value.medium === "twitter" ? "twitter" : "passwordless";
       //@ts-ignore
+      console.log({ to, hash, fromEmail, toEmail, fromVerifier, toVerifier });
       const sendRes = (await messageArcana(
         hash,
         to,
@@ -389,6 +429,7 @@ async function proceed() {
           ? TOKEN_TYPES.NATIVE
           : TOKEN_TYPES.ERC20
       )) as any;
+      console.log(sendRes, "sendRes");
       sendRes.verifier_id = recipientId;
       sendRes.hash = hash;
       sendRes.verifier_human =
@@ -810,7 +851,7 @@ async function copyWalletAddress() {
           @click.prevent="proceed"
           type="submit"
           class="w-full text-sm btn btn-submit"
-          :disabled="disableSubmit"
+          :disabled="false"
           :class="{ 'opacity-50': disableSubmit }"
         >
           Send It

@@ -147,81 +147,89 @@ class Connection {
   }
 
   public async onMessage(ev: MessageEvent) {
-    const _data = msgunpack(Buffer.from(ev.data));
-    if (_data.length !== 3) {
-      return;
-    }
-    const [id, rtype, data] = _data;
+    const loader = useLoaderStore();
+    try {
+      const _data = msgunpack(Buffer.from(ev.data));
+      if (_data.length !== 3) {
+        return;
+      }
+      const [id, rtype, data] = _data;
 
-    switch (this.state) {
-      case ConnectionState.NOT_CONNECTED: {
-        const hash = hashMessage(data.message);
-        const loader = useLoaderStore();
-        loader.showLoader(
-          "Signing in...",
-          "Sign message in the wallet to continue."
-        );
-        const existingPairStr = localStorage.getItem(
-          Connection.MESSAGE_HASH_KEY
-        );
-        let sig: string;
-        const existingPair = existingPairStr ? JSON.parse(existingPairStr) : {};
-        if (existingPair.hash === hash) {
-          sig = existingPair.sig;
-        } else {
-          localStorage.removeItem(Connection.MESSAGE_HASH_KEY);
-          try {
-            sig = await this.signer.signMessage(data.message);
-          } catch (e) {
-            return this.emitter.emit(Connection.ON_ERROR, e);
-          }
-          localStorage.setItem(
-            Connection.MESSAGE_HASH_KEY,
-            JSON.stringify({ hash, sig })
+      switch (this.state) {
+        case ConnectionState.NOT_CONNECTED: {
+          const hash = hashMessage(data.message);
+          loader.showLoader(
+            "Signing in...",
+            "Sign message in the wallet to continue."
           );
-        }
+          const existingPairStr = localStorage.getItem(
+            Connection.MESSAGE_HASH_KEY
+          );
+          let sig: string;
+          const existingPair = existingPairStr
+            ? JSON.parse(existingPairStr)
+            : {};
+          if (existingPair.hash === hash) {
+            sig = existingPair.sig;
+          } else {
+            localStorage.removeItem(Connection.MESSAGE_HASH_KEY);
+            try {
+              sig = await this.signer.signMessage(data.message);
+            } catch (e) {
+              return this.emitter.emit(Connection.ON_ERROR, e);
+            }
+            localStorage.setItem(
+              Connection.MESSAGE_HASH_KEY,
+              JSON.stringify({ hash, sig })
+            );
+          }
 
-        this.socket.send(
-          msgpack({
-            sig: getBytes(sig),
-          })
-        );
-        loader.showLoader("Fetching user data...");
-        this.state = ConnectionState.CONNECTED_UNAUTHORIZED;
-        break;
-      }
-      case ConnectionState.CONNECTED_UNAUTHORIZED:
-        if (data.login) {
-          this.state = ConnectionState.AUTHORIZED;
-          this.emitter.emit(Connection.ON_CONNECT);
-          this.mutex.release();
-        } else {
-          this.emitter.emit(Connection.ON_ERROR, data);
+          this.socket.send(
+            msgpack({
+              sig: getBytes(sig),
+            })
+          );
+          loader.showLoader("Fetching user data...");
+          this.state = ConnectionState.CONNECTED_UNAUTHORIZED;
+          break;
         }
-        break;
-      case ConnectionState.AUTHORIZED: {
-        switch (rtype) {
-          case ResponseType.Response: {
-            const cbs = this.callbackMap.get(id);
-            if (cbs == null) {
-              console.log("Message found with no outstanding request:", cbs);
-              return;
-            }
-            this.callbackMap.delete(id);
-            const [resolve, reject] = cbs;
-            if (data.error) {
-              reject(new SocketError(data.msg, data.code));
-            } else {
-              resolve(data);
-            }
-            break;
+        case ConnectionState.CONNECTED_UNAUTHORIZED:
+          if (data.login) {
+            this.state = ConnectionState.AUTHORIZED;
+            this.emitter.emit(Connection.ON_CONNECT);
+            this.mutex.release();
+          } else {
+            this.emitter.emit(Connection.ON_ERROR, data);
           }
-          case ResponseType.Notification: {
-            this.emitter.emit(Connection.ON_NOTIFICATION, data);
+          break;
+        case ConnectionState.AUTHORIZED: {
+          switch (rtype) {
+            case ResponseType.Response: {
+              const cbs = this.callbackMap.get(id);
+              if (cbs == null) {
+                console.log("Message found with no outstanding request:", cbs);
+                return;
+              }
+              this.callbackMap.delete(id);
+              const [resolve, reject] = cbs;
+              if (data.error) {
+                reject(new SocketError(data.msg, data.code));
+              } else {
+                resolve(data);
+              }
+              break;
+            }
+            case ResponseType.Notification: {
+              this.emitter.emit(Connection.ON_NOTIFICATION, data);
+            }
           }
+          break;
         }
-        break;
       }
+    } catch (e) {
+      console.error("Error in onMessage", e);
+    } finally {
+      loader.hideLoader();
     }
   }
 }

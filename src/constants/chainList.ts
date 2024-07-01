@@ -96,13 +96,23 @@ const chains = {
     explorer: "https://goerli.lineascan.build",
     icon_url: "https://icons.llamao.fi/icons/chains/rsz_linea.jpg",
   },
+  421614: {
+    name: "Arbitrum Sepolia",
+    chain_id: 421614,
+    rpc_url: "https://arbitrum-sepolia.public.blastapi.io/",
+    blockchain: "arbitrum_sepolia",
+    currency: "ETH",
+    explorer: "https://sepolia.arbiscan.io",
+    icon_url: "https://icons.llamao.fi/icons/chains/rsz_linea.jpg",
+  },
 };
 
-export const testnetChains = [80002, 97];
+export const testnetChains = [80002, 97, 421614];
 
 export const testnetChainFaucets = {
   97: "https://testnet.binance.org/faucet-smart",
   80002: "https://faucet.polygon.technology",
+  421614: "https://www.alchemy.com/faucets/arbitrum-sepolia",
 };
 
 export enum ChainNames {
@@ -116,6 +126,7 @@ export enum ChainNames {
   "linea" = "Linea",
   "linea_testnet" = "Linea Goerli",
   "polygon_mumbai" = "Polygon Mumbai Testnet",
+  "arbitrum_sepolia" = "Arbitrum Sepolia",
 }
 
 export enum ChainIds {
@@ -129,13 +140,14 @@ export enum ChainIds {
   "linea" = 59144,
   "linea_testnet" = 59140,
   "polygon_mumbai" = 80001,
+  "arbitrum_sepolia" = 421614,
 }
 
 export const SupportedChainIdsForAccounts = {
-  eoa: [1, 137, 80002, 42161, 56, 97, 204],
-  scw: [137],
+  eoa: [1, 137, 80002, 42161, 56, 97, 204, 421614],
+  scw: [137, 421614],
 };
 
-export const gaslessChains = [137];
+export const gaslessChains = [137, 421614];
 
 export default chains;

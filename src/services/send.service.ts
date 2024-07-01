@@ -1,5 +1,11 @@
 import { EthereumProvider } from "@arcana/auth";
-import { BrowserProvider, computeAddress, Contract, ethers } from "ethers";
+import {
+  BrowserProvider,
+  computeAddress,
+  Contract,
+  ethers,
+  Interface,
+} from "ethers";
 import { Decimal } from "decimal.js";
 import senditRequestAbi from "@/abis/sendit-request.abi.json";
 import erc20ABI from "@/abis/erc20.abi.json";
@@ -7,6 +13,8 @@ import { useConnection } from "@/stores/connection";
 import { SOCKET_IDS } from "@/constants/socket-ids";
 import useUserStore from "@/stores/user";
 import store from "@/stores";
+import { scwInstance } from "@/utils/scw";
+import axios from "axios";
 
 const userStore = useUserStore(store);
 
@@ -21,11 +29,28 @@ function isWalletAddress(address: string) {
   return address.length === 42 && address.startsWith("0x");
 }
 
+async function checkIfTransactionConfirmed(chainId, userOpHash) {
+  try {
+    const URL = `https://bundler.biconomy.io/api/v2/${chainId}/cJPK7B3ru.kj908Yuj-89hY-45ic-lRe5-6877flTvjy561`;
+    const payload = {
+      method: "biconomy_getUserOperationStatus",
+      params: [userOpHash],
+      id: 1693369916,
+      jsonrpc: "2.0",
+    };
+    const res = await axios.post(URL, payload);
+    return res.data.result;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 async function nativeTokenTransfer(
   publickey: string,
   provider: EthereumProvider,
   amount: number,
   feeData: FeeData | null,
+  nonce: number,
   isGasless?: boolean,
   chain_id?: string | number,
   isDeposit?: boolean
@@ -73,15 +98,54 @@ async function nativeTokenTransfer(
     rawTx.maxFeePerGas = feeData.maxFeePerGas;
     rawTx.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas;
   }
-  const tx = await wallet.sendTransaction(rawTx);
-  const confirmed = await tx.wait(4);
-  if (confirmed == null) {
-    throw new Error("Invalid transaction");
+  console.log(
+    { is: isGasless && nonce < 15 },
+    { isGasless },
+    { nonce },
+    "nonce-nonce-1"
+  );
+  if (isGasless && nonce < 15) {
+    console.log({ isGasless }, { nonce }, "nonce-nonce-2");
+    const txParams = {
+      from: scwInstance.scwAddress,
+      to: gaslessAddress || receiverWalletAddress,
+      value: decimalAmount.mul(Decimal.pow(10, 18)).ceil().toHexadecimal(),
+    };
+    console.log({ txParams }, "txParams");
+    const tx = await scwInstance.doTx(txParams, {
+      mode: "ARCANA",
+      calculateGasLimits: true,
+    });
+    const transactionData = await tx.wait();
+    await new Promise(function (resolve) {
+      const intervalId = setInterval(async () => {
+        const status = await checkIfTransactionConfirmed(
+          chain_id,
+          transactionData.userOpHash
+        );
+        console.log(status, "status");
+        if (status.state === "CONFIRMED") {
+          clearInterval(intervalId);
+          resolve(true);
+        }
+      }, 1000);
+    });
+    return {
+      ...transactionData,
+      hash: transactionData.receipt.transactionHash,
+      to: gaslessAddress || receiverWalletAddress,
+    };
+  } else {
+    const tx = await wallet.sendTransaction(rawTx);
+    const confirmed = await tx.wait(4);
+    if (confirmed == null) {
+      throw new Error("Invalid transaction");
+    }
+    return {
+      ...confirmed,
+      to: gaslessAddress || receiverWalletAddress,
+    };
   }
-  return {
-    ...confirmed,
-    to: gaslessAddress || receiverWalletAddress,
-  };
 }
 
 const erc20Abi = [
@@ -95,6 +159,7 @@ async function erc20TokenTransfer(
   amount: number,
   tokenAddress: string,
   feeData: FeeData | null,
+  nonce: number,
   isGasless?: boolean,
   chain_id?: string | number,
   isDeposit?: boolean
@@ -142,6 +207,32 @@ async function erc20TokenTransfer(
   if (feeData) {
     ptx.maxFeePerGas = BigInt(feeData.maxFeePerGas);
     ptx.maxPriorityFeePerGas = BigInt(feeData.maxPriorityFeePerGas);
+  }
+  if (isGasless && nonce < 15) {
+    const abi = [
+      "function transfer(address recipient, uint256 amount) returns (bool)",
+    ];
+    const Erc20Interface = new Interface(abi);
+    const encodedData = Erc20Interface.encodeFunctionData("transfer", [
+      gaslessAddress || receiverWalletAddress,
+      amount,
+    ]);
+
+    const txParams = {
+      from: scwInstance.scwAddress,
+      to: tokenContract.getAddress(),
+      data: encodedData,
+    };
+    const tx = await scwInstance.doTx(txParams, {
+      mode: "ARCANA",
+      calculateGasLimits: true,
+    });
+    const confirmed = await tx.wait();
+    return {
+      ...confirmed,
+      hash: confirmed.userOpHash,
+      to: gaslessAddress || receiverWalletAddress,
+    };
   }
   const tx = await wallet.sendTransaction(ptx);
   const confirmed = await tx.wait(4);
