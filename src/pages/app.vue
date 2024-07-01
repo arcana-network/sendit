@@ -74,16 +74,20 @@ onMounted(() => {
 
 async function switchToEOA() {
   if (authStore.loggedInWith === "") {
+    alert("Switching account type");
     const currentAccountType = await authStore.provider.request({
       method: "_arcana_getAccountType",
     });
+    alert(currentAccountType);
     if (currentAccountType !== "eoa") {
+      alert("Switching to EOA");
       await authStore.provider.request({
         method: "_arcana_switchAccountType",
         params: {
           type: "eoa",
         },
       });
+      alert("Switched to EOA");
     }
   }
 }
@@ -160,10 +164,13 @@ async function initSocketConnect() {
 
 async function getUserInfo() {
   if (authStore.loggedInWith === "") {
+    alert("Getting provider");
     authStore.provider = auth.getProvider();
+    alert("Getting user auth.getUser");
     const userInfo = await auth.getUser();
     authStore.setUserInfo(userInfo);
     userStore.address = userInfo.address;
+    alert("User info set");
   }
 }
 
@@ -182,10 +189,12 @@ async function requestFaucetFunds() {
 
 async function onWalletConnect() {
   loaderStore.showLoader("Connecting...");
+  alert("Wallet connecting...");
   if (
     authStore.loggedInWith === "walletconnect" ||
     authStore.loggedInWith === "okxwallet"
   ) {
+    alert("External Wallet");
     authStore.provider.on("accountsChanged", async (accounts) => {
       loaderStore.showLoader(
         "Switching account...",
@@ -200,7 +209,9 @@ async function onWalletConnect() {
       userStore.address = accounts[0];
     });
   }
+  alert("Getting user info");
   await getUserInfo();
+  alert("Init socket connect");
   await initSocketConnect();
 }
 
